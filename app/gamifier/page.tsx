@@ -218,9 +218,14 @@ export default function GamifierPage() {
               </div>
             </div>
             {/* Leaderboard Snippet */}
-            <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-4">
-              Class Leaderboard
-            </h4>
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                Class Leaderboard
+              </h4>
+              <Link href="/leaderboard" className="text-[10px] font-bold text-[#2525f4] hover:underline">
+                View All
+              </Link>
+            </div>
             <div className="space-y-3">
               <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-[#252535] transition-colors">
                 <span className="font-bold text-slate-400 w-4">1</span>

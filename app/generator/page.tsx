@@ -48,6 +48,15 @@ export default function GeneratorPage() {
           </Link>
           <Link
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
+            href="/leaderboard"
+          >
+            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
+              leaderboard
+            </span>
+            <span className="font-medium">Leaderboard</span>
+          </Link>
+          <Link
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
             href="/past-questions"
           >
             <span className="material-symbols-outlined group-hover:text-[#2525f4]">

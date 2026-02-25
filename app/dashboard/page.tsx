@@ -172,34 +172,54 @@ export default function DashboardPage() {
               ))}
             </div>
           </div>
-          {/* Study Time */}
-          <div className="flex flex-col p-5 bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:border-[#2525f4]/50 transition-colors">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-slate-500 dark:text-[#9c9cba] text-sm font-medium leading-tight">
-                Study Time
-              </h3>
-              <span className="material-symbols-outlined text-purple-500 bg-purple-500/10 p-1.5 rounded-lg">
-                schedule
-              </span>
-            </div>
-            <div className="flex items-end gap-2 mb-2">
-              <span className="text-4xl font-bold text-slate-900 dark:text-white">
-                24h
-              </span>
-              <span className="text-sm font-medium text-slate-500 dark:text-[#9c9cba] mb-1">
-                This week
-              </span>
-            </div>
-            <div className="w-full bg-slate-100 dark:bg-[#2d2d3f] rounded-full h-2 mt-auto">
-              <div
-                className="bg-purple-500 h-2 rounded-full"
-                style={{width: '40%'}}
-              ></div>
-            </div>
+          {/* Level & XP */}
+          <div className="flex flex-col p-5 bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:border-[#2525f4]/50 transition-colors cursor-pointer group">
+            <Link href="/leaderboard">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-slate-500 dark:text-[#9c9cba] text-sm font-medium leading-tight">
+                  Level 12
+                </h3>
+                <span className="material-symbols-outlined text-purple-500 bg-purple-500/10 p-1.5 rounded-lg group-hover:bg-purple-500 group-hover:text-white transition-colors">
+                  military_tech
+                </span>
+              </div>
+              <div className="flex items-end gap-2 mb-2">
+                <span className="text-4xl font-bold text-slate-900 dark:text-white">
+                  2,450
+                </span>
+                <span className="text-sm font-medium text-purple-500 mb-1">
+                  XP
+                </span>
+              </div>
+              <div className="w-full bg-slate-100 dark:bg-[#2d2d3f] rounded-full h-2 mt-auto">
+                <div
+                  className="bg-purple-500 h-2 rounded-full relative"
+                  style={{width: '82%'}}
+                >
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-sm"></div>
+                </div>
+              </div>
+              <p className="text-xs text-slate-400 mt-2 text-right">550 XP to Level 13</p>
+            </Link>
           </div>
         </div>
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Link href="/leaderboard" className="flex items-center gap-4 p-4 bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-xl hover:bg-slate-50 dark:hover:bg-[#252535] transition-all group">
+             <div className="bg-yellow-100 dark:bg-yellow-900/20 p-3 rounded-lg text-yellow-600 dark:text-yellow-400 group-hover:scale-110 transition-transform">
+              <span className="material-symbols-outlined text-2xl">
+                leaderboard
+              </span>
+            </div>
+            <div className="text-left">
+              <h3 className="font-bold text-lg text-slate-900 dark:text-white">
+                Leaderboard
+              </h3>
+              <p className="text-slate-500 dark:text-[#9c9cba] text-sm">
+                You are #3 in your class
+              </p>
+            </div>
+          </Link>
           <button className="flex items-center gap-4 p-4 bg-[#2525f4] text-white rounded-xl shadow-lg shadow-[#2525f4]/25 hover:bg-[#2525f4]/90 transition-all group">
             <div className="bg-white/20 p-3 rounded-lg group-hover:scale-110 transition-transform">
               <span className="material-symbols-outlined text-2xl">
@@ -225,21 +245,6 @@ export default function DashboardPage() {
               </h3>
               <p className="text-slate-500 dark:text-[#9c9cba] text-sm">
                 Continue where you left off
-              </p>
-            </div>
-          </button>
-          <button className="flex items-center gap-4 p-4 bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-xl hover:bg-slate-50 dark:hover:bg-[#252535] transition-all group">
-            <div className="bg-slate-100 dark:bg-[#2d2d3f] p-3 rounded-lg text-slate-600 dark:text-white group-hover:text-[#2525f4] transition-colors">
-              <span className="material-symbols-outlined text-2xl">
-                bookmark
-              </span>
-            </div>
-            <div className="text-left">
-              <h3 className="font-bold text-lg text-slate-900 dark:text-white">
-                Saved Questions
-              </h3>
-              <p className="text-slate-500 dark:text-[#9c9cba] text-sm">
-                Review your bookmarked items
               </p>
             </div>
           </button>

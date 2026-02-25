@@ -30,6 +30,12 @@ export default function PastQuestionsPage() {
               Courses
             </Link>
             <Link
+              className="text-slate-600 dark:text-slate-400 hover:text-[#2525f4] dark:hover:text-white transition-colors text-sm font-medium leading-normal"
+              href="/leaderboard"
+            >
+              Leaderboard
+            </Link>
+            <Link
               className="text-slate-900 dark:text-white font-bold text-sm leading-normal border-b-2 border-[#2525f4]"
               href="/past-questions"
             >

@@ -166,6 +166,7 @@ export default function LandingPage() {
                 <Link href="/dashboard" className="hover:text-[#2525f4] transition-colors">Dashboard</Link>
                 <Link href="/resources" className="hover:text-[#2525f4] transition-colors">Resources</Link>
                 <Link href="/gamifier" className="hover:text-[#2525f4] transition-colors">Gamifier</Link>
+                <Link href="/leaderboard" className="hover:text-[#2525f4] transition-colors">Leaderboard</Link>
                 <Link href="/history" className="hover:text-[#2525f4] transition-colors">History</Link>
                 <Link href="/generator" className="hover:text-[#2525f4] transition-colors">Generator</Link>
                 <Link href="/past-questions" className="hover:text-[#2525f4] transition-colors">Past Questions</Link>

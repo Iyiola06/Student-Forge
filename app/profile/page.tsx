@@ -32,6 +32,12 @@ export default function ProfilePage() {
             </Link>
             <Link
               className="text-slate-600 dark:text-slate-400 hover:text-[#2525f4] dark:hover:text-white transition-colors text-sm font-medium leading-normal"
+              href="/leaderboard"
+            >
+              Leaderboard
+            </Link>
+            <Link
+              className="text-slate-600 dark:text-slate-400 hover:text-[#2525f4] dark:hover:text-white transition-colors text-sm font-medium leading-normal"
               href="/generator"
             >
               Study Tools
