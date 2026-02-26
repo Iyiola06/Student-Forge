@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { useProfile } from '@/hooks/useProfile';
 import { useEffect, useState } from 'react';

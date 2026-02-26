@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import TopNavigation from '@/components/layout/TopNavigation';
 import { useEffect, useState } from 'react';
