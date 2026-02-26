@@ -1,8 +1,54 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function ResetPasswordPage() {
+  const router = useRouter();
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to reset password');
+      }
+
+      setSuccess(true);
+      setTimeout(() => router.push('/login'), 3000);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#2525f4]/30 selection:text-[#2525f4]">
       <div className="layout-container flex h-full grow flex-col">
@@ -45,68 +91,87 @@ export default function ResetPasswordPage() {
               </p>
             </div>
             {/* Form Section */}
-            <form action="#" className="mt-8 space-y-6" method="POST">
-              <div className="space-y-4">
-                <label className="block" htmlFor="new-password">
-                  <span className="block text-sm font-medium leading-6 text-slate-900 dark:text-white mb-2">
-                    New Password
-                  </span>
-                  <div className="relative mt-2 rounded-md shadow-sm">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                      <span className="material-symbols-outlined text-slate-400 text-[20px]">
-                        lock
-                      </span>
+            {error && (
+              <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm">
+                {error}
+              </div>
+            )}
+            {success ? (
+              <div className="mb-4 p-4 rounded-lg bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 text-green-700 dark:text-green-400 text-sm text-center">
+                <span className="block material-symbols-outlined text-4xl mb-2 mx-auto text-green-500">check_circle</span>
+                Your password has been reset successfully. Redirecting you to login...
+              </div>
+            ) : (
+              <form onSubmit={handleResetPassword} className="mt-8 space-y-6">
+                <div className="space-y-4">
+                  <label className="block" htmlFor="new-password">
+                    <span className="block text-sm font-medium leading-6 text-slate-900 dark:text-white mb-2">
+                      New Password
+                    </span>
+                    <div className="relative mt-2 rounded-md shadow-sm">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                        <span className="material-symbols-outlined text-slate-400 text-[20px]">
+                          lock
+                        </span>
+                      </div>
+                      <input
+                        className="block w-full rounded-lg border-0 py-3 pl-10 text-slate-900 dark:text-white ring-1 ring-inset ring-slate-300 dark:ring-[#3b3b54] placeholder:text-slate-400 dark:placeholder:text-[#9c9cba] focus:ring-2 focus:ring-inset focus:ring-[#2525f4] sm:text-sm sm:leading-6 bg-transparent dark:bg-[#101022]/50 disabled:opacity-50"
+                        id="new-password"
+                        name="new-password"
+                        placeholder="Enter new password"
+                        required
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        disabled={isLoading}
+                      />
                     </div>
-                    <input
-                      className="block w-full rounded-lg border-0 py-3 pl-10 text-slate-900 dark:text-white ring-1 ring-inset ring-slate-300 dark:ring-[#3b3b54] placeholder:text-slate-400 dark:placeholder:text-[#9c9cba] focus:ring-2 focus:ring-inset focus:ring-[#2525f4] sm:text-sm sm:leading-6 bg-transparent dark:bg-[#101022]/50"
-                      id="new-password"
-                      name="new-password"
-                      placeholder="Enter new password"
-                      required
-                      type="password"
-                    />
-                  </div>
-                </label>
-                <label className="block" htmlFor="confirm-password">
-                  <span className="block text-sm font-medium leading-6 text-slate-900 dark:text-white mb-2">
-                    Confirm Password
-                  </span>
-                  <div className="relative mt-2 rounded-md shadow-sm">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                      <span className="material-symbols-outlined text-slate-400 text-[20px]">
-                        lock_reset
-                      </span>
+                  </label>
+                  <label className="block" htmlFor="confirm-password">
+                    <span className="block text-sm font-medium leading-6 text-slate-900 dark:text-white mb-2">
+                      Confirm Password
+                    </span>
+                    <div className="relative mt-2 rounded-md shadow-sm">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                        <span className="material-symbols-outlined text-slate-400 text-[20px]">
+                          lock_reset
+                        </span>
+                      </div>
+                      <input
+                        className="block w-full rounded-lg border-0 py-3 pl-10 text-slate-900 dark:text-white ring-1 ring-inset ring-slate-300 dark:ring-[#3b3b54] placeholder:text-slate-400 dark:placeholder:text-[#9c9cba] focus:ring-2 focus:ring-inset focus:ring-[#2525f4] sm:text-sm sm:leading-6 bg-transparent dark:bg-[#101022]/50 disabled:opacity-50"
+                        id="confirm-password"
+                        name="confirm-password"
+                        placeholder="Confirm new password"
+                        required
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        disabled={isLoading}
+                      />
                     </div>
-                    <input
-                      className="block w-full rounded-lg border-0 py-3 pl-10 text-slate-900 dark:text-white ring-1 ring-inset ring-slate-300 dark:ring-[#3b3b54] placeholder:text-slate-400 dark:placeholder:text-[#9c9cba] focus:ring-2 focus:ring-inset focus:ring-[#2525f4] sm:text-sm sm:leading-6 bg-transparent dark:bg-[#101022]/50"
-                      id="confirm-password"
-                      name="confirm-password"
-                      placeholder="Confirm new password"
-                      required
-                      type="password"
-                    />
+                  </label>
+                  {/* Strength Meter */}
+                  <div className="flex gap-1 pt-1 h-1.5 w-full">
+                    <div className="h-full w-1/4 rounded-full bg-green-500"></div>
+                    <div className="h-full w-1/4 rounded-full bg-green-500"></div>
+                    <div className="h-full w-1/4 rounded-full bg-slate-200 dark:bg-slate-700"></div>
+                    <div className="h-full w-1/4 rounded-full bg-slate-200 dark:bg-slate-700"></div>
                   </div>
-                </label>
-                {/* Strength Meter */}
-                <div className="flex gap-1 pt-1 h-1.5 w-full">
-                  <div className="h-full w-1/4 rounded-full bg-green-500"></div>
-                  <div className="h-full w-1/4 rounded-full bg-green-500"></div>
-                  <div className="h-full w-1/4 rounded-full bg-slate-200 dark:bg-slate-700"></div>
-                  <div className="h-full w-1/4 rounded-full bg-slate-200 dark:bg-slate-700"></div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Medium strength
+                  </p>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Medium strength
-                </p>
-              </div>
-              <div>
-                <button
-                  className="flex w-full justify-center rounded-lg bg-[#2525f4] px-3 py-3.5 text-sm font-bold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2525f4] transition-all duration-200"
-                  type="submit"
-                >
-                  Reset Password
-                </button>
-              </div>
-            </form>
+                <div>
+                  <button
+                    className="flex w-full justify-center rounded-lg bg-[#2525f4] px-3 py-3.5 text-sm font-bold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2525f4] transition-all duration-200 disabled:opacity-70"
+                    type="submit"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? 'Resetting...' : 'Reset Password'}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </main>
       </div>

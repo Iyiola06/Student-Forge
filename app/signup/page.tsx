@@ -1,9 +1,61 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
+  const router = useRouter();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [studyLevel, setStudyLevel] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!termsAccepted) {
+      setError('You must agree to the Terms of Service and Privacy Policy');
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstName, lastName, email, studyLevel, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to sign up');
+      }
+
+      router.push('/verify-email?email=' + encodeURIComponent(email));
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-x-hidden selection:bg-[#2525f4] selection:text-white">
       {/* Header */}
@@ -133,7 +185,12 @@ export default function SignupPage() {
               </button>
             </div>
           </div>
-          <form className="space-y-6">
+          {error && (
+            <div className="mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm">
+              {error}
+            </div>
+          )}
+          <form onSubmit={handleSignup} className="space-y-6">
             {/* Name Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -149,6 +206,9 @@ export default function SignupPage() {
                     id="firstName"
                     placeholder="Jane"
                     type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -165,6 +225,9 @@ export default function SignupPage() {
                     id="lastName"
                     placeholder="Doe"
                     type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -188,6 +251,9 @@ export default function SignupPage() {
                   id="email"
                   placeholder="jane.doe@school.edu"
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </div>
             </div>
@@ -208,7 +274,9 @@ export default function SignupPage() {
                 <select
                   className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d45] bg-slate-50 dark:bg-[#151525] text-slate-900 dark:text-white focus:border-[#2525f4] focus:ring-[#2525f4] h-12 pl-11 pr-10 text-base"
                   id="studyLevel"
-                  defaultValue=""
+                  value={studyLevel}
+                  onChange={(e) => setStudyLevel(e.target.value)}
+                  required
                 >
                   <option disabled value="">
                     Select your current level
@@ -245,6 +313,9 @@ export default function SignupPage() {
                     id="password"
                     placeholder="Create a password"
                     type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
                   />
                 </div>
                 {/* Strength Meter */}
@@ -276,6 +347,9 @@ export default function SignupPage() {
                     id="confirmPassword"
                     placeholder="Repeat password"
                     type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -287,6 +361,8 @@ export default function SignupPage() {
                   className="h-5 w-5 rounded border-slate-300 dark:border-[#2d2d45] bg-slate-50 dark:bg-[#151525] text-[#2525f4] focus:ring-[#2525f4] focus:ring-offset-0"
                   id="terms"
                   type="checkbox"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
                 />
               </div>
               <div className="text-sm leading-6">
@@ -313,17 +389,22 @@ export default function SignupPage() {
               </div>
             </div>
             {/* Submit Button */}
-            <Link href="/dashboard">
-              <button
-                className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#2525f4] py-3.5 px-4 text-sm font-bold text-white shadow-lg shadow-[#2525f4]/30 transition-all hover:bg-[#2525f4]/90 hover:shadow-[#2525f4]/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2525f4]"
-                type="button"
-              >
-                Create Account
-                <span className="material-symbols-outlined text-[20px]">
-                  arrow_forward
-                </span>
-              </button>
-            </Link>
+            <button
+              className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#2525f4] py-3.5 px-4 text-sm font-bold text-white shadow-lg shadow-[#2525f4]/30 transition-all hover:bg-[#2525f4]/90 hover:shadow-[#2525f4]/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2525f4] disabled:opacity-70"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <>
+                  Create Account
+                  <span className="material-symbols-outlined text-[20px]">
+                    arrow_forward
+                  </span>
+                </>
+              )}
+            </button>
             {/* Login Link */}
             <div className="text-center pt-2">
               <p className="text-sm text-slate-500 dark:text-slate-400">

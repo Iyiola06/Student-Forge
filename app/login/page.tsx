@@ -1,8 +1,63 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to login');
+      }
+
+      router.push('/dashboard');
+      router.refresh();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOAuth = async (provider: 'google' | 'apple') => {
+    try {
+      const res = await fetch('/api/auth/oauth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ provider }),
+      });
+
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setError(data.error || 'Failed to initialize sign in');
+      }
+    } catch (err: any) {
+      setError('An error occurred during sign in');
+    }
+  };
+
   return (
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display text-slate-900 dark:text-slate-100 min-h-screen flex items-center justify-center p-4">
       {/* Main Container */}
@@ -24,7 +79,12 @@ export default function LoginPage() {
         </div>
         {/* Form Section */}
         <div className="p-8 pt-2">
-          <form action="#" className="space-y-5">
+          {error && (
+            <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm md:text-xs">
+              {error}
+            </div>
+          )}
+          <form onSubmit={handleLogin} className="space-y-5">
             {/* Email Field */}
             <div className="space-y-2">
               <label
@@ -44,6 +104,9 @@ export default function LoginPage() {
                   id="email"
                   placeholder="Enter your student email"
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </div>
             </div>
@@ -67,14 +130,18 @@ export default function LoginPage() {
                   className="flex h-12 w-full rounded-lg border border-slate-300 dark:border-[#3b3b54] bg-transparent px-3 py-2 text-sm placeholder:text-slate-400 dark:placeholder:text-[#6b6b8a] focus:outline-none focus:ring-2 focus:ring-[#2525f4] focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 pl-10 pr-10 text-slate-900 dark:text-white bg-slate-50 dark:bg-[#111118]"
                   id="password"
                   placeholder="Enter your password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
                 <button
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-[#9c9cba] dark:hover:text-white transition-colors"
                   type="button"
+                  onClick={() => setShowPassword(!showPassword)}
                 >
                   <span className="material-symbols-outlined text-[20px]">
-                    visibility_off
+                    {showPassword ? 'visibility' : 'visibility_off'}
                   </span>
                 </button>
               </div>
@@ -98,14 +165,17 @@ export default function LoginPage() {
               </Link>
             </div>
             {/* Login Button */}
-            <Link href="/dashboard">
-              <button
-                className="w-full h-12 bg-[#2525f4] hover:bg-[#2525f4]/90 text-white font-medium rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-[#2525f4]/25 mt-5"
-                type="button"
-              >
-                Login
-              </button>
-            </Link>
+            <button
+              className="w-full h-12 bg-[#2525f4] hover:bg-[#2525f4]/90 disabled:opacity-70 text-white font-medium rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-[#2525f4]/25 mt-5"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                'Login'
+              )}
+            </button>
           </form>
           {/* Divider */}
           <div className="relative my-6">
@@ -121,8 +191,10 @@ export default function LoginPage() {
           {/* Social Login Buttons */}
           <div className="grid grid-cols-2 gap-4">
             <button
-              className="flex items-center justify-center gap-2 h-11 rounded-lg border border-slate-200 dark:border-[#3b3b54] bg-white dark:bg-[#252535] hover:bg-slate-50 dark:hover:bg-[#2d2d3f] transition-colors text-slate-700 dark:text-white font-medium text-sm"
+              className="flex items-center justify-center gap-2 h-11 rounded-lg border border-slate-200 dark:border-[#3b3b54] bg-white dark:bg-[#252535] hover:bg-slate-50 dark:hover:bg-[#2d2d3f] transition-colors text-slate-700 dark:text-white font-medium text-sm disabled:opacity-50"
               type="button"
+              onClick={() => handleOAuth('google')}
+              disabled={isLoading}
             >
               {/* Google Icon SVG */}
               <svg
@@ -150,8 +222,10 @@ export default function LoginPage() {
               Google
             </button>
             <button
-              className="flex items-center justify-center gap-2 h-11 rounded-lg border border-slate-200 dark:border-[#3b3b54] bg-white dark:bg-[#252535] hover:bg-slate-50 dark:hover:bg-[#2d2d3f] transition-colors text-slate-700 dark:text-white font-medium text-sm"
+              className="flex items-center justify-center gap-2 h-11 rounded-lg border border-slate-200 dark:border-[#3b3b54] bg-white dark:bg-[#252535] hover:bg-slate-50 dark:hover:bg-[#2d2d3f] transition-colors text-slate-700 dark:text-white font-medium text-sm disabled:opacity-50"
               type="button"
+              onClick={() => handleOAuth('apple')}
+              disabled={isLoading}
             >
               {/* Apple Icon SVG */}
               <svg

@@ -1,8 +1,13 @@
 'use client';
 
+import { Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
+  const searchParams = useSearchParams();
+  const email = searchParams.get('email') || 'your email address';
+
   return (
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#2525f4]/30 selection:text-[#2525f4]">
       <div className="layout-container flex h-full grow flex-col">
@@ -34,7 +39,7 @@ export default function VerifyEmailPage() {
               <p className="text-slate-500 dark:text-[#9c9cba] text-base font-normal leading-relaxed">
                 We&apos;ve sent a verification link to{' '}
                 <span className="font-semibold text-slate-900 dark:text-white">
-                  student@university.edu
+                  {email}
                 </span>
                 . Please click the link to verify your account.
               </p>
@@ -67,5 +72,13 @@ export default function VerifyEmailPage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }
