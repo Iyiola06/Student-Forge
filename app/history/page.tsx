@@ -1,113 +1,104 @@
-'use client';
-
 import Link from 'next/link';
+import TopNavigation from '@/components/layout/TopNavigation';
+import { useEffect, useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
+
+interface HistoryItem {
+  id: string;
+  action_type: string;
+  entity_type: string | null;
+  details: Record<string, any>;
+  created_at: string;
+}
 
 export default function HistoryPage() {
+  const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchHistory() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('study_history')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (data) {
+        setHistoryItems(data as HistoryItem[]);
+      }
+      setIsLoading(false);
+    }
+
+    fetchHistory();
+  }, []);
+
+  const formatItemInfo = (item: HistoryItem) => {
+    const action = item.action_type.toLowerCase();
+    if (action === 'quiz_completed') {
+      return {
+        icon: 'quiz',
+        colorClass: 'bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
+        title: `Completed Quiz: ${item.details?.title || 'Unknown Quiz'}`,
+        subtitle: `${item.details?.subject || 'General'}`,
+        badge: item.details?.score ? `Score: ${item.details.score}%` : null,
+      };
+    }
+    if (action === 'document_read') {
+      return {
+        icon: 'menu_book',
+        colorClass: 'bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
+        title: `Read: ${item.details?.title || 'Document'}`,
+        subtitle: `${item.details?.subject || 'General'} • ${item.details?.time_spent_mins || 0} mins`,
+        badge: null,
+      };
+    }
+    if (action.includes('upload')) {
+      return {
+        icon: 'upload_file',
+        colorClass: 'bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400',
+        title: `Uploaded: ${item.details?.title || 'File'}`,
+        subtitle: 'Resource Addition',
+        badge: null,
+      };
+    }
+
+    // Default fallback
+    return {
+      icon: 'history',
+      colorClass: 'bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-slate-400',
+      title: item.action_type.replace(/_/g, ' '),
+      subtitle: item.entity_type || 'Activity',
+      badge: null,
+    };
+  };
+
+  const formatDateLabel = (dateString: string) => {
+    const d = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (d.toDateString() === today.toDateString()) return 'Today';
+    if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
+
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  const formatTime = (dateString: string) => {
+    return new Date(dateString).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  };
+
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex antialiased selection:bg-[#2525f4]/30 selection:text-[#2525f4]">
-      {/* Sidebar Navigation (Reused) */}
-      <aside className="w-64 bg-white dark:bg-[#1b1b27] border-r border-slate-200 dark:border-[#2d2d3f] flex-col hidden md:flex sticky top-0 h-screen">
-        <div className="p-6 flex items-center gap-3">
-          <div className="size-8 text-[#2525f4] flex items-center justify-center">
-            <span className="material-symbols-outlined text-3xl">school</span>
-          </div>
-          <h2 className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
-            StudyForge
-          </h2>
-        </div>
-        <nav className="flex-1 px-4 space-y-2 overflow-y-auto">
-          <div className="text-xs font-semibold text-slate-400 dark:text-[#6b6b8a] uppercase tracking-wider mb-2 mt-4 px-2">
-            Menu
-          </div>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/dashboard"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              dashboard
-            </span>
-            <span className="font-medium">Dashboard</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/resources"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              library_books
-            </span>
-            <span className="font-medium">Resource Library</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/gamifier"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              sports_esports
-            </span>
-            <span className="font-medium">PDF Gamifier</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/leaderboard"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              leaderboard
-            </span>
-            <span className="font-medium">Leaderboard</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/past-questions"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              history_edu
-            </span>
-            <span className="font-medium">Past Questions</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/generator"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              psychology
-            </span>
-            <span className="font-medium">Question Generator</span>
-          </Link>
-          <div className="text-xs font-semibold text-slate-400 dark:text-[#6b6b8a] uppercase tracking-wider mb-2 mt-6 px-2">
-            Personal
-          </div>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#2525f4]/10 text-[#2525f4] font-medium"
-            href="/history"
-          >
-            <span className="material-symbols-outlined">history</span>
-            <span>Study History</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/profile"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              person
-            </span>
-            <span className="font-medium">Profile</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/settings"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              settings
-            </span>
-            <span className="font-medium">Settings</span>
-          </Link>
-        </nav>
-      </aside>
+    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#2525f4]/30 selection:text-[#2525f4]">
+      <TopNavigation />
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        {/* Header */}
-        <header className="h-16 bg-white dark:bg-[#1b1b27] border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20">
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white">
+      <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
+        <div className="px-6 pt-6 pb-2 md:px-8 flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
             Study History
           </h1>
           <div className="flex items-center gap-4">
@@ -118,155 +109,87 @@ export default function HistoryPage() {
                 </span>
               </span>
               <input
-                className="h-9 pl-9 pr-4 rounded-lg bg-slate-100 dark:bg-[#111118] border-none text-sm text-slate-900 dark:text-white placeholder:text-slate-500 focus:ring-2 focus:ring-[#2525f4]"
+                className="w-full sm:w-64 h-10 pl-10 pr-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white placeholder:text-slate-500 focus:ring-2 focus:ring-[#2525f4]"
                 placeholder="Search history..."
                 type="text"
               />
             </div>
-            <button className="p-2 text-slate-500 dark:text-[#9c9cba] hover:bg-slate-100 dark:hover:bg-[#252535] rounded-full transition-colors relative">
+            <button className="p-2 border border-slate-200 dark:border-[#2d2d3f] bg-white dark:bg-[#1b1b27] text-slate-500 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] rounded-lg transition-colors flex items-center justify-center">
               <span className="material-symbols-outlined">filter_list</span>
             </button>
           </div>
-        </header>
+        </div>
         {/* Timeline Content */}
         <main className="flex-1 overflow-y-auto p-6 md:p-8">
           <div className="max-w-4xl mx-auto relative">
             {/* Vertical Line */}
             <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-slate-200 dark:bg-[#2d2d3f]"></div>
+
             {/* Timeline Items */}
-            <div className="space-y-8">
-              {/* Item 1: Today */}
-              <div className="relative pl-20">
-                <div className="absolute left-0 top-0 w-16 text-right">
-                  <span className="text-sm font-bold text-slate-900 dark:text-white block">
-                    Today
-                  </span>
-                  <span className="text-xs text-slate-500 dark:text-[#9c9cba]">
-                    10:30 AM
-                  </span>
+            <div className="space-y-8 pb-12">
+              {isLoading ? (
+                <div className="pl-20 py-8 flex items-center gap-3 text-slate-500 dark:text-[#9c9cba]">
+                  <div className="size-5 border-2 border-[#2525f4] border-t-transparent rounded-full animate-spin"></div>
+                  Loading history...
                 </div>
-                <div className="absolute left-[30px] top-1.5 w-4 h-4 rounded-full bg-[#2525f4] border-4 border-white dark:border-[#101022] shadow-sm z-10"></div>
-                <div className="bg-white dark:bg-[#1b1b27] p-4 rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 p-2 rounded-lg">
-                        <span className="material-symbols-outlined">quiz</span>
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-slate-900 dark:text-white">
-                          Completed Quiz: Cellular Respiration
-                        </h3>
-                        <p className="text-sm text-slate-500 dark:text-[#9c9cba]">
-                          Biology • Chapter 4
-                        </p>
-                      </div>
-                    </div>
-                    <span className="px-2 py-1 bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-xs font-bold rounded">
-                      Score: 85%
-                    </span>
+              ) : historyItems.length === 0 ? (
+                <div className="pl-20 py-12 flex flex-col items-start gap-2">
+                  <div className="bg-slate-100 dark:bg-[#252535] p-3 rounded-xl mb-2">
+                    <span className="material-symbols-outlined text-3xl text-slate-400">history_toggle_off</span>
                   </div>
+                  <h3 className="font-bold text-slate-900 dark:text-white text-lg">No Activity Yet</h3>
+                  <p className="text-sm text-slate-500 dark:text-[#9c9cba]">Your study history and timeline will appear here once you start taking quizzes or reading documents.</p>
                 </div>
-              </div>
-              {/* Item 2: Yesterday */}
-              <div className="relative pl-20">
-                <div className="absolute left-0 top-0 w-16 text-right">
-                  <span className="text-sm font-bold text-slate-900 dark:text-white block">
-                    Yesterday
-                  </span>
-                  <span className="text-xs text-slate-500 dark:text-[#9c9cba]">
-                    4:15 PM
-                  </span>
-                </div>
-                <div className="absolute left-[30px] top-1.5 w-4 h-4 rounded-full bg-slate-300 dark:bg-slate-600 border-4 border-white dark:border-[#101022] shadow-sm z-10"></div>
-                <div className="bg-white dark:bg-[#1b1b27] p-4 rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 p-2 rounded-lg">
-                        <span className="material-symbols-outlined">
-                          menu_book
+              ) : (
+                historyItems.map((item, index) => {
+                  const info = formatItemInfo(item);
+                  return (
+                    <div key={item.id} className="relative pl-20">
+                      <div className="absolute left-0 top-0 w-16 text-right">
+                        <span className="text-sm font-bold text-slate-900 dark:text-white block">
+                          {formatDateLabel(item.created_at)}
+                        </span>
+                        <span className="text-xs text-slate-500 dark:text-[#9c9cba]">
+                          {formatTime(item.created_at)}
                         </span>
                       </div>
-                      <div>
-                        <h3 className="font-bold text-slate-900 dark:text-white">
-                          Read: Intro to Physics
-                        </h3>
-                        <p className="text-sm text-slate-500 dark:text-[#9c9cba]">
-                          Physics • Chapter 1 • 45 mins
-                        </p>
+                      <div className={`absolute left-[30px] top-1.5 w-4 h-4 rounded-full ${index === 0 ? 'bg-[#2525f4]' : 'bg-slate-300 dark:bg-slate-600'} border-4 border-[#f5f5f8] dark:border-[#101022] shadow-sm z-10`}></div>
+                      <div className="bg-white dark:bg-[#1b1b27] p-4 rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:shadow-md transition-shadow">
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                          <div className="flex items-center sm:items-start gap-4 mb-2 sm:mb-0">
+                            <div className={`p-2 rounded-lg ${info.colorClass} flex-shrink-0`}>
+                              <span className="material-symbols-outlined">{info.icon}</span>
+                            </div>
+                            <div>
+                              <h3 className="font-bold text-slate-900 dark:text-white capitalize">
+                                {info.title}
+                              </h3>
+                              <p className="text-sm text-slate-500 dark:text-[#9c9cba]">
+                                {info.subtitle}
+                              </p>
+                            </div>
+                          </div>
+                          {info.badge && (
+                            <span className="self-start sm:self-auto px-2 py-1 bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-xs font-bold rounded">
+                              {info.badge}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-              {/* Item 3: Oct 22 */}
-              <div className="relative pl-20">
-                <div className="absolute left-0 top-0 w-16 text-right">
-                  <span className="text-sm font-bold text-slate-900 dark:text-white block">
-                    Oct 22
-                  </span>
-                  <span className="text-xs text-slate-500 dark:text-[#9c9cba]">
-                    9:00 AM
-                  </span>
-                </div>
-                <div className="absolute left-[30px] top-1.5 w-4 h-4 rounded-full bg-slate-300 dark:bg-slate-600 border-4 border-white dark:border-[#101022] shadow-sm z-10"></div>
-                <div className="bg-white dark:bg-[#1b1b27] p-4 rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 p-2 rounded-lg">
-                        <span className="material-symbols-outlined">
-                          assignment
-                        </span>
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-slate-900 dark:text-white">
-                          Uploaded Assignment: History Essay
-                        </h3>
-                        <p className="text-sm text-slate-500 dark:text-[#9c9cba]">
-                          History • WWII
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* Item 4: Oct 20 */}
-              <div className="relative pl-20">
-                <div className="absolute left-0 top-0 w-16 text-right">
-                  <span className="text-sm font-bold text-slate-900 dark:text-white block">
-                    Oct 20
-                  </span>
-                  <span className="text-xs text-slate-500 dark:text-[#9c9cba]">
-                    2:30 PM
-                  </span>
-                </div>
-                <div className="absolute left-[30px] top-1.5 w-4 h-4 rounded-full bg-slate-300 dark:bg-slate-600 border-4 border-white dark:border-[#101022] shadow-sm z-10"></div>
-                <div className="bg-white dark:bg-[#1b1b27] p-4 rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-2 rounded-lg">
-                        <span className="material-symbols-outlined">
-                          play_circle
-                        </span>
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-slate-900 dark:text-white">
-                          Watched Video: Algebra Basics
-                        </h3>
-                        <p className="text-sm text-slate-500 dark:text-[#9c9cba]">
-                          Mathematics • Algebra • 15 mins
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                  );
+                })
+              )}
             </div>
+
             {/* Load More */}
-            <div className="text-center mt-8">
-              <button className="px-4 py-2 bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm font-medium text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] transition-colors">
-                Load More History
-              </button>
-            </div>
+            {historyItems.length > 0 && (
+              <div className="text-center mt-8">
+                <button className="px-4 py-2 bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm font-medium text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] transition-colors shadow-sm">
+                  Load More History
+                </button>
+              </div>
+            )}
           </div>
         </main>
       </div>

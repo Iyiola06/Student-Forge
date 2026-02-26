@@ -2,64 +2,23 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import TopNavigation from '@/components/layout/TopNavigation';
+import { useProfile } from '@/hooks/useProfile';
 
 export default function ProfilePage() {
+  const { profile, isLoading } = useProfile();
+
+  if (isLoading) {
+    return (
+      <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex items-center justify-center">
+        <div className="size-10 border-4 border-[#2525f4] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#2525f4]/30 selection:text-[#2525f4]">
-      {/* Top Navigation (Reused) */}
-      <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#3b3b54] px-4 sm:px-10 py-3 bg-white dark:bg-[#101022]/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="flex items-center gap-4 text-slate-900 dark:text-white">
-          <div className="size-8 text-[#2525f4] flex items-center justify-center">
-            <span className="material-symbols-outlined text-3xl">school</span>
-          </div>
-          <h2 className="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">
-            StudyForge
-          </h2>
-        </div>
-        <div className="flex flex-1 justify-end gap-8 items-center">
-          <div className="hidden md:flex items-center gap-9">
-            <Link
-              className="text-slate-600 dark:text-slate-400 hover:text-[#2525f4] dark:hover:text-white transition-colors text-sm font-medium leading-normal"
-              href="/dashboard"
-            >
-              Dashboard
-            </Link>
-            <Link
-              className="text-slate-600 dark:text-slate-400 hover:text-[#2525f4] dark:hover:text-white transition-colors text-sm font-medium leading-normal"
-              href="/resources"
-            >
-              Courses
-            </Link>
-            <Link
-              className="text-slate-600 dark:text-slate-400 hover:text-[#2525f4] dark:hover:text-white transition-colors text-sm font-medium leading-normal"
-              href="/leaderboard"
-            >
-              Leaderboard
-            </Link>
-            <Link
-              className="text-slate-600 dark:text-slate-400 hover:text-[#2525f4] dark:hover:text-white transition-colors text-sm font-medium leading-normal"
-              href="/generator"
-            >
-              Study Tools
-            </Link>
-            <Link
-              className="text-slate-900 dark:text-white font-bold text-sm leading-normal border-b-2 border-[#2525f4]"
-              href="/profile"
-            >
-              Profile
-            </Link>
-          </div>
-          <div className="flex items-center gap-4">
-            <div
-              className="bg-cover bg-center bg-no-repeat rounded-full w-9 h-9 border-2 border-slate-200 dark:border-[#3b3b54]"
-              style={{
-                backgroundImage:
-                  'url("https://lh3.googleusercontent.com/aida-public/AB6AXuD_PrX8yOs64jgoF50R2Gdmak7Nq9XNBH6jrZGbcMeFZWiTc-RXHJIYwVod5RyMqvpXdyuCh67XqP8diyIZGjPdooGKAN9iNGBZXPBKwdB23Gl_zIV9531fy77kczue-ybewLFkxSWQMdUumyw1dvjOVV4QSWKgD582BzAkdewcGU2Q77mpv1aJco2awv_M5hlPCjjIrGKErnFpvl_jDnr7id6w0GMQFhPBYcB72xFQDQseoc8xqlWGGLMxg092WPdyPddhX5U-OjiN")',
-              }}
-            ></div>
-          </div>
-        </div>
-      </header>
+      <TopNavigation />
       {/* Main Content */}
       <main className="flex flex-1 flex-col px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full">
         {/* Profile Header */}
@@ -72,16 +31,16 @@ export default function ProfilePage() {
                   <Image
                     alt="Profile"
                     className="object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_PrX8yOs64jgoF50R2Gdmak7Nq9XNBH6jrZGbcMeFZWiTc-RXHJIYwVod5RyMqvpXdyuCh67XqP8diyIZGjPdooGKAN9iNGBZXPBKwdB23Gl_zIV9531fy77kczue-ybewLFkxSWQMdUumyw1dvjOVV4QSWKgD582BzAkdewcGU2Q77mpv1aJco2awv_M5hlPCjjIrGKErnFpvl_jDnr7id6w0GMQFhPBYcB72xFQDQseoc8xqlWGGLMxg092WPdyPddhX5U-OjiN"
+                    src={profile?.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback'}
                     fill
                   />
                 </div>
                 <div className="mb-2">
                   <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-                    Jane Doe
+                    {profile?.full_name || 'Student'}
                   </h1>
-                  <p className="text-slate-500 dark:text-[#9c9cba]">
-                    Undergraduate Student • Biology Major
+                  <p className="text-slate-500 dark:text-[#9c9cba] capitalize">
+                    {profile?.role || 'Student'} • Level {profile?.level || 1}
                   </p>
                 </div>
               </div>
@@ -95,7 +54,7 @@ export default function ProfilePage() {
             <div className="grid grid-cols-3 gap-4 border-t border-slate-100 dark:border-[#2d2d3f] pt-6">
               <div className="text-center border-r border-slate-100 dark:border-[#2d2d3f]">
                 <span className="block text-2xl font-bold text-slate-900 dark:text-white">
-                  142
+                  {profile?.resources_uploaded !== undefined ? profile.resources_uploaded : 1}
                 </span>
                 <span className="text-sm text-slate-500 dark:text-[#9c9cba]">
                   PDFs Uploaded
@@ -103,15 +62,15 @@ export default function ProfilePage() {
               </div>
               <div className="text-center border-r border-slate-100 dark:border-[#2d2d3f]">
                 <span className="block text-2xl font-bold text-slate-900 dark:text-white">
-                  1,250
+                  {profile?.quizzes_taken !== undefined ? profile.quizzes_taken : 5}
                 </span>
                 <span className="text-sm text-slate-500 dark:text-[#9c9cba]">
-                  Questions Generated
+                  Quizzes Taken
                 </span>
               </div>
               <div className="text-center">
                 <span className="block text-2xl font-bold text-[#2525f4]">
-                  78%
+                  {profile?.exam_readiness_score || 0}%
                 </span>
                 <span className="text-sm text-slate-500 dark:text-[#9c9cba]">
                   Exam Ready Score

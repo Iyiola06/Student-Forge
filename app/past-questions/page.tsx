@@ -1,64 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import TopNavigation from '@/components/layout/TopNavigation';
 
 export default function PastQuestionsPage() {
   return (
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#2525f4]/30 selection:text-[#2525f4]">
-      {/* Top Navigation (Reused from Dashboard) */}
-      <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#3b3b54] px-4 sm:px-10 py-3 bg-white dark:bg-[#101022]/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="flex items-center gap-4 text-slate-900 dark:text-white">
-          <div className="size-8 text-[#2525f4] flex items-center justify-center">
-            <span className="material-symbols-outlined text-3xl">school</span>
-          </div>
-          <h2 className="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">
-            StudyForge
-          </h2>
-        </div>
-        <div className="flex flex-1 justify-end gap-8 items-center">
-          <div className="hidden md:flex items-center gap-9">
-            <Link
-              className="text-slate-600 dark:text-slate-400 hover:text-[#2525f4] dark:hover:text-white transition-colors text-sm font-medium leading-normal"
-              href="/dashboard"
-            >
-              Dashboard
-            </Link>
-            <Link
-              className="text-slate-600 dark:text-slate-400 hover:text-[#2525f4] dark:hover:text-white transition-colors text-sm font-medium leading-normal"
-              href="/resources"
-            >
-              Courses
-            </Link>
-            <Link
-              className="text-slate-600 dark:text-slate-400 hover:text-[#2525f4] dark:hover:text-white transition-colors text-sm font-medium leading-normal"
-              href="/leaderboard"
-            >
-              Leaderboard
-            </Link>
-            <Link
-              className="text-slate-900 dark:text-white font-bold text-sm leading-normal border-b-2 border-[#2525f4]"
-              href="/past-questions"
-            >
-              Past Questions
-            </Link>
-            <Link
-              className="text-slate-600 dark:text-slate-400 hover:text-[#2525f4] dark:hover:text-white transition-colors text-sm font-medium leading-normal"
-              href="/profile"
-            >
-              Profile
-            </Link>
-          </div>
-          <div className="flex items-center gap-4">
-            <div
-              className="bg-cover bg-center bg-no-repeat rounded-full w-9 h-9 border-2 border-slate-200 dark:border-[#3b3b54]"
-              style={{
-                backgroundImage:
-                  'url("https://lh3.googleusercontent.com/aida-public/AB6AXuD_PrX8yOs64jgoF50R2Gdmak7Nq9XNBH6jrZGbcMeFZWiTc-RXHJIYwVod5RyMqvpXdyuCh67XqP8diyIZGjPdooGKAN9iNGBZXPBKwdB23Gl_zIV9531fy77kczue-ybewLFkxSWQMdUumyw1dvjOVV4QSWKgD582BzAkdewcGU2Q77mpv1aJco2awv_M5hlPCjjIrGKErnFpvl_jDnr7id6w0GMQFhPBYcB72xFQDQseoc8xqlWGGLMxg092WPdyPddhX5U-OjiN")',
-              }}
-            ></div>
-          </div>
-        </div>
-      </header>
+      <TopNavigation />
       {/* Main Content */}
       <main className="flex flex-1 flex-col px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full">
         {/* Header Section */}

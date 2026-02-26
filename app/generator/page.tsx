@@ -1,115 +1,26 @@
 'use client';
 
 import Link from 'next/link';
+import TopNavigation from '@/components/layout/TopNavigation';
 
 export default function GeneratorPage() {
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex antialiased selection:bg-[#2525f4]/30 selection:text-[#2525f4]">
-      {/* Sidebar Navigation (Reused) */}
-      <aside className="w-64 bg-white dark:bg-[#1b1b27] border-r border-slate-200 dark:border-[#2d2d3f] flex-col hidden md:flex sticky top-0 h-screen">
-        <div className="p-6 flex items-center gap-3">
-          <div className="size-8 text-[#2525f4] flex items-center justify-center">
-            <span className="material-symbols-outlined text-3xl">school</span>
-          </div>
-          <h2 className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
-            StudyForge
-          </h2>
-        </div>
-        <nav className="flex-1 px-4 space-y-2 overflow-y-auto">
-          <div className="text-xs font-semibold text-slate-400 dark:text-[#6b6b8a] uppercase tracking-wider mb-2 mt-4 px-2">
-            Menu
-          </div>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/dashboard"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              dashboard
-            </span>
-            <span className="font-medium">Dashboard</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/resources"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              library_books
-            </span>
-            <span className="font-medium">Resource Library</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/gamifier"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              sports_esports
-            </span>
-            <span className="font-medium">PDF Gamifier</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/leaderboard"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              leaderboard
-            </span>
-            <span className="font-medium">Leaderboard</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/past-questions"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              history_edu
-            </span>
-            <span className="font-medium">Past Questions</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#2525f4]/10 text-[#2525f4] font-medium"
-            href="/generator"
-          >
-            <span className="material-symbols-outlined">psychology</span>
-            <span>Question Generator</span>
-          </Link>
-          <div className="text-xs font-semibold text-slate-400 dark:text-[#6b6b8a] uppercase tracking-wider mb-2 mt-6 px-2">
-            Personal
-          </div>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/profile"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              person
-            </span>
-            <span className="font-medium">Profile</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/settings"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              settings
-            </span>
-            <span className="font-medium">Settings</span>
-          </Link>
-        </nav>
-      </aside>
+    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#2525f4]/30 selection:text-[#2525f4]">
+      <TopNavigation>
+        <button className="flex items-center gap-2 bg-[#2525f4] hover:bg-[#2525f4]/90 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors shadow-lg shadow-[#2525f4]/20 hidden md:flex">
+          <span className="material-symbols-outlined text-[20px]">
+            auto_awesome
+          </span>
+          <span>Generate New</span>
+        </button>
+      </TopNavigation>
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        {/* Header */}
-        <header className="h-16 bg-white dark:bg-[#1b1b27] border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20">
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white">
+      <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
+        <div className="px-6 pt-6 pb-2 md:px-8">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
             AI Question Generator
           </h1>
-          <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 bg-[#2525f4] hover:bg-[#2525f4]/90 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors shadow-lg shadow-[#2525f4]/20">
-              <span className="material-symbols-outlined text-[20px]">
-                auto_awesome
-              </span>
-              <span>Generate New</span>
-            </button>
-          </div>
-        </header>
+        </div>
         {/* Generator Workspace */}
         <main className="flex-1 overflow-y-auto p-6 md:p-8 flex gap-8">
           {/* Left Panel: Configuration */}

@@ -1,8 +1,40 @@
-'use client';
-
 import Link from 'next/link';
+import { useProfile } from '@/hooks/useProfile';
+import { useEffect, useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
 
 export default function GamifierPage() {
+  const { profile } = useProfile();
+  const [topUsers, setTopUsers] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function fetchTop3() {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from('profiles')
+        .select('id, full_name, avatar_url, xp')
+        .order('xp', { ascending: false })
+        .limit(3);
+      if (data) setTopUsers(data);
+    }
+    fetchTop3();
+  }, []);
+
+  const currentLevel = profile?.level || 1;
+  const currentXP = profile?.xp || 0;
+  const targetXP = currentLevel * 1000;
+  const progressPercent = Math.min(100, Math.round((currentXP / targetXP) * 100));
+
+  const getRankTitle = (level: number) => {
+    if (level < 5) return 'Novice Scholar';
+    if (level < 10) return 'Adept Learner';
+    if (level < 20) return 'Quiz Master';
+    return 'Grandmaster';
+  };
+
+  const streakDays = profile?.streak_days || 0;
+  const cardsMastered = profile?.cards_mastered || 0;
+
   return (
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#2525f4]/30 selection:text-[#2525f4]">
       {/* Top Navigation */}
@@ -35,8 +67,9 @@ export default function GamifierPage() {
           <div
             className="size-8 rounded-full bg-cover bg-center border border-slate-200 dark:border-[#3b3b54]"
             style={{
-              backgroundImage:
-                'url("https://lh3.googleusercontent.com/aida-public/AB6AXuD_PrX8yOs64jgoF50R2Gdmak7Nq9XNBH6jrZGbcMeFZWiTc-RXHJIYwVod5RyMqvpXdyuCh67XqP8diyIZGjPdooGKAN9iNGBZXPBKwdB23Gl_zIV9531fy77kczue-ybewLFkxSWQMdUumyw1dvjOVV4QSWKgD582BzAkdewcGU2Q77mpv1aJco2awv_M5hlPCjjIrGKErnFpvl_jDnr7id6w0GMQFhPBYcB72xFQDQseoc8xqlWGGLMxg092WPdyPddhX5U-OjiN")',
+              backgroundImage: profile?.avatar_url
+                ? `url("${profile.avatar_url}")`
+                : 'url("https://api.dicebear.com/7.x/avataaars/svg?seed=fallback")',
             }}
           ></div>
         </div>
@@ -161,23 +194,23 @@ export default function GamifierPage() {
                 Current Level
               </span>
               <span className="text-xs font-bold text-[#2525f4]">
-                Level 12
+                Level {currentLevel}
               </span>
             </div>
             <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3">
-              Scholar Novice
+              {getRankTitle(currentLevel)}
             </h3>
             <div className="w-full bg-slate-100 dark:bg-[#2d2d3f] rounded-full h-3 mb-2">
               <div
                 className="bg-gradient-to-r from-[#2525f4] to-cyan-400 h-3 rounded-full relative"
-                style={{width: '70%'}}
+                style={{ width: `${progressPercent}%` }}
               >
                 <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-[#2525f4] rounded-full shadow-sm"></div>
               </div>
             </div>
             <div className="flex justify-between text-xs font-medium text-slate-500 dark:text-[#9c9cba]">
-              <span>2,450 XP</span>
-              <span>3,000 XP</span>
+              <span>{currentXP.toLocaleString()} XP</span>
+              <span>{targetXP.toLocaleString()} XP</span>
             </div>
           </div>
           {/* Badges / Achievements */}
@@ -187,33 +220,33 @@ export default function GamifierPage() {
             </h4>
             <div className="grid grid-cols-3 gap-4 mb-8">
               <div className="flex flex-col items-center gap-2 group cursor-pointer">
-                <div className="size-14 rounded-full bg-yellow-100 dark:bg-yellow-900/20 flex items-center justify-center text-yellow-500 border-2 border-yellow-500/20 group-hover:scale-110 transition-transform">
+                <div className={`size-14 rounded-full flex items-center justify-center border-2 transition-transform ${streakDays >= 7 ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-500 border-yellow-500/20 group-hover:scale-110' : 'bg-slate-100 dark:bg-[#2d2d3f] text-slate-400 border-transparent grayscale'}`}>
                   <span className="material-symbols-outlined text-2xl">
                     local_fire_department
                   </span>
                 </div>
-                <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 text-center">
+                <span className={`text-[10px] font-bold text-center ${streakDays >= 7 ? 'text-slate-600 dark:text-slate-400' : 'text-slate-400 dark:text-slate-600'}`}>
                   7 Day Streak
                 </span>
               </div>
               <div className="flex flex-col items-center gap-2 group cursor-pointer">
-                <div className="size-14 rounded-full bg-slate-100 dark:bg-[#2d2d3f] flex items-center justify-center text-slate-400 border-2 border-transparent grayscale group-hover:grayscale-0 transition-all">
+                <div className={`size-14 rounded-full flex items-center justify-center border-2 transition-transform ${profile?.exam_readiness_score && profile?.exam_readiness_score >= 80 ? 'bg-purple-100 dark:bg-purple-900/20 text-purple-500 border-purple-500/20 group-hover:scale-110' : 'bg-slate-100 dark:bg-[#2d2d3f] text-slate-400 border-transparent grayscale'}`}>
                   <span className="material-symbols-outlined text-2xl">
                     psychology
                   </span>
                 </div>
-                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-600 text-center">
+                <span className={`text-[10px] font-bold text-center ${profile?.exam_readiness_score && profile?.exam_readiness_score >= 80 ? 'text-slate-600 dark:text-slate-400' : 'text-slate-400 dark:text-slate-600'}`}>
                   Quiz Master
                 </span>
               </div>
               <div className="flex flex-col items-center gap-2 group cursor-pointer">
-                <div className="size-14 rounded-full bg-slate-100 dark:bg-[#2d2d3f] flex items-center justify-center text-slate-400 border-2 border-transparent grayscale group-hover:grayscale-0 transition-all">
+                <div className={`size-14 rounded-full flex items-center justify-center border-2 transition-transform ${cardsMastered >= 100 ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-500 border-blue-500/20 group-hover:scale-110' : 'bg-slate-100 dark:bg-[#2d2d3f] text-slate-400 border-transparent grayscale'}`}>
                   <span className="material-symbols-outlined text-2xl">
                     timer
                   </span>
                 </div>
-                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-600 text-center">
-                  Speed Reader
+                <span className={`text-[10px] font-bold text-center ${cardsMastered >= 100 ? 'text-slate-600 dark:text-slate-400' : 'text-slate-400 dark:text-slate-600'}`}>
+                  Flashcard Pro
                 </span>
               </div>
             </div>
@@ -227,42 +260,29 @@ export default function GamifierPage() {
               </Link>
             </div>
             <div className="space-y-3">
-              <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-[#252535] transition-colors">
-                <span className="font-bold text-slate-400 w-4">1</span>
-                <div className="size-8 rounded-full bg-purple-500"></div>
-                <div className="flex-1">
-                  <p className="text-xs font-bold text-slate-900 dark:text-white">
-                    Alex M.
-                  </p>
-                  <p className="text-[10px] text-slate-500">2,890 XP</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-2 rounded-lg bg-[#2525f4]/5 border border-[#2525f4]/20">
-                <span className="font-bold text-[#2525f4] w-4">2</span>
-                <div
-                  className="size-8 rounded-full bg-cover bg-center"
-                  style={{
-                    backgroundImage:
-                      'url("https://lh3.googleusercontent.com/aida-public/AB6AXuD_PrX8yOs64jgoF50R2Gdmak7Nq9XNBH6jrZGbcMeFZWiTc-RXHJIYwVod5RyMqvpXdyuCh67XqP8diyIZGjPdooGKAN9iNGBZXPBKwdB23Gl_zIV9531fy77kczue-ybewLFkxSWQMdUumyw1dvjOVV4QSWKgD582BzAkdewcGU2Q77mpv1aJco2awv_M5hlPCjjIrGKErnFpvl_jDnr7id6w0GMQFhPBYcB72xFQDQseoc8xqlWGGLMxg092WPdyPddhX5U-OjiN")',
-                  }}
-                ></div>
-                <div className="flex-1">
-                  <p className="text-xs font-bold text-slate-900 dark:text-white">
-                    You
-                  </p>
-                  <p className="text-[10px] text-slate-500">2,450 XP</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-[#252535] transition-colors">
-                <span className="font-bold text-slate-400 w-4">3</span>
-                <div className="size-8 rounded-full bg-green-500"></div>
-                <div className="flex-1">
-                  <p className="text-xs font-bold text-slate-900 dark:text-white">
-                    Sarah J.
-                  </p>
-                  <p className="text-[10px] text-slate-500">2,100 XP</p>
-                </div>
-              </div>
+              {topUsers.map((user, index) => {
+                const isMe = user.id === profile?.id;
+                return (
+                  <div key={user.id} className={`flex items-center gap-3 p-2 rounded-lg transition-colors ${isMe ? 'bg-[#2525f4]/5 border border-[#2525f4]/20' : 'hover:bg-slate-50 dark:hover:bg-[#252535]'}`}>
+                    <span className={`font-bold w-4 ${isMe ? 'text-[#2525f4]' : 'text-slate-400'}`}>{index + 1}</span>
+                    <div
+                      className="size-8 rounded-full bg-cover bg-center bg-slate-300 dark:bg-slate-600"
+                      style={{
+                        backgroundImage: `url("${user.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback'}")`,
+                      }}
+                    ></div>
+                    <div className="flex-1">
+                      <p className="text-xs font-bold text-slate-900 dark:text-white truncate max-w-[120px]">
+                        {isMe ? 'You' : user.full_name || 'Student'}
+                      </p>
+                      <p className="text-[10px] text-slate-500">{user.xp?.toLocaleString() || 0} XP</p>
+                    </div>
+                  </div>
+                );
+              })}
+              {topUsers.length === 0 && (
+                <div className="text-xs text-slate-500 text-center py-2">Loading top students...</div>
+              )}
             </div>
           </div>
           {/* Boost Button */}

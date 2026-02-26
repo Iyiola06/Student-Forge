@@ -1,70 +1,35 @@
 'use client';
 
 import Link from 'next/link';
+import TopNavigation from '@/components/layout/TopNavigation';
+import { useProfile } from '@/hooks/useProfile';
 
 export default function DashboardPage() {
+  const { profile, isLoading } = useProfile();
+  const firstName = profile?.full_name?.split(' ')[0] || 'Student';
+  const readiness = profile?.exam_readiness_score || 0;
+  const xp = profile?.xp || 0;
+  const level = profile?.level || 1;
+  const progressPercent = Math.min((xp % 1000) / 10, 100);
+  const xpToNext = 1000 - (xp % 1000);
+
+  if (isLoading) {
+    return (
+      <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex items-center justify-center">
+        <div className="size-10 border-4 border-[#2525f4] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#2525f4]/30 selection:text-[#2525f4]">
-      {/* Top Navigation */}
-      <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#3b3b54] px-4 sm:px-10 py-3 bg-white dark:bg-[#101022]/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="flex items-center gap-4 text-slate-900 dark:text-white">
-          <div className="size-8 text-[#2525f4] flex items-center justify-center">
-            <span className="material-symbols-outlined text-3xl">school</span>
-          </div>
-          <h2 className="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">
-            StudyForge
-          </h2>
-        </div>
-        <div className="flex flex-1 justify-end gap-8 items-center">
-          <div className="hidden md:flex items-center gap-9">
-            <Link
-              className="text-slate-900 dark:text-white font-bold text-sm leading-normal border-b-2 border-[#2525f4]"
-              href="/dashboard"
-            >
-              Dashboard
-            </Link>
-            <Link
-              className="text-slate-600 dark:text-slate-400 hover:text-[#2525f4] dark:hover:text-white transition-colors text-sm font-medium leading-normal"
-              href="/resources"
-            >
-              Courses
-            </Link>
-            <Link
-              className="text-slate-600 dark:text-slate-400 hover:text-[#2525f4] dark:hover:text-white transition-colors text-sm font-medium leading-normal"
-              href="/generator"
-            >
-              Study Tools
-            </Link>
-            <Link
-              className="text-slate-600 dark:text-slate-400 hover:text-[#2525f4] dark:hover:text-white transition-colors text-sm font-medium leading-normal"
-              href="/profile"
-            >
-              Profile
-            </Link>
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="bg-slate-100 dark:bg-[#252535] text-slate-900 dark:text-white p-2 rounded-full hover:bg-slate-200 dark:hover:bg-[#2d2d3f] transition-colors relative">
-              <span className="material-symbols-outlined text-[20px]">
-                notifications
-              </span>
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-[#1b1b27]"></span>
-            </button>
-            <div
-              className="bg-cover bg-center bg-no-repeat rounded-full w-9 h-9 border-2 border-slate-200 dark:border-[#3b3b54]"
-              style={{
-                backgroundImage:
-                  'url("https://lh3.googleusercontent.com/aida-public/AB6AXuD_PrX8yOs64jgoF50R2Gdmak7Nq9XNBH6jrZGbcMeFZWiTc-RXHJIYwVod5RyMqvpXdyuCh67XqP8diyIZGjPdooGKAN9iNGBZXPBKwdB23Gl_zIV9531fy77kczue-ybewLFkxSWQMdUumyw1dvjOVV4QSWKgD582BzAkdewcGU2Q77mpv1aJco2awv_M5hlPCjjIrGKErnFpvl_jDnr7id6w0GMQFhPBYcB72xFQDQseoc8xqlWGGLMxg092WPdyPddhX5U-OjiN")',
-              }}
-            ></div>
-          </div>
-        </div>
-      </header>
+      <TopNavigation />
       {/* Main Content */}
       <main className="flex flex-1 flex-col gap-8 px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full">
         {/* Welcome Section */}
         <div className="flex flex-col gap-2">
           <h1 className="text-slate-900 dark:text-white text-3xl font-bold leading-tight tracking-[-0.015em]">
-            Welcome back, Jane!
+            Welcome back, {firstName}!
           </h1>
           <p className="text-slate-500 dark:text-[#9c9cba] text-base font-normal leading-normal">
             Your exam is in 14 days. You&apos;re on track to crush it!
@@ -102,14 +67,14 @@ export default function DashboardPage() {
                   r="56"
                   stroke="currentColor"
                   strokeDasharray="351.86"
-                  strokeDashoffset="80" // 351.86 * (1 - 0.78) roughly
+                  strokeDashoffset={351.86 * (1 - readiness / 100)}
                   strokeLinecap="round"
                   strokeWidth="12"
                 ></circle>
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-3xl font-bold text-slate-900 dark:text-white">
-                  78%
+                  {readiness}%
                 </span>
                 <span className="text-xs text-slate-500 dark:text-[#9c9cba] uppercase font-bold">
                   Ready
@@ -132,16 +97,16 @@ export default function DashboardPage() {
             </div>
             <div className="flex items-end gap-2 mb-2">
               <span className="text-4xl font-bold text-slate-900 dark:text-white">
-                142
+                {profile?.cards_mastered || 0}
               </span>
               <span className="text-sm font-medium text-green-500 mb-1">
-                +12 today
+                Keep going!
               </span>
             </div>
             <div className="w-full bg-slate-100 dark:bg-[#2d2d3f] rounded-full h-2 mt-auto">
               <div
                 className="bg-green-500 h-2 rounded-full"
-                style={{width: '65%'}}
+                style={{ width: `${Math.min(((profile?.cards_mastered || 0) / 200) * 100, 100)}%` }}
               ></div>
             </div>
           </div>
@@ -157,7 +122,7 @@ export default function DashboardPage() {
             </div>
             <div className="flex items-end gap-2 mb-2">
               <span className="text-4xl font-bold text-slate-900 dark:text-white">
-                12
+                {profile?.streak_days || 0}
               </span>
               <span className="text-sm font-medium text-orange-500 mb-1">
                 Personal Best!
@@ -167,7 +132,7 @@ export default function DashboardPage() {
               {[...Array(7)].map((_, i) => (
                 <div
                   key={i}
-                  className={`h-2 flex-1 rounded-full ${i < 5 ? 'bg-orange-500' : 'bg-slate-200 dark:bg-[#2d2d3f]'}`}
+                  className={`h-2 flex-1 rounded-full ${i < (profile?.streak_days || 0) % 7 ? 'bg-orange-500' : 'bg-slate-200 dark:bg-[#2d2d3f]'}`}
                 ></div>
               ))}
             </div>
@@ -177,7 +142,7 @@ export default function DashboardPage() {
             <Link href="/leaderboard">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-slate-500 dark:text-[#9c9cba] text-sm font-medium leading-tight">
-                  Level 12
+                  Level {level}
                 </h3>
                 <span className="material-symbols-outlined text-purple-500 bg-purple-500/10 p-1.5 rounded-lg group-hover:bg-purple-500 group-hover:text-white transition-colors">
                   military_tech
@@ -185,7 +150,7 @@ export default function DashboardPage() {
               </div>
               <div className="flex items-end gap-2 mb-2">
                 <span className="text-4xl font-bold text-slate-900 dark:text-white">
-                  2,450
+                  {xp.toLocaleString()}
                 </span>
                 <span className="text-sm font-medium text-purple-500 mb-1">
                   XP
@@ -194,19 +159,19 @@ export default function DashboardPage() {
               <div className="w-full bg-slate-100 dark:bg-[#2d2d3f] rounded-full h-2 mt-auto">
                 <div
                   className="bg-purple-500 h-2 rounded-full relative"
-                  style={{width: '82%'}}
+                  style={{ width: `${progressPercent}%` }}
                 >
                   <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-white rounded-full shadow-sm"></div>
                 </div>
               </div>
-              <p className="text-xs text-slate-400 mt-2 text-right">550 XP to Level 13</p>
+              <p className="text-xs text-slate-400 mt-2 text-right">{xpToNext} XP to Level {level + 1}</p>
             </Link>
           </div>
         </div>
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link href="/leaderboard" className="flex items-center gap-4 p-4 bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-xl hover:bg-slate-50 dark:hover:bg-[#252535] transition-all group">
-             <div className="bg-yellow-100 dark:bg-yellow-900/20 p-3 rounded-lg text-yellow-600 dark:text-yellow-400 group-hover:scale-110 transition-transform">
+            <div className="bg-yellow-100 dark:bg-yellow-900/20 p-3 rounded-lg text-yellow-600 dark:text-yellow-400 group-hover:scale-110 transition-transform">
               <span className="material-symbols-outlined text-2xl">
                 leaderboard
               </span>
