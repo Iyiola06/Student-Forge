@@ -53,21 +53,43 @@ export default function ResourcesPage() {
     if (!file) return;
 
     setIsUploading(true);
-    setUploadProgress(`Uploading and analyzing ${file.name}...`);
+    setUploadProgress(`Uploading ${file.name} to secure storage...`);
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
 
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
+
+      const { data: storageData, error: storageError } = await supabase.storage
+        .from('resources')
+        .upload(filePath, file);
+
+      if (storageError) {
+        throw new Error(storageError.message || 'Failed to upload to storage');
+      }
+
+      setUploadProgress(`Analyzing document content...`);
       const response = await fetch('/api/resources/upload', {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          filePath,
+          fileName: file.name,
+          fileType: file.type,
+          fileSize: file.size,
+        }),
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Upload failed');
+        throw new Error(result.error || 'Processing failed');
       }
 
       // Refresh the library to show the new file

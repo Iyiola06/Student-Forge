@@ -15,37 +15,29 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const formData = await request.formData();
-        const file = formData.get('file') as File;
-        const title = formData.get('title') as string;
-        const subject = formData.get('subject') as string;
+        const { filePath, fileName, fileType, fileSize } = await request.json();
 
-        if (!file) {
-            return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+        if (!filePath) {
+            return NextResponse.json({ error: 'No file path provided' }, { status: 400 });
         }
 
-        // 1. Upload file to Supabase Storage
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
-        const filePath = `${user.id}/${fileName}`;
-
-        // We assume a 'resources' bucket exists based on the RLS policies
-        const { data: storageData, error: storageError } = await supabase.storage
+        // 1. Download the file from Supabase Storage into memory
+        const { data: fileData, error: downloadError } = await supabase.storage
             .from('resources')
-            .upload(filePath, file);
+            .download(filePath);
 
-        if (storageError) {
-            console.error('Storage error:', storageError);
-            return NextResponse.json({ error: 'Failed to upload file to storage' }, { status: 500 });
+        if (downloadError || !fileData) {
+            console.error('Download error:', downloadError);
+            return NextResponse.json({ error: 'Failed to download file for processing' }, { status: 500 });
         }
 
         // 2. Extract Text from PDF
         let extractedText = '';
         let isExtractionSuccessful = false;
 
-        if (file.type === 'application/pdf') {
+        if (fileType === 'application/pdf') {
             try {
-                const arrayBuffer = await file.arrayBuffer();
+                const arrayBuffer = await fileData.arrayBuffer();
                 const uint8Array = new Uint8Array(arrayBuffer);
 
                 const loadingTask = pdfjsLib.getDocument({ data: uint8Array });
@@ -86,11 +78,11 @@ export async function POST(request: Request) {
             .from('resources')
             .insert({
                 user_id: user.id,
-                title: title || file.name,
-                subject: subject || 'General',
+                title: fileName,
+                subject: 'General',
                 file_url: publicUrl,
-                file_type: file.type,
-                file_size_bytes: file.size,
+                file_type: fileType,
+                file_size_bytes: fileSize,
                 content: extractedText,
             })
             .select()
