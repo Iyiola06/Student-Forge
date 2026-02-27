@@ -1,145 +1,569 @@
 'use client';
 
+import { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import Sidebar from '@/components/layout/Sidebar';
+import { createClient } from '@/lib/supabase/client';
+import { useProfile } from '@/hooks/useProfile';
+import Image from 'next/image';
+
+interface PastQuestion {
+  id: string;
+  user_id: string;
+  school_name: string;
+  institution_type: string;
+  subject: string;
+  course_code: string | null;
+  year: number;
+  semester: string | null;
+  description: string | null;
+  file_url: string;
+  file_size: string;
+  file_type: string;
+  upvotes: number;
+  downloads: number;
+  is_approved: boolean;
+  created_at: string;
+  profiles?: {
+    full_name: string;
+    avatar_url: string;
+  };
+}
+
+const INSTITUTION_TYPES = ['Secondary School', 'University', 'Polytechnic', 'College of Education'];
 
 export default function PastQuestionsPage() {
+  const { profile, mutate: mutateProfile } = useProfile();
+  const supabase = createClient();
+
+  const [activeTab, setActiveTab] = useState<'all' | 'my_submissions'>('all');
+  const [questions, setQuestions] = useState<PastQuestion[]>([]);
+  const [userUpvotes, setUserUpvotes] = useState<Set<string>>(new Set());
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Stats
+  const [stats, setStats] = useState({ total: 0, schools: 0, subjects: 0 });
+
+  // Filters
+  const [filterInstitution, setFilterInstitution] = useState('All');
+  const [filterSchool, setFilterSchool] = useState('All');
+  const [filterSubject, setFilterSubject] = useState('All');
+  const [filterYear, setFilterYear] = useState('All');
+  const [sortBy, setSortBy] = useState('Most Recent');
+
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Modal Form State
+  const [formInstitutionType, setFormInstitutionType] = useState('University');
+  const [formSchoolName, setFormSchoolName] = useState('');
+  const [formSubject, setFormSubject] = useState('');
+  const [formCourseCode, setFormCourseCode] = useState('');
+  const [formYear, setFormYear] = useState<number>(new Date().getFullYear());
+  const [formSemester, setFormSemester] = useState('');
+  const [formDescription, setFormDescription] = useState('');
+  const [formFile, setFormFile] = useState<File | null>(null);
+
+  // Toasts
+  const [toastMessage, setToastMessage] = useState<{ message: string, xp?: number } | null>(null);
+
+  // Dropdown options
+  const schoolsList = useMemo(() => Array.from(new Set(questions.map(q => q.school_name))).sort(), [questions]);
+  const subjectsList = useMemo(() => Array.from(new Set(questions.map(q => q.subject))).sort(), [questions]);
+  const yearsList = useMemo(() => Array.from(new Set(questions.map(q => q.year))).sort((a, b) => b - a), [questions]);
+
+  const fetchQuestions = async () => {
+    setIsLoading(true);
+    const { data: qData, error } = await supabase
+      .from('past_questions')
+      .select('*, profiles(full_name, avatar_url)')
+      .eq('is_approved', true)
+      .order('created_at', { ascending: false });
+
+    if (qData) {
+      setQuestions(qData as any[]);
+      setStats({
+        total: qData.length,
+        schools: new Set(qData.map(q => q.school_name)).size,
+        subjects: new Set(qData.map(q => q.subject)).size
+      });
+    }
+
+    if (profile?.id) {
+      const { data: upvoteData } = await supabase
+        .from('past_question_upvotes')
+        .select('past_question_id')
+        .eq('user_id', profile.id);
+
+      if (upvoteData) {
+        setUserUpvotes(new Set(upvoteData.map(u => u.past_question_id)));
+      }
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchQuestions();
+  }, [profile?.id]);
+
+  const showToast = (message: string, xp?: number) => {
+    setToastMessage({ message, xp });
+    setTimeout(() => setToastMessage(null), 5000);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.size > 20 * 1024 * 1024) {
+        alert("File size exceeds 20MB limit.");
+        return;
+      }
+      setFormFile(file);
+    }
+  };
+
+  const submitQuestion = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!profile) return alert('Must be logged in to submit');
+    if (!formFile || !formSchoolName || !formSubject || !formYear) return alert('Please fill required fields.');
+
+    setIsSubmitting(true);
+    try {
+      const fileExt = formFile.name.split('.').pop() || 'pdf';
+      const fileId = crypto.randomUUID();
+      const filePath = `${profile.id}/${fileId}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('past-questions')
+        .upload(filePath, formFile);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('past-questions')
+        .getPublicUrl(filePath);
+
+      const fileSizeMb = (formFile.size / (1024 * 1024)).toFixed(1) + ' MB';
+      const fileType = formFile.type.includes('pdf') ? 'PDF' : 'Image';
+
+      const { error: insertError } = await supabase.from('past_questions').insert({
+        user_id: profile.id,
+        school_name: formSchoolName,
+        institution_type: formInstitutionType,
+        subject: formSubject,
+        course_code: formCourseCode || null,
+        year: formYear,
+        semester: formSemester || null,
+        description: formDescription,
+        file_url: publicUrl,
+        file_size: fileSizeMb,
+        file_type: fileType
+      });
+
+      if (insertError) throw insertError;
+
+      // Gamification Hook
+      const newXp = (profile.xp || 0) + 25;
+      await supabase.from('profiles').update({ xp: newXp }).eq('id', profile.id);
+      await supabase.from('study_history').insert({
+        user_id: profile.id,
+        action_type: 'past_question_upload',
+        entity_type: 'past_question',
+        details: { xp_earned: 25 }
+      });
+      mutateProfile();
+
+      showToast("Your past question has been submitted — thank you for contributing!", 25);
+
+      setIsModalOpen(false);
+      setFormFile(null);
+      setFormSchoolName('');
+      setFormSubject('');
+      setFormCourseCode('');
+      setFormDescription('');
+      fetchQuestions();
+
+    } catch (err: any) {
+      alert("Error: " + err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleUpvote = async (questionId: string) => {
+    if (!profile) return;
+    const isUpvoted = userUpvotes.has(questionId);
+
+    if (isUpvoted) {
+      await supabase.from('past_question_upvotes').delete().eq('past_question_id', questionId).eq('user_id', profile.id);
+      setQuestions(qs => qs.map(q => q.id === questionId ? { ...q, upvotes: Math.max(0, q.upvotes - 1) } : q));
+      setUserUpvotes(prev => { const n = new Set(prev); n.delete(questionId); return n; });
+    } else {
+      await supabase.from('past_question_upvotes').insert({ past_question_id: questionId, user_id: profile.id });
+      setQuestions(qs => qs.map(q => q.id === questionId ? { ...q, upvotes: q.upvotes + 1 } : q));
+      setUserUpvotes(prev => { const n = new Set(prev); n.add(questionId); return n; });
+    }
+  };
+
+  const handleDownload = async (questionId: string, url: string) => {
+    try {
+      await supabase.rpc('increment_downloads', { pq_id: questionId });
+    } catch { }
+    setQuestions(qs => qs.map(q => q.id === questionId ? { ...q, downloads: q.downloads + 1 } : q));
+    window.open(url, '_blank');
+  };
+
+  const handleDelete = async (questionId: string) => {
+    if (!confirm('Are you sure you want to delete this submission?')) return;
+    await supabase.from('past_questions').delete().eq('id', questionId);
+    setQuestions(qs => qs.filter(q => q.id !== questionId));
+  };
+
+  // Filter & Group logic
+  let filtered = questions.filter(q => {
+    if (activeTab === 'my_submissions' && q.user_id !== profile?.id) return false;
+    if (filterInstitution !== 'All' && q.institution_type !== filterInstitution) return false;
+    if (filterSchool !== 'All' && q.school_name !== filterSchool) return false;
+    if (filterSubject !== 'All' && q.subject !== filterSubject) return false;
+    if (filterYear !== 'All' && q.year.toString() !== filterYear) return false;
+    return true;
+  });
+
+  if (sortBy === 'Most Recent') filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  if (sortBy === 'Most Downloaded') filtered.sort((a, b) => b.downloads - a.downloads);
+  if (sortBy === 'Most Upvoted') filtered.sort((a, b) => b.upvotes - a.upvotes);
+
+  const isFiltering = filterInstitution !== 'All' || filterSchool !== 'All' || filterSubject !== 'All' || filterYear !== 'All' || sortBy !== 'Most Recent';
+
+  let grouped: Record<string, Record<string, PastQuestion[]>> = {};
+  if (!isFiltering && activeTab === 'all') {
+    filtered.forEach(q => {
+      if (!grouped[q.school_name]) grouped[q.school_name] = {};
+      if (!grouped[q.school_name][q.subject]) grouped[q.school_name][q.subject] = [];
+      grouped[q.school_name][q.subject].push(q);
+    });
+  }
+
+  const renderCard = (q: PastQuestion) => (
+    <div key={q.id} className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-5 hover:shadow-lg transition-all group flex flex-col relative h-full">
+      {q.user_id === profile?.id && (
+        <button onClick={() => handleDelete(q.id)} className="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition-colors z-10 p-1">
+          <span className="material-symbols-outlined text-sm">delete</span>
+        </button>
+      )}
+
+      <div className="flex items-center gap-3 mb-4 pr-6">
+        <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden shrink-0">
+          {q.profiles?.avatar_url && <img src={q.profiles.avatar_url} alt="Avatar" className="w-full h-full object-cover" />}
+        </div>
+        <div className="min-w-0">
+          <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{q.profiles?.full_name || 'Student'}</p>
+          <p className="text-[10px] text-slate-500 truncate">{new Date(q.created_at).toLocaleDateString()}</p>
+        </div>
+      </div>
+
+      <div className="mb-3">
+        <span className="inline-block px-2 text-[10px] uppercase font-bold tracking-wider rounded bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 mb-1">
+          {q.institution_type}
+        </span>
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-2 leading-tight">
+          {q.school_name}
+        </h3>
+      </div>
+
+      <div className="bg-slate-50 dark:bg-[#13131a] p-3 rounded-lg mb-4 flex-1 border border-slate-100 dark:border-[#252535]">
+        <div className="flex justify-between items-start mb-1 gap-2">
+          <h4 className="font-bold text-slate-800 dark:text-slate-200 text-sm line-clamp-1 flex-1 text-[#ea580c] dark:text-[#ea580c]">{q.subject} {q.course_code && <span className="opacity-70 font-normal">({q.course_code})</span>}</h4>
+          <span className="text-xs font-bold text-slate-500 bg-slate-200 dark:bg-[#252535] px-1.5 py-0.5 rounded shrink-0">{q.year}</span>
+        </div>
+        {q.semester && <p className="text-xs text-slate-500 mb-2">{q.semester}</p>}
+        {q.description && (
+          <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 italic">"{q.description}"</p>
+        )}
+      </div>
+
+      <div className="flex items-center justify-between mt-auto">
+        <div className="flex items-center gap-3">
+          <button onClick={() => handleUpvote(q.id)} className={`flex items-center gap-1 text-xs font-bold transition-colors ${userUpvotes.has(q.id) ? 'text-[#3b82f6]' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>
+            <span className={`material-symbols-outlined text-[16px] ${userUpvotes.has(q.id) && 'fill-current'}`}>thumb_up</span>
+            {q.upvotes}
+          </button>
+          <div className="flex items-center gap-1 text-xs text-slate-500 font-medium font-mono">
+            <span className="material-symbols-outlined text-[16px]">download</span>
+            {q.downloads}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-medium text-slate-400">{q.file_type} • {q.file_size}</span>
+          <button onClick={() => handleDownload(q.id, q.file_url)} className="bg-[#ea580c] text-white hover:bg-[#d04e0a] p-1.5 rounded-lg transition-colors">
+            <span className="material-symbols-outlined text-[18px]">file_download</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       <Sidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col h-screen overflow-hidden relative w-full max-w-[100vw]">
         <header className="h-16 bg-[#1a1a24] border-b border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
           <h1 className="font-bold text-white">StudyForge</h1>
         </header>
-        {/* Main Content */}
-        <main className="flex flex-1 flex-col px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full">
-          {/* Header Section */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+
+        {/* Global Toast */}
+        {toastMessage && (
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#1b1b27] border border-[#ea580c]/30 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 animate-in slide-in-from-bottom-5">
+            <div className="bg-green-500/20 text-green-400 p-2 rounded-full">
+              <span className="material-symbols-outlined">check_circle</span>
+            </div>
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-                Past Questions Bank
-              </h1>
-              <p className="text-slate-500 dark:text-[#9c9cba]">
-                Access thousands of past exam papers to practice and prepare.
-              </p>
+              <p className="font-bold text-sm">{toastMessage.message}</p>
+              {toastMessage.xp && (
+                <p className="text-amber-400 text-xs font-bold flex items-center gap-1 mt-1">
+                  <span className="material-symbols-outlined text-[14px]">diamond</span> +{toastMessage.xp} XP Earned!
+                </p>
+              )}
             </div>
-            <div className="flex gap-2">
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                  <span className="material-symbols-outlined text-[20px]">
-                    search
-                  </span>
-                </span>
-                <input
-                  className="h-10 pl-10 pr-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c] w-64"
-                  placeholder="Search by subject, year..."
-                  type="text"
-                />
+          </div>
+        )}
+
+        {/* Submission Modal */}
+        {isModalOpen && (
+          <div className="absolute inset-0 z-50 bg-[#101022]/90 backdrop-blur-sm flex justify-center items-center p-4">
+            <div className="bg-[#1b1b27] border border-[#2d2d3f] w-full max-w-xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+              <div className="p-6 border-b border-[#2d2d3f] flex justify-between items-center bg-[#1a1a24]">
+                <h2 className="text-xl font-bold text-white">Submit a Past Question</h2>
+                <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white transition-colors">
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+              <form onSubmit={submitQuestion} className="overflow-y-auto p-6 space-y-5">
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Institution Type *</label>
+                    <select required value={formInstitutionType} onChange={(e) => setFormInstitutionType(e.target.value)} className="w-full h-10 px-3 bg-[#13131a] border border-[#2d2d3f] rounded-lg text-sm text-white focus:border-[#ea580c] outline-none">
+                      {INSTITUTION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Year *</label>
+                    <input required type="number" min="1990" max="2030" value={formYear} onChange={(e) => setFormYear(parseInt(e.target.value))} className="w-full h-10 px-3 bg-[#13131a] border border-[#2d2d3f] rounded-lg text-sm text-white focus:border-[#ea580c] outline-none" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">School Name *</label>
+                  <input required list="school-list" value={formSchoolName} onChange={(e) => setFormSchoolName(e.target.value)} placeholder="e.g. University of Lagos" className="w-full h-10 px-3 bg-[#13131a] border border-[#2d2d3f] rounded-lg text-sm text-white focus:border-[#ea580c] outline-none" />
+                  <datalist id="school-list">
+                    {schoolsList.map(s => <option key={s} value={s} />)}
+                  </datalist>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Subject *</label>
+                    <input required value={formSubject} onChange={(e) => setFormSubject(e.target.value)} placeholder="e.g. Mathematics" className="w-full h-10 px-3 bg-[#13131a] border border-[#2d2d3f] rounded-lg text-sm text-white focus:border-[#ea580c] outline-none" />
+                  </div>
+                  {(formInstitutionType === 'University' || formInstitutionType === 'Polytechnic') && (
+                    <div>
+                      <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Course Code</label>
+                      <input value={formCourseCode} onChange={(e) => setFormCourseCode(e.target.value)} placeholder="e.g. MTH 101" className="w-full h-10 px-3 bg-[#13131a] border border-[#2d2d3f] rounded-lg text-sm text-white focus:border-[#ea580c] outline-none" />
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Semester</label>
+                  <select value={formSemester} onChange={(e) => setFormSemester(e.target.value)} className="w-full h-10 px-3 bg-[#13131a] border border-[#2d2d3f] rounded-lg text-sm text-white focus:border-[#ea580c] outline-none">
+                    <option value="">None / Not Applicable</option>
+                    <option value="First Semester">First Semester</option>
+                    <option value="Second Semester">Second Semester</option>
+                    <option value="Annual / Full Year">Annual / Full Year</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Description / Context</label>
+                  <textarea value={formDescription} onChange={(e) => setFormDescription(e.target.value)} placeholder="Any context about this paper? e.g. which department, lecturer, or exam type" className="w-full h-20 p-3 bg-[#13131a] border border-[#2d2d3f] rounded-lg text-sm text-white focus:border-[#ea580c] outline-none resize-none" />
+                </div>
+
+                <div className="border-2 border-dashed border-[#2d2d3f] hover:border-[#ea580c] transition-colors rounded-xl p-6 relative flex flex-col items-center justify-center text-center bg-[#13131a]/50">
+                  <input required onChange={handleFileUpload} accept=".pdf,image/png,image/jpeg,image/webp" type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+
+                  {formFile ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <span className={`material-symbols-outlined text-4xl ${formFile.type.includes('pdf') ? 'text-red-400' : 'text-blue-400'}`}>
+                        {formFile.type.includes('pdf') ? 'picture_as_pdf' : 'image'}
+                      </span>
+                      <p className="text-sm font-bold text-white truncate max-w-[200px]">{formFile.name}</p>
+                      <p className="text-xs text-slate-400">{(formFile.size / (1024 * 1024)).toFixed(2)} MB</p>
+                    </div>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-4xl text-slate-500 mb-2">cloud_upload</span>
+                      <p className="text-sm font-bold text-white mb-1">Drag and drop or click to upload</p>
+                      <p className="text-xs text-slate-500">Supports PDF or Images (Max 20MB)</p>
+                    </>
+                  )}
+                </div>
+
+                <button disabled={isSubmitting} type="submit" className="w-full bg-[#3b82f6] hover:bg-[#2563eb] text-white font-bold h-12 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+                  {isSubmitting ? (
+                    <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> Uploading...</>
+                  ) : 'Submit to Community'}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        <main className="flex flex-1 flex-col overflow-y-auto">
+          {/* Header Area */}
+          <div className="bg-[#1a1a24] border-b border-[#2d2d3f] px-6 py-10 shrink-0">
+            <div className="max-w-[1440px] mx-auto w-full">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                <div>
+                  <h1 className="text-3xl font-black text-white mb-2">
+                    Community Past Questions Bank
+                  </h1>
+                  <p className="text-slate-400">
+                    Study smarter with past questions shared by students like you.
+                  </p>
+                </div>
+                <button onClick={() => setIsModalOpen(true)} className="bg-[#3b82f6] hover:bg-[#2563eb] text-white font-bold px-6 py-3 rounded-xl transition-colors shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 whitespace-nowrap shrink-0">
+                  <span className="material-symbols-outlined text-[20px]">add</span>
+                  Submit Past Question
+                </button>
+              </div>
+
+              {/* Stats Pills */}
+              <div className="flex flex-wrap gap-4 mb-8">
+                <div className="bg-[#13131a] border border-[#2d2d3f] px-5 py-3 rounded-xl flex items-center gap-4 min-w-[160px]">
+                  <div className="bg-blue-500/10 text-blue-400 p-2 rounded-lg">
+                    <span className="material-symbols-outlined">description</span>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-black text-white leading-none">{stats.total}</p>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Submissions</p>
+                  </div>
+                </div>
+                <div className="bg-[#13131a] border border-[#2d2d3f] px-5 py-3 rounded-xl flex items-center gap-4 min-w-[160px]">
+                  <div className="bg-orange-500/10 text-orange-400 p-2 rounded-lg">
+                    <span className="material-symbols-outlined">account_balance</span>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-black text-white leading-none">{stats.schools}</p>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Schools</p>
+                  </div>
+                </div>
+                <div className="bg-[#13131a] border border-[#2d2d3f] px-5 py-3 rounded-xl flex items-center gap-4 min-w-[160px]">
+                  <div className="bg-purple-500/10 text-purple-400 p-2 rounded-lg">
+                    <span className="material-symbols-outlined">menu_book</span>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-black text-white leading-none">{stats.subjects}</p>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Subjects</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tabs */}
+              <div className="flex border-b border-[#2d2d3f]">
+                <button onClick={() => setActiveTab('all')} className={`px-6 py-3 font-bold text-sm border-b-2 transition-colors ${activeTab === 'all' ? 'border-[#3b82f6] text-[#3b82f6]' : 'border-transparent text-slate-400 hover:text-slate-300'}`}>
+                  All Questions
+                </button>
+                <button onClick={() => setActiveTab('my_submissions')} className={`px-6 py-3 font-bold text-sm border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'my_submissions' ? 'border-[#3b82f6] text-[#3b82f6]' : 'border-transparent text-slate-400 hover:text-slate-300'}`}>
+                  My Submissions
+                  {profile && <span className="bg-[#2d2d3f] text-white text-[10px] px-2 py-0.5 rounded-full">{questions.filter(q => q.user_id === profile.id).length}</span>}
+                </button>
               </div>
             </div>
           </div>
-          {/* Filters */}
-          <div className="flex flex-wrap gap-4 mb-8">
-            <select className="h-10 px-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-700 dark:text-white focus:ring-2 focus:ring-[#ea580c]">
-              <option>All Exam Bodies</option>
-              <option>WAEC</option>
-              <option>NECO</option>
-              <option>JAMB</option>
-              <option>GCE</option>
-            </select>
-            <select className="h-10 px-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-700 dark:text-white focus:ring-2 focus:ring-[#ea580c]">
-              <option>All Years</option>
-              <option>2023</option>
-              <option>2022</option>
-              <option>2021</option>
-              <option>2020</option>
-            </select>
-            <select className="h-10 px-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-700 dark:text-white focus:ring-2 focus:ring-[#ea580c]">
-              <option>All Subjects</option>
-              <option>Mathematics</option>
-              <option>English Language</option>
-              <option>Physics</option>
-              <option>Chemistry</option>
-              <option>Biology</option>
-            </select>
-          </div>
-          {/* Results Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Card 1 */}
-            <div className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-6 hover:shadow-lg transition-shadow group">
-              <div className="flex justify-between items-start mb-4">
-                <div className="bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 p-3 rounded-lg">
-                  <span className="font-bold text-xl">WAEC</span>
-                </div>
-                <span className="px-2 py-1 bg-slate-100 dark:bg-[#252535] text-xs font-bold rounded text-slate-600 dark:text-slate-300">
-                  2023
-                </span>
+
+          {/* Content Area */}
+          <div className="p-6 max-w-[1440px] mx-auto w-full flex-1 flex flex-col">
+
+            {/* Filters */}
+            <div className="flex flex-wrap gap-3 mb-8 bg-[#1a1a24] p-2 rounded-xl border border-[#2d2d3f] sticky top-0 z-10 shadow-sm">
+              <select value={filterInstitution} onChange={e => setFilterInstitution(e.target.value)} className="h-9 px-3 rounded-lg bg-[#13131a] border border-[#2d2d3f] text-sm text-white focus:border-[#ea580c] outline-none min-w-[140px]">
+                <option value="All">All Institutions</option>
+                {INSTITUTION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+              <select value={filterSchool} onChange={e => setFilterSchool(e.target.value)} className="h-9 px-3 rounded-lg bg-[#13131a] border border-[#2d2d3f] text-sm text-white focus:border-[#ea580c] outline-none min-w-[160px] max-w-[250px] truncate">
+                <option value="All">All Schools</option>
+                {schoolsList.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+              <select value={filterSubject} onChange={e => setFilterSubject(e.target.value)} className="h-9 px-3 rounded-lg bg-[#13131a] border border-[#2d2d3f] text-sm text-white focus:border-[#ea580c] outline-none min-w-[140px] max-w-[200px] truncate">
+                <option value="All">All Subjects</option>
+                {subjectsList.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+              <select value={filterYear} onChange={e => setFilterYear(e.target.value)} className="h-9 px-3 rounded-lg bg-[#13131a] border border-[#2d2d3f] text-sm text-white focus:border-[#ea580c] outline-none min-w-[100px]">
+                <option value="All">All Years</option>
+                {yearsList.map(y => <option key={y} value={y.toString()}>{y}</option>)}
+              </select>
+              <div className="w-[1px] bg-[#2d2d3f] mx-1"></div>
+              <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="h-9 px-3 rounded-lg bg-transparent border-none text-sm font-bold text-[#ea580c] outline-none ml-auto cursor-pointer">
+                <option value="Most Recent">Most Recent</option>
+                <option value="Most Downloaded">Most Downloaded</option>
+                <option value="Most Upvoted">Most Upvoted</option>
+              </select>
+            </div>
+
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
+                {[1, 2, 3, 4, 5, 6].map(i => (
+                  <div key={i} className="h-64 bg-[#1a1a24] rounded-xl border border-[#2d2d3f]"></div>
+                ))}
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-[#ea580c] transition-colors">
-                Mathematics
-              </h3>
-              <p className="text-sm text-slate-500 dark:text-[#9c9cba] mb-4">
-                May/June Senior School Certificate Examination
-              </p>
-              <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100 dark:border-[#2d2d3f]">
-                <span className="text-xs text-slate-400 font-medium">
-                  PDF • 2.4 MB
-                </span>
-                <button className="text-[#ea580c] hover:bg-[#ea580c]/10 p-2 rounded-lg transition-colors">
-                  <span className="material-symbols-outlined">download</span>
+            ) : filtered.length === 0 ? (
+              <div className="flex-1 flex flex-col items-center justify-center py-20 text-center">
+                <div className="w-24 h-24 bg-[#1a1a24] border border-[#2d2d3f] rounded-full flex items-center justify-center mb-6 shadow-inner">
+                  <span className="material-symbols-outlined text-5xl text-slate-600">travel_explore</span>
+                </div>
+                <h2 className="text-xl font-bold text-white mb-2">No past questions found</h2>
+                <p className="text-slate-500 mb-6 max-w-sm">
+                  {activeTab === 'my_submissions'
+                    ? "You haven't uploaded any past questions yet. Start contributing to help the community!"
+                    : "We couldn't find any submissions matching your filters. Be the first to contribute!"}
+                </p>
+                <button onClick={() => setIsModalOpen(true)} className="bg-transparent border border-[#3b82f6] text-[#3b82f6] hover:bg-[#3b82f6]/10 font-bold px-6 py-2.5 rounded-xl transition-colors">
+                  Submit One Now
                 </button>
               </div>
-            </div>
-            {/* Card 2 */}
-            <div className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-6 hover:shadow-lg transition-shadow group">
-              <div className="flex justify-between items-start mb-4">
-                <div className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 p-3 rounded-lg">
-                  <span className="font-bold text-xl">JAMB</span>
-                </div>
-                <span className="px-2 py-1 bg-slate-100 dark:bg-[#252535] text-xs font-bold rounded text-slate-600 dark:text-slate-300">
-                  2023
-                </span>
+            ) : (!isFiltering && activeTab === 'all') ? (
+              <div className="space-y-12 pb-20">
+                {Object.keys(grouped).sort().map(school => (
+                  <div key={school} className="space-y-6">
+                    <div className="flex items-center gap-3 border-b border-[#2d2d3f] pb-2">
+                      <h2 className="text-xl font-black text-white">{school}</h2>
+                      <span className="bg-[#1a1a24] text-slate-400 text-xs font-bold px-2 py-0.5 rounded border border-[#2d2d3f]">
+                        {Object.values(grouped[school]).flat().length} submissions
+                      </span>
+                    </div>
+                    <div className="space-y-8 pl-4 border-l-2 border-[#1a1a24]">
+                      {Object.keys(grouped[school]).sort().map(subj => (
+                        <div key={subj}>
+                          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2 before:w-4 before:h-[1px] before:bg-slate-700">
+                            {subj}
+                          </h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pl-6">
+                            {grouped[school][subj].map(renderCard)}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-[#ea580c] transition-colors">
-                Physics
-              </h3>
-              <p className="text-sm text-slate-500 dark:text-[#9c9cba] mb-4">
-                Unified Tertiary Matriculation Examination
-              </p>
-              <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100 dark:border-[#2d2d3f]">
-                <span className="text-xs text-slate-400 font-medium">
-                  CBT • Interactive
-                </span>
-                <button className="text-[#ea580c] hover:bg-[#ea580c]/10 p-2 rounded-lg transition-colors">
-                  <span className="material-symbols-outlined">play_arrow</span>
-                </button>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-20">
+                {filtered.map(renderCard)}
               </div>
-            </div>
-            {/* Card 3 */}
-            <div className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-6 hover:shadow-lg transition-shadow group">
-              <div className="flex justify-between items-start mb-4">
-                <div className="bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 p-3 rounded-lg">
-                  <span className="font-bold text-xl">NECO</span>
-                </div>
-                <span className="px-2 py-1 bg-slate-100 dark:bg-[#252535] text-xs font-bold rounded text-slate-600 dark:text-slate-300">
-                  2022
-                </span>
-              </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-[#ea580c] transition-colors">
-                English Language
-              </h3>
-              <p className="text-sm text-slate-500 dark:text-[#9c9cba] mb-4">
-                June/July Senior School Certificate Examination
-              </p>
-              <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100 dark:border-[#2d2d3f]">
-                <span className="text-xs text-slate-400 font-medium">
-                  PDF • 1.8 MB
-                </span>
-                <button className="text-[#ea580c] hover:bg-[#ea580c]/10 p-2 rounded-lg transition-colors">
-                  <span className="material-symbols-outlined">download</span>
-                </button>
-              </div>
-            </div>
+            )}
           </div>
         </main>
       </div>
