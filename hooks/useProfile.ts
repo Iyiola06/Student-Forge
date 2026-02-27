@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { User } from '@supabase/supabase-js';
 
@@ -15,6 +15,7 @@ export interface Profile {
     exam_readiness_score: number;
     resources_uploaded?: number;
     quizzes_taken?: number;
+    badges?: string[];
 }
 
 export function useProfile() {
@@ -23,40 +24,40 @@ export function useProfile() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        async function fetchProfile() {
-            try {
-                const supabase = createClient();
+    const fetchProfile = useCallback(async () => {
+        try {
+            const supabase = createClient();
 
-                // Get the current user session
-                const { data: { user }, error: userError } = await supabase.auth.getUser();
+            // Get the current user session
+            const { data: { user }, error: userError } = await supabase.auth.getUser();
 
-                if (userError) throw userError;
+            if (userError) throw userError;
 
-                if (user) {
-                    setUser(user);
+            if (user) {
+                setUser(user);
 
-                    // Fetch the profile data
-                    const { data: profileData, error: profileError } = await supabase
-                        .from('profiles')
-                        .select('*')
-                        .eq('id', user.id)
-                        .single();
+                // Fetch the profile data
+                const { data: profileData, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
 
-                    if (profileError) throw profileError;
+                if (profileError) throw profileError;
 
-                    setProfile(profileData as Profile);
-                }
-            } catch (err: any) {
-                console.error('Error fetching profile:', err.message);
-                setError(err.message);
-            } finally {
-                setIsLoading(false);
+                setProfile(profileData as Profile);
             }
+        } catch (err: any) {
+            console.error('Error fetching profile:', err.message);
+            setError(err.message);
+        } finally {
+            setIsLoading(false);
         }
-
-        fetchProfile();
     }, []);
 
-    return { user, profile, isLoading, error };
+    useEffect(() => {
+        fetchProfile();
+    }, [fetchProfile]);
+
+    return { user, profile, isLoading, error, mutate: fetchProfile };
 }

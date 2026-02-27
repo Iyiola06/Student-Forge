@@ -2,11 +2,11 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 
-// Configure worker for PDF.js in Node environment
-// We use a trick to avoid the standard worker which doesn't play nicely with Next.js edge/node runtimes out of the box.
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
-
 export async function POST(request: Request) {
+    // Configure worker for PDF.js in Node environment
+    // We use a trick to avoid the standard worker which doesn't play nicely with Next.js edge/node runtimes out of the box.
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
+
     try {
         const supabase = await createClient();
         const { data: { user }, error: authError } = await supabase.auth.getUser();
