@@ -1,0 +1,54 @@
+StudyForge - Application Overview & Progress Summary
+==================================================
+
+Application Overview
+--------------------
+StudyForge is a comprehensive, modern EdTech web application designed to help students optimize their learning experience. Built with Next.js (App Router), React, and Tailwind CSS, it offers a suite of tools centered around document processing, active recall, and gamified learning. 
+
+Core Features:
+1. Dashboard: A central personalized hub displaying exam readiness, recent activity, and study streaks.
+2. Gamifier: A gamification engine that rewards users with XP, Levels, and Badges for completing study tasks.
+3. Leaderboard: A competitive global ranking system to encourage engagement.
+4. Resources Library: A centralized storage area for users to upload, manage, and view their study materials (PDFs, docs).
+5. Google Books Library: An integrated search engine built on the Google Books API, allowing students to seamlessly find public-domain textbooks and educational resources directly within the app.
+6. Study History & Analytics: A chronological timeline tracking a user's study sessions and productivity.
+7. AI Generator / Flashcards / Quizzes (Core Concept): Tools designed to transform uploaded resources into actionable study aids like flashcards and multiple-choice quizzes.
+
+Technical Stack:
+- Frontend: Next.js 15, React 19, Tailwind CSS (for premium aesthetics).
+- Backend / Database: Supabase (PostgreSQL).
+- Authentication: Supabase Auth (Email/Password, Google OAuth, Apple OAuth).
+- Architecture: Client and Server component separation, relying on Supabase Row Level Security (RLS) for data privacy.
+
+Progress & Accomplishments So Far
+---------------------------------
+We have comprehensively refactored the StudyForge application from a static frontend template into a dynamic, data-driven application connected to a live backend.
+
+1. Database & Schema Architecture
+   - Designed and implemented a robust PostgreSQL schema in Supabase.
+   - Created tables for `profiles`, `resources`, `quizzes`, `flashcards`, `study_history`, and `past_questions`.
+   - Enforced stringent Row Level Security (RLS) policies to ensure users can only access their own private data, while keeping global resources public.
+   - Set up automated database triggers to create a `profile` row whenever a new user signs up via Supabase Auth.
+   - Created SQL seed scripts to populate initial dummy data (e.g., global past questions).
+
+2. Authentication Redesign
+   - Hand-wired the existing custom UI for `/login` and `/signup` to communicate directly with Supabase Auth API routes.
+   - Implemented standard Email/Password authentication.
+   - Integrated robust OAuth flows for both Google and Apple login options.
+
+3. Complete UI Refactoring (Static to Dynamic)
+   - Extracted highly duplicated code (like the Sidebar and Top Navigation) into modular, reusable Next.js Layout Components.
+   - Developed a `useProfile` hook to fetch and display the personalized data (Name, Avatar, Level, XP) of the currently logged-in user across the app.
+   - Replaced all hardcoded "demo" data (e.g., "Jane Doe", static XP bars, static tables) across the `/dashboard`, `/profile`, `/gamifier`, and `/leaderboard` pages with live, dynamic Supabase data.
+   - Fixed Next.js 15 routing/build errors by properly assigning `'use client'` directives to pages utilizing React Hooks.
+
+4. Advanced Feature Integrations
+   - Added loading spinners and "Empty States" for personalized tables (e.g., showing a friendly "No resources found" message when a new user first signs up).
+   - Integrated the Google Books API into the `/resources` page, giving users a dual-purpose library where they can manage their own uploads or search the global Google Books repository for downloadable PDFs and study materials, complete with offline localStorage caching.
+
+Next Steps / Remaining Work:
+----------------------------
+The application's structural foundation, database layer, authentication, and core personalized UI are fully operational. Moving forward, the focus should shift to the core logic of the application:
+1. Actually processing uploaded PDFs in the Resources and Generator pages to extract text.
+2. Hooking up an AI Service (like OpenAI) to automatically generate flashcards and quizzes from the extracted text.
+3. Implementing the front-end interactive state for taking quizzes and reviewing flashcards.
