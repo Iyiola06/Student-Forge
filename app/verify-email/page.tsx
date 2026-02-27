@@ -1,12 +1,45 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
 function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const email = searchParams.get('email') || 'your email address';
+  const [timeLeft, setTimeLeft] = useState(60);
+  const [isResending, setIsResending] = useState(false);
+
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  const handleResend = async () => {
+    if (timeLeft > 0 || isResending || !email || email === 'your email address') return;
+    setIsResending(true);
+    try {
+      const { createClient } = await import('@/lib/supabase/client');
+      const supabase = createClient();
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/api/auth/callback`,
+        }
+      });
+      if (error) throw error;
+      setTimeLeft(60);
+      alert('Verification email resent!');
+    } catch (err: any) {
+      alert(err.message || 'Error resending email');
+    } finally {
+      setIsResending(false);
+    }
+  };
 
   return (
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
@@ -50,10 +83,15 @@ function VerifyEmailContent() {
                 Didn&apos;t receive the email? Check your spam folder or
               </p>
               <button
-                className="w-full rounded-lg border border-slate-300 dark:border-[#3b3b54] bg-white dark:bg-[#252535] px-4 py-3 text-sm font-semibold text-slate-700 dark:text-white shadow-sm hover:bg-slate-50 dark:hover:bg-[#2d2d3f] focus:outline-none focus:ring-2 focus:ring-[#ea580c] focus:ring-offset-2 transition-all"
+                onClick={handleResend}
+                disabled={timeLeft > 0 || isResending}
+                className={`w-full rounded-lg border px-4 py-3 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-[#ea580c] focus:ring-offset-2 transition-all ${timeLeft > 0 || isResending
+                  ? 'border-slate-200 bg-slate-50 text-slate-400 dark:border-[#2d2d3f] dark:bg-[#111118] dark:text-[#6b6b8a] cursor-not-allowed'
+                  : 'border-slate-300 dark:border-[#3b3b54] bg-white dark:bg-[#252535] text-slate-700 dark:text-white hover:bg-slate-50 dark:hover:bg-[#2d2d3f]'
+                  }`}
                 type="button"
               >
-                Resend Email (00:59)
+                {isResending ? 'Resending...' : timeLeft > 0 ? `Resend Email (${timeLeft}s)` : 'Resend Email'}
               </button>
             </div>
             {/* Back to Login */}
