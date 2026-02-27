@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import TopNavigation from '@/components/layout/TopNavigation';
+import Sidebar from '@/components/layout/Sidebar';
 import { useProfile } from '@/hooks/useProfile';
 
 export default function DashboardPage() {
@@ -16,14 +16,18 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex items-center justify-center">
-        <div className="size-10 border-4 border-[#2525f4] border-t-transparent rounded-full animate-spin"></div>
+        <div className="size-10 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
       </div>
-    );
+  );
   }
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#2525f4]/30 selection:text-[#2525f4]">
-      <TopNavigation />
+    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+      <Sidebar />
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+        <header className="h-16 bg-[#1a1a24] border-b border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
+          <h1 className="font-bold text-white">StudyForge</h1>
+        </header>
       {/* Main Content */}
       <main className="flex flex-1 flex-col gap-8 px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full">
         {/* Welcome Section */}
@@ -38,12 +42,12 @@ export default function DashboardPage() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Exam Readiness Score */}
-          <div className="flex flex-col p-5 bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm relative overflow-hidden group hover:border-[#2525f4]/50 transition-colors">
+          <div className="flex flex-col p-5 bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm relative overflow-hidden group hover:border-[#ea580c]/50 transition-colors">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-slate-900 dark:text-white text-lg font-bold leading-tight">
                 Exam Readiness
               </h3>
-              <span className="material-symbols-outlined text-[#2525f4] bg-[#2525f4]/10 p-1.5 rounded-lg">
+              <span className="material-symbols-outlined text-[#ea580c] bg-[#ea580c]/10 p-1.5 rounded-lg">
                 analytics
               </span>
             </div>
@@ -60,7 +64,7 @@ export default function DashboardPage() {
                   strokeWidth="12"
                 ></circle>
                 <circle
-                  className="text-[#2525f4]"
+                  className="text-[#ea580c]"
                   cx="64"
                   cy="64"
                   fill="transparent"
@@ -86,7 +90,7 @@ export default function DashboardPage() {
             </p>
           </div>
           {/* Cards Mastered */}
-          <div className="flex flex-col p-5 bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:border-[#2525f4]/50 transition-colors">
+          <div className="flex flex-col p-5 bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:border-[#ea580c]/50 transition-colors">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-slate-500 dark:text-[#9c9cba] text-sm font-medium leading-tight">
                 Cards Mastered
@@ -111,7 +115,7 @@ export default function DashboardPage() {
             </div>
           </div>
           {/* Days Streak */}
-          <div className="flex flex-col p-5 bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:border-[#2525f4]/50 transition-colors">
+          <div className="flex flex-col p-5 bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:border-[#ea580c]/50 transition-colors">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-slate-500 dark:text-[#9c9cba] text-sm font-medium leading-tight">
                 Days Streak
@@ -138,7 +142,7 @@ export default function DashboardPage() {
             </div>
           </div>
           {/* Level & XP */}
-          <div className="flex flex-col p-5 bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:border-[#2525f4]/50 transition-colors cursor-pointer group">
+          <div className="flex flex-col p-5 bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:border-[#ea580c]/50 transition-colors cursor-pointer group">
             <Link href="/leaderboard">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-slate-500 dark:text-[#9c9cba] text-sm font-medium leading-tight">
@@ -185,7 +189,7 @@ export default function DashboardPage() {
               </p>
             </div>
           </Link>
-          <button className="flex items-center gap-4 p-4 bg-[#2525f4] text-white rounded-xl shadow-lg shadow-[#2525f4]/25 hover:bg-[#2525f4]/90 transition-all group">
+          <button className="flex items-center gap-4 p-4 bg-[#ea580c] text-white rounded-xl shadow-lg shadow-[#ea580c]/25 hover:bg-[#ea580c]/90 transition-all group">
             <div className="bg-white/20 p-3 rounded-lg group-hover:scale-110 transition-transform">
               <span className="material-symbols-outlined text-2xl">
                 shuffle
@@ -199,7 +203,7 @@ export default function DashboardPage() {
             </div>
           </button>
           <button className="flex items-center gap-4 p-4 bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-xl hover:bg-slate-50 dark:hover:bg-[#252535] transition-all group">
-            <div className="bg-slate-100 dark:bg-[#2d2d3f] p-3 rounded-lg text-slate-600 dark:text-white group-hover:text-[#2525f4] transition-colors">
+            <div className="bg-slate-100 dark:bg-[#2d2d3f] p-3 rounded-lg text-slate-600 dark:text-white group-hover:text-[#ea580c] transition-colors">
               <span className="material-symbols-outlined text-2xl">
                 history
               </span>
@@ -232,11 +236,11 @@ export default function DashboardPage() {
             <div className="mt-auto pt-4">
               <div className="relative">
                 <input
-                  className="w-full bg-slate-50 dark:bg-[#111118] border border-slate-200 dark:border-[#2d2d3f] rounded-lg py-2 pl-3 pr-10 text-sm focus:ring-2 focus:ring-[#2525f4] focus:outline-none dark:text-white"
+                  className="w-full bg-slate-50 dark:bg-[#111118] border border-slate-200 dark:border-[#2d2d3f] rounded-lg py-2 pl-3 pr-10 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white"
                   placeholder="e.g. DNA, ATP..."
                   type="text"
                 />
-                <button className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#2525f4]">
+                <button className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#ea580c]">
                   <span className="material-symbols-outlined text-lg">
                     search
                   </span>
@@ -271,7 +275,7 @@ export default function DashboardPage() {
             </div>
           </div>
           {/* Examiner's Hot List */}
-          <div className="bg-gradient-to-br from-[#2525f4] to-[#1a1aeb] rounded-xl p-6 flex flex-col gap-4 text-white relative overflow-hidden">
+          <div className="bg-gradient-to-br from-[#ea580c] to-[#1a1aeb] rounded-xl p-6 flex flex-col gap-4 text-white relative overflow-hidden">
             <div className="absolute top-0 right-0 p-4 opacity-10">
               <span className="material-symbols-outlined text-8xl">
                 local_fire_department
@@ -287,12 +291,13 @@ export default function DashboardPage() {
               Topics predicted to appear in this year&apos;s exams based on past
               trends.
             </p>
-            <button className="mt-auto w-full bg-white text-[#2525f4] py-2 rounded-lg font-bold text-sm hover:bg-slate-100 transition-colors relative z-10">
+            <button className="mt-auto w-full bg-white text-[#ea580c] py-2 rounded-lg font-bold text-sm hover:bg-slate-100 transition-colors relative z-10">
               View Predictions
             </button>
           </div>
         </div>
       </main>
+      </div>
     </div>
   );
 }

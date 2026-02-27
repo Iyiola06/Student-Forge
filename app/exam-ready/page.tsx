@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import TopNavigation from '@/components/layout/TopNavigation';
+import Sidebar from '@/components/layout/Sidebar';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { jsPDF } from 'jspdf';
@@ -202,7 +202,7 @@ export default function ExamReadyPage() {
         };
 
         const cleanColor = colorStr.toLowerCase().trim();
-        return colors[cleanColor] || 'bg-[#2525f4]/10 text-[#2525f4]';
+        return colors[cleanColor] || 'bg-[#ea580c]/10 text-[#ea580c]';
     };
 
     const getDifficultyColor = (diff: string) => {
@@ -213,13 +213,17 @@ export default function ExamReadyPage() {
     };
 
     return (
-        <div className="bg-[#13131a] font-display min-h-screen flex flex-col antialiased selection:bg-[#3b3bfa]/30 selection:text-[#3b3bfa] text-white">
-            <TopNavigation />
+        <div className="bg-[#13131a] font-display min-h-screen flex antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c] text-white">
+            <Sidebar />
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+        <header className="h-16 bg-[#1a1a24] border-b border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
+          <h1 className="font-bold text-white">StudyForge</h1>
+        </header>
 
             <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto p-6 md:p-8">
                 {isGenerating ? (
                     <div className="flex-1 flex flex-col items-center justify-center text-center">
-                        <div className="size-16 border-4 border-[#3b3bfa] border-t-transparent rounded-full animate-spin mb-6"></div>
+                        <div className="size-16 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin mb-6"></div>
                         <h3 className="text-xl font-bold text-white mb-2">Building Exam Snapshot</h3>
                         <p className="text-slate-400 max-w-sm">Generating abbreviations, extracting definition graphs, and predicting likely exam questions...</p>
                     </div>
@@ -247,7 +251,7 @@ export default function ExamReadyPage() {
                                             setSelectedResource(e.target.value);
                                             if (e.target.value) setPastedText('');
                                         }}
-                                        className="w-full rounded-xl border border-[#2d2d3f] bg-[#13131a] p-4 text-sm focus:ring-2 focus:ring-[#3b3bfa] focus:outline-none text-white"
+                                        className="w-full rounded-xl border border-[#2d2d3f] bg-[#13131a] p-4 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none text-white"
                                     >
                                         <option value="">-- Choose from library --</option>
                                         {resources.map(r => (
@@ -273,7 +277,7 @@ export default function ExamReadyPage() {
                                             setPastedText(e.target.value);
                                             if (e.target.value) setSelectedResource('');
                                         }}
-                                        className="w-full h-40 rounded-xl border border-[#2d2d3f] bg-[#13131a] p-4 text-sm focus:ring-2 focus:ring-[#3b3bfa] focus:outline-none text-white"
+                                        className="w-full h-40 rounded-xl border border-[#2d2d3f] bg-[#13131a] p-4 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none text-white"
                                         placeholder="Paste content..."
                                     ></textarea>
                                 </div>
@@ -281,7 +285,7 @@ export default function ExamReadyPage() {
                                 <button
                                     onClick={handleGenerate}
                                     disabled={isGenerating}
-                                    className="w-full bg-[#3b3bfa] hover:bg-[#3b3bfa]/90 text-white font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(59,59,250,0.3)] transition-all flex items-center justify-center gap-2 mt-4"
+                                    className="w-full bg-[#ea580c] hover:bg-[#ea580c]/90 text-white font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(59,59,250,0.3)] transition-all flex items-center justify-center gap-2 mt-4"
                                 >
                                     <span className="material-symbols-outlined">auto_awesome</span>
                                     Generate Snapshot
@@ -300,7 +304,7 @@ export default function ExamReadyPage() {
                                     {/* Mock Circular Progress */}
                                     <svg className="size-full -rotate-90 transform" viewBox="0 0 100 100">
                                         <circle cx="50" cy="50" r="45" fill="none" stroke="#252535" strokeWidth="10" />
-                                        <circle cx="50" cy="50" r="45" fill="none" stroke="#3b3bfa" strokeWidth="10" strokeDasharray="282.7" strokeDashoffset="70.6" className="drop-shadow-[0_0_8px_rgba(59,59,250,0.5)]" />
+                                        <circle cx="50" cy="50" r="45" fill="none" stroke="#ea580c" strokeWidth="10" strokeDasharray="282.7" strokeDashoffset="70.6" className="drop-shadow-[0_0_8px_rgba(59,59,250,0.5)]" />
                                     </svg>
                                     <div className="absolute flex flex-col items-center justify-center">
                                         <span className="text-3xl font-black text-white">75%</span>
@@ -337,7 +341,7 @@ export default function ExamReadyPage() {
 
                             {/* Actions Right Side */}
                             <div className="lg:col-span-4 flex flex-col gap-4">
-                                <Link href="/flashcards" className="flex-1 bg-[#3b3bfa] hover:bg-[#3b3bfa]/90 rounded-2xl flex flex-col items-center justify-center text-white transition-all shadow-[0_0_20px_rgba(59,59,250,0.3)] hover:scale-[1.02]">
+                                <Link href="/flashcards" className="flex-1 bg-[#ea580c] hover:bg-[#ea580c]/90 rounded-2xl flex flex-col items-center justify-center text-white transition-all shadow-[0_0_20px_rgba(59,59,250,0.3)] hover:scale-[1.02]">
                                     <span className="material-symbols-outlined text-3xl mb-2">shuffle</span>
                                     <span className="font-bold text-lg">Launch Shuffle Mode</span>
                                     <span className="text-xs text-white/70 mt-1">Review 50 random active cards</span>
@@ -361,7 +365,7 @@ export default function ExamReadyPage() {
                             <div className="bg-[#1a1a24] rounded-2xl border border-[#2d2d3f] shadow-sm flex flex-col">
                                 <div className="p-6 border-b border-[#2d2d3f] flex items-center justify-between">
                                     <h3 className="font-bold text-white flex items-center gap-2">
-                                        <span className="text-[#3b3bfa] font-black tracking-widest text-sm">&lt;&gt;</span>
+                                        <span className="text-[#ea580c] font-black tracking-widest text-sm">&lt;&gt;</span>
                                         Abbreviations Decoder
                                     </h3>
                                     <button className="text-slate-500 hover:text-white"><span className="material-symbols-outlined">more_horiz</span></button>
@@ -375,7 +379,7 @@ export default function ExamReadyPage() {
                                         <div className="space-y-1">
                                             {snapshotData.abbreviations.map((abbr, i) => (
                                                 <div key={i} className="flex items-center px-4 py-3 hover:bg-[#252535] rounded-xl transition-colors">
-                                                    <span className="text-[#3b3bfa] font-black text-sm flex-1">{abbr.short}</span>
+                                                    <span className="text-[#ea580c] font-black text-sm flex-1">{abbr.short}</span>
                                                     <span className="text-sm text-slate-300 flex-[2] truncate" title={abbr.full}>{abbr.full}</span>
                                                 </div>
                                             ))}
@@ -450,7 +454,7 @@ export default function ExamReadyPage() {
                                                 <div key={i} className="p-4 rounded-xl hover:bg-[#252535] transition-colors cursor-pointer group flex items-start gap-3">
                                                     <div className="flex-1">
                                                         <div className="flex items-center gap-2 mb-2">
-                                                            <span className="size-6 rounded-full bg-[#3b3bfa]/20 text-[#3b3bfa] font-black text-[10px] flex items-center justify-center shrink-0">{i + 1}</span>
+                                                            <span className="size-6 rounded-full bg-[#ea580c]/20 text-[#ea580c] font-black text-[10px] flex items-center justify-center shrink-0">{i + 1}</span>
                                                             <span className={`text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded border ${diffColor}`}>
                                                                 {hl.difficulty}
                                                             </span>
@@ -471,5 +475,6 @@ export default function ExamReadyPage() {
                 )}
             </div>
         </div>
-    );
+    </div>
+  );
 }

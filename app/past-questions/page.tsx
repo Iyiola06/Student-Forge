@@ -1,143 +1,148 @@
 'use client';
 
 import Link from 'next/link';
-import TopNavigation from '@/components/layout/TopNavigation';
+import Sidebar from '@/components/layout/Sidebar';
 
 export default function PastQuestionsPage() {
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#2525f4]/30 selection:text-[#2525f4]">
-      <TopNavigation />
-      {/* Main Content */}
-      <main className="flex flex-1 flex-col px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full">
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-              Past Questions Bank
-            </h1>
-            <p className="text-slate-500 dark:text-[#9c9cba]">
-              Access thousands of past exam papers to practice and prepare.
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                <span className="material-symbols-outlined text-[20px]">
-                  search
+    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+      <Sidebar />
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+        <header className="h-16 bg-[#1a1a24] border-b border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
+          <h1 className="font-bold text-white">StudyForge</h1>
+        </header>
+        {/* Main Content */}
+        <main className="flex flex-1 flex-col px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full">
+          {/* Header Section */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+                Past Questions Bank
+              </h1>
+              <p className="text-slate-500 dark:text-[#9c9cba]">
+                Access thousands of past exam papers to practice and prepare.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                  <span className="material-symbols-outlined text-[20px]">
+                    search
+                  </span>
                 </span>
-              </span>
-              <input
-                className="h-10 pl-10 pr-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white placeholder:text-slate-500 focus:ring-2 focus:ring-[#2525f4] w-64"
-                placeholder="Search by subject, year..."
-                type="text"
-              />
-            </div>
-          </div>
-        </div>
-        {/* Filters */}
-        <div className="flex flex-wrap gap-4 mb-8">
-          <select className="h-10 px-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-700 dark:text-white focus:ring-2 focus:ring-[#2525f4]">
-            <option>All Exam Bodies</option>
-            <option>WAEC</option>
-            <option>NECO</option>
-            <option>JAMB</option>
-            <option>GCE</option>
-          </select>
-          <select className="h-10 px-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-700 dark:text-white focus:ring-2 focus:ring-[#2525f4]">
-            <option>All Years</option>
-            <option>2023</option>
-            <option>2022</option>
-            <option>2021</option>
-            <option>2020</option>
-          </select>
-          <select className="h-10 px-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-700 dark:text-white focus:ring-2 focus:ring-[#2525f4]">
-            <option>All Subjects</option>
-            <option>Mathematics</option>
-            <option>English Language</option>
-            <option>Physics</option>
-            <option>Chemistry</option>
-            <option>Biology</option>
-          </select>
-        </div>
-        {/* Results Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Card 1 */}
-          <div className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-6 hover:shadow-lg transition-shadow group">
-            <div className="flex justify-between items-start mb-4">
-              <div className="bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 p-3 rounded-lg">
-                <span className="font-bold text-xl">WAEC</span>
+                <input
+                  className="h-10 pl-10 pr-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c] w-64"
+                  placeholder="Search by subject, year..."
+                  type="text"
+                />
               </div>
-              <span className="px-2 py-1 bg-slate-100 dark:bg-[#252535] text-xs font-bold rounded text-slate-600 dark:text-slate-300">
-                2023
-              </span>
-            </div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-[#2525f4] transition-colors">
-              Mathematics
-            </h3>
-            <p className="text-sm text-slate-500 dark:text-[#9c9cba] mb-4">
-              May/June Senior School Certificate Examination
-            </p>
-            <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100 dark:border-[#2d2d3f]">
-              <span className="text-xs text-slate-400 font-medium">
-                PDF • 2.4 MB
-              </span>
-              <button className="text-[#2525f4] hover:bg-[#2525f4]/10 p-2 rounded-lg transition-colors">
-                <span className="material-symbols-outlined">download</span>
-              </button>
             </div>
           </div>
-          {/* Card 2 */}
-          <div className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-6 hover:shadow-lg transition-shadow group">
-            <div className="flex justify-between items-start mb-4">
-              <div className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 p-3 rounded-lg">
-                <span className="font-bold text-xl">JAMB</span>
+          {/* Filters */}
+          <div className="flex flex-wrap gap-4 mb-8">
+            <select className="h-10 px-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-700 dark:text-white focus:ring-2 focus:ring-[#ea580c]">
+              <option>All Exam Bodies</option>
+              <option>WAEC</option>
+              <option>NECO</option>
+              <option>JAMB</option>
+              <option>GCE</option>
+            </select>
+            <select className="h-10 px-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-700 dark:text-white focus:ring-2 focus:ring-[#ea580c]">
+              <option>All Years</option>
+              <option>2023</option>
+              <option>2022</option>
+              <option>2021</option>
+              <option>2020</option>
+            </select>
+            <select className="h-10 px-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-700 dark:text-white focus:ring-2 focus:ring-[#ea580c]">
+              <option>All Subjects</option>
+              <option>Mathematics</option>
+              <option>English Language</option>
+              <option>Physics</option>
+              <option>Chemistry</option>
+              <option>Biology</option>
+            </select>
+          </div>
+          {/* Results Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Card 1 */}
+            <div className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-6 hover:shadow-lg transition-shadow group">
+              <div className="flex justify-between items-start mb-4">
+                <div className="bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 p-3 rounded-lg">
+                  <span className="font-bold text-xl">WAEC</span>
+                </div>
+                <span className="px-2 py-1 bg-slate-100 dark:bg-[#252535] text-xs font-bold rounded text-slate-600 dark:text-slate-300">
+                  2023
+                </span>
               </div>
-              <span className="px-2 py-1 bg-slate-100 dark:bg-[#252535] text-xs font-bold rounded text-slate-600 dark:text-slate-300">
-                2023
-              </span>
-            </div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-[#2525f4] transition-colors">
-              Physics
-            </h3>
-            <p className="text-sm text-slate-500 dark:text-[#9c9cba] mb-4">
-              Unified Tertiary Matriculation Examination
-            </p>
-            <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100 dark:border-[#2d2d3f]">
-              <span className="text-xs text-slate-400 font-medium">
-                CBT • Interactive
-              </span>
-              <button className="text-[#2525f4] hover:bg-[#2525f4]/10 p-2 rounded-lg transition-colors">
-                <span className="material-symbols-outlined">play_arrow</span>
-              </button>
-            </div>
-          </div>
-          {/* Card 3 */}
-          <div className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-6 hover:shadow-lg transition-shadow group">
-            <div className="flex justify-between items-start mb-4">
-              <div className="bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 p-3 rounded-lg">
-                <span className="font-bold text-xl">NECO</span>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-[#ea580c] transition-colors">
+                Mathematics
+              </h3>
+              <p className="text-sm text-slate-500 dark:text-[#9c9cba] mb-4">
+                May/June Senior School Certificate Examination
+              </p>
+              <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100 dark:border-[#2d2d3f]">
+                <span className="text-xs text-slate-400 font-medium">
+                  PDF • 2.4 MB
+                </span>
+                <button className="text-[#ea580c] hover:bg-[#ea580c]/10 p-2 rounded-lg transition-colors">
+                  <span className="material-symbols-outlined">download</span>
+                </button>
               </div>
-              <span className="px-2 py-1 bg-slate-100 dark:bg-[#252535] text-xs font-bold rounded text-slate-600 dark:text-slate-300">
-                2022
-              </span>
             </div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-[#2525f4] transition-colors">
-              English Language
-            </h3>
-            <p className="text-sm text-slate-500 dark:text-[#9c9cba] mb-4">
-              June/July Senior School Certificate Examination
-            </p>
-            <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100 dark:border-[#2d2d3f]">
-              <span className="text-xs text-slate-400 font-medium">
-                PDF • 1.8 MB
-              </span>
-              <button className="text-[#2525f4] hover:bg-[#2525f4]/10 p-2 rounded-lg transition-colors">
-                <span className="material-symbols-outlined">download</span>
-              </button>
+            {/* Card 2 */}
+            <div className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-6 hover:shadow-lg transition-shadow group">
+              <div className="flex justify-between items-start mb-4">
+                <div className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 p-3 rounded-lg">
+                  <span className="font-bold text-xl">JAMB</span>
+                </div>
+                <span className="px-2 py-1 bg-slate-100 dark:bg-[#252535] text-xs font-bold rounded text-slate-600 dark:text-slate-300">
+                  2023
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-[#ea580c] transition-colors">
+                Physics
+              </h3>
+              <p className="text-sm text-slate-500 dark:text-[#9c9cba] mb-4">
+                Unified Tertiary Matriculation Examination
+              </p>
+              <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100 dark:border-[#2d2d3f]">
+                <span className="text-xs text-slate-400 font-medium">
+                  CBT • Interactive
+                </span>
+                <button className="text-[#ea580c] hover:bg-[#ea580c]/10 p-2 rounded-lg transition-colors">
+                  <span className="material-symbols-outlined">play_arrow</span>
+                </button>
+              </div>
+            </div>
+            {/* Card 3 */}
+            <div className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-6 hover:shadow-lg transition-shadow group">
+              <div className="flex justify-between items-start mb-4">
+                <div className="bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 p-3 rounded-lg">
+                  <span className="font-bold text-xl">NECO</span>
+                </div>
+                <span className="px-2 py-1 bg-slate-100 dark:bg-[#252535] text-xs font-bold rounded text-slate-600 dark:text-slate-300">
+                  2022
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-[#ea580c] transition-colors">
+                English Language
+              </h3>
+              <p className="text-sm text-slate-500 dark:text-[#9c9cba] mb-4">
+                June/July Senior School Certificate Examination
+              </p>
+              <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100 dark:border-[#2d2d3f]">
+                <span className="text-xs text-slate-400 font-medium">
+                  PDF • 1.8 MB
+                </span>
+                <button className="text-[#ea580c] hover:bg-[#ea580c]/10 p-2 rounded-lg transition-colors">
+                  <span className="material-symbols-outlined">download</span>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

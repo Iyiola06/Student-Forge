@@ -4,10 +4,16 @@ import Link from 'next/link';
 import { useProfile } from '@/hooks/useProfile';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { useSearchParams } from 'next/navigation';
 
-export default function GamifierPage() {
+import { Suspense } from 'react';
+
+function GamifierContent() {
   const { profile } = useProfile();
   const [topUsers, setTopUsers] = useState<any[]>([]);
+  const searchParams = useSearchParams();
+  const resourceId = searchParams.get('id');
+  const [resource, setResource] = useState<any>(null);
 
   useEffect(() => {
     async function fetchTop3() {
@@ -18,9 +24,18 @@ export default function GamifierPage() {
         .order('xp', { ascending: false })
         .limit(3);
       if (data) setTopUsers(data);
+
+      if (resourceId) {
+        const { data: resData } = await supabase
+          .from('resources')
+          .select('*')
+          .eq('id', resourceId)
+          .single();
+        if (resData) setResource(resData);
+      }
     }
     fetchTop3();
-  }, []);
+  }, [resourceId]);
 
   const currentLevel = profile?.level || 1;
   const currentXP = profile?.xp || 0;
@@ -38,12 +53,12 @@ export default function GamifierPage() {
   const cardsMastered = profile?.cards_mastered || 0;
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#2525f4]/30 selection:text-[#2525f4]">
+    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       {/* Top Navigation */}
       <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#3b3b54] px-4 sm:px-6 py-2 bg-white dark:bg-[#101022] sticky top-0 z-50 h-14">
         <div className="flex items-center gap-4 text-slate-900 dark:text-white">
           <Link
-            className="size-8 text-[#2525f4] flex items-center justify-center hover:bg-slate-100 dark:hover:bg-[#252535] rounded-lg transition-colors"
+            className="size-8 text-[#ea580c] flex items-center justify-center hover:bg-slate-100 dark:hover:bg-[#252535] rounded-lg transition-colors"
             href="/dashboard"
           >
             <span className="material-symbols-outlined text-2xl">
@@ -51,7 +66,7 @@ export default function GamifierPage() {
             </span>
           </Link>
           <h2 className="text-slate-900 dark:text-white text-base font-bold leading-tight truncate">
-            Chapter 4: Cellular Respiration.pdf
+            {resource ? resource.title : 'Chapter 4: Cellular Respiration.pdf'}
           </h2>
         </div>
         <div className="flex items-center gap-4">
@@ -98,7 +113,7 @@ export default function GamifierPage() {
               </button>
             </div>
             <div className="flex items-center gap-2">
-              <button className="p-1.5 text-[#2525f4] bg-[#2525f4]/10 rounded transition-colors" title="Text Mode">
+              <button className="p-1.5 text-[#ea580c] bg-[#ea580c]/10 rounded transition-colors" title="Text Mode">
                 <span className="material-symbols-outlined text-xl">
                   article
                 </span>
@@ -119,55 +134,70 @@ export default function GamifierPage() {
           <div className="flex-1 overflow-y-auto p-8 relative">
             <div className="max-w-3xl mx-auto bg-white dark:bg-[#1b1b27] min-h-full shadow-lg p-12 text-slate-900 dark:text-slate-300 leading-relaxed">
               <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-6">
-                4.1 Overview of Cellular Respiration
+                {resource ? resource.title.replace('.pdf', '') : '4.1 Overview of Cellular Respiration'}
               </h1>
-              <p className="mb-4">
-                Cellular respiration is the process by which cells derive energy
-                from glucose. The chemical reaction for cellular respiration
-                involves glucose and oxygen as inputs, and produces carbon
-                dioxide, water, and energy (ATP) as outputs.
-              </p>
-              <div className="my-8 p-4 bg-slate-100 dark:bg-[#252535] rounded-lg border-l-4 border-[#2525f4]">
-                <p className="font-mono text-sm text-slate-700 dark:text-slate-300">
-                  C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Energy (ATP + Heat)
-                </p>
-              </div>
-              <p className="mb-4">
-                There are three main stages of cellular respiration: glycolysis,
-                the citric acid cycle (Krebs cycle), and oxidative
-                phosphorylation.
-              </p>
+
+              {resource ? (
+                <div className="whitespace-pre-wrap font-serif leading-8 text-lg">
+                  {resource.content ? resource.content.substring(0, 3000) + '...' : 'No content available to display.'}
+                </div>
+              ) : (
+                <>
+                  <p className="mb-4">
+                    Cellular respiration is the process by which cells derive energy
+                    from glucose. The chemical reaction for cellular respiration
+                    involves glucose and oxygen as inputs, and produces carbon
+                    dioxide, water, and energy (ATP) as outputs.
+                  </p>
+                  <div className="my-8 p-4 bg-slate-100 dark:bg-[#252535] rounded-lg border-l-4 border-[#ea580c]">
+                    <p className="font-mono text-sm text-slate-700 dark:text-slate-300">
+                      C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Energy (ATP + Heat)
+                    </p>
+                  </div>
+                  <p className="mb-4">
+                    There are three main stages of cellular respiration: glycolysis,
+                    the citric acid cycle (Krebs cycle), and oxidative
+                    phosphorylation.
+                  </p>
+                </>
+              )}
+
               {/* Inline Quiz Trigger */}
-              <div className="my-8 border border-[#2525f4]/30 bg-[#2525f4]/5 rounded-xl p-6 relative group cursor-pointer hover:bg-[#2525f4]/10 transition-colors">
-                <div className="absolute -left-3 top-1/2 -translate-y-1/2 bg-[#2525f4] text-white p-1 rounded-full shadow-lg">
+              <div className="my-8 border border-[#ea580c]/30 bg-[#ea580c]/5 rounded-xl p-6 relative group cursor-pointer hover:bg-[#ea580c]/10 transition-colors">
+                <div className="absolute -left-3 top-1/2 -translate-y-1/2 bg-[#ea580c] text-white p-1 rounded-full shadow-lg">
                   <span className="material-symbols-outlined text-lg">
                     quiz
                   </span>
                 </div>
-                <h4 className="font-bold text-[#2525f4] mb-2 ml-4">
+                <h4 className="font-bold text-[#ea580c] mb-2 ml-4">
                   Quick Check
                 </h4>
                 <p className="text-sm text-slate-700 dark:text-slate-300 ml-4">
-                  What is the primary output of cellular respiration used for
+                  What is the primary output of this topic used for
                   energy?
                 </p>
               </div>
-              <p className="mb-4">
-                Glycolysis occurs in the cytosol of the cell and breaks down
-                glucose into two molecules of pyruvate.
-              </p>
-              <div className="h-64 bg-slate-200 dark:bg-[#2d2d3f] rounded-lg flex items-center justify-center mb-6">
-                <span className="text-slate-400 dark:text-slate-500 font-medium">
-                  [Diagram: Glycolysis Pathway]
-                </span>
-              </div>
-              <p>
-                The pyruvate then enters the mitochondrion, where it is oxidized
-                to acetyl CoA, which enters the Citric Acid Cycle.
-              </p>
+
+              {!resource && (
+                <>
+                  <p className="mb-4">
+                    Glycolysis occurs in the cytosol of the cell and breaks down
+                    glucose into two molecules of pyruvate.
+                  </p>
+                  <div className="h-64 bg-slate-200 dark:bg-[#2d2d3f] rounded-lg flex items-center justify-center mb-6">
+                    <span className="text-slate-400 dark:text-slate-500 font-medium">
+                      [Diagram: Glycolysis Pathway]
+                    </span>
+                  </div>
+                  <p>
+                    The pyruvate then enters the mitochondrion, where it is oxidized
+                    to acetyl CoA, which enters the Citric Acid Cycle.
+                  </p>
+                </>
+              )}
             </div>
             {/* Floating "Did You Know" Card */}
-            <div className="absolute bottom-8 right-8 w-64 bg-[#2525f4] text-white p-4 rounded-xl shadow-2xl shadow-[#2525f4]/40 animate-bounce cursor-pointer hover:animate-none">
+            <div className="absolute bottom-8 right-8 w-64 bg-[#ea580c] text-white p-4 rounded-xl shadow-2xl shadow-[#ea580c]/40 animate-bounce cursor-pointer hover:animate-none">
               <div className="flex items-start gap-3">
                 <span className="material-symbols-outlined text-yellow-300">
                   lightbulb
@@ -195,7 +225,7 @@ export default function GamifierPage() {
               <span className="text-xs font-bold text-slate-500 dark:text-[#9c9cba] uppercase">
                 Current Level
               </span>
-              <span className="text-xs font-bold text-[#2525f4]">
+              <span className="text-xs font-bold text-[#ea580c]">
                 Level {currentLevel}
               </span>
             </div>
@@ -204,10 +234,10 @@ export default function GamifierPage() {
             </h3>
             <div className="w-full bg-slate-100 dark:bg-[#2d2d3f] rounded-full h-3 mb-2">
               <div
-                className="bg-gradient-to-r from-[#2525f4] to-cyan-400 h-3 rounded-full relative"
+                className="bg-gradient-to-r from-[#ea580c] to-cyan-400 h-3 rounded-full relative"
                 style={{ width: `${progressPercent}%` }}
               >
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-[#2525f4] rounded-full shadow-sm"></div>
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-[#ea580c] rounded-full shadow-sm"></div>
               </div>
             </div>
             <div className="flex justify-between text-xs font-medium text-slate-500 dark:text-[#9c9cba]">
@@ -257,7 +287,7 @@ export default function GamifierPage() {
               <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                 Class Leaderboard
               </h4>
-              <Link href="/leaderboard" className="text-[10px] font-bold text-[#2525f4] hover:underline">
+              <Link href="/leaderboard" className="text-[10px] font-bold text-[#ea580c] hover:underline">
                 View All
               </Link>
             </div>
@@ -265,8 +295,8 @@ export default function GamifierPage() {
               {topUsers.map((user, index) => {
                 const isMe = user.id === profile?.id;
                 return (
-                  <div key={user.id} className={`flex items-center gap-3 p-2 rounded-lg transition-colors ${isMe ? 'bg-[#2525f4]/5 border border-[#2525f4]/20' : 'hover:bg-slate-50 dark:hover:bg-[#252535]'}`}>
-                    <span className={`font-bold w-4 ${isMe ? 'text-[#2525f4]' : 'text-slate-400'}`}>{index + 1}</span>
+                  <div key={user.id} className={`flex items-center gap-3 p-2 rounded-lg transition-colors ${isMe ? 'bg-[#ea580c]/5 border border-[#ea580c]/20' : 'hover:bg-slate-50 dark:hover:bg-[#252535]'}`}>
+                    <span className={`font-bold w-4 ${isMe ? 'text-[#ea580c]' : 'text-slate-400'}`}>{index + 1}</span>
                     <div
                       className="size-8 rounded-full bg-cover bg-center bg-slate-300 dark:bg-slate-600"
                       style={{
@@ -289,7 +319,7 @@ export default function GamifierPage() {
           </div>
           {/* Boost Button */}
           <div className="p-6 border-t border-slate-200 dark:border-[#2d2d3f]">
-            <button className="w-full py-3 bg-gradient-to-r from-[#2525f4] to-purple-600 text-white font-bold rounded-xl shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2">
+            <button className="w-full py-3 bg-gradient-to-r from-[#ea580c] to-purple-600 text-white font-bold rounded-xl shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2">
               <span className="material-symbols-outlined">bolt</span>
               Boost XP (2x)
             </button>
@@ -297,5 +327,17 @@ export default function GamifierPage() {
         </aside>
       </div>
     </div>
+  );
+}
+
+export default function GamifierPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#f5f5f8] dark:bg-[#101022] flex items-center justify-center">
+        <div className="size-10 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
+      <GamifierContent />
+    </Suspense>
   );
 }

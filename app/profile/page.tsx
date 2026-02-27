@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import TopNavigation from '@/components/layout/TopNavigation';
+import Sidebar from '@/components/layout/Sidebar';
 import { useProfile } from '@/hooks/useProfile';
 
 export default function ProfilePage() {
@@ -11,19 +11,23 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex items-center justify-center">
-        <div className="size-10 border-4 border-[#2525f4] border-t-transparent rounded-full animate-spin"></div>
+        <div className="size-10 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#2525f4]/30 selection:text-[#2525f4]">
-      <TopNavigation />
+    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+      <Sidebar />
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+        <header className="h-16 bg-[#1a1a24] border-b border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
+          <h1 className="font-bold text-white">StudyForge</h1>
+        </header>
       {/* Main Content */}
       <main className="flex flex-1 flex-col px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full">
         {/* Profile Header */}
         <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] overflow-hidden mb-8">
-          <div className="h-32 bg-gradient-to-r from-[#2525f4] to-purple-600"></div>
+          <div className="h-32 bg-gradient-to-r from-[#ea580c] to-purple-600"></div>
           <div className="px-8 pb-8">
             <div className="relative flex justify-between items-end -mt-12 mb-6">
               <div className="flex items-end gap-6">
@@ -54,7 +58,7 @@ export default function ProfilePage() {
             <div className="grid grid-cols-3 gap-4 border-t border-slate-100 dark:border-[#2d2d3f] pt-6">
               <div className="text-center border-r border-slate-100 dark:border-[#2d2d3f]">
                 <span className="block text-2xl font-bold text-slate-900 dark:text-white">
-                  {profile?.resources_uploaded !== undefined ? profile.resources_uploaded : 1}
+                  {profile?.resources_uploaded !== undefined ? profile.resources_uploaded : 0}
                 </span>
                 <span className="text-sm text-slate-500 dark:text-[#9c9cba]">
                   PDFs Uploaded
@@ -62,14 +66,14 @@ export default function ProfilePage() {
               </div>
               <div className="text-center border-r border-slate-100 dark:border-[#2d2d3f]">
                 <span className="block text-2xl font-bold text-slate-900 dark:text-white">
-                  {profile?.quizzes_taken !== undefined ? profile.quizzes_taken : 5}
+                  {profile?.quizzes_taken !== undefined ? profile.quizzes_taken : 0}
                 </span>
                 <span className="text-sm text-slate-500 dark:text-[#9c9cba]">
                   Quizzes Taken
                 </span>
               </div>
               <div className="text-center">
-                <span className="block text-2xl font-bold text-[#2525f4]">
+                <span className="block text-2xl font-bold text-[#ea580c]">
                   {profile?.exam_readiness_score || 0}%
                 </span>
                 <span className="text-sm text-slate-500 dark:text-[#9c9cba]">
@@ -83,7 +87,7 @@ export default function ProfilePage() {
         <div className="border-b border-slate-200 dark:border-[#2d2d3f] mb-8">
           <nav className="flex gap-8">
             <Link
-              className="border-b-2 border-[#2525f4] pb-4 px-1 text-sm font-bold text-[#2525f4]"
+              className="border-b-2 border-[#ea580c] pb-4 px-1 text-sm font-bold text-[#ea580c]"
               href="/profile"
             >
               Badges & Achievements
@@ -172,6 +176,7 @@ export default function ProfilePage() {
           </div>
         </div>
       </main>
+      </div>
     </div>
   );
 }

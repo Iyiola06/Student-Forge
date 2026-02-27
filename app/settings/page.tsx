@@ -1,103 +1,55 @@
 'use client';
 
-import Link from 'next/link';
+import Sidebar from '@/components/layout/Sidebar';
+import { useProfile } from '@/hooks/useProfile';
+import { createClient } from '@/lib/supabase/client';
+import { useState, useEffect } from 'react';
 
 export default function SettingsPage() {
+  const { profile, isLoading } = useProfile();
+  const [isSaving, setIsSaving] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+  });
+
+  useEffect(() => {
+    if (profile) {
+      const parts = (profile.full_name || '').split(' ');
+      setFormData({
+        firstName: parts[0] || '',
+        lastName: parts.slice(1).join(' ') || '',
+      });
+    }
+  }, [profile]);
+
+  const handleSave = async () => {
+    if (!profile) return;
+    setIsSaving(true);
+    try {
+      const supabase = createClient();
+      const fullName = `${formData.firstName} ${formData.lastName}`.trim();
+      const { error } = await supabase
+        .from('profiles')
+        .update({ full_name: fullName })
+        .eq('id', profile.id);
+
+      if (error) throw error;
+      alert('Profile updated successfully!');
+    } catch (err: any) {
+      alert(`Error updating profile: ${err.message}`);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex antialiased selection:bg-[#2525f4]/30 selection:text-[#2525f4]">
-      {/* Sidebar Navigation (Reused) */}
-      <aside className="w-64 bg-white dark:bg-[#1b1b27] border-r border-slate-200 dark:border-[#2d2d3f] flex-col hidden md:flex sticky top-0 h-screen">
-        <div className="p-6 flex items-center gap-3">
-          <div className="size-8 text-[#2525f4] flex items-center justify-center">
-            <span className="material-symbols-outlined text-3xl">school</span>
-          </div>
-          <h2 className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
-            StudyForge
-          </h2>
-        </div>
-        <nav className="flex-1 px-4 space-y-2 overflow-y-auto">
-          <div className="text-xs font-semibold text-slate-400 dark:text-[#6b6b8a] uppercase tracking-wider mb-2 mt-4 px-2">
-            Menu
-          </div>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/dashboard"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              dashboard
-            </span>
-            <span className="font-medium">Dashboard</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/resources"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              library_books
-            </span>
-            <span className="font-medium">Resource Library</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/gamifier"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              sports_esports
-            </span>
-            <span className="font-medium">PDF Gamifier</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/leaderboard"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              leaderboard
-            </span>
-            <span className="font-medium">Leaderboard</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/past-questions"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              history_edu
-            </span>
-            <span className="font-medium">Past Questions</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/generator"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              psychology
-            </span>
-            <span className="font-medium">Question Generator</span>
-          </Link>
-          <div className="text-xs font-semibold text-slate-400 dark:text-[#6b6b8a] uppercase tracking-wider mb-2 mt-6 px-2">
-            Personal
-          </div>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white transition-colors group"
-            href="/profile"
-          >
-            <span className="material-symbols-outlined group-hover:text-[#2525f4]">
-              person
-            </span>
-            <span className="font-medium">Profile</span>
-          </Link>
-          <Link
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#2525f4]/10 text-[#2525f4] font-medium"
-            href="/settings"
-          >
-            <span className="material-symbols-outlined">settings</span>
-            <span>Settings</span>
-          </Link>
-        </nav>
-      </aside>
+    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+      <Sidebar />
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Header */}
-        <header className="h-16 bg-white dark:bg-[#1b1b27] border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20">
+        <header className="h-16 bg-white dark:bg-[#1b1b27] border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
           <h1 className="text-xl font-bold text-slate-900 dark:text-white">
             Settings
           </h1>
@@ -105,8 +57,9 @@ export default function SettingsPage() {
             <div
               className="bg-cover bg-center bg-no-repeat rounded-full w-9 h-9 border-2 border-slate-200 dark:border-[#3b3b54]"
               style={{
-                backgroundImage:
-                  'url("https://lh3.googleusercontent.com/aida-public/AB6AXuD_PrX8yOs64jgoF50R2Gdmak7Nq9XNBH6jrZGbcMeFZWiTc-RXHJIYwVod5RyMqvpXdyuCh67XqP8diyIZGjPdooGKAN9iNGBZXPBKwdB23Gl_zIV9531fy77kczue-ybewLFkxSWQMdUumyw1dvjOVV4QSWKgD582BzAkdewcGU2Q77mpv1aJco2awv_M5hlPCjjIrGKErnFpvl_jDnr7id6w0GMQFhPBYcB72xFQDQseoc8xqlWGGLMxg092WPdyPddhX5U-OjiN")',
+                backgroundImage: profile?.avatar_url
+                  ? `url("${profile.avatar_url}")`
+                  : 'url("https://api.dicebear.com/7.x/avataaars/svg?seed=fallback")',
               }}
             ></div>
           </div>
@@ -126,8 +79,9 @@ export default function SettingsPage() {
                       First Name
                     </label>
                     <input
-                      className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-2.5 text-sm focus:ring-2 focus:ring-[#2525f4] focus:outline-none dark:text-white"
-                      defaultValue="Jane"
+                      className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-2.5 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white"
+                      value={formData.firstName}
+                      onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                       type="text"
                     />
                   </div>
@@ -136,8 +90,9 @@ export default function SettingsPage() {
                       Last Name
                     </label>
                     <input
-                      className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-2.5 text-sm focus:ring-2 focus:ring-[#2525f4] focus:outline-none dark:text-white"
-                      defaultValue="Doe"
+                      className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-2.5 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white"
+                      value={formData.lastName}
+                      onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                       type="text"
                     />
                   </div>
@@ -147,14 +102,15 @@ export default function SettingsPage() {
                     Email Address
                   </label>
                   <input
-                    className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-2.5 text-sm focus:ring-2 focus:ring-[#2525f4] focus:outline-none dark:text-white"
-                    defaultValue="jane.doe@university.edu"
-                    type="email"
+                    className="w-full rounded-lg text-slate-500 border border-slate-300 dark:border-[#2d2d3f] bg-slate-100 dark:bg-[#252535] p-2.5 text-sm outline-none dark:text-slate-400 cursor-not-allowed"
+                    defaultValue="Linked via Authentication"
+                    disabled
+                    type="text"
                   />
                 </div>
                 <div className="pt-4">
-                  <button className="px-4 py-2 bg-[#2525f4] text-white font-bold rounded-lg hover:bg-[#2525f4]/90 transition-colors">
-                    Save Changes
+                  <button onClick={handleSave} disabled={isSaving || isLoading} className="px-4 py-2 bg-[#ea580c] text-white font-bold rounded-lg hover:bg-[#ea580c]/90 transition-colors disabled:opacity-50">
+                    {isSaving ? 'Saving...' : 'Save Changes'}
                   </button>
                 </div>
               </div>
@@ -176,7 +132,7 @@ export default function SettingsPage() {
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input className="sr-only peer" type="checkbox" />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#2525f4]"></div>
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#ea580c]"></div>
                   </label>
                 </div>
                 <div className="flex items-center justify-between">
@@ -194,7 +150,7 @@ export default function SettingsPage() {
                       defaultChecked
                       type="checkbox"
                     />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#2525f4]"></div>
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#ea580c]"></div>
                   </label>
                 </div>
               </div>

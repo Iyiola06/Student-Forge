@@ -41,12 +41,12 @@ export default function Sidebar() {
                     key={link.name}
                     href={link.href}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group ${isActive
-                            ? 'bg-[#2525f4]/10 text-[#2525f4] font-medium'
-                            : 'text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#2525f4] dark:hover:text-white'
+                            ? 'bg-[#ea580c]/10 text-[#ea580c] font-medium'
+                            : 'text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#ea580c] dark:hover:text-white'
                         }`}
                 >
                     <span
-                        className={`material-symbols-outlined ${isActive ? '' : 'group-hover:text-[#2525f4]'
+                        className={`material-symbols-outlined ${isActive ? '' : 'group-hover:text-[#ea580c]'
                             }`}
                     >
                         {link.icon}
@@ -61,7 +61,7 @@ export default function Sidebar() {
         <aside className="w-64 bg-white dark:bg-[#1b1b27] border-r border-slate-200 dark:border-[#2d2d3f] flex-col hidden md:flex sticky top-0 h-screen">
             <div className="p-6 flex items-center gap-3">
                 <Link href="/dashboard" className="flex items-center gap-2">
-                    <div className="size-8 text-[#2525f4] flex items-center justify-center">
+                    <div className="size-8 text-[#ea580c] flex items-center justify-center">
                         <span className="material-symbols-outlined text-3xl">school</span>
                     </div>
                     <h2 className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">

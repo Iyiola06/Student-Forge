@@ -30,7 +30,7 @@ export default function TopNavigation({ children }: { children?: React.ReactNode
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#3b3b54] px-4 sm:px-10 py-3 bg-white dark:bg-[#101022]/80 backdrop-blur-md sticky top-0 z-50">
             <div className="flex items-center gap-4 text-slate-900 dark:text-white">
                 <Link href="/dashboard" className="flex items-center gap-2">
-                    <div className="size-8 text-[#2525f4] flex items-center justify-center">
+                    <div className="size-8 text-[#ea580c] flex items-center justify-center">
                         <span className="material-symbols-outlined text-3xl">school</span>
                     </div>
                     <h2 className="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">
@@ -47,8 +47,8 @@ export default function TopNavigation({ children }: { children?: React.ReactNode
                             href={link.href}
                             className={
                                 pathname === link.href
-                                    ? 'text-slate-900 dark:text-white font-bold text-sm leading-normal border-b-2 border-[#2525f4]'
-                                    : 'text-slate-600 dark:text-slate-400 hover:text-[#2525f4] dark:hover:text-white transition-colors text-sm font-medium leading-normal'
+                                    ? 'text-slate-900 dark:text-white font-bold text-sm leading-normal border-b-2 border-[#ea580c]'
+                                    : 'text-slate-600 dark:text-slate-400 hover:text-[#ea580c] dark:hover:text-white transition-colors text-sm font-medium leading-normal'
                             }
                         >
                             {link.name}

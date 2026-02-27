@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import TopNavigation from '@/components/layout/TopNavigation';
+import Sidebar from '@/components/layout/Sidebar';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
@@ -141,20 +141,19 @@ export default function FlashcardsPage() {
     };
 
     return (
-        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#2525f4]/30 selection:text-[#2525f4]">
-            <TopNavigation>
-                <button className="flex items-center gap-2 bg-[#2525f4] hover:bg-[#2525f4]/90 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors shadow-lg shadow-[#2525f4]/20 hidden md:flex">
-                    <span className="material-symbols-outlined text-[20px]">
-                        style
-                    </span>
-                    <span>New Deck</span>
-                </button>
-            </TopNavigation>
+        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+            <Sidebar />
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+        <header className="h-16 bg-[#1a1a24] border-b border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
+          <h1 className="font-bold text-white">Flashcards</h1>
+        </header>
+        
+      </div>
 
             <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
                 <div className="px-6 pt-6 pb-2 md:px-8">
                     <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[#2525f4]">style</span>
+                        <span className="material-symbols-outlined text-[#ea580c]">style</span>
                         Smart Flashcards
                     </h1>
                     <p className="text-slate-500 text-sm mt-1">Generate concise flashcards from your study materials in seconds.</p>
@@ -167,7 +166,7 @@ export default function FlashcardsPage() {
                         <div className="w-full lg:w-[400px] shrink-0 space-y-6">
                             <div className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm">
                                 <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-[#2525f4]">
+                                    <span className="material-symbols-outlined text-[#ea580c]">
                                         upload_file
                                     </span>
                                     Source Material
@@ -189,7 +188,7 @@ export default function FlashcardsPage() {
                                             setSelectedResource(e.target.value);
                                             if (e.target.value) setPastedText('');
                                         }}
-                                        className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-2.5 text-sm focus:ring-2 focus:ring-[#2525f4] focus:outline-none dark:text-white"
+                                        className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-2.5 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white"
                                     >
                                         <option value="">-- Or paste text below --</option>
                                         {resources.map(r => (
@@ -217,7 +216,7 @@ export default function FlashcardsPage() {
                                             setPastedText(e.target.value);
                                             if (e.target.value) setSelectedResource('');
                                         }}
-                                        className="w-full h-32 rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-3 text-sm focus:ring-2 focus:ring-[#2525f4] focus:outline-none dark:text-white"
+                                        className="w-full h-32 rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-3 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white"
                                         placeholder="Paste text here to extract key concepts..."
                                     ></textarea>
                                 </div>
@@ -225,7 +224,7 @@ export default function FlashcardsPage() {
                                 <button
                                     onClick={handleGenerate}
                                     disabled={isGenerating}
-                                    className="w-full mt-6 bg-[#2525f4] hover:bg-[#2525f4]/90 disabled:opacity-70 text-white font-bold py-3 rounded-xl shadow-lg shadow-[#2525f4]/25 transition-all flex items-center justify-center gap-2"
+                                    className="w-full mt-6 bg-[#ea580c] hover:bg-[#ea580c]/90 disabled:opacity-70 text-white font-bold py-3 rounded-xl shadow-lg shadow-[#ea580c]/25 transition-all flex items-center justify-center gap-2"
                                 >
                                     {isGenerating ? (
                                         <div className="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -242,7 +241,7 @@ export default function FlashcardsPage() {
                     <div className="flex-1 flex flex-col">
                         {isGenerating ? (
                             <div className="flex-1 flex flex-col items-center justify-center text-center">
-                                <div className="size-16 border-4 border-[#2525f4] border-t-transparent rounded-full animate-spin mb-6"></div>
+                                <div className="size-16 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin mb-6"></div>
                                 <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Analyzing Concepts</h3>
                                 <p className="text-slate-500 dark:text-[#9c9cba]">Extracting the most critical terminology and definitions...</p>
                             </div>
@@ -254,7 +253,7 @@ export default function FlashcardsPage() {
                                         <span className="text-sm font-bold text-slate-500">Card {currentIndex + 1} of {flashcards.length}</span>
                                         <button
                                             onClick={() => setIsDrilling(false)}
-                                            className="text-sm text-[#2525f4] font-bold hover:underline"
+                                            className="text-sm text-[#ea580c] font-bold hover:underline"
                                         >
                                             Exit Drill
                                         </button>
@@ -267,7 +266,7 @@ export default function FlashcardsPage() {
                                     >
                                         <div className={`relative w-full h-full transition-transform duration-700 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
                                             {/* Front */}
-                                            <div className="absolute w-full h-full backface-hidden bg-white dark:bg-[#1b1b27] border-2 border-slate-200 dark:border-[#2d2d3f] rounded-2xl shadow-xl p-10 flex flex-col items-center justify-center text-center hover:border-[#2525f4] transition-colors">
+                                            <div className="absolute w-full h-full backface-hidden bg-white dark:bg-[#1b1b27] border-2 border-slate-200 dark:border-[#2d2d3f] rounded-2xl shadow-xl p-10 flex flex-col items-center justify-center text-center hover:border-[#ea580c] transition-colors">
                                                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
                                                     {flashcards[currentIndex].front}
                                                 </p>
@@ -278,7 +277,7 @@ export default function FlashcardsPage() {
                                             </div>
 
                                             {/* Back */}
-                                            <div className="absolute w-full h-full backface-hidden bg-slate-900 border-2 border-[#2525f4] rounded-2xl shadow-xl p-10 flex flex-col items-center justify-center text-center rotate-y-180">
+                                            <div className="absolute w-full h-full backface-hidden bg-slate-900 border-2 border-[#ea580c] rounded-2xl shadow-xl p-10 flex flex-col items-center justify-center text-center rotate-y-180">
                                                 <p className="text-xl text-white leading-relaxed">
                                                     {flashcards[currentIndex].back}
                                                 </p>
@@ -306,7 +305,7 @@ export default function FlashcardsPage() {
                                         </div>
                                         <button
                                             onClick={startDrill}
-                                            className="bg-[#2525f4] hover:bg-[#2525f4]/90 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-lg shadow-[#2525f4]/20 transition-all flex items-center gap-2"
+                                            className="bg-[#ea580c] hover:bg-[#ea580c]/90 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-lg shadow-[#ea580c]/20 transition-all flex items-center gap-2"
                                         >
                                             <span className="material-symbols-outlined">play_arrow</span>
                                             Shuffle & Drill
@@ -316,7 +315,7 @@ export default function FlashcardsPage() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {flashcards.map((card, i) => (
                                             <div key={i} className="p-4 rounded-xl border border-slate-200 dark:border-[#3b3b54] bg-slate-50 dark:bg-[#252535] group">
-                                                <p className="font-bold text-sm text-[#2525f4] mb-2 border-b border-slate-200 dark:border-[#3b3b54] pb-2">
+                                                <p className="font-bold text-sm text-[#ea580c] mb-2 border-b border-slate-200 dark:border-[#3b3b54] pb-2">
                                                     {card.front}
                                                 </p>
                                                 <p className="text-sm text-slate-700 dark:text-slate-300">
@@ -331,7 +330,7 @@ export default function FlashcardsPage() {
                             // Empty State
                             <div className="bg-gradient-to-br from-slate-100 to-slate-200 dark:from-[#252535] dark:to-[#1b1b27] rounded-xl border border-dashed border-slate-300 dark:border-[#2d2d3f] p-10 flex flex-col items-center justify-center text-center h-full min-h-[400px]">
                                 <div className="bg-white dark:bg-[#1b1b27] p-5 rounded-full mb-4 shadow-sm">
-                                    <span className="material-symbols-outlined text-5xl text-[#2525f4]">
+                                    <span className="material-symbols-outlined text-5xl text-[#ea580c]">
                                         style
                                     </span>
                                 </div>

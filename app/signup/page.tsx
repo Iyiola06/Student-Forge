@@ -76,11 +76,11 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-x-hidden selection:bg-[#2525f4] selection:text-white">
+    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-x-hidden selection:bg-[#ea580c] selection:text-white">
       {/* Header */}
       <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#2d2d45] px-10 py-4 bg-white dark:bg-[#1b1b2e]/50 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-4">
-          <div className="size-8 text-[#2525f4]">
+          <div className="size-8 text-[#ea580c]">
             <svg
               className="w-full h-full"
               fill="currentColor"
@@ -97,19 +97,19 @@ export default function SignupPage() {
         <div className="flex flex-1 justify-end gap-8 items-center">
           <div className="hidden md:flex items-center gap-9">
             <Link
-              className="text-slate-600 dark:text-slate-300 hover:text-[#2525f4] dark:hover:text-[#2525f4] transition-colors text-sm font-medium leading-normal"
+              className="text-slate-600 dark:text-slate-300 hover:text-[#ea580c] dark:hover:text-[#ea580c] transition-colors text-sm font-medium leading-normal"
               href="#"
             >
               Home
             </Link>
             <Link
-              className="text-slate-600 dark:text-slate-300 hover:text-[#2525f4] dark:hover:text-[#2525f4] transition-colors text-sm font-medium leading-normal"
+              className="text-slate-600 dark:text-slate-300 hover:text-[#ea580c] dark:hover:text-[#ea580c] transition-colors text-sm font-medium leading-normal"
               href="#"
             >
               Features
             </Link>
             <Link
-              className="text-slate-600 dark:text-slate-300 hover:text-[#2525f4] dark:hover:text-[#2525f4] transition-colors text-sm font-medium leading-normal"
+              className="text-slate-600 dark:text-slate-300 hover:text-[#ea580c] dark:hover:text-[#ea580c] transition-colors text-sm font-medium leading-normal"
               href="#"
             >
               Pricing
@@ -117,12 +117,12 @@ export default function SignupPage() {
           </div>
           <div className="flex items-center gap-4">
             <Link
-              className="text-slate-600 dark:text-slate-300 hover:text-[#2525f4] dark:hover:text-[#2525f4] transition-colors text-sm font-medium leading-normal"
+              className="text-slate-600 dark:text-slate-300 hover:text-[#ea580c] dark:hover:text-[#ea580c] transition-colors text-sm font-medium leading-normal"
               href="/login"
             >
               Login
             </Link>
-            <button className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-[#2525f4] hover:bg-[#2525f4]/90 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em]">
+            <button className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-[#ea580c] hover:bg-[#ea580c]/90 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em]">
               <span className="truncate">Sign Up</span>
             </button>
           </div>
@@ -131,13 +131,13 @@ export default function SignupPage() {
       {/* Main Content */}
       <main className="flex-grow flex items-center justify-center py-12 px-4 relative">
         {/* Decorative Background Elements */}
-        <div className="absolute top-20 left-10 text-[#2525f4]/10 animate-pulse hidden lg:block">
+        <div className="absolute top-20 left-10 text-[#ea580c]/10 animate-pulse hidden lg:block">
           <span className="material-symbols-outlined text-9xl">school</span>
         </div>
-        <div className="absolute bottom-20 right-10 text-[#2525f4]/10 animate-pulse hidden lg:block">
+        <div className="absolute bottom-20 right-10 text-[#ea580c]/10 animate-pulse hidden lg:block">
           <span className="material-symbols-outlined text-9xl">menu_book</span>
         </div>
-        <div className="absolute top-1/2 left-20 text-[#2525f4]/5 hidden lg:block rotate-12">
+        <div className="absolute top-1/2 left-20 text-[#ea580c]/5 hidden lg:block rotate-12">
           <span className="material-symbols-outlined text-8xl">edit_note</span>
         </div>
         {/* Form Container */}
@@ -157,7 +157,7 @@ export default function SignupPage() {
             </p>
             <div className="flex items-center gap-4 justify-center flex-wrap">
               <button
-                className="group relative size-16 rounded-full overflow-hidden border-2 border-[#2525f4] ring-4 ring-[#2525f4]/20 transition-transform hover:scale-105"
+                className="group relative size-16 rounded-full overflow-hidden border-2 border-[#ea580c] ring-4 ring-[#ea580c]/20 transition-transform hover:scale-105"
                 type="button"
               >
                 <Image
@@ -166,14 +166,14 @@ export default function SignupPage() {
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_PrX8yOs64jgoF50R2Gdmak7Nq9XNBH6jrZGbcMeFZWiTc-RXHJIYwVod5RyMqvpXdyuCh67XqP8diyIZGjPdooGKAN9iNGBZXPBKwdB23Gl_zIV9531fy77kczue-ybewLFkxSWQMdUumyw1dvjOVV4QSWKgD582BzAkdewcGU2Q77mpv1aJco2awv_M5hlPCjjIrGKErnFpvl_jDnr7id6w0GMQFhPBYcB72xFQDQseoc8xqlWGGLMxg092WPdyPddhX5U-OjiN"
                   fill
                 />
-                <div className="absolute inset-0 bg-[#2525f4]/40 flex items-center justify-center">
+                <div className="absolute inset-0 bg-[#ea580c]/40 flex items-center justify-center">
                   <span className="material-symbols-outlined text-white font-bold">
                     check
                   </span>
                 </div>
               </button>
               <button
-                className="group relative size-14 rounded-full overflow-hidden border-2 border-transparent hover:border-[#2525f4]/50 transition-all hover:scale-105 opacity-70 hover:opacity-100"
+                className="group relative size-14 rounded-full overflow-hidden border-2 border-transparent hover:border-[#ea580c]/50 transition-all hover:scale-105 opacity-70 hover:opacity-100"
                 type="button"
               >
                 <Image
@@ -184,7 +184,7 @@ export default function SignupPage() {
                 />
               </button>
               <button
-                className="group relative size-14 rounded-full overflow-hidden border-2 border-transparent hover:border-[#2525f4]/50 transition-all hover:scale-105 opacity-70 hover:opacity-100"
+                className="group relative size-14 rounded-full overflow-hidden border-2 border-transparent hover:border-[#ea580c]/50 transition-all hover:scale-105 opacity-70 hover:opacity-100"
                 type="button"
               >
                 <Image
@@ -195,7 +195,7 @@ export default function SignupPage() {
                 />
               </button>
               <button
-                className="group relative size-14 rounded-full overflow-hidden border-2 border-transparent hover:border-[#2525f4]/50 transition-all hover:scale-105 opacity-70 hover:opacity-100 bg-slate-100 dark:bg-slate-800 flex items-center justify-center"
+                className="group relative size-14 rounded-full overflow-hidden border-2 border-transparent hover:border-[#ea580c]/50 transition-all hover:scale-105 opacity-70 hover:opacity-100 bg-slate-100 dark:bg-slate-800 flex items-center justify-center"
                 type="button"
               >
                 <span className="material-symbols-outlined text-slate-400 dark:text-slate-500">
@@ -221,7 +221,7 @@ export default function SignupPage() {
                 </label>
                 <div className="relative">
                   <input
-                    className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d45] bg-slate-50 dark:bg-[#151525] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-[#2525f4] focus:ring-[#2525f4] h-12 px-4 text-base"
+                    className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d45] bg-slate-50 dark:bg-[#151525] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-[#ea580c] focus:ring-[#ea580c] h-12 px-4 text-base"
                     id="firstName"
                     placeholder="Jane"
                     type="text"
@@ -240,7 +240,7 @@ export default function SignupPage() {
                 </label>
                 <div className="relative">
                   <input
-                    className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d45] bg-slate-50 dark:bg-[#151525] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-[#2525f4] focus:ring-[#2525f4] h-12 px-4 text-base"
+                    className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d45] bg-slate-50 dark:bg-[#151525] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-[#ea580c] focus:ring-[#ea580c] h-12 px-4 text-base"
                     id="lastName"
                     placeholder="Doe"
                     type="text"
@@ -266,7 +266,7 @@ export default function SignupPage() {
                   </span>
                 </span>
                 <input
-                  className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d45] bg-slate-50 dark:bg-[#151525] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-[#2525f4] focus:ring-[#2525f4] h-12 pl-11 pr-4 text-base"
+                  className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d45] bg-slate-50 dark:bg-[#151525] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-[#ea580c] focus:ring-[#ea580c] h-12 pl-11 pr-4 text-base"
                   id="email"
                   placeholder="jane.doe@school.edu"
                   type="email"
@@ -291,7 +291,7 @@ export default function SignupPage() {
                   </span>
                 </span>
                 <select
-                  className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d45] bg-slate-50 dark:bg-[#151525] text-slate-900 dark:text-white focus:border-[#2525f4] focus:ring-[#2525f4] h-12 pl-11 pr-10 text-base"
+                  className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d45] bg-slate-50 dark:bg-[#151525] text-slate-900 dark:text-white focus:border-[#ea580c] focus:ring-[#ea580c] h-12 pl-11 pr-10 text-base"
                   id="studyLevel"
                   value={studyLevel}
                   onChange={(e) => setStudyLevel(e.target.value)}
@@ -328,7 +328,7 @@ export default function SignupPage() {
                     </span>
                   </span>
                   <input
-                    className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d45] bg-slate-50 dark:bg-[#151525] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-[#2525f4] focus:ring-[#2525f4] h-12 pl-11 pr-4 text-base"
+                    className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d45] bg-slate-50 dark:bg-[#151525] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-[#ea580c] focus:ring-[#ea580c] h-12 pl-11 pr-4 text-base"
                     id="password"
                     placeholder="Create a password"
                     type="password"
@@ -362,7 +362,7 @@ export default function SignupPage() {
                     </span>
                   </span>
                   <input
-                    className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d45] bg-slate-50 dark:bg-[#151525] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-[#2525f4] focus:ring-[#2525f4] h-12 pl-11 pr-4 text-base"
+                    className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d45] bg-slate-50 dark:bg-[#151525] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-[#ea580c] focus:ring-[#ea580c] h-12 pl-11 pr-4 text-base"
                     id="confirmPassword"
                     placeholder="Repeat password"
                     type="password"
@@ -377,7 +377,7 @@ export default function SignupPage() {
             <div className="flex items-start gap-3 pt-2">
               <div className="flex h-6 items-center">
                 <input
-                  className="h-5 w-5 rounded border-slate-300 dark:border-[#2d2d45] bg-slate-50 dark:bg-[#151525] text-[#2525f4] focus:ring-[#2525f4] focus:ring-offset-0"
+                  className="h-5 w-5 rounded border-slate-300 dark:border-[#2d2d45] bg-slate-50 dark:bg-[#151525] text-[#ea580c] focus:ring-[#ea580c] focus:ring-offset-0"
                   id="terms"
                   type="checkbox"
                   checked={termsAccepted}
@@ -391,14 +391,14 @@ export default function SignupPage() {
                 >
                   I agree to the{' '}
                   <Link
-                    className="font-semibold text-[#2525f4] hover:text-[#2525f4]/80 hover:underline"
+                    className="font-semibold text-[#ea580c] hover:text-[#ea580c]/80 hover:underline"
                     href="#"
                   >
                     Terms of Service
                   </Link>{' '}
                   and{' '}
                   <Link
-                    className="font-semibold text-[#2525f4] hover:text-[#2525f4]/80 hover:underline"
+                    className="font-semibold text-[#ea580c] hover:text-[#ea580c]/80 hover:underline"
                     href="#"
                   >
                     Privacy Policy
@@ -409,7 +409,7 @@ export default function SignupPage() {
             </div>
             {/* Submit Button */}
             <button
-              className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#2525f4] py-3.5 px-4 text-sm font-bold text-white shadow-lg shadow-[#2525f4]/30 transition-all hover:bg-[#2525f4]/90 hover:shadow-[#2525f4]/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2525f4] disabled:opacity-70"
+              className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#ea580c] py-3.5 px-4 text-sm font-bold text-white shadow-lg shadow-[#ea580c]/30 transition-all hover:bg-[#ea580c]/90 hover:shadow-[#ea580c]/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ea580c] disabled:opacity-70"
               type="submit"
               disabled={isLoading}
             >
@@ -492,7 +492,7 @@ export default function SignupPage() {
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 Already have an account?
                 <Link
-                  className="font-semibold text-[#2525f4] hover:text-[#2525f4]/80 hover:underline ml-1"
+                  className="font-semibold text-[#ea580c] hover:text-[#ea580c]/80 hover:underline ml-1"
                   href="/login"
                 >
                   Log in here

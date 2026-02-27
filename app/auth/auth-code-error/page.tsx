@@ -15,7 +15,7 @@ export default function AuthErrorPage() {
                 </p>
                 <Link
                     href="/login"
-                    className="inline-flex items-center justify-center h-12 px-6 bg-[#2525f4] hover:bg-[#2525f4]/90 text-white font-medium rounded-lg transition-colors shadow-lg shadow-[#2525f4]/25"
+                    className="inline-flex items-center justify-center h-12 px-6 bg-[#ea580c] hover:bg-[#ea580c]/90 text-white font-medium rounded-lg transition-colors shadow-lg shadow-[#ea580c]/25"
                 >
                     Back to Login
                 </Link>
