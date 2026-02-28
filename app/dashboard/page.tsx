@@ -37,6 +37,24 @@ export default function DashboardPage() {
 
   const [insights, setInsights] = useState<{ keyPoints: string[]; hotList: string[] } | null>(null);
   const [isFetchingInsights, setIsFetchingInsights] = useState(false);
+  const [recentResource, setRecentResource] = useState<{ id: string, title: string } | null>(null);
+  const [cardsDue, setCardsDue] = useState(0);
+
+  useEffect(() => {
+    async function fetchDueCards() {
+      if (!profile) return;
+      const supabase = createClient();
+      const { count, error } = await supabase
+        .from('flashcard_items')
+        .select('id', { count: 'exact', head: true })
+        .lte('next_review_at', new Date().toISOString());
+
+      if (!error && count !== null) {
+        setCardsDue(count);
+      }
+    }
+    fetchDueCards();
+  }, [profile]);
 
   useEffect(() => {
     async function fetchInsights() {
@@ -52,6 +70,7 @@ export default function DashboardPage() {
           .limit(1);
 
         if (data && data.length > 0) {
+          setRecentResource(data[0]);
           // For demo, we just use a generic context if we can't fetch the full text easily
           // In a real app, we'd fetch the content from storage or a 'processed_text' column
           const res = await getDashboardInsights("Biology and Chemistry core concepts");
@@ -236,18 +255,39 @@ export default function DashboardPage() {
             </div>
           </div>
           {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Link href="/flashcards" className="flex items-center gap-4 p-4 bg-white dark:bg-[#1b1b27] border border-[#ea580c] rounded-xl hover:bg-slate-50 dark:hover:bg-[#252535] transition-all group shadow-sm shadow-[#ea580c]/20">
+              <div className="bg-[#ea580c]/10 shrink-0 p-3 rounded-lg text-[#ea580c] group-hover:scale-110 transition-transform relative">
+                <span className="material-symbols-outlined text-2xl">
+                  style
+                </span>
+                {cardsDue > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                  </span>
+                )}
+              </div>
+              <div className="text-left w-full min-w-0">
+                <h3 className="font-bold text-lg text-slate-900 dark:text-white truncate">
+                  Reviews Due
+                </h3>
+                <p className="text-[#ea580c] font-bold text-sm truncate">
+                  {cardsDue > 0 ? `${cardsDue} cards waiting` : 'All caught up!'}
+                </p>
+              </div>
+            </Link>
             <Link href="/leaderboard" className="flex items-center gap-4 p-4 bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-xl hover:bg-slate-50 dark:hover:bg-[#252535] transition-all group">
-              <div className="bg-yellow-100 dark:bg-yellow-900/20 p-3 rounded-lg text-yellow-600 dark:text-yellow-400 group-hover:scale-110 transition-transform">
+              <div className="bg-yellow-100 dark:bg-yellow-900/20 p-3 shrink-0 rounded-lg text-yellow-600 dark:text-yellow-400 group-hover:scale-110 transition-transform">
                 <span className="material-symbols-outlined text-2xl">
                   leaderboard
                 </span>
               </div>
-              <div className="text-left">
-                <h3 className="font-bold text-lg text-slate-900 dark:text-white">
+              <div className="text-left w-full min-w-0">
+                <h3 className="font-bold text-lg text-slate-900 dark:text-white truncate">
                   Leaderboard
                 </h3>
-                <p className="text-slate-500 dark:text-[#9c9cba] text-sm">
+                <p className="text-slate-500 dark:text-[#9c9cba] text-sm truncate">
                   You are #3 in your class
                 </p>
               </div>
@@ -265,21 +305,39 @@ export default function DashboardPage() {
                 </p>
               </div>
             </button>
-            <button className="flex items-center gap-4 p-4 bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-xl hover:bg-slate-50 dark:hover:bg-[#252535] transition-all group">
-              <div className="bg-slate-100 dark:bg-[#2d2d3f] p-3 rounded-lg text-slate-600 dark:text-white group-hover:text-[#ea580c] transition-colors">
-                <span className="material-symbols-outlined text-2xl">
-                  history
-                </span>
-              </div>
-              <div className="text-left">
-                <h3 className="font-bold text-lg text-slate-900 dark:text-white">
-                  Resume History
-                </h3>
-                <p className="text-slate-500 dark:text-[#9c9cba] text-sm">
-                  Continue where you left off
-                </p>
-              </div>
-            </button>
+            {recentResource ? (
+              <Link href={`/resources`} className="flex items-center gap-4 p-4 bg-white dark:bg-[#1b1b27] border border-[#ea580c]/30 rounded-xl hover:border-[#ea580c] transition-all group overflow-hidden">
+                <div className="bg-[#ea580c]/10 shrink-0 p-3 rounded-lg text-[#ea580c] group-hover:scale-110 transition-transform">
+                  <span className="material-symbols-outlined text-2xl">
+                    play_arrow
+                  </span>
+                </div>
+                <div className="text-left w-full min-w-0">
+                  <h3 className="font-bold text-lg text-slate-900 dark:text-white truncate">
+                    Continue Learning
+                  </h3>
+                  <p className="text-slate-500 dark:text-[#9c9cba] text-sm truncate">
+                    {recentResource.title}
+                  </p>
+                </div>
+              </Link>
+            ) : (
+              <button disabled className="flex items-center gap-4 p-4 bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-xl opacity-70 cursor-not-allowed group">
+                <div className="bg-slate-100 dark:bg-[#2d2d3f] shrink-0 p-3 rounded-lg text-slate-600 dark:text-white transition-colors">
+                  <span className="material-symbols-outlined text-2xl">
+                    history
+                  </span>
+                </div>
+                <div className="text-left w-full min-w-0">
+                  <h3 className="font-bold text-lg text-slate-900 dark:text-white truncate">
+                    Resume History
+                  </h3>
+                  <p className="text-slate-500 dark:text-[#9c9cba] text-sm truncate">
+                    No recent activity
+                  </p>
+                </div>
+              </button>
+            )}
           </div>
           {/* Recommended Tools Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -15,11 +15,17 @@ export default function SettingsPage() {
     avatarUrl: '',
   });
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [emailNotifications, setEmailNotifications] = useState(true);
 
   useEffect(() => {
     // Initialize theme from document or localStorage
     const isDark = document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
     setIsDarkMode(isDark);
+
+    const notifs = localStorage.getItem('emailNotifications');
+    if (notifs !== null) {
+      setEmailNotifications(notifs === 'true');
+    }
   }, []);
 
   useEffect(() => {
@@ -42,6 +48,30 @@ export default function SettingsPage() {
     } else {
       document.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
+    }
+  };
+
+  const toggleNotifications = () => {
+    const newVal = !emailNotifications;
+    setEmailNotifications(newVal);
+    localStorage.setItem('emailNotifications', String(newVal));
+  };
+
+  const handlePasswordReset = async () => {
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user?.email) {
+        alert('No email associated with this account.');
+        return;
+      }
+      const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      alert('Password reset link sent to your email!');
+    } catch (err: any) {
+      alert(`Error sending reset link: ${err.message}`);
     }
   };
 
@@ -82,15 +112,15 @@ export default function SettingsPage() {
       const fileName = `avatar_${Date.now()}.${fileExt}`;
       const filePath = `${profile.id}/${fileName}`;
 
-      // We'll use the existing resources bucket
+      // We'll use the existing avatars bucket
       const { error: uploadError } = await supabase.storage
-        .from('resources')
+        .from('avatars')
         .upload(filePath, file);
 
       if (uploadError) throw uploadError;
 
       const { data: { publicUrl } } = supabase.storage
-        .from('resources')
+        .from('avatars')
         .getPublicUrl(filePath);
 
       setFormData({ ...formData, avatarUrl: publicUrl });
@@ -157,12 +187,17 @@ export default function SettingsPage() {
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                     Email Address
                   </label>
-                  <input
-                    className="w-full rounded-lg text-slate-500 border border-slate-300 dark:border-[#2d2d3f] bg-slate-100 dark:bg-[#252535] p-2.5 text-sm outline-none dark:text-slate-400 cursor-not-allowed"
-                    defaultValue="Linked via Authentication"
-                    disabled
-                    type="text"
-                  />
+                  <div className="flex gap-4">
+                    <input
+                      className="flex-1 rounded-lg text-slate-500 border border-slate-300 dark:border-[#2d2d3f] bg-slate-100 dark:bg-[#252535] p-2.5 text-sm outline-none dark:text-slate-400 cursor-not-allowed"
+                      defaultValue="Linked via Authentication"
+                      disabled
+                      type="text"
+                    />
+                    <button onClick={handlePasswordReset} className="px-4 py-2 bg-slate-200 dark:bg-[#2d2d3f] text-slate-700 dark:text-slate-300 font-bold rounded-lg hover:bg-slate-300 dark:hover:bg-[#3b3b54] transition-colors whitespace-nowrap">
+                      Reset Password
+                    </button>
+                  </div>
                 </div>
 
                 {/* Avatar Selection */}
@@ -237,7 +272,8 @@ export default function SettingsPage() {
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
                       className="sr-only peer"
-                      defaultChecked
+                      checked={emailNotifications}
+                      onChange={toggleNotifications}
                       type="checkbox"
                     />
                     <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#ea580c]"></div>

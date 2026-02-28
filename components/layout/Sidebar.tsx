@@ -42,6 +42,7 @@ export default function Sidebar() {
         { name: 'Leaderboard', href: '/leaderboard', icon: 'leaderboard' },
         { name: 'Past Questions', href: '/past-questions', icon: 'history_edu' },
         { name: 'Question Generator', href: '/generator', icon: 'psychology' },
+        { name: 'Essay Grader', href: '/essay-grader', icon: 'grading' },
     ];
 
     const personalLinks = [

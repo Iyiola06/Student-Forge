@@ -26,8 +26,20 @@ export default function ResourcesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
 
-  const [searchQuery, setSearchQuery] = useState('');
+  // Resource Management State
+  const [selectedFolder, setSelectedFolder] = useState<string>('All');
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingResource, setEditingResource] = useState<Resource | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editSubject, setEditSubject] = useState('');
+
   const { searchBooks, results: bookResults, isLoading: isLoadingBooks, error: booksError } = useGoogleBooks();
+
+  const folders = ['All', ...Array.from(new Set(resources.map(r => r.subject || 'Uncategorized')))];
+  const filteredResources = selectedFolder === 'All'
+    ? resources
+    : resources.filter(r => (r.subject || 'Uncategorized') === selectedFolder);
 
   const fetchResources = async () => {
     setIsLoadingLibrary(true);
@@ -118,8 +130,44 @@ export default function ResourcesPage() {
 
       // Update local state
       setResources(prev => prev.filter(r => r.id !== resourceId));
+      const newSelected = new Set(selectedIds);
+      newSelected.delete(resourceId);
+      setSelectedIds(newSelected);
     } catch (error: any) {
       alert(`Error deleting resource: ${error.message}`);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    if (!window.confirm(`Are you sure you want to delete ${selectedIds.size} resources?`)) return;
+
+    try {
+      const supabase = createClient();
+      const idsToDelete = Array.from(selectedIds);
+      const { error } = await supabase.from('resources').delete().in('id', idsToDelete);
+      if (error) throw error;
+      setResources(prev => prev.filter(r => !selectedIds.has(r.id)));
+      setSelectedIds(new Set());
+    } catch (err: any) {
+      alert(`Error bulk deleting: ${err.message}`);
+    }
+  };
+
+  const saveEdit = async () => {
+    if (!editingResource) return;
+    try {
+      const supabase = createClient();
+      const { error } = await supabase
+        .from('resources')
+        .update({ title: editTitle, subject: editSubject })
+        .eq('id', editingResource.id);
+      if (error) throw error;
+
+      setResources(prev => prev.map(r => r.id === editingResource.id ? { ...r, title: editTitle, subject: editSubject } : r));
+      setIsEditModalOpen(false);
+    } catch (err: any) {
+      alert(`Error updating resource: ${err.message}`);
     }
   };
 
@@ -264,71 +312,122 @@ export default function ResourcesPage() {
 
               {/* Grid of Resources */}
               {activeTab === 'library' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {isLoadingLibrary ? (
-                    <div className="col-span-full py-20 flex flex-col items-center justify-center text-slate-500">
-                      <div className="size-8 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin mb-4"></div>
-                      <p className="font-medium animate-pulse">Loading structured resources...</p>
-                    </div>
-                  ) : resources.length === 0 ? (
-                    <div className="col-span-full py-20 flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 bg-white dark:bg-[#1a1a24] rounded-2xl border border-dashed border-slate-200 dark:border-[#2d2d3f]">
-                      <div className="bg-[#f5f5f8] dark:bg-[#13131a] p-4 rounded-full mb-4 border border-slate-200 dark:border-[#2d2d3f]">
-                        <span className="material-symbols-outlined text-4xl text-slate-500">folder_open</span>
-                      </div>
-                      <p className="text-base font-bold text-slate-900 dark:text-white mb-1">No resources found</p>
-                      <p className="text-sm">You haven&apos;t uploaded any files yet.</p>
-                    </div>
-                  ) : (
-                    resources.map((resource) => (
-                      <div key={resource.id} className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-5 hover:border-[#ea580c]/50 transition-colors group flex flex-col">
-                        <div className="flex items-start gap-4 mb-4">
-                          <div className={`p-3 rounded-xl shrink-0 transition-colors ${getIconForType(resource.file_type).colorClass}`}>
-                            <span className="material-symbols-outlined text-3xl">{getIconForType(resource.file_type).icon}</span>
-                          </div>
-                          <div className="min-w-0">
-                            <h3 className="font-bold text-slate-900 dark:text-white leading-snug line-clamp-2 break-all group-hover:text-[#5b5bfa] transition-colors" title={resource.title}>{resource.title}</h3>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 mb-6 flex-wrap">
-                          <span className={`text-[10px] font-black tracking-wider text-slate-500 dark:text-slate-400 bg-[#f5f5f8] dark:bg-[#13131a] px-2 py-1 rounded`}>
-                            {resource.file_type.includes('pdf') ? 'PDF'
-                              : resource.file_type.includes('presentation') || resource.file_type.includes('ppt') ? 'PPTX'
-                                : resource.file_type.includes('document') || resource.file_type.includes('doc') ? 'DOCX'
-                                  : resource.file_type.includes('image') ? 'IMAGE'
-                                    : 'FILE'}
-                          </span>
-                          <span className="text-xs text-slate-500">•</span>
-                          <span className="text-xs text-slate-500 font-medium whitespace-nowrap">{formatSize(resource.file_size_bytes)}</span>
-                          <span className="text-xs text-slate-500">•</span>
-                          <span className="text-xs text-slate-500 font-medium whitespace-nowrap">Uploaded {formatDate(resource.created_at)}</span>
-                        </div>
-                        <div className="flex gap-2 mt-auto">
-                          {resource.file_type.includes('pdf') || resource.file_type.includes('image') || resource.file_type.includes('text') ? (
-                            <button onClick={() => setSelectedResource(resource)} className="flex-1 bg-slate-100 dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
-                              <span className="material-symbols-outlined text-[16px]">visibility</span>
-                              View File
-                            </button>
-                          ) : (
-                            <a href={resource.file_url} target="_blank" rel="noopener noreferrer" className="flex-1 bg-slate-100 dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
-                              <span className="material-symbols-outlined text-[16px]">download</span>
-                              Download
-                            </a>
-                          )}
-
-                          {resource.file_type.includes('pdf') && (
-                            <Link href={`/gamifier?id=${resource.id}`} className="flex-1 bg-[#ea580c]/10 hover:bg-[#ea580c] text-[#ea580c] hover:text-white font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
-                              <span className="material-symbols-outlined text-[16px]">sports_esports</span>
-                              Read & Earn XP
-                            </Link>
-                          )}
-                          <button onClick={() => handleDelete(resource.id)} className="px-3 bg-slate-100 dark:bg-[#252535] hover:bg-red-500/20 hover:text-red-400 text-slate-500 dark:text-slate-400 font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center shrink-0">
-                            <span className="material-symbols-outlined text-[16px]">delete</span>
+                <>
+                  {resources.length > 0 && !isLoadingLibrary && (
+                    <div className="flex justify-between items-center mb-4 flex-wrap gap-4 mt-6">
+                      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                        {folders.map(folder => (
+                          <button
+                            key={folder}
+                            onClick={() => setSelectedFolder(folder)}
+                            className={`px-4 py-1.5 rounded-full text-sm font-bold whitespace-nowrap transition-colors ${selectedFolder === folder ? 'bg-[#ea580c] text-white' : 'bg-white dark:bg-[#1a1a24] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#2d2d3f] hover:border-[#ea580c]'}`}
+                          >
+                            {folder}
                           </button>
-                        </div>
+                        ))}
                       </div>
-                    ))
+                      {selectedIds.size > 0 && (
+                        <button
+                          onClick={handleBulkDelete}
+                          className="px-4 py-1.5 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-bold rounded-lg hover:bg-red-200 dark:hover:bg-red-900/40 transition-colors text-sm shrink-0"
+                        >
+                          Delete Selected ({selectedIds.size})
+                        </button>
+                      )}
+                    </div>
                   )}
-                </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {isLoadingLibrary ? (
+                      <div className="col-span-full py-20 flex flex-col items-center justify-center text-slate-500">
+                        <div className="size-8 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin mb-4"></div>
+                        <p className="font-medium animate-pulse">Loading structured resources...</p>
+                      </div>
+                    ) : resources.length === 0 ? (
+                      <div className="col-span-full py-20 flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 bg-white dark:bg-[#1a1a24] rounded-2xl border border-dashed border-slate-200 dark:border-[#2d2d3f]">
+                        <div className="bg-[#f5f5f8] dark:bg-[#13131a] p-4 rounded-full mb-4 border border-slate-200 dark:border-[#2d2d3f]">
+                          <span className="material-symbols-outlined text-4xl text-slate-500">folder_open</span>
+                        </div>
+                        <p className="text-base font-bold text-slate-900 dark:text-white mb-1">No resources found</p>
+                        <p className="text-sm">You haven&apos;t uploaded any files yet.</p>
+                      </div>
+                    ) : (
+                      filteredResources.map((resource) => (
+                        <div key={resource.id} className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-5 hover:border-[#ea580c]/50 transition-colors group flex flex-col relative">
+                          <div className="absolute top-4 right-4 z-10 flex gap-2 items-center">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingResource(resource);
+                                setEditTitle(resource.title);
+                                setEditSubject(resource.subject || '');
+                                setIsEditModalOpen(true);
+                              }}
+                              className="p-1.5 rounded-lg bg-slate-100 dark:bg-[#252535] text-slate-500 hover:text-[#ea580c] transition-colors"
+                              title="Edit Title/Folder"
+                            >
+                              <span className="material-symbols-outlined text-[16px]">edit</span>
+                            </button>
+                            <input
+                              type="checkbox"
+                              checked={selectedIds.has(resource.id)}
+                              onChange={(e) => {
+                                const newSet = new Set(selectedIds);
+                                if (e.target.checked) newSet.add(resource.id);
+                                else newSet.delete(resource.id);
+                                setSelectedIds(newSet);
+                              }}
+                              className="size-5 rounded border-slate-300 text-[#ea580c] focus:ring-[#ea580c] cursor-pointer"
+                            />
+                          </div>
+                          <div className="flex items-start gap-4 mb-4 mt-2">
+                            <div className={`p-3 rounded-xl shrink-0 transition-colors ${getIconForType(resource.file_type).colorClass}`}>
+                              <span className="material-symbols-outlined text-3xl">{getIconForType(resource.file_type).icon}</span>
+                            </div>
+                            <div className="min-w-0 pr-12">
+                              <h3 className="font-bold text-slate-900 dark:text-white leading-snug line-clamp-2 break-all group-hover:text-[#5b5bfa] transition-colors" title={resource.title}>{resource.title}</h3>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 mb-6 flex-wrap">
+                            <span className={`text-[10px] font-black tracking-wider text-slate-500 dark:text-slate-400 bg-[#f5f5f8] dark:bg-[#13131a] px-2 py-1 rounded`}>
+                              {resource.file_type.includes('pdf') ? 'PDF'
+                                : resource.file_type.includes('presentation') || resource.file_type.includes('ppt') ? 'PPTX'
+                                  : resource.file_type.includes('document') || resource.file_type.includes('doc') ? 'DOCX'
+                                    : resource.file_type.includes('image') ? 'IMAGE'
+                                      : 'FILE'}
+                            </span>
+                            <span className="text-xs text-slate-500">•</span>
+                            <span className="text-xs text-slate-500 font-medium whitespace-nowrap">{formatSize(resource.file_size_bytes)}</span>
+                            <span className="text-xs text-slate-500">•</span>
+                            <span className="text-xs text-slate-500 font-medium whitespace-nowrap">Uploaded {formatDate(resource.created_at)}</span>
+                          </div>
+                          <div className="flex gap-2 mt-auto">
+                            {resource.file_type.includes('pdf') || resource.file_type.includes('image') || resource.file_type.includes('text') ? (
+                              <button onClick={() => setSelectedResource(resource)} className="flex-1 bg-slate-100 dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
+                                <span className="material-symbols-outlined text-[16px]">visibility</span>
+                                View File
+                              </button>
+                            ) : (
+                              <a href={resource.file_url} target="_blank" rel="noopener noreferrer" className="flex-1 bg-slate-100 dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
+                                <span className="material-symbols-outlined text-[16px]">download</span>
+                                Download
+                              </a>
+                            )}
+
+                            {resource.file_type.includes('pdf') && (
+                              <Link href={`/gamifier?id=${resource.id}`} className="flex-1 bg-[#ea580c]/10 hover:bg-[#ea580c] text-[#ea580c] hover:text-white font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
+                                <span className="material-symbols-outlined text-[16px]">sports_esports</span>
+                                Read & Earn XP
+                              </Link>
+                            )}
+                            <button onClick={() => handleDelete(resource.id)} className="px-3 bg-slate-100 dark:bg-[#252535] hover:bg-red-500/20 hover:text-red-400 text-slate-500 dark:text-slate-400 font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center shrink-0">
+                              <span className="material-symbols-outlined text-[16px]">delete</span>
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </>
               )}
 
               {/* Books Search Results */}
@@ -514,6 +613,53 @@ export default function ResourcesPage() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+      {/* Edit Resource Modal */}
+      {isEditModalOpen && editingResource && (
+        <div className="fixed inset-0 z-[100] bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#1a1a24] rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-200 dark:border-[#2d2d3f]">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+              <span className="material-symbols-outlined text-[#ea580c]">edit_document</span>
+              Edit Resource
+            </h3>
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Title</label>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-[#ea580c] focus:ring-1 focus:ring-[#ea580c] transition-colors"
+                  placeholder="Enter resource title..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Folder / Subject</label>
+                <input
+                  type="text"
+                  value={editSubject}
+                  onChange={(e) => setEditSubject(e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-[#ea580c] focus:ring-1 focus:ring-[#ea580c] transition-colors"
+                  placeholder="e.g., Biology, Math, Uncategorized"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-[#2d2d3f]">
+              <button
+                onClick={() => setIsEditModalOpen(false)}
+                className="px-5 py-2.5 rounded-xl font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#252535] transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveEdit}
+                className="px-5 py-2.5 rounded-xl font-bold bg-[#ea580c] hover:bg-[#ea580c]/90 text-white shadow-sm transition-colors"
+              >
+                Save Changes
+              </button>
+            </div>
           </div>
         </div>
       )}

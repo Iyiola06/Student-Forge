@@ -24,6 +24,7 @@ export default function FlashcardsPage() {
     const [isGenerating, setIsGenerating] = useState(false);
     const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
 
     // Drill Mode State
     const [isDrilling, setIsDrilling] = useState(false);
@@ -140,12 +141,57 @@ export default function FlashcardsPage() {
         }, 300); // Wait for flip animation to finish
     };
 
+    const saveDeck = async () => {
+        const title = prompt("Enter a title for this deck:");
+        if (!title) return;
+
+        setIsSaving(true);
+        try {
+            const supabase = createClient();
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error("Not authenticated");
+
+            const { data: deck, error: deckError } = await supabase
+                .from('flashcards')
+                .insert({
+                    user_id: user.id,
+                    title,
+                    resource_id: selectedResource || null,
+                    subject: 'General'
+                })
+                .select().single();
+
+            if (deckError) throw deckError;
+
+            const itemsToInsert = flashcards.map(card => ({
+                deck_id: deck.id,
+                front_content: card.front,
+                back_content: card.back,
+                status: 'new',
+                next_review_at: new Date().toISOString()
+            }));
+
+            const { error: itemsError } = await supabase
+                .from('flashcard_items')
+                .insert(itemsToInsert);
+
+            if (itemsError) throw itemsError;
+
+            alert("Deck saved successfully!");
+            setFlashcards([]);
+        } catch (err: any) {
+            alert("Error saving deck: " + err.message);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     return (
         <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
             <Sidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
-                
-      </div>
+            <div className="flex-1 flex flex-col h-screen overflow-hidden">
+
+            </div>
 
             <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
                 <div className="px-6 pt-6 pb-2 md:px-8">
@@ -300,13 +346,23 @@ export default function FlashcardsPage() {
                                             <h2 className="text-xl font-bold text-slate-900 dark:text-white">Generated Deck</h2>
                                             <p className="text-slate-500 text-sm mt-1">{flashcards.length} cards extracted</p>
                                         </div>
-                                        <button
-                                            onClick={startDrill}
-                                            className="bg-[#ea580c] hover:bg-[#ea580c]/90 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-lg shadow-[#ea580c]/20 transition-all flex items-center gap-2"
-                                        >
-                                            <span className="material-symbols-outlined">play_arrow</span>
-                                            Shuffle & Drill
-                                        </button>
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={saveDeck}
+                                                disabled={isSaving}
+                                                className="bg-slate-100 dark:bg-[#252535] hover:bg-slate-200 dark:hover:bg-[#2d2d3f] text-slate-700 dark:text-slate-300 px-6 py-2.5 rounded-lg text-sm font-bold transition-all flex items-center gap-2"
+                                            >
+                                                <span className="material-symbols-outlined">save</span>
+                                                {isSaving ? 'Saving...' : 'Save Deck'}
+                                            </button>
+                                            <button
+                                                onClick={startDrill}
+                                                className="bg-[#ea580c] hover:bg-[#ea580c]/90 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-lg shadow-[#ea580c]/20 transition-all flex items-center gap-2"
+                                            >
+                                                <span className="material-symbols-outlined">play_arrow</span>
+                                                Shuffle & Drill
+                                            </button>
+                                        </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

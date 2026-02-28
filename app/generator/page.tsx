@@ -37,6 +37,8 @@ export default function GeneratorPage() {
   const [score, setScore] = useState(0);
   const [userAnswers, setUserAnswers] = useState<any[]>([]);
   const [quizStartTime, setQuizStartTime] = useState<number | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [savedQuizId, setSavedQuizId] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchResources() {
@@ -251,6 +253,48 @@ export default function GeneratorPage() {
     }
   };
 
+  const saveQuiz = async () => {
+    if (!generatedData) return;
+    setIsSaving(true);
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not logged in');
+
+      const { data: quiz, error: quizError } = await supabase
+        .from('quizzes')
+        .insert({
+          user_id: user.id,
+          resource_id: selectedResource || null,
+          title: `Generated ${type.toUpperCase()}`,
+          subject: 'General',
+          difficulty,
+          is_public: true
+        })
+        .select().single();
+
+      if (quizError) throw quizError;
+
+      const questions = generatedData.map((q: any) => ({
+        quiz_id: quiz.id,
+        question_text: q.question || q.sentence || 'No question text',
+        question_type: type,
+        options: q.options || [],
+        correct_answer: q.answer || q.model_answer || '',
+        explanation: q.explanation || ''
+      }));
+
+      const { error: itemsError } = await supabase.from('quiz_questions').insert(questions);
+      if (itemsError) throw itemsError;
+
+      setSavedQuizId(quiz.id);
+    } catch (err: any) {
+      alert(`Error saving quiz: ${err.message}`);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const currentSettings = { type, difficulty, count };
 
   const downloadPDF = () => {
@@ -343,7 +387,7 @@ export default function GeneratorPage() {
 
           <div className="grid grid-cols-1 gap-4 mb-10">
             {q.options ? q.options.map((opt: string, i: number) => {
-              const字母 = String.fromCharCode(65 + i);
+              const letter = String.fromCharCode(65 + i);
               const isSelected = selectedOption === opt;
               const isCorrect = opt === q.answer;
 
@@ -363,7 +407,7 @@ export default function GeneratorPage() {
                   className={`flex items-center gap-6 p-6 rounded-2xl border-2 transition-all text-left group ${bgClass}`}
                 >
                   <div className={`size-10 rounded-xl flex items-center justify-center font-black text-lg transition-colors ${isSelected ? 'bg-[#ea580c] text-white' : 'bg-white dark:bg-[#1b1b27] text-slate-400 group-hover:text-[#ea580c]'}`}>
-                    {字母}
+                    {letter}
                   </div>
                   <span className="text-lg font-bold flex-1">{opt}</span>
                   {showExplanation && isCorrect && <span className="material-symbols-outlined text-green-500">check_circle</span>}
@@ -466,9 +510,31 @@ export default function GeneratorPage() {
         </div>
 
         <div className="w-full space-y-4">
+          {savedQuizId ? (
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(`${window.location.origin}/shared/quiz/${savedQuizId}`);
+                alert('Link copied to clipboard!');
+              }}
+              className="w-full h-16 bg-[#ea580c]/10 text-[#ea580c] font-black rounded-2xl hover:bg-[#ea580c]/20 transition-all shadow-xl shadow-orange-500/10 flex items-center justify-center gap-3 border-2 border-[#ea580c]/30"
+            >
+              <span className="material-symbols-outlined">link</span>
+              COPY SHARE LINK
+            </button>
+          ) : (
+            <button
+              onClick={saveQuiz}
+              disabled={isSaving}
+              className="w-full h-16 bg-[#ea580c] text-white font-black rounded-2xl hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20 flex items-center justify-center gap-3 disabled:opacity-50"
+            >
+              <span className="material-symbols-outlined">save</span>
+              {isSaving ? 'SAVING...' : 'SAVE & SHARE QUIZ'}
+            </button>
+          )}
+
           <button
-            onClick={() => { setGeneratedData(null); setIsQuizActive(false); setUserAnswers([]); }}
-            className="w-full h-16 bg-[#ea580c] text-white font-black rounded-2xl hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20 flex items-center justify-center gap-3"
+            onClick={() => { setGeneratedData(null); setIsQuizActive(false); setUserAnswers([]); setSavedQuizId(null); }}
+            className="w-full h-16 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-black rounded-2xl transition-all flex items-center justify-center gap-3"
           >
             DONE & RETURN TO LIBRARY
           </button>
@@ -718,8 +784,9 @@ export default function GeneratorPage() {
                 </div>
               </div>
             </div>
-          )}
-          </div>
+          </main>
+        )}
+      </div>
     </div>
-      );
+  );
 }
