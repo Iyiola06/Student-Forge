@@ -107,6 +107,15 @@ export default function PastQuestionsPage() {
     fetchQuestions();
   }, [profile?.id]);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('tab') === 'my_submissions') {
+        setActiveTab('my_submissions');
+      }
+    }
+  }, []);
+
   const showToast = (message: string, xp?: number) => {
     setToastMessage({ message, xp });
     setTimeout(() => setToastMessage(null), 5000);
