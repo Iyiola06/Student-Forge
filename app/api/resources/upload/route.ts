@@ -2,6 +2,23 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
+export async function OPTIONS() {
+    return NextResponse.json({}, {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        }
+    });
+}
+
+export async function GET() {
+    return NextResponse.json({ message: 'Resource upload endpoint' }, { status: 200 });
+}
+
 export async function POST(request: Request) {
     // Configure worker for PDF.js in Node environment
     // We use a trick to avoid the standard worker which doesn't play nicely with Next.js edge/node runtimes out of the box.
