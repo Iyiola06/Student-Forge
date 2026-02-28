@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -20,10 +19,6 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-    // Configure worker for PDF.js in Node environment
-    // We use a trick to avoid the standard worker which doesn't play nicely with Next.js edge/node runtimes out of the box.
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
-
     try {
         const supabase = await createClient();
         const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -54,6 +49,10 @@ export async function POST(request: Request) {
 
         if (fileType === 'application/pdf') {
             try {
+                // Dynamically import pdfjs-dist ONLY when needed inside the POST request to avoid top-level Vercel lambda crashes
+                const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+                pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
+
                 const arrayBuffer = await fileData.arrayBuffer();
                 const uint8Array = new Uint8Array(arrayBuffer);
 
