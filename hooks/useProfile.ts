@@ -38,13 +38,29 @@ export function useProfile() {
                 setUser(user);
 
                 // Fetch the profile data
-                const { data: profileData, error: profileError } = await supabase
+                let { data: profileData, error: profileError } = await supabase
                     .from('profiles')
                     .select('*')
                     .eq('id', user.id)
                     .single();
 
-                if (profileError) throw profileError;
+                // If no profile found (PGRST116), it means the trigger likely failed or hasn't run yet
+                if (profileError && profileError.code === 'PGRST116') {
+                    const { data: upsertedProfile, error: upsertError } = await supabase
+                        .from('profiles')
+                        .upsert({
+                            id: user.id,
+                            full_name: user.user_metadata.full_name || user.user_metadata.name || 'Student',
+                            avatar_url: user.user_metadata.avatar_url || user.user_metadata.picture || null
+                        }, { onConflict: 'id' })
+                        .select()
+                        .single();
+
+                    if (upsertError) throw upsertError;
+                    profileData = upsertedProfile;
+                } else if (profileError) {
+                    throw profileError;
+                }
 
                 let currentProfile = profileData as Profile;
 

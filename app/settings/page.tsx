@@ -53,11 +53,12 @@ export default function SettingsPage() {
       const fullName = `${formData.firstName} ${formData.lastName}`.trim();
       const { error } = await supabase
         .from('profiles')
-        .update({
+        .upsert({
+          id: profile.id, // Explicitly provide ID for upsert
           full_name: fullName,
-          avatar_url: formData.avatarUrl
-        })
-        .eq('id', profile.id);
+          avatar_url: formData.avatarUrl,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'id' });
 
       if (error) throw error;
       alert('Profile updated successfully!');
@@ -118,7 +119,7 @@ export default function SettingsPage() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Header */}
-        
+
         {/* Settings Content */}
         <main className="flex-1 overflow-y-auto p-6 md:p-8">
           <div className="max-w-3xl mx-auto space-y-8">
