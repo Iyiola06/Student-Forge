@@ -102,3 +102,33 @@ export const gradeTypedAnswer = async (answer: string, q: string, ctx: string): 
 
     return response.json();
 };
+
+export const decodeAbbreviation = async (acronym: string, context?: string): Promise<{ fullForm: string; definition: string }> => {
+    const response = await fetch('/api/ai/dashboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'decode', acronym, context }),
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to decode acronym');
+    }
+
+    return response.json();
+};
+
+export const getDashboardInsights = async (sourceText: string): Promise<{ keyPoints: string[]; hotList: string[] }> => {
+    const response = await fetch('/api/ai/dashboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'insights', sourceText }),
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to fetch insights');
+    }
+
+    return response.json();
+};

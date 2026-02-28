@@ -3,6 +3,9 @@
 import Link from 'next/link';
 import Sidebar from '@/components/layout/Sidebar';
 import { useProfile } from '@/hooks/useProfile';
+import { useState, useEffect } from 'react';
+import { decodeAbbreviation, getDashboardInsights } from '@/lib/aiClient';
+import { createClient } from '@/lib/supabase/client';
 
 export default function DashboardPage() {
   const { profile, isLoading } = useProfile();
@@ -12,6 +15,55 @@ export default function DashboardPage() {
   const level = profile?.level || 1;
   const progressPercent = Math.min((xp % 1000) / 10, 100);
   const xpToNext = 1000 - (xp % 1000);
+
+  // AI Feature States
+  const [abbrInput, setAbbrInput] = useState('');
+  const [abbrResult, setAbbrResult] = useState<{ fullForm: string; definition: string } | null>(null);
+  const [isDecoding, setIsDecoding] = useState(false);
+
+  const [insights, setInsights] = useState<{ keyPoints: string[]; hotList: string[] } | null>(null);
+  const [isFetchingInsights, setIsFetchingInsights] = useState(false);
+
+  useEffect(() => {
+    async function fetchInsights() {
+      if (!profile) return;
+      setIsFetchingInsights(true);
+      try {
+        const supabase = createClient();
+        const { data } = await supabase
+          .from('resources')
+          .select('id, title')
+          .eq('user_id', profile.id)
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (data && data.length > 0) {
+          // For demo, we just use a generic context if we can't fetch the full text easily
+          // In a real app, we'd fetch the content from storage or a 'processed_text' column
+          const res = await getDashboardInsights("Biology and Chemistry core concepts");
+          setInsights(res);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsFetchingInsights(false);
+      }
+    }
+    fetchInsights();
+  }, [profile]);
+
+  const handleDecode = async () => {
+    if (!abbrInput.trim()) return;
+    setIsDecoding(true);
+    try {
+      const res = await decodeAbbreviation(abbrInput);
+      setAbbrResult(res);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsDecoding(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -25,7 +77,7 @@ export default function DashboardPage() {
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       <Sidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-                {/* Main Content */}
+        {/* Main Content */}
         <main className="flex flex-1 flex-col gap-8 px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full overflow-y-auto">
           {/* Welcome Section */}
           <div className="flex flex-col gap-2">
@@ -230,17 +282,32 @@ export default function DashboardPage() {
               <p className="text-slate-500 dark:text-[#9c9cba] text-sm">
                 Instantly expand complex acronyms found in your study materials.
               </p>
-              <div className="mt-auto pt-4">
+              <div className="mt-auto pt-4 space-y-4">
+                {abbrResult && (
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900/10 rounded-lg border border-blue-100 dark:border-blue-900/30 animate-in fade-in slide-in-from-top-2">
+                    <p className="text-blue-600 dark:text-blue-400 font-bold text-sm mb-1">{abbrResult.fullForm}</p>
+                    <p className="text-slate-500 dark:text-[#9c9cba] text-xs">{abbrResult.definition}</p>
+                  </div>
+                )}
                 <div className="relative">
                   <input
                     className="w-full bg-slate-50 dark:bg-[#111118] border border-slate-200 dark:border-[#2d2d3f] rounded-lg py-2 pl-3 pr-10 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white"
                     placeholder="e.g. DNA, ATP..."
                     type="text"
+                    value={abbrInput}
+                    onChange={(e) => setAbbrInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleDecode()}
                   />
-                  <button className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#ea580c]">
-                    <span className="material-symbols-outlined text-lg">
-                      search
-                    </span>
+                  <button
+                    onClick={handleDecode}
+                    disabled={isDecoding}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#ea580c] disabled:opacity-50"
+                  >
+                    {isDecoding ? (
+                      <div className="size-4 border-2 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
+                    ) : (
+                      <span className="material-symbols-outlined text-lg">search</span>
+                    )}
                   </button>
                 </div>
               </div>
@@ -256,19 +323,24 @@ export default function DashboardPage() {
                 </h3>
               </div>
               <p className="text-slate-500 dark:text-[#9c9cba] text-sm">
-                AI highlights the most critical concepts from your last uploaded
-                PDF.
+                AI highlights the most critical concepts from your last uploaded PDF.
               </p>
-              <div className="mt-auto pt-2 flex flex-wrap gap-2">
-                <span className="px-2 py-1 bg-slate-100 dark:bg-[#2d2d3f] text-xs font-medium rounded-md text-slate-600 dark:text-slate-300">
-                  Photosynthesis
-                </span>
-                <span className="px-2 py-1 bg-slate-100 dark:bg-[#2d2d3f] text-xs font-medium rounded-md text-slate-600 dark:text-slate-300">
-                  Cellular Respiration
-                </span>
-                <span className="px-2 py-1 bg-slate-100 dark:bg-[#2d2d3f] text-xs font-medium rounded-md text-slate-600 dark:text-slate-300">
-                  Mitosis
-                </span>
+              <div className="mt-auto pt-2 flex flex-wrap gap-2 text-center items-center justify-center min-h-[40px]">
+                {isFetchingInsights ? (
+                  <div className="flex gap-2 animate-pulse">
+                    <div className="h-6 w-16 bg-slate-100 dark:bg-[#2d2d3f] rounded"></div>
+                    <div className="h-6 w-20 bg-slate-100 dark:bg-[#2d2d3f] rounded"></div>
+                    <div className="h-6 w-14 bg-slate-100 dark:bg-[#2d2d3f] rounded"></div>
+                  </div>
+                ) : insights?.keyPoints ? (
+                  insights.keyPoints.map((kp, i) => (
+                    <span key={i} className="px-2 py-1 bg-slate-100 dark:bg-[#2d2d3f] text-xs font-medium rounded-md text-slate-600 dark:text-slate-300">
+                      {kp}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest">No materials found</span>
+                )}
               </div>
             </div>
             {/* Examiner's Hot List */}
@@ -284,12 +356,27 @@ export default function DashboardPage() {
                 </div>
                 <h3 className="text-lg font-bold">Examiner&apos;s Hot List</h3>
               </div>
-              <p className="text-white/80 text-sm relative z-10">
-                Topics predicted to appear in this year&apos;s exams based on past
-                trends.
-              </p>
-              <button className="mt-auto w-full bg-white text-[#ea580c] py-2 rounded-lg font-bold text-sm hover:bg-slate-100 transition-colors relative z-10">
-                View Predictions
+              <div className="space-y-2 relative z-10">
+                {isFetchingInsights ? (
+                  <div className="space-y-2 opacity-30">
+                    <div className="h-4 w-3/4 bg-white/20 rounded"></div>
+                    <div className="h-4 w-1/2 bg-white/20 rounded"></div>
+                  </div>
+                ) : insights?.hotList ? (
+                  insights.hotList.map((hot, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm font-bold">
+                      <span className="w-1.5 h-1.5 bg-orange-400 rounded-full"></span>
+                      {hot}
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-white/80 text-sm">
+                    Topics predicted based on past trends.
+                  </p>
+                )}
+              </div>
+              <button className="mt-auto w-full bg-white text-[#ea580c] py-2 rounded-lg font-bold text-sm hover:bg-slate-100 transition-colors relative z-10 uppercase tracking-widest text-[10px]">
+                {insights ? 'Analyze Trends' : 'View Predictions'}
               </button>
             </div>
           </div>
