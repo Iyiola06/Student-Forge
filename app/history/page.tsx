@@ -95,7 +95,7 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       <Sidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
                 {/* Main Content Area */}

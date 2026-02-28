@@ -87,13 +87,22 @@ export default function Sidebar() {
                     </h2>
                 </Link>
 
-                <button
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="p-1.5 bg-slate-100 dark:bg-[#1b1b27] rounded-lg border border-slate-200 dark:border-[#2d2d3f] text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-[#252535] transition-colors"
-                    aria-label="Toggle Menu"
-                >
-                    <span className="material-symbols-outlined text-[24px]">{isOpen ? 'close' : 'menu'}</span>
-                </button>
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={handleLogout}
+                        className="text-slate-400 hover:text-red-500 transition-colors p-1 flex items-center justify-center"
+                        title="Logout"
+                    >
+                        <span className="material-symbols-outlined text-[22px]">logout</span>
+                    </button>
+                    <button
+                        onClick={() => setIsOpen(!isOpen)}
+                        className="p-1.5 bg-slate-100 dark:bg-[#1b1b27] rounded-lg border border-slate-200 dark:border-[#2d2d3f] text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-[#252535] transition-colors"
+                        aria-label="Toggle Menu"
+                    >
+                        <span className="material-symbols-outlined text-[24px]">{isOpen ? 'close' : 'menu'}</span>
+                    </button>
+                </div>
             </div>
 
             {/* Mobile Overlay */}
