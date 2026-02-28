@@ -39,9 +39,9 @@ export async function POST(request: Request) {
             : content;
 
         // Initialize the model with JSON enforcement
-        // We use gemini-1.5-pro as requested by the user
+        // We use gemini-1.5-flash as it's the standard, fast, globally-available default and less prone to 404 errors.
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-pro",
+            model: "gemini-1.5-flash",
             generationConfig: {
                 responseMimeType: "application/json",
             }

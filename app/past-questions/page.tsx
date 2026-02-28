@@ -23,6 +23,7 @@ interface PastQuestion {
   upvotes: number;
   downloads: number;
   is_approved: boolean;
+  is_anonymous: boolean;
   created_at: string;
   profiles?: {
     full_name: string;
@@ -64,6 +65,7 @@ export default function PastQuestionsPage() {
   const [formSemester, setFormSemester] = useState('');
   const [formDescription, setFormDescription] = useState('');
   const [formFile, setFormFile] = useState<File | null>(null);
+  const [formIsAnonymous, setFormIsAnonymous] = useState(false);
 
   // Toasts
   const [toastMessage, setToastMessage] = useState<{ message: string, xp?: number } | null>(null);
@@ -167,7 +169,8 @@ export default function PastQuestionsPage() {
         description: formDescription,
         file_url: publicUrl,
         file_size: fileSizeMb,
-        file_type: fileType
+        file_type: fileType,
+        is_anonymous: formIsAnonymous
       });
 
       if (insertError) throw insertError;
@@ -191,6 +194,7 @@ export default function PastQuestionsPage() {
       setFormSubject('');
       setFormCourseCode('');
       setFormDescription('');
+      setFormIsAnonymous(false);
       fetchQuestions();
 
     } catch (err: any) {
@@ -263,11 +267,22 @@ export default function PastQuestionsPage() {
       )}
 
       <div className="flex items-center gap-3 mb-4 pr-6">
-        <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden shrink-0">
-          {q.profiles?.avatar_url && <img src={q.profiles.avatar_url} alt="Avatar" className="w-full h-full object-cover" />}
+        <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden shrink-0 border border-slate-300 dark:border-slate-700">
+          {q.is_anonymous ? (
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=anonymous&backgroundColor=cbd5e1" alt="Anonymous" className="w-full h-full object-cover opacity-80" />
+          ) : (
+            q.profiles?.avatar_url && <img src={q.profiles.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+          )}
         </div>
-        <div className="min-w-0">
-          <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{q.profiles?.full_name || 'Student'}</p>
+        <div className="min-w-0 flex flex-col justify-center">
+          <div className="flex items-center gap-1.5">
+            <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
+              {q.is_anonymous ? 'Anonymous Student' : (q.profiles?.full_name || 'Student')}
+            </p>
+            {q.user_id === profile?.id && q.is_anonymous && (
+              <span className="material-symbols-outlined text-[10px] text-[#ea580c] shrink-0" title="This is your anonymous post">visibility_off</span>
+            )}
+          </div>
           <p className="text-[10px] text-slate-500 truncate">{new Date(q.created_at).toLocaleDateString()}</p>
         </div>
       </div>
@@ -318,7 +333,7 @@ export default function PastQuestionsPage() {
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       <Sidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden relative w-full max-w-[100vw]">
-        
+
 
         {/* Global Toast */}
         {toastMessage && (
@@ -416,6 +431,14 @@ export default function PastQuestionsPage() {
                       <p className="text-xs text-slate-500">Supports PDF or Images (Max 20MB)</p>
                     </>
                   )}
+                </div>
+
+                <div className="flex items-center gap-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] p-4 rounded-xl cursor-pointer" onClick={() => setFormIsAnonymous(!formIsAnonymous)}>
+                  <input type="checkbox" id="anonUpload" checked={formIsAnonymous} readOnly className="w-5 h-5 rounded border-slate-300 text-[#ea580c] focus:ring-[#ea580c] cursor-pointer" />
+                  <label htmlFor="anonUpload" className="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">
+                    Post Anonymously
+                    <span className="block text-xs font-normal text-slate-500 mt-0.5">Your name and profile image will be hidden from everyone else. You still earn XP!</span>
+                  </label>
                 </div>
 
                 <button disabled={isSubmitting} type="submit" className="w-full bg-[#3b82f6] hover:bg-[#2563eb] text-slate-900 dark:text-white font-bold h-12 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2">

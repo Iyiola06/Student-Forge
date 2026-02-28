@@ -194,6 +194,7 @@ export default function SignupPage() {
                     className="object-cover"
                     src={url}
                     fill
+                    unoptimized={url.startsWith('data:')}
                   />
                   {avatarUrl === url && (
                     <div className="absolute inset-0 bg-[#ea580c]/40 flex items-center justify-center">
@@ -204,6 +205,28 @@ export default function SignupPage() {
                   )}
                 </button>
               ))}
+              {/* If a custom avatar is selected and it isn't one of the predefined options, show it */}
+              {avatarUrl && !AVATAR_OPTIONS.includes(avatarUrl) && (
+                <button
+                  key="custom"
+                  onClick={() => setAvatarUrl(avatarUrl)}
+                  className={`group relative size-16 border-2 border-[#ea580c] ring-4 ring-[#ea580c]/20 scale-105 rounded-full overflow-hidden transition-all`}
+                  type="button"
+                >
+                  <Image
+                    alt="Custom avatar"
+                    className="object-cover"
+                    src={avatarUrl}
+                    fill
+                    unoptimized={avatarUrl.startsWith('data:')}
+                  />
+                  <div className="absolute inset-0 bg-[#ea580c]/40 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-white font-bold">
+                      check
+                    </span>
+                  </div>
+                </button>
+              )}
               <button
                 className="group relative size-14 rounded-full overflow-hidden border-2 border-transparent hover:border-[#ea580c]/50 transition-all hover:scale-105 opacity-70 hover:opacity-100 bg-slate-100 dark:bg-slate-800 flex items-center justify-center"
                 type="button"
@@ -212,9 +235,42 @@ export default function SignupPage() {
                   input.type = 'file';
                   input.accept = 'image/*';
                   input.onchange = (e: any) => {
-                    // Normally you would upload this to Supabase storage and get a public URL
-                    // For now just alert that custom uploads from local disk need storage API
-                    alert('Custom uploads not yet fully wired to storage. Select an existing avatar.');
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = (event) => {
+                        const img = document.createElement('img');
+                        img.onload = () => {
+                          const canvas = document.createElement('canvas');
+                          const MAX_SIZE = 256;
+                          let width = img.width;
+                          let height = img.height;
+
+                          if (width > height) {
+                            if (width > MAX_SIZE) {
+                              height *= MAX_SIZE / width;
+                              width = MAX_SIZE;
+                            }
+                          } else {
+                            if (height > MAX_SIZE) {
+                              width *= MAX_SIZE / height;
+                              height = MAX_SIZE;
+                            }
+                          }
+
+                          canvas.width = width;
+                          canvas.height = height;
+                          const ctx = canvas.getContext('2d');
+                          ctx?.drawImage(img, 0, 0, width, height);
+
+                          // Convert to base64 jpeg to keep it extremely lightweight
+                          const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                          setAvatarUrl(dataUrl);
+                        };
+                        img.src = event.target?.result as string;
+                      };
+                      reader.readAsDataURL(file);
+                    }
                   };
                   input.click();
                 }}
