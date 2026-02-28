@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+const apiKey = process.env.GEMINI_API_KEY;
+const genAI = new GoogleGenerativeAI(apiKey || '');
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -49,39 +53,86 @@ export async function POST(request: Request) {
 
         if (fileType === 'application/pdf') {
             try {
-                // Dynamically import pdfjs-dist ONLY when needed inside the POST request to avoid top-level Vercel lambda crashes
+                // Use a more robust way to load pdfjs in Node.js
+                // We'll use the legacy build and disable the worker for simplicity in serverless environments
                 const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
-                pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
 
                 const arrayBuffer = await fileData.arrayBuffer();
                 const uint8Array = new Uint8Array(arrayBuffer);
 
-                const loadingTask = pdfjsLib.getDocument({ data: uint8Array });
-                const pdfDocument = await loadingTask.promise;
+                const loadingTask = pdfjsLib.getDocument({
+                    data: uint8Array,
+                    useWorkerFetch: false,
+                    isEvalSupported: false,
+                    useSystemFonts: true
+                });
 
+                const pdfDocument = await loadingTask.promise;
                 const numPages = pdfDocument.numPages;
                 let fullText = '';
 
                 for (let i = 1; i <= numPages; i++) {
                     const page = await pdfDocument.getPage(i);
                     const textContent = await page.getTextContent();
-                    const pageText = textContent.items.map((item: any) => item.str).join(' ');
+                    const pageText = textContent.items
+                        .map((item: any) => item.str)
+                        .filter((str: string) => str.trim().length > 0)
+                        .join(' ');
                     fullText += pageText + '\n';
                 }
 
                 extractedText = fullText.trim();
 
-                if (extractedText.length > 50) {
+                if (extractedText.length > 20) {
                     isExtractionSuccessful = true;
                 } else {
-                    extractedText = "Text could not be extracted from this document. It may be a scanned image or protected PDF.";
+                    extractedText = ""; // Clear it so we don't save "Parsing failed" as content
+                    return NextResponse.json({
+                        error: 'Could not extract enough text from this PDF. It might be a scanned image (OCR required) or encrypted.',
+                        textExtracted: false
+                    }, { status: 422 });
                 }
-            } catch (pdfError) {
+            } catch (pdfError: any) {
                 console.error('PDF parsing error:', pdfError);
-                extractedText = "An error occurred while attempting to parse text from this PDF.";
+                return NextResponse.json({
+                    error: `Failed to parse PDF: ${pdfError.message || 'Unknown error'}. Please try pasting the text manually.`,
+                    textExtracted: false
+                }, { status: 422 });
             }
+        } else if (fileType.startsWith('image/')) {
+            try {
+                if (!apiKey) throw new Error('Gemini API key is not configured for OCR');
+
+                const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+                const arrayBuffer = await fileData.arrayBuffer();
+                const base64Data = Buffer.from(arrayBuffer).toString('base64');
+
+                const result = await model.generateContent([
+                    "Transcribe all readable text from this study material image. Format it cleanly as text. If there are diagrams, describe them briefly.",
+                    {
+                        inlineData: {
+                            data: base64Data,
+                            mimeType: fileType
+                        }
+                    }
+                ]);
+
+                extractedText = result.response.text().trim();
+                isExtractionSuccessful = extractedText.length > 10;
+            } catch (imageError: any) {
+                console.error('Image OCR error:', imageError);
+                return NextResponse.json({
+                    error: `Failed to process image: ${imageError.message || 'Unknown error'}.`,
+                    textExtracted: false
+                }, { status: 422 });
+            }
+        } else if (fileType === 'text/plain' || fileType === 'application/json') {
+            extractedText = await fileData.text();
+            isExtractionSuccessful = extractedText.length > 5;
         } else {
-            extractedText = "Text extraction is currently only supported for PDF files.";
+            return NextResponse.json({
+                error: `The file type '${fileType}' is not currently supported for text extraction. Please use PDF, Images, or TXT.`
+            }, { status: 400 });
         }
 
         // 3. Save to database
