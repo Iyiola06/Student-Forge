@@ -5,12 +5,9 @@ import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useProfile } from '@/hooks/useProfile';
-import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 import confetti from 'canvas-confetti';
 import Image from 'next/image';
-
-// Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
+// PDF.js worker will be loaded dynamically
 
 function getAvatar(url?: string | null) {
   return url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback';
@@ -150,8 +147,16 @@ function GamifierContent() {
 
   const loadPdf = async (url: string) => {
     try {
+      // Dynamically import pdf.js to prevent InvalidPDFException on Vercel client build
+      const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+      pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
+
       const loadingTask = pdfjsLib.getDocument(url);
       const pdf = await loadingTask.promise;
+
+      // Store pdfDoc, but because we removed the global pdfjsLib state, we also
+      // attach it to window so renderPage can grab it, or pass it in state. 
+      // State is safer.
       setPdfDoc(pdf);
       setNumPages(pdf.numPages);
     } catch (error) {

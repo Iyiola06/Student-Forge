@@ -98,10 +98,7 @@ export default function HistoryPage() {
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       <Sidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-16 bg-white dark:bg-[#1a1a24] border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
-          <h1 className="font-bold text-slate-900 dark:text-white">StudyForge</h1>
-        </header>
-        {/* Main Content Area */}
+                {/* Main Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
           <div className="px-6 pt-6 pb-2 md:px-8 flex items-center justify-between">
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">

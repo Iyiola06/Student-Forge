@@ -270,9 +270,7 @@ export default function GeneratorPage() {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-16 bg-white dark:bg-[#1b1b27] border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
-          <h1 className="font-bold text-white">Generator</h1>
-        </header>
+        
 
         <main className="flex-1 overflow-y-auto w-full max-w-[1440px] mx-auto">
           <div className="px-6 pt-10 pb-6 md:px-8">

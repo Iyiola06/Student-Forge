@@ -20,10 +20,7 @@ export default function ProfilePage() {
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       <Sidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-16 bg-[#1a1a24] border-b border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
-          <h1 className="font-bold text-white">StudyForge</h1>
-        </header>
-        {/* Main Content */}
+                {/* Main Content */}
         <main className="flex flex-1 flex-col px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full">
           {/* Profile Header */}
           <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] overflow-hidden mb-8">

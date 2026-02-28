@@ -216,10 +216,7 @@ export default function ExamReadyPage() {
         <div className="bg-[#f5f5f8] dark:bg-[#13131a] font-display min-h-screen flex antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c] text-white">
             <Sidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-16 bg-white dark:bg-[#1a1a24] border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
-          <h1 className="font-bold text-slate-900 dark:text-white">StudyForge</h1>
-        </header>
-
+        
             <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto p-6 md:p-8">
                 {isGenerating ? (
                     <div className="flex-1 flex flex-col items-center justify-center text-center">

@@ -156,10 +156,7 @@ export default function ResourcesPage() {
     <div className="bg-[#f5f5f8] dark:bg-[#13131a] font-display min-h-screen flex antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       <Sidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-16 bg-white dark:bg-[#1a1a24] border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
-          <h1 className="font-bold text-slate-900 dark:text-white">StudyForge</h1>
-        </header>
-
+        
         {/* Upload Toast Indicator */}
         {isUploading && (
           <div className="fixed bottom-6 right-6 z-50 bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] shadow-xl rounded-xl p-4 flex items-center gap-4 animate-in slide-in-from-bottom-5">

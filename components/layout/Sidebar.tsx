@@ -76,14 +76,25 @@ export default function Sidebar() {
 
     return (
         <>
-            {/* Mobile Hamburger Button */}
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="md:hidden fixed top-3 left-4 z-[60] p-1.5 bg-[#1b1b27] rounded-lg border border-[#2d2d3f] text-slate-400 hover:text-white hover:bg-[#252535] transition-colors shadow-lg"
-                aria-label="Toggle Menu"
-            >
-                <span className="material-symbols-outlined text-[24px]">{isOpen ? 'close' : 'menu'}</span>
-            </button>
+            {/* Mobile Sticky Header */}
+            <div className="md:hidden sticky top-0 left-0 w-full h-16 bg-white dark:bg-[#1b1b27] border-b border-slate-200 dark:border-[#2d2d3f] px-6 flex items-center justify-between z-[45]">
+                <Link href="/dashboard" className="flex items-center gap-2">
+                    <div className="size-8 text-[#ea580c] flex items-center justify-center">
+                        <span className="material-symbols-outlined text-3xl">school</span>
+                    </div>
+                    <h2 className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
+                        StudyForge
+                    </h2>
+                </Link>
+
+                <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="p-1.5 bg-slate-100 dark:bg-[#1b1b27] rounded-lg border border-slate-200 dark:border-[#2d2d3f] text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-[#252535] transition-colors"
+                    aria-label="Toggle Menu"
+                >
+                    <span className="material-symbols-outlined text-[24px]">{isOpen ? 'close' : 'menu'}</span>
+                </button>
+            </div>
 
             {/* Mobile Overlay */}
             {isOpen && (
