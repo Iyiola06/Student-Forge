@@ -353,8 +353,8 @@ function GamifierContent() {
     return (
       <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col items-center justify-center p-6 text-center">
         <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white mb-4">Turn Your Notes Into a Game</h1>
-        <p className="text-slate-600 dark:text-slate-400 mb-8 max-w-md">Upload a new PDF or choose from your library to start earning XP, badges, and climbing the leaderboard just by reading.</p>
-        <Link href="/resources" className="px-8 py-3 bg-[#ea580c] hover:bg-[#d04e0a] text-white font-bold rounded-xl transition-transform hover:scale-105 shadow-lg shadow-[#ea580c]/30">
+        <p className="text-slate-600 dark:text-slate-500 dark:text-slate-400 mb-8 max-w-md">Upload a new PDF or choose from your library to start earning XP, badges, and climbing the leaderboard just by reading.</p>
+        <Link href="/resources" className="px-8 py-3 bg-[#ea580c] hover:bg-[#d04e0a] text-slate-900 dark:text-white font-bold rounded-xl transition-transform hover:scale-105 shadow-lg shadow-[#ea580c]/30">
           Go to Library
         </Link>
       </div>
@@ -368,35 +368,35 @@ function GamifierContent() {
   };
 
   const renderSummary = () => (
-    <div className="absolute inset-0 z-50 bg-[#101022]/95 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="bg-[#1b1b27] border border-[#3b3b54] rounded-2xl p-8 max-w-2xl w-full text-center shadow-2xl relative overflow-hidden">
+    <div className="absolute inset-0 z-50 bg-[#f5f5f8] dark:bg-[#101022]/95 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-[#1b1b27] border border-slate-300 dark:border-[#3b3b54] rounded-2xl p-8 max-w-2xl w-full text-center shadow-2xl relative overflow-hidden">
         {/* Confetti effect background */}
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 via-purple-500 to-blue-500"></div>
 
-        <h2 className="text-3xl font-black text-white mb-2">Session Complete!</h2>
-        <p className="text-slate-400 mb-8">You crushed it today.</p>
+        <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2">Session Complete!</h2>
+        <p className="text-slate-500 dark:text-slate-400 mb-8">You crushed it today.</p>
 
         <div className="grid grid-cols-3 gap-6 mb-10">
-          <div className="bg-[#252535] p-6 rounded-xl border border-[#3b3b54]">
+          <div className="bg-slate-100 dark:bg-[#252535] p-6 rounded-xl border border-slate-300 dark:border-[#3b3b54]">
             <span className="material-symbols-outlined text-[#ea580c] text-3xl mb-2">diamond</span>
-            <p className="text-3xl font-black text-white">+{xpEarned}</p>
-            <p className="text-xs text-slate-400 uppercase tracking-widest mt-1">XP Earned</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-white">+{xpEarned}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-1">XP Earned</p>
           </div>
-          <div className="bg-[#252535] p-6 rounded-xl border border-[#3b3b54]">
+          <div className="bg-slate-100 dark:bg-[#252535] p-6 rounded-xl border border-slate-300 dark:border-[#3b3b54]">
             <span className="material-symbols-outlined text-blue-400 text-3xl mb-2">auto_stories</span>
-            <p className="text-3xl font-black text-white">{pagesReadThisSession}</p>
-            <p className="text-xs text-slate-400 uppercase tracking-widest mt-1">Pages Read</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-white">{pagesReadThisSession}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-1">Pages Read</p>
           </div>
-          <div className="bg-[#252535] p-6 rounded-xl border border-[#3b3b54]">
+          <div className="bg-slate-100 dark:bg-[#252535] p-6 rounded-xl border border-slate-300 dark:border-[#3b3b54]">
             <span className="material-symbols-outlined text-purple-400 text-3xl mb-2">timer</span>
-            <p className="text-3xl font-black text-white">{formatTime(sessionSeconds)}</p>
-            <p className="text-xs text-slate-400 uppercase tracking-widest mt-1">Time Spent</p>
+            <p className="text-3xl font-black text-slate-900 dark:text-white">{formatTime(sessionSeconds)}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-1">Time Spent</p>
           </div>
         </div>
 
         {badgesUnlockedSession.length > 0 && (
           <div className="mb-10 text-left">
-            <h3 className="text-sm font-bold text-slate-400 uppercase mb-4">Badges Unlocked</h3>
+            <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase mb-4">Badges Unlocked</h3>
             <div className="flex flex-wrap gap-4 justify-center">
               {badgesUnlockedSession.map(b => (
                 <div key={b.id} className="flex items-center gap-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 px-4 py-2 rounded-lg">
@@ -410,14 +410,14 @@ function GamifierContent() {
 
         <div className="flex gap-4 justify-center">
           {currentPage < numPages && (
-            <button onClick={() => setShowSummary(false)} className="px-6 py-3 bg-[#252535] hover:bg-[#2d2d3f] text-white font-bold rounded-xl transition-colors">
+            <button onClick={() => setShowSummary(false)} className="px-6 py-3 bg-slate-100 dark:bg-[#252535] hover:bg-slate-200 dark:hover:bg-[#2d2d3f] text-slate-900 dark:text-white font-bold rounded-xl transition-colors">
               Continue Reading
             </button>
           )}
-          <Link href={`generator?id=${resourceId}`} className="px-6 py-3 bg-[#ea580c] hover:bg-[#d04e0a] text-white font-bold rounded-xl shadow-lg shadow-[#ea580c]20 transition-transform hover:scale-105">
+          <Link href={`generator?id=${resourceId}`} className="px-6 py-3 bg-[#ea580c] hover:bg-[#d04e0a] text-slate-900 dark:text-white font-bold rounded-xl shadow-lg shadow-[#ea580c]20 transition-transform hover:scale-105">
             Generate Study Aids
           </Link>
-          <Link href="/resources" className="px-6 py-3 text-slate-400 hover:text-white font-medium transition-colors">
+          <Link href="/resources" className="px-6 py-3 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white font-medium transition-colors">
             Back to Library
           </Link>
         </div>
@@ -431,17 +431,17 @@ function GamifierContent() {
   const progressPercent = Math.min(100, Math.round((userXp / targetXp) * 100));
 
   return (
-    <div className="bg-[#101022] font-display min-h-screen flex flex-col antialiased">
+    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased">
       {showSummary && renderSummary()}
 
       {/* Level Up Modal */}
       {showLevelUp && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#1b1b27] border border-[#ea580c]/50 p-12 rounded-3xl text-center transform scale-110 shadow-2xl shadow-[#ea580c]/20 animate-in zoom-in duration-300">
+          <div className="bg-white dark:bg-[#1b1b27] border border-[#ea580c]/50 p-12 rounded-3xl text-center transform scale-110 shadow-2xl shadow-[#ea580c]/20 animate-in zoom-in duration-300">
             <div className="text-6xl mb-4">🎉</div>
             <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-300 mb-2">LEVEL UP!</h2>
-            <p className="text-xl text-white mb-8">You've reached Level {newLevel}</p>
-            <button onClick={() => setShowLevelUp(false)} className="px-8 py-3 bg-[#ea580c] text-white font-bold rounded-xl hover:bg-[#d04e0a]">
+            <p className="text-xl text-slate-900 dark:text-white mb-8">You've reached Level {newLevel}</p>
+            <button onClick={() => setShowLevelUp(false)} className="px-8 py-3 bg-[#ea580c] text-slate-900 dark:text-white font-bold rounded-xl hover:bg-[#d04e0a]">
               Awesome!
             </button>
           </div>
@@ -449,9 +449,9 @@ function GamifierContent() {
       )}
 
       {/* Top Header */}
-      <header className="flex items-center justify-between border-b border-[#2d2d3f] px-6 py-3 bg-[#101022] z-40">
-        <div className="flex items-center gap-4 text-white">
-          <button onClick={() => endSession()} className="size-10 flex items-center justify-center hover:bg-[#252535] rounded-lg transition-colors text-slate-400">
+      <header className="flex items-center justify-between border-b border-slate-200 dark:border-[#2d2d3f] px-6 py-3 bg-[#f5f5f8] dark:bg-[#101022] z-40">
+        <div className="flex items-center gap-4 text-slate-900 dark:text-white">
+          <button onClick={() => endSession()} className="size-10 flex items-center justify-center hover:bg-slate-100 dark:bg-[#252535] rounded-lg transition-colors text-slate-500 dark:text-slate-400">
             <span className="material-symbols-outlined">close</span>
           </button>
           <div>
@@ -460,9 +460,9 @@ function GamifierContent() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4 bg-[#1b1b27] px-4 py-1.5 rounded-full border border-[#2d2d3f]">
+        <div className="flex items-center gap-4 bg-white dark:bg-[#1b1b27] px-4 py-1.5 rounded-full border border-slate-200 dark:border-[#2d2d3f]">
           <span className="material-symbols-outlined text-[#ea580c] text-lg">timer</span>
-          <span className="font-mono text-sm font-bold text-white">{formatTime(sessionSeconds)}</span>
+          <span className="font-mono text-sm font-bold text-slate-900 dark:text-white">{formatTime(sessionSeconds)}</span>
         </div>
       </header>
 
@@ -470,7 +470,7 @@ function GamifierContent() {
       <div className="flex flex-1 overflow-hidden relative">
 
         {/* Left: PDF Reader */}
-        <main className="flex-1 flex flex-col bg-[#0c0c16] relative">
+        <main className="flex-1 flex flex-col bg-slate-200/50 dark:bg-[#0c0c16] relative">
 
           <div className="flex-1 overflow-auto flex items-center justify-center p-8">
             {!pdfDoc && (
@@ -486,7 +486,7 @@ function GamifierContent() {
               {/* Pagination Overlay Controls */}
               {pdfDoc && (
                 <div className="absolute inset-y-0 left-0 w-1/4 flex items-center justify-start opacity-0 hover:opacity-100 transition-opacity">
-                  <button onClick={() => handlePageTurn(-1)} disabled={currentPage <= 1} className="m-4 size-14 rounded-full bg-black/50 text-white backdrop-blur-md flex items-center justify-center hover:bg-[#ea580c] disabled:opacity-30 transition-colors">
+                  <button onClick={() => handlePageTurn(-1)} disabled={currentPage <= 1} className="m-4 size-14 rounded-full bg-black/50 text-slate-900 dark:text-white backdrop-blur-md flex items-center justify-center hover:bg-[#ea580c] disabled:opacity-30 transition-colors">
                     <span className="material-symbols-outlined text-3xl">chevron_left</span>
                   </button>
                 </div>
@@ -500,7 +500,7 @@ function GamifierContent() {
                         +{activeToast.amount} XP
                       </div>
                     )}
-                    <button onClick={() => handlePageTurn(1)} disabled={currentPage >= numPages} className="size-14 rounded-full bg-black/50 text-white backdrop-blur-md flex items-center justify-center hover:bg-[#ea580c] disabled:opacity-30 transition-colors shadow-2xl">
+                    <button onClick={() => handlePageTurn(1)} disabled={currentPage >= numPages} className="size-14 rounded-full bg-black/50 text-slate-900 dark:text-white backdrop-blur-md flex items-center justify-center hover:bg-[#ea580c] disabled:opacity-30 transition-colors shadow-2xl">
                       <span className="material-symbols-outlined text-3xl">chevron_right</span>
                     </button>
                   </div>
@@ -510,15 +510,15 @@ function GamifierContent() {
           </div>
 
           {/* Bottom Reader Toolbar */}
-          <div className="h-16 bg-[#101022] border-t border-[#1b1b27] flex items-center justify-center px-6 text-white absolute bottom-0 w-full">
-            <div className="flex items-center gap-4 bg-[#1b1b27] px-6 py-2 rounded-full border border-[#2d2d3f] shadow-lg">
-              <button onClick={() => handlePageTurn(-1)} disabled={currentPage <= 1} className="text-slate-400 hover:text-white disabled:opacity-30">
+          <div className="h-16 bg-[#f5f5f8] dark:bg-[#101022] border-t border-slate-200 dark:border-[#1b1b27] flex items-center justify-center px-6 text-slate-900 dark:text-white absolute bottom-0 w-full">
+            <div className="flex items-center gap-4 bg-white dark:bg-[#1b1b27] px-6 py-2 rounded-full border border-slate-200 dark:border-[#2d2d3f] shadow-lg">
+              <button onClick={() => handlePageTurn(-1)} disabled={currentPage <= 1} className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white disabled:opacity-30">
                 <span className="material-symbols-outlined">arrow_back</span>
               </button>
               <div className="text-sm font-bold min-w-[100px] text-center">
                 Page {currentPage} of {numPages || '-'}
               </div>
-              <button onClick={() => handlePageTurn(1)} disabled={currentPage >= numPages} className="text-slate-400 hover:text-white disabled:opacity-30">
+              <button onClick={() => handlePageTurn(1)} disabled={currentPage >= numPages} className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white disabled:opacity-30">
                 <span className="material-symbols-outlined">arrow_forward</span>
               </button>
             </div>
@@ -526,15 +526,15 @@ function GamifierContent() {
 
           {/* Popup Card Overlay */}
           {showPopupCard && (
-            <div className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-[#1b1b27] border border-[#ea580c]/30 p-6 rounded-2xl shadow-2xl flex items-start gap-4 animate-in slide-in-from-bottom-10 fade-in w-[400px]">
+            <div className="absolute bottom-24 left-1/2 -translate-x-1/2 bg-white dark:bg-[#1b1b27] border border-[#ea580c]/30 p-6 rounded-2xl shadow-2xl flex items-start gap-4 animate-in slide-in-from-bottom-10 fade-in w-[400px]">
               <div className="bg-[#ea580c]/20 p-3 rounded-full text-[#ea580c]">
                 <span className="material-symbols-outlined text-3xl">{showPopupCard.icon}</span>
               </div>
               <div className="flex-1">
-                <h4 className="font-bold text-white mb-1">{showPopupCard.title}</h4>
-                <p className="text-sm text-slate-300">{showPopupCard.message}</p>
+                <h4 className="font-bold text-slate-900 dark:text-white mb-1">{showPopupCard.title}</h4>
+                <p className="text-sm text-slate-600 dark:text-slate-300">{showPopupCard.message}</p>
               </div>
-              <button onClick={() => setShowPopupCard(null)} className="text-slate-500 hover:text-white">
+              <button onClick={() => setShowPopupCard(null)} className="text-slate-500 hover:text-slate-900 dark:text-white">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
@@ -548,7 +548,7 @@ function GamifierContent() {
               </div>
               <div>
                 <p className="text-xs text-amber-400 font-bold uppercase tracking-wider mb-0.5">Badge Unlocked!</p>
-                <p className="font-bold text-white text-sm">{activeToast.data.name}</p>
+                <p className="font-bold text-slate-900 dark:text-white text-sm">{activeToast.data.name}</p>
               </div>
             </div>
           )}
@@ -556,32 +556,32 @@ function GamifierContent() {
         </main>
 
         {/* Right: Game Dashboard */}
-        <aside className="w-80 bg-[#141423] border-l border-[#2d2d3f] flex flex-col z-10 shadow-[-10px_0_30px_rgba(0,0,0,0.5)]">
+        <aside className="w-80 bg-white dark:bg-[#141423] border-l border-slate-200 dark:border-[#2d2d3f] flex flex-col z-10 shadow-[-10px_0_30px_rgba(0,0,0,0.5)]">
 
           {/* User Status */}
-          <div className="p-6 border-b border-[#2d2d3f] bg-gradient-to-b from-[#1b1b27] to-transparent">
+          <div className="p-6 border-b border-slate-200 dark:border-[#2d2d3f] bg-gradient-to-b from-[#1b1b27] to-transparent">
             <div className="flex items-center gap-3 mb-6">
               <div className="relative">
                 <div
                   className="size-12 rounded-full bg-cover bg-center border-2 border-[#ea580c]"
                   style={{ backgroundImage: `url("${getAvatar(profile?.avatar_url)}")` }}
                 ></div>
-                <div className="absolute -bottom-2 -right-2 bg-[#ea580c] text-white text-[10px] font-black px-1.5 py-0.5 rounded border border-[#141423]">
+                <div className="absolute -bottom-2 -right-2 bg-[#ea580c] text-slate-900 dark:text-white text-[10px] font-black px-1.5 py-0.5 rounded border border-white dark:border-[#141423]">
                   LVL {currentLevel}
                 </div>
               </div>
               <div>
-                <h3 className="font-bold text-white truncate max-w-[150px]">{getName(profile?.id, profile?.full_name)}</h3>
-                <p className="text-xs text-slate-400">{profile?.streak_days || 0} Day Streak 🔥</p>
+                <h3 className="font-bold text-slate-900 dark:text-white truncate max-w-[150px]">{getName(profile?.id, profile?.full_name)}</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{profile?.streak_days || 0} Day Streak 🔥</p>
               </div>
             </div>
 
             <div className="space-y-2">
-              <div className="flex justify-between text-xs font-bold text-slate-400">
+              <div className="flex justify-between text-xs font-bold text-slate-500 dark:text-slate-400">
                 <span>XP Progress</span>
-                <span className="text-white">{userXp} / {targetXp}</span>
+                <span className="text-slate-900 dark:text-white">{userXp} / {targetXp}</span>
               </div>
-              <div className="w-full bg-[#252535] rounded-full h-2.5 overflow-hidden">
+              <div className="w-full bg-slate-100 dark:bg-[#252535] rounded-full h-2.5 overflow-hidden">
                 <div
                   className="bg-gradient-to-r from-orange-600 via-orange-500 to-amber-400 h-full rounded-full transition-all duration-1000 ease-out relative"
                   style={{ width: `${progressPercent}%` }}
@@ -598,13 +598,13 @@ function GamifierContent() {
             <div>
               <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Session Stats</h4>
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-[#1b1b27] border border-[#2d2d3f] rounded-xl p-3 text-center">
+                <div className="bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-xl p-3 text-center">
                   <p className="text-[#ea580c] font-black text-2xl">+{xpEarned}</p>
-                  <p className="text-[10px] text-slate-400 uppercase font-bold">XP Earned</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold">XP Earned</p>
                 </div>
-                <div className="bg-[#1b1b27] border border-[#2d2d3f] rounded-xl p-3 text-center">
-                  <p className="text-white font-black text-2xl">{pagesReadThisSession}</p>
-                  <p className="text-[10px] text-slate-400 uppercase font-bold">Pages Read</p>
+                <div className="bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-xl p-3 text-center">
+                  <p className="text-slate-900 dark:text-white font-black text-2xl">{pagesReadThisSession}</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold">Pages Read</p>
                 </div>
               </div>
             </div>
@@ -612,15 +612,15 @@ function GamifierContent() {
             {/* Current Progress Mini-Map */}
             <div>
               <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Document Progress</h4>
-              <div className="bg-[#1b1b27] border border-[#2d2d3f] rounded-xl p-4">
+              <div className="bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-xl p-4">
                 <div className="flex justify-between items-end mb-2">
                   <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
                     {numPages > 0 ? Math.round((currentPage / numPages) * 100) : 0}%
                   </span>
-                  <span className="text-xs text-slate-400">Completed</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">Completed</span>
                 </div>
                 {/* Visual marker bar */}
-                <div className="w-full h-1.5 bg-[#252535] rounded-full flex gap-0.5 overflow-hidden">
+                <div className="w-full h-1.5 bg-slate-100 dark:bg-[#252535] rounded-full flex gap-0.5 overflow-hidden">
                   {numPages > 0 && Array.from({ length: Math.min(50, numPages) }).map((_, i) => {
                     const isRead = (i / Math.min(50, numPages)) < (currentPage / numPages);
                     return <div key={i} className={`flex-1 ${isRead ? 'bg-blue-500' : 'bg-transparent'}`}></div>
@@ -637,16 +637,16 @@ function GamifierContent() {
               </div>
               <div className="space-y-2">
                 {topUsers.map((user, idx) => (
-                  <div key={user.id} className="bg-[#1b1b27] rounded-lg p-2.5 flex items-center gap-3 border border-[#2d2d3f]/50">
+                  <div key={user.id} className="bg-white dark:bg-[#1b1b27] rounded-lg p-2.5 flex items-center gap-3 border border-slate-200 dark:border-[#2d2d3f]/50">
                     <span className={`font-black text-sm ${idx === 0 ? 'text-yellow-400' : idx === 1 ? 'text-slate-300' : 'text-orange-300'}`}>
                       {idx + 1}
                     </span>
                     <div
-                      className="size-7 rounded-full bg-cover bg-center border border-[#3b3b54]"
+                      className="size-7 rounded-full bg-cover bg-center border border-slate-300 dark:border-[#3b3b54]"
                       style={{ backgroundImage: `url("${getAvatar(user.avatar_url)}")` }}
                     ></div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold text-white truncate">{getName(user.id, user.full_name)}</p>
+                      <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{getName(user.id, user.full_name)}</p>
                       <p className="text-[10px] text-[#ea580c]">{user.xp?.toLocaleString()} XP</p>
                     </div>
                   </div>
@@ -656,7 +656,7 @@ function GamifierContent() {
 
           </div>
 
-          <div className="p-4 bg-[#1b1b27] border-t border-[#2d2d3f] mt-auto">
+          <div className="p-4 bg-white dark:bg-[#1b1b27] border-t border-slate-200 dark:border-[#2d2d3f] mt-auto">
             <button onClick={endSession} className="w-full py-2.5 border border-red-500/30 text-red-400 hover:bg-red-500/10 font-bold text-sm rounded-lg transition-colors">
               End Session Early
             </button>
@@ -672,7 +672,7 @@ function GamifierContent() {
 export default function GamifierPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#101022] flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-[#f5f5f8] dark:bg-[#101022] flex flex-col items-center justify-center">
         <div className="size-16 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin mb-4"></div>
         <p className="text-[#ea580c] font-bold tracking-widest uppercase">Initializing Gamifier...</p>
       </div>

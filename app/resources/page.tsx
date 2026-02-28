@@ -23,6 +23,7 @@ export default function ResourcesPage() {
   const [isLoadingLibrary, setIsLoadingLibrary] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState('');
+  const [selectedPdfUrl, setSelectedPdfUrl] = useState<string | null>(null);
 
   const [searchQuery, setSearchQuery] = useState('');
   const { searchBooks, results: bookResults, isLoading: isLoadingBooks, error: booksError } = useGoogleBooks();
@@ -298,10 +299,10 @@ export default function ResourcesPage() {
                           <span className="text-xs text-slate-500 font-medium">Uploaded {formatDate(resource.created_at)}</span>
                         </div>
                         <div className="flex gap-2 mt-auto">
-                          <Link href={resource.file_url || '#'} target="_blank" className="flex-1 bg-slate-100 dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
-                            <span className="material-symbols-outlined text-[16px]">open_in_new</span>
-                            View Document
-                          </Link>
+                          <button onClick={() => setSelectedPdfUrl(resource.file_url || null)} className="flex-1 bg-slate-100 dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
+                            <span className="material-symbols-outlined text-[16px]">visibility</span>
+                            View PDF
+                          </button>
                           <Link href={`/gamifier?id=${resource.id}`} className="flex-1 bg-[#ea580c]/10 hover:bg-[#ea580c] text-[#ea580c] hover:text-white font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
                             <span className="material-symbols-outlined text-[16px]">sports_esports</span>
                             Read & Earn XP
@@ -450,6 +451,34 @@ export default function ResourcesPage() {
           </main>
         </div>
       </div>
+
+      {/* PDF Viewer Modal */}
+      {selectedPdfUrl && (
+        <div className="fixed inset-0 z-[100] bg-black/80 flex flex-col backdrop-blur-sm animate-in fade-in duration-200">
+          <header className="flex items-center justify-between p-4 bg-white dark:bg-[#1b1b27] border-b border-slate-200 dark:border-[#2d2d3f] shrink-0">
+            <h2 className="text-slate-900 dark:text-white font-bold text-lg">Document Viewer</h2>
+            <div className="flex gap-4 items-center">
+              <a href={selectedPdfUrl} target="_blank" rel="noreferrer" className="text-slate-500 hover:text-[#ea580c] transition-colors flex items-center gap-2 font-bold text-sm bg-slate-100 dark:bg-[#252535] px-4 py-2 rounded-full">
+                <span className="material-symbols-outlined text-[18px]">open_in_new</span>
+                Open External
+              </a>
+              <button
+                onClick={() => setSelectedPdfUrl(null)}
+                className="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors size-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-[#252535] hover:bg-slate-200 dark:hover:bg-[#2d2d3f]"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+          </header>
+          <div className="flex-1 flex items-center justify-center p-4 overflow-hidden">
+            <iframe
+              src={`${selectedPdfUrl}#view=FitH`}
+              className="w-full max-w-5xl h-full bg-white rounded-xl shadow-2xl"
+              title="PDF Viewer"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
