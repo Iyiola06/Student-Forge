@@ -15,7 +15,7 @@ const DocumentIngestion: React.FC<DocumentIngestionProps> = ({ onProcessed }) =>
     const [isProcessing, setIsProcessing] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
     const [fileName, setFileName] = useState<string | null>(null);
-    const [savedMaterials, setSavedMaterials] = useState<any[]>([]);
+    const [savedMaterials, setSavedMaterials] = useState<StudyMaterial[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -146,17 +146,17 @@ const DocumentIngestion: React.FC<DocumentIngestionProps> = ({ onProcessed }) =>
                         onDragLeave={() => setIsDragging(false)}
                         onDrop={(e) => { e.preventDefault(); setIsDragging(false); if (e.dataTransfer.files?.[0]) processFile(e.dataTransfer.files[0]); }}
                         className={`relative group border-2 border-dashed rounded-[2rem] p-10 md:p-16 text-center transition-all cursor-pointer ${isDragging
-                                ? 'border-orange-500 bg-orange-500/10 scale-[1.02] ring-8 ring-orange-500/5'
-                                : fileName
-                                    ? 'border-emerald-500/50 bg-emerald-500/5'
-                                    : 'border-slate-200 dark:border-slate-800 hover:border-orange-500 hover:bg-orange-500/5 dark:hover:bg-orange-500/5'
+                            ? 'border-orange-500 bg-orange-500/10 scale-[1.02] ring-8 ring-orange-500/5'
+                            : fileName
+                                ? 'border-emerald-500/50 bg-emerald-500/5'
+                                : 'border-slate-200 dark:border-slate-800 hover:border-orange-500 hover:bg-orange-500/5 dark:hover:bg-orange-500/5'
                             }`}
                     >
                         <input type="file" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && processFile(e.target.files[0])} className="hidden" accept=".pdf,.txt" />
 
                         <div className="flex flex-col items-center">
                             <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 shadow-xl ${isDragging ? 'bg-orange-500 text-white scale-110 rotate-12' :
-                                    fileName ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 group-hover:bg-orange-500 group-hover:text-white group-hover:rotate-6'
+                                fileName ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 group-hover:bg-orange-500 group-hover:text-white group-hover:rotate-6'
                                 }`}>
                                 <span className="material-symbols-outlined text-3xl">
                                     {isDragging ? 'download' : fileName ? 'check_circle' : 'upload_file'}

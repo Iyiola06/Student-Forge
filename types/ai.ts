@@ -31,3 +31,11 @@ export interface StudyBreakdown {
     chapters: StudyChapter[];
     estimatedStudyTimeMinutes: number;
 }
+
+export interface StudyMaterial {
+    id: string;
+    name: string;
+    content: string;
+    timestamp: number;
+    type: 'file' | 'text';
+}

@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Sidebar from '@/components/layout/Sidebar';
 import { createClient } from '@/lib/supabase/client';
 import { useProfile } from '@/hooks/useProfile';
-import Image from 'next/image';
+import { toast } from 'react-toastify';
 
 interface PastQuestion {
   id: string;
@@ -33,9 +34,18 @@ interface PastQuestion {
 
 const INSTITUTION_TYPES = ['Secondary School', 'University', 'Polytechnic', 'College of Education'];
 
-export default function PastQuestionsPage() {
+function PastQuestionsContent() {
   const { profile, mutate: mutateProfile } = useProfile();
-  const supabase = createClient();
+  const searchParams = useSearchParams();
+  const [isClient, setIsClient] = useState(false);
+
+  // Initialize supabase only on client
+  const supabase = useMemo(() => {
+    if (typeof window === 'undefined') return null as any;
+    return createClient();
+  }, []);
+
+  useEffect(() => { setIsClient(true); }, []);
 
   const [activeTab, setActiveTab] = useState<'all' | 'my_submissions'>('all');
   const [questions, setQuestions] = useState<PastQuestion[]>([]);
@@ -67,28 +77,26 @@ export default function PastQuestionsPage() {
   const [formFile, setFormFile] = useState<File | null>(null);
   const [formIsAnonymous, setFormIsAnonymous] = useState(false);
 
-  // Toasts
-  const [toastMessage, setToastMessage] = useState<{ message: string, xp?: number } | null>(null);
-
   // Dropdown options
   const schoolsList = useMemo(() => Array.from(new Set(questions.map(q => q.school_name))).sort(), [questions]);
   const subjectsList = useMemo(() => Array.from(new Set(questions.map(q => q.subject))).sort(), [questions]);
   const yearsList = useMemo(() => Array.from(new Set(questions.map(q => q.year))).sort((a, b) => b - a), [questions]);
 
   const fetchQuestions = async () => {
+    if (!supabase) return;
     setIsLoading(true);
-    const { data: qData, error } = await supabase
+    const { data: qData } = await supabase
       .from('past_questions')
       .select('*, profiles(full_name, avatar_url)')
       .eq('is_approved', true)
       .order('created_at', { ascending: false });
 
     if (qData) {
-      setQuestions(qData as any[]);
+      setQuestions(qData as PastQuestion[]);
       setStats({
         total: qData.length,
-        schools: new Set(qData.map(q => q.school_name)).size,
-        subjects: new Set(qData.map(q => q.subject)).size
+        schools: new Set(qData.map((q: PastQuestion) => q.school_name)).size,
+        subjects: new Set(qData.map((q: PastQuestion) => q.subject)).size
       });
     }
 
@@ -99,7 +107,7 @@ export default function PastQuestionsPage() {
         .eq('user_id', profile.id);
 
       if (upvoteData) {
-        setUserUpvotes(new Set(upvoteData.map(u => u.past_question_id)));
+        setUserUpvotes(new Set(upvoteData.map((u: { past_question_id: string }) => u.past_question_id)));
       }
     }
     setIsLoading(false);
@@ -110,24 +118,16 @@ export default function PastQuestionsPage() {
   }, [profile?.id]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('tab') === 'my_submissions') {
-        setActiveTab('my_submissions');
-      }
+    if (searchParams.get('tab') === 'my_submissions') {
+      setActiveTab('my_submissions');
     }
-  }, []);
-
-  const showToast = (message: string, xp?: number) => {
-    setToastMessage({ message, xp });
-    setTimeout(() => setToastMessage(null), 5000);
-  };
+  }, [searchParams]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       if (file.size > 20 * 1024 * 1024) {
-        alert("File size exceeds 20MB limit.");
+        toast.error("File size exceeds 20MB limit.");
         return;
       }
       setFormFile(file);
@@ -136,8 +136,8 @@ export default function PastQuestionsPage() {
 
   const submitQuestion = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!profile) return alert('Must be logged in to submit');
-    if (!formFile || !formSchoolName || !formSubject || !formYear) return alert('Please fill required fields.');
+    if (!profile) return toast.error('Must be logged in to submit');
+    if (!formFile || !formSchoolName || !formSubject || !formYear) return toast.error('Please fill required fields.');
 
     setIsSubmitting(true);
     try {
@@ -186,7 +186,7 @@ export default function PastQuestionsPage() {
       });
       mutateProfile();
 
-      showToast("Your past question has been submitted — thank you for contributing!", 25);
+      toast.success("Past question submitted! You earned 25 XP! 💎");
 
       setIsModalOpen(false);
       setFormFile(null);
@@ -198,7 +198,7 @@ export default function PastQuestionsPage() {
       fetchQuestions();
 
     } catch (err: any) {
-      alert("Error: " + err.message);
+      toast.error("Error: " + err.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -228,9 +228,11 @@ export default function PastQuestionsPage() {
   };
 
   const handleDelete = async (questionId: string) => {
+    if (typeof window === 'undefined') return;
     if (!confirm('Are you sure you want to delete this submission?')) return;
     await supabase.from('past_questions').delete().eq('id', questionId);
     setQuestions(qs => qs.filter(q => q.id !== questionId));
+    toast.success("Submission deleted.");
   };
 
   // Filter & Group logic
@@ -269,8 +271,10 @@ export default function PastQuestionsPage() {
       <div className="flex items-center gap-3 mb-4 pr-6">
         <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden shrink-0 border border-slate-300 dark:border-slate-700">
           {q.is_anonymous ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
             <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=anonymous&backgroundColor=cbd5e1" alt="Anonymous" className="w-full h-full object-cover opacity-80" />
           ) : (
+            /* eslint-disable-next-line @next/next/no-img-element */
             q.profiles?.avatar_url && <img src={q.profiles.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
           )}
         </div>
@@ -298,7 +302,7 @@ export default function PastQuestionsPage() {
 
       <div className="bg-slate-50 dark:bg-[#13131a] p-3 rounded-lg mb-4 flex-1 border border-slate-100 dark:border-[#252535]">
         <div className="flex justify-between items-start mb-1 gap-2">
-          <h4 className="font-bold text-slate-800 dark:text-slate-200 text-sm line-clamp-1 flex-1 text-[#ea580c] dark:text-[#ea580c]">{q.subject} {q.course_code && <span className="opacity-70 font-normal">({q.course_code})</span>}</h4>
+          <h4 className="font-bold text-[#ea580c] dark:text-[#ea580c] text-sm line-clamp-1 flex-1">{q.subject} {q.course_code && <span className="opacity-70 font-normal">({q.course_code})</span>}</h4>
           <span className="text-xs font-bold text-slate-500 bg-slate-200 dark:bg-[#252535] px-1.5 py-0.5 rounded shrink-0">{q.year}</span>
         </div>
         {q.semester && <p className="text-xs text-slate-500 mb-2">{q.semester}</p>}
@@ -333,123 +337,6 @@ export default function PastQuestionsPage() {
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       <Sidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden relative w-full max-w-[100vw]">
-
-
-        {/* Global Toast */}
-        {toastMessage && (
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#1b1b27] border border-[#ea580c]/30 text-slate-900 dark:text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 animate-in slide-in-from-bottom-5">
-            <div className="bg-green-500/20 text-green-400 p-2 rounded-full">
-              <span className="material-symbols-outlined">check_circle</span>
-            </div>
-            <div>
-              <p className="font-bold text-sm">{toastMessage.message}</p>
-              {toastMessage.xp && (
-                <p className="text-amber-400 text-xs font-bold flex items-center gap-1 mt-1">
-                  <span className="material-symbols-outlined text-[14px]">diamond</span> +{toastMessage.xp} XP Earned!
-                </p>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Submission Modal */}
-        {isModalOpen && (
-          <div className="absolute inset-0 z-50 bg-[#101022]/90 backdrop-blur-sm flex justify-center items-center p-4">
-            <div className="bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] w-full max-w-xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
-              <div className="p-6 border-b border-slate-200 dark:border-[#2d2d3f] flex justify-between items-center bg-white dark:bg-[#1a1a24]">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white">Submit a Past Question</h2>
-                <button onClick={() => setIsModalOpen(false)} className="text-slate-500 dark:text-slate-400 hover:text-white transition-colors">
-                  <span className="material-symbols-outlined">close</span>
-                </button>
-              </div>
-              <form onSubmit={submitQuestion} className="overflow-y-auto p-6 space-y-5">
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Institution Type *</label>
-                    <select required value={formInstitutionType} onChange={(e) => setFormInstitutionType(e.target.value)} className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none">
-                      {INSTITUTION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Year *</label>
-                    <input required type="number" min="1990" max="2030" value={formYear} onChange={(e) => setFormYear(parseInt(e.target.value))} className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none" />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">School Name *</label>
-                  <input required list="school-list" value={formSchoolName} onChange={(e) => setFormSchoolName(e.target.value)} placeholder="e.g. University of Lagos" className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none" />
-                  <datalist id="school-list">
-                    {schoolsList.map(s => <option key={s} value={s} />)}
-                  </datalist>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Subject *</label>
-                    <input required value={formSubject} onChange={(e) => setFormSubject(e.target.value)} placeholder="e.g. Mathematics" className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none" />
-                  </div>
-                  {(formInstitutionType === 'University' || formInstitutionType === 'Polytechnic') && (
-                    <div>
-                      <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Course Code</label>
-                      <input value={formCourseCode} onChange={(e) => setFormCourseCode(e.target.value)} placeholder="e.g. MTH 101" className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none" />
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Semester</label>
-                  <select value={formSemester} onChange={(e) => setFormSemester(e.target.value)} className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none">
-                    <option value="">None / Not Applicable</option>
-                    <option value="First Semester">First Semester</option>
-                    <option value="Second Semester">Second Semester</option>
-                    <option value="Annual / Full Year">Annual / Full Year</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Description / Context</label>
-                  <textarea value={formDescription} onChange={(e) => setFormDescription(e.target.value)} placeholder="Any context about this paper? e.g. which department, lecturer, or exam type" className="w-full h-20 p-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none resize-none" />
-                </div>
-
-                <div className="border-2 border-dashed border-slate-200 dark:border-[#2d2d3f] hover:border-[#ea580c] transition-colors rounded-xl p-6 relative flex flex-col items-center justify-center text-center bg-[#f5f5f8] dark:bg-[#13131a]/50">
-                  <input required onChange={handleFileUpload} accept=".pdf,image/png,image/jpeg,image/webp" type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-
-                  {formFile ? (
-                    <div className="flex flex-col items-center gap-2">
-                      <span className={`material-symbols-outlined text-4xl ${formFile.type.includes('pdf') ? 'text-red-400' : 'text-blue-400'}`}>
-                        {formFile.type.includes('pdf') ? 'picture_as_pdf' : 'image'}
-                      </span>
-                      <p className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-[200px]">{formFile.name}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">{(formFile.size / (1024 * 1024)).toFixed(2)} MB</p>
-                    </div>
-                  ) : (
-                    <>
-                      <span className="material-symbols-outlined text-4xl text-slate-500 mb-2">cloud_upload</span>
-                      <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Drag and drop or click to upload</p>
-                      <p className="text-xs text-slate-500">Supports PDF or Images (Max 20MB)</p>
-                    </>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] p-4 rounded-xl cursor-pointer" onClick={() => setFormIsAnonymous(!formIsAnonymous)}>
-                  <input type="checkbox" id="anonUpload" checked={formIsAnonymous} readOnly className="w-5 h-5 rounded border-slate-300 text-[#ea580c] focus:ring-[#ea580c] cursor-pointer" />
-                  <label htmlFor="anonUpload" className="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">
-                    Post Anonymously
-                    <span className="block text-xs font-normal text-slate-500 mt-0.5">Your name and profile image will be hidden from everyone else. You still earn XP!</span>
-                  </label>
-                </div>
-
-                <button disabled={isSubmitting} type="submit" className="w-full bg-[#3b82f6] hover:bg-[#2563eb] text-slate-900 dark:text-white font-bold h-12 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
-                  {isSubmitting ? (
-                    <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> Uploading...</>
-                  ) : 'Submit to Community'}
-                </button>
-              </form>
-            </div>
-          </div>
-        )}
 
         <main className="flex flex-1 flex-col overflow-y-auto">
           {/* Header Area */}
@@ -508,7 +395,7 @@ export default function PastQuestionsPage() {
                 </button>
                 <button onClick={() => setActiveTab('my_submissions')} className={`px-6 py-3 font-bold text-sm border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'my_submissions' ? 'border-[#3b82f6] text-[#3b82f6]' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-300'}`}>
                   My Submissions
-                  {profile && <span className="bg-[#2d2d3f] text-slate-900 dark:text-white text-[10px] px-2 py-0.5 rounded-full">{questions.filter(q => q.user_id === profile.id).length}</span>}
+                  {profile && <span className="bg-[#2d2d3f] border border-slate-600 text-white text-[10px] px-2 py-0.5 rounded-full">{questions.filter(q => q.user_id === profile.id).length}</span>}
                 </button>
               </div>
             </div>
@@ -596,7 +483,114 @@ export default function PastQuestionsPage() {
             )}
           </div>
         </main>
+
+        {/* Submission Modal */}
+        {isModalOpen && (
+          <div className="fixed inset-0 z-[100] bg-[#101022]/90 backdrop-blur-sm flex justify-center items-center p-4">
+            <div className="bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] w-full max-w-xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-200">
+              <div className="p-6 border-b border-slate-200 dark:border-[#2d2d3f] flex justify-between items-center bg-white dark:bg-[#1a1a24]">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">Submit a Past Question</h2>
+                <button onClick={() => setIsModalOpen(false)} className="text-slate-500 dark:text-slate-400 hover:text-[#ea580c] transition-colors">
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+              <form onSubmit={submitQuestion} className="overflow-y-auto p-6 space-y-5">
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Institution Type *</label>
+                    <select required value={formInstitutionType} onChange={(e) => setFormInstitutionType(e.target.value)} className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none">
+                      {INSTITUTION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Year *</label>
+                    <input required type="number" min="1990" max="2030" value={formYear} onChange={(e) => setFormYear(parseInt(e.target.value))} className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">School Name *</label>
+                  <input required list="school-list" value={formSchoolName} onChange={(e) => setFormSchoolName(e.target.value)} placeholder="e.g. University of Lagos" className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none" />
+                  <datalist id="school-list">
+                    {schoolsList.map(s => <option key={s} value={s} />)}
+                  </datalist>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Subject *</label>
+                    <input required value={formSubject} onChange={(e) => setFormSubject(e.target.value)} placeholder="e.g. Mathematics" className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none" />
+                  </div>
+                  {(formInstitutionType === 'University' || formInstitutionType === 'Polytechnic') && (
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Course Code</label>
+                      <input value={formCourseCode} onChange={(e) => setFormCourseCode(e.target.value)} placeholder="e.g. MTH 101" className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none" />
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Semester</label>
+                  <select value={formSemester} onChange={(e) => setFormSemester(e.target.value)} className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none">
+                    <option value="">None / Not Applicable</option>
+                    <option value="First Semester">First Semester</option>
+                    <option value="Second Semester">Second Semester</option>
+                    <option value="Annual / Full Year">Annual / Full Year</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Description / Context</label>
+                  <textarea value={formDescription} onChange={(e) => setFormDescription(e.target.value)} placeholder="Any context about this paper? e.g. which department, lecturer, or exam type" className="w-full h-20 p-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none resize-none" />
+                </div>
+
+                <div className="border-2 border-dashed border-slate-200 dark:border-[#2d2d3f] hover:border-[#ea580c] transition-colors rounded-xl p-6 relative flex flex-col items-center justify-center text-center bg-[#f5f5f8] dark:bg-[#13131a]/50">
+                  <input required onChange={handleFileUpload} accept=".pdf,image/png,image/jpeg,image/webp" type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+
+                  {formFile ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <span className={`material-symbols-outlined text-4xl ${formFile.type.includes('pdf') ? 'text-red-400' : 'text-blue-400'}`}>
+                        {formFile.type.includes('pdf') ? 'picture_as_pdf' : 'image'}
+                      </span>
+                      <p className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-[200px]">{formFile.name}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{(formFile.size / (1024 * 1024)).toFixed(2)} MB</p>
+                    </div>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-4xl text-slate-500 mb-2">cloud_upload</span>
+                      <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Drag and drop or click to upload</p>
+                      <p className="text-xs text-slate-500">Supports PDF or Images (Max 20MB)</p>
+                    </>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] p-4 rounded-xl cursor-pointer" onClick={() => setFormIsAnonymous(!formIsAnonymous)}>
+                  <input type="checkbox" id="anonUpload" checked={formIsAnonymous} readOnly className="w-5 h-5 rounded border-slate-300 text-[#ea580c] focus:ring-[#ea580c] cursor-pointer" />
+                  <label htmlFor="anonUpload" className="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">
+                    Post Anonymously
+                    <span className="block text-xs font-normal text-slate-500 mt-0.5">Your name and profile image will be hidden from everyone else. You still earn XP!</span>
+                  </label>
+                </div>
+
+                <button disabled={isSubmitting} type="submit" className="w-full bg-[#3b82f6] hover:bg-[#2563eb] text-white font-bold h-12 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+                  {isSubmitting ? (
+                    <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> Uploading...</>
+                  ) : 'Submit to Community'}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
+  );
+}
+
+export default function PastQuestionsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#101022] flex items-center justify-center"><div className="size-10 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div></div>}>
+      <PastQuestionsContent />
+    </Suspense>
   );
 }

@@ -16,6 +16,20 @@ export default function DashboardPage() {
   const progressPercent = Math.min((xp % 1000) / 10, 100);
   const xpToNext = 1000 - (xp % 1000);
 
+  // Dynamic Date Logic
+  const [daysToExam, setDaysToExam] = useState(14); // Default fallback
+  const currentYear = new Date().getFullYear();
+
+  useEffect(() => {
+    // In a real app, this would be fetched from user settings/profile
+    // For now, we simulate a countdown to a fixed date or just keep it dynamic
+    const examDate = new Date(currentYear, 5, 15); // June 15th
+    const today = new Date();
+    const diffTime = examDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    setDaysToExam(diffDays > 0 ? diffDays : 14);
+  }, [currentYear]);
+
   // AI Feature States
   const [abbrInput, setAbbrInput] = useState('');
   const [abbrResult, setAbbrResult] = useState<{ fullForm: string; definition: string } | null>(null);
@@ -85,7 +99,7 @@ export default function DashboardPage() {
               Welcome back, {firstName}!
             </h1>
             <p className="text-slate-500 dark:text-[#9c9cba] text-base font-normal leading-normal">
-              Your exam is in 14 days. You&apos;re on track to crush it!
+              Your exam is in {daysToExam} days. You&apos;re on track to crush it!
             </p>
           </div>
           {/* Stats Grid */}
@@ -357,6 +371,9 @@ export default function DashboardPage() {
                 <h3 className="text-lg font-bold">Examiner&apos;s Hot List</h3>
               </div>
               <div className="space-y-2 relative z-10">
+                <p className="text-white/80 text-xs mb-2">
+                  Topics predicted to appear in {currentYear}&apos;s exams based on past trends.
+                </p>
                 {isFetchingInsights ? (
                   <div className="space-y-2 opacity-30">
                     <div className="h-4 w-3/4 bg-white/20 rounded"></div>

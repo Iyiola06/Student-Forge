@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { Lexend } from 'next/font/google';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './globals.css'; // Global styles
 
 const lexend = Lexend({
@@ -41,6 +43,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body suppressHydrationWarning className="font-display antialiased">
         {children}
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
       </body>
     </html>
   );
