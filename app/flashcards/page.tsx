@@ -144,7 +144,7 @@ export default function FlashcardsPage() {
         <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
             <Sidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-16 bg-[#1a1a24] border-b border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
+        <header className="h-16 bg-white dark:bg-[#1a1a24] border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
           <h1 className="font-bold text-white">Flashcards</h1>
         </header>
         
@@ -270,7 +270,7 @@ export default function FlashcardsPage() {
                                                 <p className="text-2xl font-bold text-slate-900 dark:text-white">
                                                     {flashcards[currentIndex].front}
                                                 </p>
-                                                <div className="absolute bottom-6 flex items-center gap-2 text-slate-400 text-sm">
+                                                <div className="absolute bottom-6 flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
                                                     <span className="material-symbols-outlined text-[18px]">ads_click</span>
                                                     Click to reveal
                                                 </div>
@@ -278,7 +278,7 @@ export default function FlashcardsPage() {
 
                                             {/* Back */}
                                             <div className="absolute w-full h-full backface-hidden bg-slate-900 border-2 border-[#ea580c] rounded-2xl shadow-xl p-10 flex flex-col items-center justify-center text-center rotate-y-180">
-                                                <p className="text-xl text-white leading-relaxed">
+                                                <p className="text-xl text-slate-900 dark:text-white leading-relaxed">
                                                     {flashcards[currentIndex].back}
                                                 </p>
                                             </div>
@@ -290,7 +290,7 @@ export default function FlashcardsPage() {
                                         <button onClick={nextCard} className="px-6 py-3 rounded-lg bg-slate-200 dark:bg-[#252535] text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-300 dark:hover:bg-[#3b3b54] transition-colors">
                                             Review Again
                                         </button>
-                                        <button onClick={nextCard} className="px-6 py-3 rounded-lg bg-green-500 hover:bg-green-600 text-white font-bold shadow-lg shadow-green-500/20 transition-all">
+                                        <button onClick={nextCard} className="px-6 py-3 rounded-lg bg-green-500 hover:bg-green-600 text-slate-900 dark:text-white font-bold shadow-lg shadow-green-500/20 transition-all">
                                             Got It
                                         </button>
                                     </div>

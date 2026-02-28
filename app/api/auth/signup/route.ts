@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: Request) {
     try {
-        const { email, password, firstName, lastName, studyLevel } = await request.json();
+        const { email, password, firstName, lastName, studyLevel, avatarUrl } = await request.json();
         const supabase = await createClient();
 
         const { data, error } = await supabase.auth.signUp({
@@ -13,6 +13,7 @@ export async function POST(request: Request) {
                 data: {
                     full_name: `${firstName} ${lastName}`.trim(),
                     study_level: studyLevel,
+                    avatar_url: avatarUrl,
                 },
                 emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
             },

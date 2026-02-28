@@ -13,9 +13,35 @@ export default function SignupPage() {
   const [studyLevel, setStudyLevel] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState('https://lh3.googleusercontent.com/aida-public/AB6AXuD_PrX8yOs64jgoF50R2Gdmak7Nq9XNBH6jrZGbcMeFZWiTc-RXHJIYwVod5RyMqvpXdyuCh67XqP8diyIZGjPdooGKAN9iNGBZXPBKwdB23Gl_zIV9531fy77kczue-ybewLFkxSWQMdUumyw1dvjOVV4QSWKgD582BzAkdewcGU2Q77mpv1aJco2awv_M5hlPCjjIrGKErnFpvl_jDnr7id6w0GMQFhPBYcB72xFQDQseoc8xqlWGGLMxg092WPdyPddhX5U-OjiN');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const calculatePasswordStrength = (pass: string) => {
+    let score = 0;
+    if (pass.length > 5) score += 1;
+    if (pass.length > 8) score += 1;
+    if (/[A-Z]/.test(pass)) score += 1;
+    if (/[0-9]/.test(pass)) score += 1;
+    if (/[^A-Za-z0-9]/.test(pass)) score += 1;
+    return Math.min(score, 4);
+  };
+
+  const pwStrength = calculatePasswordStrength(password);
+
+  const getStrengthLabel = () => {
+    if (password.length === 0) return 'Enter a password';
+    if (pwStrength < 2) return 'Weak';
+    if (pwStrength < 4) return 'Good';
+    return 'Strong';
+  };
+
+  const AVATAR_OPTIONS = [
+    "https://lh3.googleusercontent.com/aida-public/AB6AXuD_PrX8yOs64jgoF50R2Gdmak7Nq9XNBH6jrZGbcMeFZWiTc-RXHJIYwVod5RyMqvpXdyuCh67XqP8diyIZGjPdooGKAN9iNGBZXPBKwdB23Gl_zIV9531fy77kczue-ybewLFkxSWQMdUumyw1dvjOVV4QSWKgD582BzAkdewcGU2Q77mpv1aJco2awv_M5hlPCjjIrGKErnFpvl_jDnr7id6w0GMQFhPBYcB72xFQDQseoc8xqlWGGLMxg092WPdyPddhX5U-OjiN",
+    "https://lh3.googleusercontent.com/aida-public/AB6AXuAWvxINhIexGAXnu4Ns3IbZUa5PjHvWsqArX5UebB00Ol5YRKll-fY4BkF2pvnGEB1I2oLRNoBithKJW5OHyk1xohOboakbW9GJpjpIHexaX47-6XevhottW4dsBJ_aFdnuRTzc5NLDFVoz1z94y-cxqO01pOmH23-XiZilm909rwK7YkMTzs-gLnbt5Ae1d80czYU_Lk8ugVpxPla58kr-R_ZSWfJey4o0jibCic808ySvMqsLIevJ4c1fSftRc7MbbG-UPIEQVYGX",
+    "https://lh3.googleusercontent.com/aida-public/AB6AXuBfIeoBwn-qR9GrUqgj7kfBfDlDG3B89kXt9gJZyKjZhta-idR5go9J1qtbGg-9mkC7ZA_nCA06lY5DJIO6heBpQPi7TpP9HnW70HFPCiAqH2DQQawl4TheD8KWXvyjQ36kBgFfHrbKfyAiiKeguZB0aQbkr8MfoqCB2V_l7xl9a7VkSsmdZa8aPEhnwOZytVvZv6lwFw4Ss1BTW2KGd5ALN_C_iBGfpuPt6x2BBiafYx18kdUbUqWtkyZuH42gY69uhXM8wD1MSxo9"
+  ];
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +65,7 @@ export default function SignupPage() {
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, lastName, email, studyLevel, password }),
+        body: JSON.stringify({ firstName, lastName, email, studyLevel, password, avatarUrl }),
       });
 
       const data = await res.json();
@@ -156,47 +182,42 @@ export default function SignupPage() {
               Choose your avatar
             </p>
             <div className="flex items-center gap-4 justify-center flex-wrap">
-              <button
-                className="group relative size-16 rounded-full overflow-hidden border-2 border-[#ea580c] ring-4 ring-[#ea580c]/20 transition-transform hover:scale-105"
-                type="button"
-              >
-                <Image
-                  alt="Avatar option 1"
-                  className="object-cover"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_PrX8yOs64jgoF50R2Gdmak7Nq9XNBH6jrZGbcMeFZWiTc-RXHJIYwVod5RyMqvpXdyuCh67XqP8diyIZGjPdooGKAN9iNGBZXPBKwdB23Gl_zIV9531fy77kczue-ybewLFkxSWQMdUumyw1dvjOVV4QSWKgD582BzAkdewcGU2Q77mpv1aJco2awv_M5hlPCjjIrGKErnFpvl_jDnr7id6w0GMQFhPBYcB72xFQDQseoc8xqlWGGLMxg092WPdyPddhX5U-OjiN"
-                  fill
-                />
-                <div className="absolute inset-0 bg-[#ea580c]/40 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-white font-bold">
-                    check
-                  </span>
-                </div>
-              </button>
-              <button
-                className="group relative size-14 rounded-full overflow-hidden border-2 border-transparent hover:border-[#ea580c]/50 transition-all hover:scale-105 opacity-70 hover:opacity-100"
-                type="button"
-              >
-                <Image
-                  alt="Avatar option 2"
-                  className="object-cover"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWvxINhIexGAXnu4Ns3IbZUa5PjHvWsqArX5UebB00Ol5YRKll-fY4BkF2pvnGEB1I2oLRNoBithKJW5OHyk1xohOboakbW9GJpjpIHexaX47-6XevhottW4dsBJ_aFdnuRTzc5NLDFVoz1z94y-cxqO01pOmH23-XiZilm909rwK7YkMTzs-gLnbt5Ae1d80czYU_Lk8ugVpxPla58kr-R_ZSWfJey4o0jibCic808ySvMqsLIevJ4c1fSftRc7MbbG-UPIEQVYGX"
-                  fill
-                />
-              </button>
-              <button
-                className="group relative size-14 rounded-full overflow-hidden border-2 border-transparent hover:border-[#ea580c]/50 transition-all hover:scale-105 opacity-70 hover:opacity-100"
-                type="button"
-              >
-                <Image
-                  alt="Avatar option 3"
-                  className="object-cover"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfIeoBwn-qR9GrUqgj7kfBfDlDG3B89kXt9gJZyKjZhta-idR5go9J1qtbGg-9mkC7ZA_nCA06lY5DJIO6heBpQPi7TpP9HnW70HFPCiAqH2DQQawl4TheD8KWXvyjQ36kBgFfHrbKfyAiiKeguZB0aQbkr8MfoqCB2V_l7xl9a7VkSsmdZa8aPEhnwOZytVvZv6lwFw4Ss1BTW2KGd5ALN_C_iBGfpuPt6x2BBiafYx18kdUbUqWtkyZuH42gY69uhXM8wD1MSxo9"
-                  fill
-                />
-              </button>
+              {AVATAR_OPTIONS.map((url, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setAvatarUrl(url)}
+                  className={`group relative ${avatarUrl === url ? 'size-16 border-2 border-[#ea580c] ring-4 ring-[#ea580c]/20 scale-105' : 'size-14 border-2 border-transparent opacity-70 hover:opacity-100 hover:border-[#ea580c]/50 hover:scale-105'} rounded-full overflow-hidden transition-all`}
+                  type="button"
+                >
+                  <Image
+                    alt={`Avatar option ${idx + 1}`}
+                    className="object-cover"
+                    src={url}
+                    fill
+                  />
+                  {avatarUrl === url && (
+                    <div className="absolute inset-0 bg-[#ea580c]/40 flex items-center justify-center">
+                      <span className="material-symbols-outlined text-white font-bold">
+                        check
+                      </span>
+                    </div>
+                  )}
+                </button>
+              ))}
               <button
                 className="group relative size-14 rounded-full overflow-hidden border-2 border-transparent hover:border-[#ea580c]/50 transition-all hover:scale-105 opacity-70 hover:opacity-100 bg-slate-100 dark:bg-slate-800 flex items-center justify-center"
                 type="button"
+                onClick={() => {
+                  const input = document.createElement('input');
+                  input.type = 'file';
+                  input.accept = 'image/*';
+                  input.onchange = (e: any) => {
+                    // Normally you would upload this to Supabase storage and get a public URL
+                    // For now just alert that custom uploads from local disk need storage API
+                    alert('Custom uploads not yet fully wired to storage. Select an existing avatar.');
+                  };
+                  input.click();
+                }}
               >
                 <span className="material-symbols-outlined text-slate-400 dark:text-slate-500">
                   add_a_photo
@@ -339,13 +360,13 @@ export default function SignupPage() {
                 </div>
                 {/* Strength Meter */}
                 <div className="flex gap-1 pt-1 h-1.5 w-full">
-                  <div className="h-full w-1/4 rounded-full bg-green-500"></div>
-                  <div className="h-full w-1/4 rounded-full bg-green-500"></div>
-                  <div className="h-full w-1/4 rounded-full bg-slate-200 dark:bg-slate-700"></div>
-                  <div className="h-full w-1/4 rounded-full bg-slate-200 dark:bg-slate-700"></div>
+                  <div className={`h-full w-1/4 rounded-full ${password.length === 0 ? 'bg-slate-200 dark:bg-slate-700' : pwStrength >= 1 ? (pwStrength >= 3 ? 'bg-green-500' : pwStrength === 2 ? 'bg-yellow-500' : 'bg-red-500') : 'bg-red-500'}`}></div>
+                  <div className={`h-full w-1/4 rounded-full ${password.length === 0 ? 'bg-slate-200 dark:bg-slate-700' : pwStrength >= 2 ? (pwStrength >= 3 ? 'bg-green-500' : 'bg-yellow-500') : 'bg-slate-200 dark:bg-slate-700'}`}></div>
+                  <div className={`h-full w-1/4 rounded-full ${password.length === 0 ? 'bg-slate-200 dark:bg-slate-700' : pwStrength >= 3 ? 'bg-green-500' : 'bg-slate-200 dark:bg-slate-700'}`}></div>
+                  <div className={`h-full w-1/4 rounded-full ${password.length === 0 ? 'bg-slate-200 dark:bg-slate-700' : pwStrength >= 4 ? 'bg-green-500' : 'bg-slate-200 dark:bg-slate-700'}`}></div>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Medium strength
+                <p className={`text-xs ${password.length === 0 ? 'text-slate-500' : pwStrength < 2 ? 'text-red-500' : pwStrength < 4 ? 'text-yellow-500' : 'text-green-500'}`}>
+                  {getStrengthLabel()}
                 </p>
               </div>
               <div className="space-y-2">

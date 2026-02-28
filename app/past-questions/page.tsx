@@ -257,7 +257,7 @@ export default function PastQuestionsPage() {
   const renderCard = (q: PastQuestion) => (
     <div key={q.id} className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-5 hover:shadow-lg transition-all group flex flex-col relative h-full">
       {q.user_id === profile?.id && (
-        <button onClick={() => handleDelete(q.id)} className="absolute top-4 right-4 text-slate-400 hover:text-red-500 transition-colors z-10 p-1">
+        <button onClick={() => handleDelete(q.id)} className="absolute top-4 right-4 text-slate-500 dark:text-slate-400 hover:text-red-500 transition-colors z-10 p-1">
           <span className="material-symbols-outlined text-sm">delete</span>
         </button>
       )}
@@ -305,7 +305,7 @@ export default function PastQuestionsPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-medium text-slate-400">{q.file_type} • {q.file_size}</span>
+          <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400">{q.file_type} • {q.file_size}</span>
           <button onClick={() => handleDownload(q.id, q.file_url)} className="bg-[#ea580c] text-white hover:bg-[#d04e0a] p-1.5 rounded-lg transition-colors">
             <span className="material-symbols-outlined text-[18px]">file_download</span>
           </button>
@@ -318,13 +318,13 @@ export default function PastQuestionsPage() {
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       <Sidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden relative w-full max-w-[100vw]">
-        <header className="h-16 bg-[#1a1a24] border-b border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
-          <h1 className="font-bold text-white">StudyForge</h1>
+        <header className="h-16 bg-white dark:bg-[#1a1a24] border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
+          <h1 className="font-bold text-slate-900 dark:text-white">StudyForge</h1>
         </header>
 
         {/* Global Toast */}
         {toastMessage && (
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#1b1b27] border border-[#ea580c]/30 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 animate-in slide-in-from-bottom-5">
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#1b1b27] border border-[#ea580c]/30 text-slate-900 dark:text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 animate-in slide-in-from-bottom-5">
             <div className="bg-green-500/20 text-green-400 p-2 rounded-full">
               <span className="material-symbols-outlined">check_circle</span>
             </div>
@@ -342,10 +342,10 @@ export default function PastQuestionsPage() {
         {/* Submission Modal */}
         {isModalOpen && (
           <div className="absolute inset-0 z-50 bg-[#101022]/90 backdrop-blur-sm flex justify-center items-center p-4">
-            <div className="bg-[#1b1b27] border border-[#2d2d3f] w-full max-w-xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
-              <div className="p-6 border-b border-[#2d2d3f] flex justify-between items-center bg-[#1a1a24]">
-                <h2 className="text-xl font-bold text-white">Submit a Past Question</h2>
-                <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white transition-colors">
+            <div className="bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] w-full max-w-xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+              <div className="p-6 border-b border-slate-200 dark:border-[#2d2d3f] flex justify-between items-center bg-white dark:bg-[#1a1a24]">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">Submit a Past Question</h2>
+                <button onClick={() => setIsModalOpen(false)} className="text-slate-500 dark:text-slate-400 hover:text-white transition-colors">
                   <span className="material-symbols-outlined">close</span>
                 </button>
               </div>
@@ -353,20 +353,20 @@ export default function PastQuestionsPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Institution Type *</label>
-                    <select required value={formInstitutionType} onChange={(e) => setFormInstitutionType(e.target.value)} className="w-full h-10 px-3 bg-[#13131a] border border-[#2d2d3f] rounded-lg text-sm text-white focus:border-[#ea580c] outline-none">
+                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Institution Type *</label>
+                    <select required value={formInstitutionType} onChange={(e) => setFormInstitutionType(e.target.value)} className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none">
                       {INSTITUTION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Year *</label>
-                    <input required type="number" min="1990" max="2030" value={formYear} onChange={(e) => setFormYear(parseInt(e.target.value))} className="w-full h-10 px-3 bg-[#13131a] border border-[#2d2d3f] rounded-lg text-sm text-white focus:border-[#ea580c] outline-none" />
+                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Year *</label>
+                    <input required type="number" min="1990" max="2030" value={formYear} onChange={(e) => setFormYear(parseInt(e.target.value))} className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">School Name *</label>
-                  <input required list="school-list" value={formSchoolName} onChange={(e) => setFormSchoolName(e.target.value)} placeholder="e.g. University of Lagos" className="w-full h-10 px-3 bg-[#13131a] border border-[#2d2d3f] rounded-lg text-sm text-white focus:border-[#ea580c] outline-none" />
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">School Name *</label>
+                  <input required list="school-list" value={formSchoolName} onChange={(e) => setFormSchoolName(e.target.value)} placeholder="e.g. University of Lagos" className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none" />
                   <datalist id="school-list">
                     {schoolsList.map(s => <option key={s} value={s} />)}
                   </datalist>
@@ -374,20 +374,20 @@ export default function PastQuestionsPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Subject *</label>
-                    <input required value={formSubject} onChange={(e) => setFormSubject(e.target.value)} placeholder="e.g. Mathematics" className="w-full h-10 px-3 bg-[#13131a] border border-[#2d2d3f] rounded-lg text-sm text-white focus:border-[#ea580c] outline-none" />
+                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Subject *</label>
+                    <input required value={formSubject} onChange={(e) => setFormSubject(e.target.value)} placeholder="e.g. Mathematics" className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none" />
                   </div>
                   {(formInstitutionType === 'University' || formInstitutionType === 'Polytechnic') && (
                     <div>
-                      <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Course Code</label>
-                      <input value={formCourseCode} onChange={(e) => setFormCourseCode(e.target.value)} placeholder="e.g. MTH 101" className="w-full h-10 px-3 bg-[#13131a] border border-[#2d2d3f] rounded-lg text-sm text-white focus:border-[#ea580c] outline-none" />
+                      <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Course Code</label>
+                      <input value={formCourseCode} onChange={(e) => setFormCourseCode(e.target.value)} placeholder="e.g. MTH 101" className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none" />
                     </div>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Semester</label>
-                  <select value={formSemester} onChange={(e) => setFormSemester(e.target.value)} className="w-full h-10 px-3 bg-[#13131a] border border-[#2d2d3f] rounded-lg text-sm text-white focus:border-[#ea580c] outline-none">
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Semester</label>
+                  <select value={formSemester} onChange={(e) => setFormSemester(e.target.value)} className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none">
                     <option value="">None / Not Applicable</option>
                     <option value="First Semester">First Semester</option>
                     <option value="Second Semester">Second Semester</option>
@@ -396,11 +396,11 @@ export default function PastQuestionsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 mb-1.5 uppercase tracking-wider">Description / Context</label>
-                  <textarea value={formDescription} onChange={(e) => setFormDescription(e.target.value)} placeholder="Any context about this paper? e.g. which department, lecturer, or exam type" className="w-full h-20 p-3 bg-[#13131a] border border-[#2d2d3f] rounded-lg text-sm text-white focus:border-[#ea580c] outline-none resize-none" />
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Description / Context</label>
+                  <textarea value={formDescription} onChange={(e) => setFormDescription(e.target.value)} placeholder="Any context about this paper? e.g. which department, lecturer, or exam type" className="w-full h-20 p-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none resize-none" />
                 </div>
 
-                <div className="border-2 border-dashed border-[#2d2d3f] hover:border-[#ea580c] transition-colors rounded-xl p-6 relative flex flex-col items-center justify-center text-center bg-[#13131a]/50">
+                <div className="border-2 border-dashed border-slate-200 dark:border-[#2d2d3f] hover:border-[#ea580c] transition-colors rounded-xl p-6 relative flex flex-col items-center justify-center text-center bg-[#f5f5f8] dark:bg-[#13131a]/50">
                   <input required onChange={handleFileUpload} accept=".pdf,image/png,image/jpeg,image/webp" type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
 
                   {formFile ? (
@@ -408,19 +408,19 @@ export default function PastQuestionsPage() {
                       <span className={`material-symbols-outlined text-4xl ${formFile.type.includes('pdf') ? 'text-red-400' : 'text-blue-400'}`}>
                         {formFile.type.includes('pdf') ? 'picture_as_pdf' : 'image'}
                       </span>
-                      <p className="text-sm font-bold text-white truncate max-w-[200px]">{formFile.name}</p>
-                      <p className="text-xs text-slate-400">{(formFile.size / (1024 * 1024)).toFixed(2)} MB</p>
+                      <p className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-[200px]">{formFile.name}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{(formFile.size / (1024 * 1024)).toFixed(2)} MB</p>
                     </div>
                   ) : (
                     <>
                       <span className="material-symbols-outlined text-4xl text-slate-500 mb-2">cloud_upload</span>
-                      <p className="text-sm font-bold text-white mb-1">Drag and drop or click to upload</p>
+                      <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Drag and drop or click to upload</p>
                       <p className="text-xs text-slate-500">Supports PDF or Images (Max 20MB)</p>
                     </>
                   )}
                 </div>
 
-                <button disabled={isSubmitting} type="submit" className="w-full bg-[#3b82f6] hover:bg-[#2563eb] text-white font-bold h-12 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+                <button disabled={isSubmitting} type="submit" className="w-full bg-[#3b82f6] hover:bg-[#2563eb] text-slate-900 dark:text-white font-bold h-12 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
                   {isSubmitting ? (
                     <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> Uploading...</>
                   ) : 'Submit to Community'}
@@ -432,18 +432,18 @@ export default function PastQuestionsPage() {
 
         <main className="flex flex-1 flex-col overflow-y-auto">
           {/* Header Area */}
-          <div className="bg-[#1a1a24] border-b border-[#2d2d3f] px-6 py-10 shrink-0">
+          <div className="bg-white dark:bg-[#1a1a24] border-b border-slate-200 dark:border-[#2d2d3f] px-6 py-10 shrink-0">
             <div className="max-w-[1440px] mx-auto w-full">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                 <div>
-                  <h1 className="text-3xl font-black text-white mb-2">
+                  <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">
                     Community Past Questions Bank
                   </h1>
-                  <p className="text-slate-400">
+                  <p className="text-slate-500 dark:text-slate-400">
                     Study smarter with past questions shared by students like you.
                   </p>
                 </div>
-                <button onClick={() => setIsModalOpen(true)} className="bg-[#3b82f6] hover:bg-[#2563eb] text-white font-bold px-6 py-3 rounded-xl transition-colors shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 whitespace-nowrap shrink-0">
+                <button onClick={() => setIsModalOpen(true)} className="bg-[#3b82f6] hover:bg-[#2563eb] text-slate-900 dark:text-white font-bold px-6 py-3 rounded-xl transition-colors shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 whitespace-nowrap shrink-0">
                   <span className="material-symbols-outlined text-[20px]">add</span>
                   Submit Past Question
                 </button>
@@ -451,43 +451,43 @@ export default function PastQuestionsPage() {
 
               {/* Stats Pills */}
               <div className="flex flex-wrap gap-4 mb-8">
-                <div className="bg-[#13131a] border border-[#2d2d3f] px-5 py-3 rounded-xl flex items-center gap-4 min-w-[160px]">
+                <div className="bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] px-5 py-3 rounded-xl flex items-center gap-4 min-w-[160px]">
                   <div className="bg-blue-500/10 text-blue-400 p-2 rounded-lg">
                     <span className="material-symbols-outlined">description</span>
                   </div>
                   <div>
-                    <p className="text-2xl font-black text-white leading-none">{stats.total}</p>
+                    <p className="text-2xl font-black text-slate-900 dark:text-white leading-none">{stats.total}</p>
                     <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Submissions</p>
                   </div>
                 </div>
-                <div className="bg-[#13131a] border border-[#2d2d3f] px-5 py-3 rounded-xl flex items-center gap-4 min-w-[160px]">
+                <div className="bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] px-5 py-3 rounded-xl flex items-center gap-4 min-w-[160px]">
                   <div className="bg-orange-500/10 text-orange-400 p-2 rounded-lg">
                     <span className="material-symbols-outlined">account_balance</span>
                   </div>
                   <div>
-                    <p className="text-2xl font-black text-white leading-none">{stats.schools}</p>
+                    <p className="text-2xl font-black text-slate-900 dark:text-white leading-none">{stats.schools}</p>
                     <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Schools</p>
                   </div>
                 </div>
-                <div className="bg-[#13131a] border border-[#2d2d3f] px-5 py-3 rounded-xl flex items-center gap-4 min-w-[160px]">
+                <div className="bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] px-5 py-3 rounded-xl flex items-center gap-4 min-w-[160px]">
                   <div className="bg-purple-500/10 text-purple-400 p-2 rounded-lg">
                     <span className="material-symbols-outlined">menu_book</span>
                   </div>
                   <div>
-                    <p className="text-2xl font-black text-white leading-none">{stats.subjects}</p>
+                    <p className="text-2xl font-black text-slate-900 dark:text-white leading-none">{stats.subjects}</p>
                     <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Subjects</p>
                   </div>
                 </div>
               </div>
 
               {/* Tabs */}
-              <div className="flex border-b border-[#2d2d3f]">
-                <button onClick={() => setActiveTab('all')} className={`px-6 py-3 font-bold text-sm border-b-2 transition-colors ${activeTab === 'all' ? 'border-[#3b82f6] text-[#3b82f6]' : 'border-transparent text-slate-400 hover:text-slate-300'}`}>
+              <div className="flex border-b border-slate-200 dark:border-[#2d2d3f]">
+                <button onClick={() => setActiveTab('all')} className={`px-6 py-3 font-bold text-sm border-b-2 transition-colors ${activeTab === 'all' ? 'border-[#3b82f6] text-[#3b82f6]' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-300'}`}>
                   All Questions
                 </button>
-                <button onClick={() => setActiveTab('my_submissions')} className={`px-6 py-3 font-bold text-sm border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'my_submissions' ? 'border-[#3b82f6] text-[#3b82f6]' : 'border-transparent text-slate-400 hover:text-slate-300'}`}>
+                <button onClick={() => setActiveTab('my_submissions')} className={`px-6 py-3 font-bold text-sm border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'my_submissions' ? 'border-[#3b82f6] text-[#3b82f6]' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-300'}`}>
                   My Submissions
-                  {profile && <span className="bg-[#2d2d3f] text-white text-[10px] px-2 py-0.5 rounded-full">{questions.filter(q => q.user_id === profile.id).length}</span>}
+                  {profile && <span className="bg-[#2d2d3f] text-slate-900 dark:text-white text-[10px] px-2 py-0.5 rounded-full">{questions.filter(q => q.user_id === profile.id).length}</span>}
                 </button>
               </div>
             </div>
@@ -497,20 +497,20 @@ export default function PastQuestionsPage() {
           <div className="p-6 max-w-[1440px] mx-auto w-full flex-1 flex flex-col">
 
             {/* Filters */}
-            <div className="flex flex-wrap gap-3 mb-8 bg-[#1a1a24] p-2 rounded-xl border border-[#2d2d3f] sticky top-0 z-10 shadow-sm">
-              <select value={filterInstitution} onChange={e => setFilterInstitution(e.target.value)} className="h-9 px-3 rounded-lg bg-[#13131a] border border-[#2d2d3f] text-sm text-white focus:border-[#ea580c] outline-none min-w-[140px]">
+            <div className="flex flex-wrap gap-3 mb-8 bg-white dark:bg-[#1a1a24] p-2 rounded-xl border border-slate-200 dark:border-[#2d2d3f] sticky top-0 z-10 shadow-sm">
+              <select value={filterInstitution} onChange={e => setFilterInstitution(e.target.value)} className="h-9 px-3 rounded-lg bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none min-w-[140px]">
                 <option value="All">All Institutions</option>
                 {INSTITUTION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
-              <select value={filterSchool} onChange={e => setFilterSchool(e.target.value)} className="h-9 px-3 rounded-lg bg-[#13131a] border border-[#2d2d3f] text-sm text-white focus:border-[#ea580c] outline-none min-w-[160px] max-w-[250px] truncate">
+              <select value={filterSchool} onChange={e => setFilterSchool(e.target.value)} className="h-9 px-3 rounded-lg bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none min-w-[160px] max-w-[250px] truncate">
                 <option value="All">All Schools</option>
                 {schoolsList.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
-              <select value={filterSubject} onChange={e => setFilterSubject(e.target.value)} className="h-9 px-3 rounded-lg bg-[#13131a] border border-[#2d2d3f] text-sm text-white focus:border-[#ea580c] outline-none min-w-[140px] max-w-[200px] truncate">
+              <select value={filterSubject} onChange={e => setFilterSubject(e.target.value)} className="h-9 px-3 rounded-lg bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none min-w-[140px] max-w-[200px] truncate">
                 <option value="All">All Subjects</option>
                 {subjectsList.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
-              <select value={filterYear} onChange={e => setFilterYear(e.target.value)} className="h-9 px-3 rounded-lg bg-[#13131a] border border-[#2d2d3f] text-sm text-white focus:border-[#ea580c] outline-none min-w-[100px]">
+              <select value={filterYear} onChange={e => setFilterYear(e.target.value)} className="h-9 px-3 rounded-lg bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none min-w-[100px]">
                 <option value="All">All Years</option>
                 {yearsList.map(y => <option key={y} value={y.toString()}>{y}</option>)}
               </select>
@@ -525,15 +525,15 @@ export default function PastQuestionsPage() {
             {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
                 {[1, 2, 3, 4, 5, 6].map(i => (
-                  <div key={i} className="h-64 bg-[#1a1a24] rounded-xl border border-[#2d2d3f]"></div>
+                  <div key={i} className="h-64 bg-white dark:bg-[#1a1a24] rounded-xl border border-slate-200 dark:border-[#2d2d3f]"></div>
                 ))}
               </div>
             ) : filtered.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-24 h-24 bg-[#1a1a24] border border-[#2d2d3f] rounded-full flex items-center justify-center mb-6 shadow-inner">
+                <div className="w-24 h-24 bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] rounded-full flex items-center justify-center mb-6 shadow-inner">
                   <span className="material-symbols-outlined text-5xl text-slate-600">travel_explore</span>
                 </div>
-                <h2 className="text-xl font-bold text-white mb-2">No past questions found</h2>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">No past questions found</h2>
                 <p className="text-slate-500 mb-6 max-w-sm">
                   {activeTab === 'my_submissions'
                     ? "You haven't uploaded any past questions yet. Start contributing to help the community!"
@@ -547,16 +547,16 @@ export default function PastQuestionsPage() {
               <div className="space-y-12 pb-20">
                 {Object.keys(grouped).sort().map(school => (
                   <div key={school} className="space-y-6">
-                    <div className="flex items-center gap-3 border-b border-[#2d2d3f] pb-2">
-                      <h2 className="text-xl font-black text-white">{school}</h2>
-                      <span className="bg-[#1a1a24] text-slate-400 text-xs font-bold px-2 py-0.5 rounded border border-[#2d2d3f]">
+                    <div className="flex items-center gap-3 border-b border-slate-200 dark:border-[#2d2d3f] pb-2">
+                      <h2 className="text-xl font-black text-slate-900 dark:text-white">{school}</h2>
+                      <span className="bg-white dark:bg-[#1a1a24] text-slate-500 dark:text-slate-400 text-xs font-bold px-2 py-0.5 rounded border border-slate-200 dark:border-[#2d2d3f]">
                         {Object.values(grouped[school]).flat().length} submissions
                       </span>
                     </div>
                     <div className="space-y-8 pl-4 border-l-2 border-[#1a1a24]">
                       {Object.keys(grouped[school]).sort().map(subj => (
                         <div key={subj}>
-                          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2 before:w-4 before:h-[1px] before:bg-slate-700">
+                          <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2 before:w-4 before:h-[1px] before:bg-slate-700">
                             {subj}
                           </h3>
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pl-6">

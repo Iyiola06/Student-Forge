@@ -98,8 +98,8 @@ export default function HistoryPage() {
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       <Sidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-16 bg-[#1a1a24] border-b border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
-          <h1 className="font-bold text-white">StudyForge</h1>
+        <header className="h-16 bg-white dark:bg-[#1a1a24] border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
+          <h1 className="font-bold text-slate-900 dark:text-white">StudyForge</h1>
         </header>
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
@@ -109,18 +109,18 @@ export default function HistoryPage() {
             </h1>
             <div className="flex items-center gap-4">
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400">
                   <span className="material-symbols-outlined text-[20px]">
                     search
                   </span>
                 </span>
                 <input
-                  className="w-full sm:w-64 h-10 pl-10 pr-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c]"
+                  className="w-full sm:w-64 h-10 pl-10 pr-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c]"
                   placeholder="Search history..."
                   type="text"
                 />
               </div>
-              <button className="p-2 border border-slate-200 dark:border-[#2d2d3f] bg-white dark:bg-[#1b1b27] text-slate-500 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] rounded-lg transition-colors flex items-center justify-center">
+              <button className="p-2 border border-slate-200 dark:border-[#2d2d3f] bg-white dark:bg-[#1b1b27] text-slate-500 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-slate-100 dark:bg-[#252535] rounded-lg transition-colors flex items-center justify-center">
                 <span className="material-symbols-outlined">filter_list</span>
               </button>
             </div>
@@ -141,7 +141,7 @@ export default function HistoryPage() {
                 ) : historyItems.length === 0 ? (
                   <div className="pl-20 py-12 flex flex-col items-start gap-2">
                     <div className="bg-slate-100 dark:bg-[#252535] p-3 rounded-xl mb-2">
-                      <span className="material-symbols-outlined text-3xl text-slate-400">history_toggle_off</span>
+                      <span className="material-symbols-outlined text-3xl text-slate-500 dark:text-slate-400">history_toggle_off</span>
                     </div>
                     <h3 className="font-bold text-slate-900 dark:text-white text-lg">No Activity Yet</h3>
                     <p className="text-sm text-slate-500 dark:text-[#9c9cba]">Your study history and timeline will appear here once you start taking quizzes or reading documents.</p>
@@ -167,7 +167,7 @@ export default function HistoryPage() {
                                 <span className="material-symbols-outlined">{info.icon}</span>
                               </div>
                               <div>
-                                <h3 className="font-bold text-slate-900 dark:text-white capitalize">
+                                <h3 className="font-bold text-white capitalize">
                                   {info.title}
                                 </h3>
                                 <p className="text-sm text-slate-500 dark:text-[#9c9cba]">
@@ -191,7 +191,7 @@ export default function HistoryPage() {
               {/* Load More */}
               {historyItems.length > 0 && (
                 <div className="text-center mt-8">
-                  <button className="px-4 py-2 bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm font-medium text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] transition-colors shadow-sm">
+                  <button className="px-4 py-2 bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm font-medium text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-slate-100 dark:bg-[#252535] transition-colors shadow-sm">
                     Load More History
                   </button>
                 </div>

@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 export default function SettingsPage() {
   const { profile, isLoading } = useProfile();
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -66,6 +67,37 @@ export default function SettingsPage() {
       alert(`Error updating profile: ${err.message}`);
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !profile) return;
+
+    setIsUploadingAvatar(true);
+    try {
+      const supabase = createClient();
+      const fileExt = file.name.split('.').pop();
+      const fileName = `avatar_${Date.now()}.${fileExt}`;
+      const filePath = `${profile.id}/${fileName}`;
+
+      // We'll use the existing resources bucket
+      const { error: uploadError } = await supabase.storage
+        .from('resources')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('resources')
+        .getPublicUrl(filePath);
+
+      setFormData({ ...formData, avatarUrl: publicUrl });
+    } catch (err: any) {
+      alert(`Error uploading avatar: ${err.message}`);
+    } finally {
+      setIsUploadingAvatar(false);
+      event.target.value = '';
     }
   };
 
@@ -151,7 +183,7 @@ export default function SettingsPage() {
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
                     Choose Avatar
                   </label>
-                  <div className="flex flex-wrap gap-4">
+                  <div className="flex flex-wrap gap-4 items-center">
                     {avatarOptions.map((url, i) => (
                       <button
                         key={i}
@@ -161,6 +193,21 @@ export default function SettingsPage() {
                         <img src={url} alt={`Avatar option ${i + 1}`} className="w-full h-full object-cover" />
                       </button>
                     ))}
+                    <div className="relative size-14 rounded-full border-2 border-dashed border-slate-300 dark:border-[#3b3b54] bg-slate-50 dark:bg-[#1a1a24] hover:bg-slate-100 dark:hover:bg-[#252535] transition-colors flex items-center justify-center cursor-pointer overflow-hidden group">
+                      {isUploadingAvatar ? (
+                        <div className="size-5 border-2 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
+                      ) : (
+                        <span className="material-symbols-outlined text-slate-400 group-hover:text-[#ea580c]">add_a_photo</span>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAvatarUpload}
+                        disabled={isUploadingAvatar}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                        title="Upload Custom Avatar"
+                      />
+                    </div>
                   </div>
                 </div>
 

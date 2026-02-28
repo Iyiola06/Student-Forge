@@ -62,7 +62,7 @@ export default function ActivityPage() {
             <Sidebar />
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
                 <header className="h-16 bg-[#1a1a24] border-b border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
-                    <h1 className="font-bold text-white">StudyForge</h1>
+                    <h1 className="font-bold text-slate-900 dark:text-white">StudyForge</h1>
                 </header>
                 {/* Main Content */}
                 <main className="flex flex-1 flex-col px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full overflow-y-auto">

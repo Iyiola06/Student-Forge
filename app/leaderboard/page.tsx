@@ -40,8 +40,8 @@ export default function LeaderboardPage() {
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       <Sidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-16 bg-[#1a1a24] border-b border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
-          <h1 className="font-bold text-white">StudyForge</h1>
+        <header className="h-16 bg-white dark:bg-[#1a1a24] border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between px-6 sticky top-0 z-20 md:hidden">
+          <h1 className="font-bold text-slate-900 dark:text-white">StudyForge</h1>
         </header>
 
         {/* Main Content */}
@@ -168,8 +168,8 @@ export default function LeaderboardPage() {
                         const rank = index + 4;
                         const isMe = user.id === profile?.id;
                         return (
-                          <div key={user.id} className={`flex items-center gap-4 p-4 transition-colors ${isMe ? 'bg-[#ea580c]/5' : 'hover:bg-slate-50 dark:hover:bg-[#252535]'}`}>
-                            <span className={`w-8 text-center font-bold ${isMe ? 'text-[#ea580c]' : 'text-slate-400'}`}>{rank}</span>
+                          <div key={user.id} className={`flex items-center gap-4 p-4 transition-colors ${isMe ? 'bg-[#ea580c]/5' : 'hover:bg-slate-50 dark:hover:bg-slate-100 dark:bg-[#252535]'}`}>
+                            <span className={`w-8 text-center font-bold ${isMe ? 'text-[#ea580c]' : 'text-slate-500 dark:text-slate-400'}`}>{rank}</span>
                             <div className="size-10 rounded-full bg-slate-200 dark:bg-[#2d2d3f] overflow-hidden relative border border-slate-200 dark:border-[#3b3b54]">
                               <Image
                                 src={getAvatar(user.avatar_url)}
@@ -179,7 +179,7 @@ export default function LeaderboardPage() {
                               />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="font-bold text-slate-900 dark:text-white truncate">{getName(user.id, user.full_name)}</p>
+                              <p className="font-bold text-white truncate">{getName(user.id, user.full_name)}</p>
                               <p className="text-xs text-slate-500 dark:text-[#9c9cba]">Level {user.level || 1}</p>
                             </div>
                             <span className={`font-bold ${isMe ? 'text-[#ea580c]' : 'text-slate-600 dark:text-slate-300'}`}>
