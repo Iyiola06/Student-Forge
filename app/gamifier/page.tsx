@@ -472,12 +472,12 @@ function GamifierContent() {
       </header>
 
       {/* Main Split */}
-      <div className="flex flex-1 overflow-hidden relative">
+      <div className="flex flex-col lg:flex-row flex-1 overflow-y-auto lg:overflow-hidden relative">
 
         {/* Left: PDF Reader */}
-        <main className="flex-1 flex flex-col bg-slate-200/50 dark:bg-[#0c0c16] relative">
+        <main className="min-h-[75vh] lg:min-h-0 flex-1 flex flex-col bg-slate-200/50 dark:bg-[#0c0c16] relative shrink-0 pb-16">
 
-          <div className="flex-1 overflow-auto flex items-center justify-center p-8">
+          <div className="flex-1 overflow-auto flex items-center justify-center p-4 md:p-8">
             {!pdfDoc && (
               <div className="flex flex-col items-center text-slate-500">
                 <div className="size-10 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin mb-4"></div>
@@ -515,8 +515,8 @@ function GamifierContent() {
           </div>
 
           {/* Bottom Reader Toolbar */}
-          <div className="h-16 bg-[#f5f5f8] dark:bg-[#101022] border-t border-slate-200 dark:border-[#1b1b27] flex items-center justify-center px-6 text-slate-900 dark:text-white absolute bottom-0 w-full">
-            <div className="flex items-center gap-4 bg-white dark:bg-[#1b1b27] px-6 py-2 rounded-full border border-slate-200 dark:border-[#2d2d3f] shadow-lg">
+          <div className="h-16 bg-[#f5f5f8] dark:bg-[#101022] border-t border-slate-200 dark:border-[#1b1b27] flex items-center justify-center px-4 md:px-6 text-slate-900 dark:text-white absolute bottom-0 w-full z-10">
+            <div className="flex items-center gap-2 md:gap-4 bg-white dark:bg-[#1b1b27] px-4 md:px-6 py-2 rounded-full border border-slate-200 dark:border-[#2d2d3f] shadow-lg">
               <button onClick={() => handlePageTurn(-1)} disabled={currentPage <= 1} className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white disabled:opacity-30">
                 <span className="material-symbols-outlined">arrow_back</span>
               </button>
@@ -561,7 +561,7 @@ function GamifierContent() {
         </main>
 
         {/* Right: Game Dashboard */}
-        <aside className="w-80 bg-white dark:bg-[#141423] border-l border-slate-200 dark:border-[#2d2d3f] flex flex-col z-10 shadow-[-10px_0_30px_rgba(0,0,0,0.5)]">
+        <aside className="w-full lg:w-80 shrink-0 bg-white dark:bg-[#141423] border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-[#2d2d3f] flex flex-col z-10 shadow-[-10px_0_30px_rgba(0,0,0,0.5)]">
 
           {/* User Status */}
           <div className="p-6 border-b border-slate-200 dark:border-[#2d2d3f] bg-gradient-to-b from-[#1b1b27] to-transparent">

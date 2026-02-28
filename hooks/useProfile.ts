@@ -16,6 +16,7 @@ export interface Profile {
     resources_uploaded?: number;
     quizzes_taken?: number;
     badges?: string[];
+    last_active_date?: string;
 }
 
 export function useProfile() {
@@ -45,7 +46,46 @@ export function useProfile() {
 
                 if (profileError) throw profileError;
 
-                setProfile(profileData as Profile);
+                let currentProfile = profileData as Profile;
+
+                // --- STREAK CALCULATION LOGIC ---
+                const todayDate = new Date();
+                // Get local date string YYYY-MM-DD
+                const todayStr = new Date(todayDate.getTime() - (todayDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+
+                if (currentProfile.last_active_date !== todayStr) {
+                    const yesterdayDate = new Date(todayDate);
+                    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+                    const yesterdayStr = new Date(yesterdayDate.getTime() - (yesterdayDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+
+                    let newStreak = currentProfile.streak_days || 0;
+
+                    if (currentProfile.last_active_date === yesterdayStr) {
+                        // Logged in yesterday! Increment streak.
+                        newStreak += 1;
+                    } else {
+                        // Missed a day or first time. Reset streak to 1.
+                        newStreak = 1;
+                    }
+
+                    // Update local profile state
+                    currentProfile = {
+                        ...currentProfile,
+                        streak_days: newStreak,
+                        last_active_date: todayStr
+                    };
+
+                    // Persist the updated streak silently in the background
+                    supabase.from('profiles').update({
+                        streak_days: newStreak,
+                        last_active_date: todayStr
+                    }).eq('id', user.id).then(({ error }) => {
+                        if (error) console.error("Failed to update streak:", error);
+                    });
+                }
+                // --- END STREAK CALCULATION LOGIC ---
+
+                setProfile(currentProfile);
             }
         } catch (err: any) {
             console.error('Error fetching profile:', err.message);

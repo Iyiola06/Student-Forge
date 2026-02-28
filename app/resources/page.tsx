@@ -156,7 +156,7 @@ export default function ResourcesPage() {
     <div className="bg-[#f5f5f8] dark:bg-[#13131a] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       <Sidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        
+
         {/* Upload Toast Indicator */}
         {isUploading && (
           <div className="fixed bottom-6 right-6 z-50 bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] shadow-xl rounded-xl p-4 flex items-center gap-4 animate-in slide-in-from-bottom-5">
@@ -188,15 +188,15 @@ export default function ResourcesPage() {
                     cloud_upload
                   </span>
                 )}
-                <span>{isUploading ? 'Processing...' : 'Upload PDF'}</span>
+                <span>{isUploading ? 'Processing...' : 'Upload File'}</span>
               </button>
               <input
                 type="file"
-                accept=".pdf"
+                accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png,.webp"
                 onChange={handleFileUpload}
                 disabled={isUploading}
                 className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
-                title="Upload your PDF study material"
+                title="Upload your study material"
               />
             </div>
           </div>
@@ -275,36 +275,52 @@ export default function ResourcesPage() {
                         <span className="material-symbols-outlined text-4xl text-slate-500">folder_open</span>
                       </div>
                       <p className="text-base font-bold text-slate-900 dark:text-white mb-1">No resources found</p>
-                      <p className="text-sm">You haven&apos;t uploaded any PDFs or documents yet.</p>
+                      <p className="text-sm">You haven&apos;t uploaded any files yet.</p>
                     </div>
                   ) : (
                     resources.map((resource) => (
                       <div key={resource.id} className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-5 hover:border-[#ea580c]/50 transition-colors group flex flex-col">
                         <div className="flex items-start gap-4 mb-4">
-                          <div className="p-3 bg-red-500/10 text-red-500 rounded-xl shrink-0 group-hover:bg-red-500/20 transition-colors">
-                            <span className="material-symbols-outlined text-3xl">picture_as_pdf</span>
+                          <div className={`p-3 rounded-xl shrink-0 transition-colors ${getIconForType(resource.file_type).colorClass}`}>
+                            <span className="material-symbols-outlined text-3xl">{getIconForType(resource.file_type).icon}</span>
                           </div>
-                          <div>
-                            <h3 className="font-bold text-slate-900 dark:text-white leading-snug line-clamp-2 group-hover:text-[#5b5bfa] transition-colors">{resource.title}</h3>
+                          <div className="min-w-0">
+                            <h3 className="font-bold text-slate-900 dark:text-white leading-snug line-clamp-2 break-all group-hover:text-[#5b5bfa] transition-colors" title={resource.title}>{resource.title}</h3>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 mb-6">
-                          <span className="text-[10px] font-black tracking-wider text-slate-500 dark:text-slate-400 bg-[#f5f5f8] dark:bg-[#13131a] px-2 py-1 rounded">PDF</span>
+                        <div className="flex items-center gap-2 mb-6 flex-wrap">
+                          <span className={`text-[10px] font-black tracking-wider text-slate-500 dark:text-slate-400 bg-[#f5f5f8] dark:bg-[#13131a] px-2 py-1 rounded`}>
+                            {resource.file_type.includes('pdf') ? 'PDF'
+                              : resource.file_type.includes('presentation') || resource.file_type.includes('ppt') ? 'PPTX'
+                                : resource.file_type.includes('document') || resource.file_type.includes('doc') ? 'DOCX'
+                                  : resource.file_type.includes('image') ? 'IMAGE'
+                                    : 'FILE'}
+                          </span>
                           <span className="text-xs text-slate-500">•</span>
-                          <span className="text-xs text-slate-500 font-medium">{formatSize(resource.file_size_bytes)}</span>
+                          <span className="text-xs text-slate-500 font-medium whitespace-nowrap">{formatSize(resource.file_size_bytes)}</span>
                           <span className="text-xs text-slate-500">•</span>
-                          <span className="text-xs text-slate-500 font-medium">Uploaded {formatDate(resource.created_at)}</span>
+                          <span className="text-xs text-slate-500 font-medium whitespace-nowrap">Uploaded {formatDate(resource.created_at)}</span>
                         </div>
                         <div className="flex gap-2 mt-auto">
-                          <button onClick={() => setSelectedPdfUrl(resource.file_url || null)} className="flex-1 bg-slate-100 dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
-                            <span className="material-symbols-outlined text-[16px]">visibility</span>
-                            View PDF
-                          </button>
-                          <Link href={`/gamifier?id=${resource.id}`} className="flex-1 bg-[#ea580c]/10 hover:bg-[#ea580c] text-[#ea580c] hover:text-white font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
-                            <span className="material-symbols-outlined text-[16px]">sports_esports</span>
-                            Read & Earn XP
-                          </Link>
-                          <button onClick={() => handleDelete(resource.id)} className="px-3 bg-slate-100 dark:bg-[#252535] hover:bg-red-500/20 hover:text-red-400 text-slate-500 dark:text-slate-400 font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center">
+                          {resource.file_type.includes('pdf') || resource.file_type.includes('image') ? (
+                            <button onClick={() => setSelectedPdfUrl(resource.file_url || null)} className="flex-1 bg-slate-100 dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
+                              <span className="material-symbols-outlined text-[16px]">visibility</span>
+                              View File
+                            </button>
+                          ) : (
+                            <a href={resource.file_url} target="_blank" rel="noopener noreferrer" className="flex-1 bg-slate-100 dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
+                              <span className="material-symbols-outlined text-[16px]">download</span>
+                              Download
+                            </a>
+                          )}
+
+                          {resource.file_type.includes('pdf') && (
+                            <Link href={`/gamifier?id=${resource.id}`} className="flex-1 bg-[#ea580c]/10 hover:bg-[#ea580c] text-[#ea580c] hover:text-white font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
+                              <span className="material-symbols-outlined text-[16px]">sports_esports</span>
+                              Read & Earn XP
+                            </Link>
+                          )}
+                          <button onClick={() => handleDelete(resource.id)} className="px-3 bg-slate-100 dark:bg-[#252535] hover:bg-red-500/20 hover:text-red-400 text-slate-500 dark:text-slate-400 font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center shrink-0">
                             <span className="material-symbols-outlined text-[16px]">delete</span>
                           </button>
                         </div>
