@@ -1,0 +1,86 @@
+﻿node.exe :  ΓÜá Warning: 
+Next.js inferred your 
+workspace root, but it 
+may not be correct.
+At C:\Program 
+Files\nodejs\npx.ps1:29 
+char:3
++   & $NODE_EXE 
+$NPX_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
+    + CategoryInfo        
+      : NotSpeci    fied: 
+( ΓÜá Warni    ng: 
+N...not be co    
+rrect.:String) []    , 
+RemoteException
+    + FullyQualifiedE    
+rrorId : NativeCo    
+mmandError
+ 
+ We detected multiple 
+lockfiles and selected 
+the directory of C:\server
+\package-lock.json as the 
+root directory.
+ To silence this warning, 
+set 
+`outputFileTracingRoot` 
+in your Next.js config, 
+or consider removing one 
+of the lockfiles if it's 
+not needed.
+   See https://nextjs.org/
+docs/app/api-reference/con
+fig/next-config-js/output#
+caveats for more 
+information.
+ Detected additional 
+lockfiles: 
+   * C:\server\forge\packa
+ge-lock.json
+
+   Γû▓ Next.js 15.5.12
+   - Environments: .env
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully in 11.2s
+   Skipping linting
+   Checking validity of types ...
+Failed to compile.
+
+./app/gamifier/page.tsx:79
+:58
+Type error: 'profile' is 
+possibly 'null'.
+
+[0m [90m 77 |[39m
+ [90m 78 |[39m     
+[90m// Refresh resources 
+to show completion 
+status[39m
+[31m[1m>[22m[39m[90m 
+79 |[39m     supabase[33
+m.[39m[36mfrom[39m([32
+m'resources'[39m)[33m.[
+39mselect([32m'*'[39m)[
+33m.[39meq([32m'user_id'
+[39m[33m,[39m profile[
+33m.[39mid)[33m.[39mthe
+n(({ data }) [33m=>[39m 
+{
+ [90m    |[39m          
+                          
+                      
+[31m[1m^[22m[39m
+ [90m 80 |[39m       
+[36mif[39m (data) setRes
+ources(data)[33m;[39m
+ [90m 81 |[39m     
+})[33m;[39m
+ [90m 82 |[39m   
+}[33m;[39m[0m
+Next.js build worker 
+exited with code: 1 and 
+signal: null

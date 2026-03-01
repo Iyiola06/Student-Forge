@@ -46,21 +46,31 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+    <div className="bg-[#050510] font-display min-h-screen flex flex-col md:flex-row antialiased relative overflow-hidden">
+      {/* Background Starfield */}
+      <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: 'inset 0 0 100px rgba(0,0,0,0.5)', background: `radial-gradient(circle at center, #1e1b4b 0%, #050510 100%)` }}>
+        <div className="stars-container absolute inset-0 opacity-40" style={{ boxShadow: '0 0 1px #fff, 0 0 2px #fff' }}></div>
+      </div>
+
       <Sidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col h-screen overflow-hidden relative z-10">
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
-          <div className="px-6 pt-6 pb-2 md:px-8 flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-              Leaderboard
-            </h1>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 bg-slate-100 dark:bg-[#252535] px-3 py-1.5 rounded-full border border-slate-200 dark:border-[#2d2d3f]">
-                <span className="text-sm font-bold text-[#ea580c]">Level {profile?.level || 1}</span>
-                <div className="w-px h-4 bg-slate-300 dark:bg-[#3b3b54]"></div>
-                <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{(profile?.xp || 0).toLocaleString()} XP</span>
+          <div className="px-6 pt-10 pb-4 md:px-12 flex items-center justify-between">
+            <div>
+              <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-[#38bdf8] to-[#7c3aed] tracking-tighter">
+                GALACTIC RANKS
+              </h1>
+              <p className="text-[10px] font-black text-[#ea580c] uppercase tracking-[0.5em] mt-1">Season 1: The Nebula Dawn</p>
+            </div>
+
+            <div className="hidden md:flex items-center gap-4">
+              <div className="flex items-center gap-3 bg-[#101022]/60 backdrop-blur-xl px-5 py-2.5 rounded-2xl border border-[#2d2d3f] shadow-2xl">
+                <span className="material-symbols-outlined text-[#ea580c]">military_tech</span>
+                <span className="text-sm font-black text-white">Lvl {profile?.level || 1}</span>
+                <div className="w-px h-6 bg-[#2d2d3f]"></div>
+                <span className="text-sm font-black text-[#38bdf8]">{(profile?.xp || 0).toLocaleString()} <span className="text-[10px] text-slate-500">FUEL</span></span>
               </div>
             </div>
           </div>
@@ -77,136 +87,165 @@ export default function LeaderboardPage() {
                 <>
                   {/* Top 3 Podium */}
                   {top3.length > 0 && (
-                    <div className="flex justify-center items-end gap-2 md:gap-4 mb-12 pt-8">
+                    <div className="flex justify-center items-end gap-2 md:gap-8 mb-16 pt-16 relative">
                       {/* 2nd Place */}
                       {top3[1] ? (
-                        <div className="flex flex-col items-center">
-                          <div className="relative mb-4">
-                            <div className="size-16 md:size-20 rounded-full border-4 border-slate-300 dark:border-slate-600 overflow-hidden bg-slate-200">
+                        <div className="flex flex-col items-center group">
+                          <div className="relative mb-6">
+                            <div className="size-20 md:size-24 rounded-3xl border-4 border-slate-400/50 overflow-hidden bg-[#101022] rotate-3 group-hover:rotate-0 transition-transform duration-500 shadow-[0_0_30px_rgba(148,163,184,0.2)]">
                               <Image
                                 src={getAvatar(top3[1].avatar_url)}
-                                alt="User 2"
+                                alt="Rank 2"
                                 fill
-                                className="object-cover"
+                                className="object-cover scale-110"
                               />
                             </div>
-                            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-slate-300 dark:bg-slate-600 text-slate-900 dark:text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-sm">
-                              2
+                            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-slate-400 text-[#050510] text-[10px] font-black px-4 py-1 rounded-full shadow-xl">
+                              RANK 02
                             </div>
                           </div>
-                          <div className="text-center w-24">
-                            <p className="font-bold text-slate-900 dark:text-white truncate">{getName(top3[1].id, top3[1].full_name)}</p>
-                            <p className="text-sm text-[#ea580c] font-bold">{top3[1].xp?.toLocaleString()} XP</p>
+                          <div className="text-center w-32">
+                            <p className="font-black text-white truncate text-lg tracking-tighter">{getName(top3[1].id, top3[1].full_name)}</p>
+                            <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">{top3[1].xp?.toLocaleString()} fuel</p>
                           </div>
-                          <div className="h-20 md:h-24 w-16 md:w-20 bg-slate-200 dark:bg-[#252535] rounded-t-lg mt-2"></div>
+                          <div className="h-24 md:h-32 w-20 md:w-28 bg-gradient-to-b from-slate-400/20 to-transparent border-t-4 border-slate-400 rounded-t-3xl mt-4 opacity-40 group-hover:opacity-100 transition-opacity"></div>
                         </div>
                       ) : (
-                        <div className="w-16 md:w-20"></div>
+                        <div className="w-20 md:w-28"></div>
                       )}
 
                       {/* 1st Place */}
                       {top3[0] && (
-                        <div className="flex flex-col items-center z-10 w-24 md:w-32">
-                          <div className="relative mb-4">
-                            <div className="size-20 md:size-24 rounded-full border-4 border-yellow-400 overflow-hidden shadow-lg shadow-yellow-400/20 bg-slate-200">
+                        <div className="flex flex-col items-center z-10 group -mt-10">
+                          <div className="relative mb-8">
+                            {/* Crown/Apex Ring */}
+                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 flex flex-col items-center">
+                              <span className="material-symbols-outlined text-6xl text-yellow-500 animate-pulse drop-shadow-[0_0_15px_rgba(234,179,8,0.6)]">workspace_premium</span>
+                            </div>
+
+                            <div className="size-28 md:size-36 rounded-[2.5rem] border-4 border-yellow-500 overflow-hidden bg-[#101022] shadow-[0_0_60px_rgba(234,179,8,0.3)] group-hover:scale-110 transition-transform duration-700">
                               <Image
                                 src={getAvatar(top3[0].avatar_url)}
-                                alt="User 1"
+                                alt="Rank 1"
                                 fill
                                 className="object-cover"
                               />
                             </div>
-                            <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-yellow-400">
-                              <span className="material-symbols-outlined text-4xl">crown</span>
-                            </div>
-                            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-0.5 rounded-full shadow-sm">
-                              1
+                            <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-yellow-500 text-yellow-950 text-xs font-black px-6 py-1.5 rounded-full shadow-2xl tracking-[0.2em]">
+                              APEX
                             </div>
                           </div>
-                          <div className="text-center w-full px-1">
-                            <p className="font-bold text-slate-900 dark:text-white text-base md:text-lg truncate">{getName(top3[0].id, top3[0].full_name)}</p>
-                            <p className="text-sm text-[#ea580c] font-bold">{top3[0].xp?.toLocaleString()} XP</p>
+                          <div className="text-center w-40">
+                            <p className="text-2xl font-black text-white tracking-tighter">{getName(top3[0].id, top3[0].full_name)}</p>
+                            <div className="flex items-center justify-center gap-2 mt-1">
+                              <span className="px-2 py-0.5 bg-yellow-500/10 border border-yellow-500/30 rounded text-[9px] font-black text-yellow-500 uppercase">Grand Marshal</span>
+                              <p className="text-sm text-[#ea580c] font-black">{top3[0].xp?.toLocaleString()} <span className="text-[10px]">FUEL</span></p>
+                            </div>
                           </div>
-                          <div className="h-28 md:h-32 w-20 md:w-24 bg-gradient-to-b from-yellow-100 to-white dark:from-yellow-900/20 dark:to-[#1b1b27] border-t border-x border-yellow-200 dark:border-yellow-900/30 rounded-t-lg mt-2 flex items-end justify-center pb-4">
-                            <span className="text-4xl font-black text-yellow-400/20">1</span>
-                          </div>
+                          <div className="h-40 md:h-52 w-28 md:w-36 bg-gradient-to-b from-yellow-500/30 via-yellow-500/5 to-transparent border-t-4 border-yellow-500 rounded-t-[3rem] mt-6 shadow-[0_-20px_40px_rgba(234,179,8,0.1)]"></div>
                         </div>
                       )}
 
                       {/* 3rd Place */}
                       {top3[2] ? (
-                        <div className="flex flex-col items-center">
-                          <div className="relative mb-4">
-                            <div className="size-16 md:size-20 rounded-full border-4 border-orange-300 dark:border-orange-700 overflow-hidden bg-slate-200">
+                        <div className="flex flex-col items-center group">
+                          <div className="relative mb-6">
+                            <div className="size-20 md:size-24 rounded-3xl border-4 border-orange-600/50 overflow-hidden bg-[#101022] -rotate-3 group-hover:rotate-0 transition-transform duration-500 shadow-[0_0_30px_rgba(234,88,12,0.2)]">
                               <Image
                                 src={getAvatar(top3[2].avatar_url)}
-                                alt="User 3"
+                                alt="Rank 3"
                                 fill
-                                className="object-cover"
+                                className="object-cover scale-110"
                               />
                             </div>
-                            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-orange-300 dark:bg-orange-700 text-orange-900 dark:text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-sm">
-                              3
+                            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-orange-600 text-white text-[10px] font-black px-4 py-1 rounded-full shadow-xl">
+                              RANK 03
                             </div>
                           </div>
-                          <div className="text-center w-24">
-                            <p className="font-bold text-slate-900 dark:text-white truncate">{getName(top3[2].id, top3[2].full_name)}</p>
-                            <p className="text-sm text-[#ea580c] font-bold">{top3[2].xp?.toLocaleString()} XP</p>
+                          <div className="text-center w-32">
+                            <p className="font-black text-white truncate text-lg tracking-tighter">{getName(top3[2].id, top3[2].full_name)}</p>
+                            <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">{top3[2].xp?.toLocaleString()} fuel</p>
                           </div>
-                          <div className="h-16 md:h-20 w-16 md:w-20 bg-orange-50 dark:bg-[#252535] rounded-t-lg mt-2"></div>
+                          <div className="h-16 md:h-24 w-20 md:w-28 bg-gradient-to-b from-orange-600/20 to-transparent border-t-4 border-orange-600 rounded-t-3xl mt-4 opacity-40 group-hover:opacity-100 transition-opacity"></div>
                         </div>
                       ) : (
-                        <div className="w-16 md:w-20"></div>
+                        <div className="w-20 md:w-28"></div>
                       )}
                     </div>
                   )}
 
                   {/* List */}
-                  <div className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] overflow-hidden">
-                    <div className="p-4 border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between">
-                      <h3 className="font-bold text-slate-900 dark:text-white">Global Ranking</h3>
-                      <div className="flex gap-2">
+                  <div className="bg-[#101022]/40 backdrop-blur-xl rounded-[2rem] border border-[#2d2d3f] overflow-hidden shadow-2xl">
+                    <div className="p-8 border-b border-[#2d2d3f] flex flex-col md:flex-row items-center justify-between gap-6">
+                      <div className="flex items-center gap-3">
+                        <div className="size-10 rounded-full bg-[#ea580c]/10 border border-[#ea580c]/30 flex items-center justify-center">
+                          <span className="material-symbols-outlined text-[#ea580c]">rocket_launch</span>
+                        </div>
+                        <div>
+                          <h3 className="font-black text-white text-xl tracking-tight uppercase">Galaxy Core</h3>
+                          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Global Synchronization Active</p>
+                        </div>
+                      </div>
+
+                      <div className="flex bg-[#0c0c16] p-1.5 rounded-2xl border border-[#2d2d3f]">
                         <button
                           onClick={() => setTimeframe('all')}
-                          className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors ${timeframe === 'all' ? 'bg-[#ea580c] text-white' : 'bg-slate-100 dark:bg-[#252535] text-slate-500'}`}
+                          className={`px-8 py-2.5 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest ${timeframe === 'all' ? 'bg-[#ea580c] text-white shadow-lg shadow-[#ea580c]/20' : 'text-slate-500 hover:text-slate-300'}`}
                         >
-                          All Time
+                          Eternity
                         </button>
                         <button
                           onClick={() => setTimeframe('weekly')}
-                          className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors ${timeframe === 'weekly' ? 'bg-[#ea580c] text-white' : 'bg-slate-100 dark:bg-[#252535] text-slate-500'}`}
+                          className={`px-8 py-2.5 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest ${timeframe === 'weekly' ? 'bg-[#7c3aed] text-white shadow-lg shadow-[#7c3aed]/20' : 'text-slate-500 hover:text-slate-300'}`}
                         >
-                          This Week
+                          Seven Suns
                         </button>
                       </div>
                     </div>
-                    <div className="divide-y divide-slate-100 dark:divide-[#2d2d3f]">
+
+                    <div className="divide-y divide-[#2d2d3f]">
                       {others.length > 0 ? others.map((user, index) => {
                         const rank = index + 4;
                         const isMe = user.id === profile?.id;
                         return (
-                          <div key={user.id} className={`flex items-center gap-4 p-4 transition-colors ${isMe ? 'bg-[#ea580c]/5' : 'hover:bg-slate-50 dark:hover:bg-slate-100 dark:bg-[#252535]'}`}>
-                            <span className={`w-8 text-center font-bold ${isMe ? 'text-[#ea580c]' : 'text-slate-500 dark:text-slate-400'}`}>{rank}</span>
-                            <div className="size-10 rounded-full bg-slate-200 dark:bg-[#2d2d3f] overflow-hidden relative border border-slate-200 dark:border-[#3b3b54]">
+                          <div key={user.id} className={`flex items-center gap-6 p-6 transition-all group ${isMe ? 'bg-[#ea580c]/10 relative' : 'hover:bg-white/5'}`}>
+                            {isMe && <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#ea580c]"></div>}
+
+                            <span className={`w-8 text-center font-black text-xl tabular-nums ${isMe ? 'text-[#ea580c]' : (rank < 10 ? 'text-slate-500' : 'text-slate-700')}`}>{rank}</span>
+
+                            <div className="size-14 rounded-2xl bg-[#0c0c16] overflow-hidden relative border border-[#2d2d3f] group-hover:border-[#38bdf8] transition-colors">
                               <Image
                                 src={getAvatar(user.avatar_url)}
                                 alt="User avatar"
                                 fill
-                                className="object-cover"
+                                className="object-cover group-hover:scale-110 transition-transform"
                               />
                             </div>
+
                             <div className="flex-1 min-w-0">
-                              <p className="font-bold text-white truncate">{getName(user.id, user.full_name)}</p>
-                              <p className="text-xs text-slate-500 dark:text-[#9c9cba]">Level {user.level || 1}</p>
+                              <div className="flex items-center gap-2">
+                                <p className="font-black text-white text-lg tracking-tight truncate">{getName(user.id, user.full_name)}</p>
+                                {rank < 10 && <span className="material-symbols-outlined text-[#38bdf8] text-sm">verified</span>}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-black text-[#ea580c] uppercase">Lvl {user.level || 1}</span>
+                                <span className="text-[10px] text-slate-600 font-bold">•</span>
+                                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{rank < 20 ? 'Elite Pilot' : 'Space Cadet'}</span>
+                              </div>
                             </div>
-                            <span className={`font-bold ${isMe ? 'text-[#ea580c]' : 'text-slate-600 dark:text-slate-300'}`}>
-                              {user.xp?.toLocaleString()} XP
-                            </span>
+
+                            <div className="text-right">
+                              <span className={`text-xl font-black tabular-nums transition-colors ${isMe ? 'text-[#ea580c]' : 'text-white'}`}>
+                                {user.xp?.toLocaleString()}
+                              </span>
+                              <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-0.5">Quantum Fuel</div>
+                            </div>
                           </div>
                         );
                       }) : (
-                        <div className="p-8 text-center text-slate-500 dark:text-[#9c9cba]">
-                          No other users found on the leaderboard.
+                        <div className="p-20 text-center text-slate-500">
+                          <span className="material-symbols-outlined text-5xl mb-4 text-[#2d2d3f]">search_off</span>
+                          <p className="text-xs font-black uppercase tracking-[0.3em]">No Cosmic Signals Detected</p>
                         </div>
                       )}
                     </div>

@@ -17,6 +17,12 @@ export interface Profile {
     quizzes_taken?: number;
     badges?: string[];
     last_active_date?: string;
+    boss_wins?: number;
+    missions?: any;
+    unlocked_titles?: string[];
+    active_title?: string;
+    unlocked_themes?: string[];
+    active_theme?: string;
 }
 
 export function useProfile() {

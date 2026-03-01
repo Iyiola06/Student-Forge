@@ -10,5 +10,13 @@ export const BADGES = [
     { id: 'night_owl', name: 'Night Owl', desc: 'Complete a document between 10PM and 2AM', icon: 'bedtime' },
     { id: 'early_bird', name: 'Early Bird', desc: 'Complete a document between 5AM and 8AM', icon: 'wb_twilight' },
     { id: 'xp_collector', name: 'XP Collector', desc: 'Earn 1000 total XP', icon: 'diamond' },
-    { id: 'level_up', name: 'Level Up', desc: 'Reach Level 5', icon: 'trending_up' }
+    { id: 'level_up', name: 'Level Up', desc: 'Reach Level 5', icon: 'trending_up' },
+
+    // SPACE EXPLORER - RARE BADGES
+    { id: 'cosmic_reader', name: '💫 Cosmic Reader', desc: 'Complete 5 documents', icon: 'auto_awesome', animated: true },
+    { id: 'meteor_student', name: '☄️ Meteor Student', desc: 'Earn 500 XP in a single day', icon: 'bolt', animated: true },
+    { id: 'supernova', name: '🌟 Supernova', desc: 'Win 3 friend battles', icon: 'star', animated: true },
+    { id: 'first_contact', name: '🛸 First Contact', desc: 'Challenge a friend for the first time', icon: 'group', animated: true },
+    { id: 'planet_collector', name: '🪐 Planet Collector', desc: 'Complete 10 documents', icon: 'public', animated: true },
+    { id: 'boss_slayer_badge', name: '⚔️ Boss Slayer', desc: 'Defeat a boss battle', icon: 'shield', animated: true }
 ];
