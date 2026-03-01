@@ -11,21 +11,30 @@ export default function LeaderboardPage() {
   const { profile } = useProfile();
   const [users, setUsers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [timeframe, setTimeframe] = useState<'all' | 'weekly'>('all');
 
   useEffect(() => {
     async function fetchLeaderboard() {
+      setIsLoading(true);
       const supabase = createClient();
-      const { data } = await supabase
-        .from('profiles')
-        .select('id, full_name, avatar_url, level, xp')
-        .order('xp', { ascending: false })
-        .limit(50);
 
-      if (data) setUsers(data);
+      if (timeframe === 'all') {
+        const { data } = await supabase
+          .from('profiles')
+          .select('id, full_name, avatar_url, level, xp')
+          .order('xp', { ascending: false })
+          .limit(50);
+        if (data) setUsers(data);
+      } else {
+        const res = await fetch('/api/leaderboard/weekly');
+        const data = await res.json();
+        if (Array.isArray(data)) setUsers(data);
+      }
+
       setIsLoading(false);
     }
     fetchLeaderboard();
-  }, []);
+  }, [timeframe]);
 
   const top3 = users.slice(0, 3);
   const others = users.slice(3);
@@ -40,7 +49,7 @@ export default function LeaderboardPage() {
     <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       <Sidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        
+
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
           <div className="px-6 pt-6 pb-2 md:px-8 flex items-center justify-between">
@@ -157,7 +166,18 @@ export default function LeaderboardPage() {
                     <div className="p-4 border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between">
                       <h3 className="font-bold text-slate-900 dark:text-white">Global Ranking</h3>
                       <div className="flex gap-2">
-                        <button className="px-3 py-1 text-xs font-bold bg-[#ea580c] text-white rounded-lg">All Time</button>
+                        <button
+                          onClick={() => setTimeframe('all')}
+                          className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors ${timeframe === 'all' ? 'bg-[#ea580c] text-white' : 'bg-slate-100 dark:bg-[#252535] text-slate-500'}`}
+                        >
+                          All Time
+                        </button>
+                        <button
+                          onClick={() => setTimeframe('weekly')}
+                          className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors ${timeframe === 'weekly' ? 'bg-[#ea580c] text-white' : 'bg-slate-100 dark:bg-[#252535] text-slate-500'}`}
+                        >
+                          This Week
+                        </button>
                       </div>
                     </div>
                     <div className="divide-y divide-slate-100 dark:divide-[#2d2d3f]">

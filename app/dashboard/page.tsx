@@ -64,16 +64,19 @@ export default function DashboardPage() {
         const supabase = createClient();
         const { data } = await supabase
           .from('resources')
-          .select('id, title')
+          .select('id, title, content')
           .eq('user_id', profile.id)
           .order('created_at', { ascending: false })
           .limit(1);
 
         if (data && data.length > 0) {
           setRecentResource(data[0]);
-          // For demo, we just use a generic context if we can't fetch the full text easily
-          // In a real app, we'd fetch the content from storage or a 'processed_text' column
-          const res = await getDashboardInsights("Biology and Chemistry core concepts");
+          // Use real content for insights if available, otherwise fallback to title
+          const context = data[0].content && data[0].content.length > 50
+            ? data[0].content.substring(0, 3000)
+            : `User is studying: ${data[0].title}`;
+
+          const res = await getDashboardInsights(context);
           setInsights(res);
         }
       } catch (e) {

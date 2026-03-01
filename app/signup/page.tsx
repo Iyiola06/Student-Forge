@@ -581,7 +581,7 @@ export default function SignupPage() {
       </main>
       {/* Footer Simple */}
       <footer className="py-6 text-center text-sm text-slate-500 dark:text-slate-600">
-        <p>© 2023 StudyForge Inc. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} StudyForge Inc. All rights reserved.</p>
       </footer>
     </div>
   );

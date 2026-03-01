@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {motion} from 'motion/react';
+import { motion } from 'motion/react';
 
 export default function LandingPage() {
   return (
@@ -40,9 +40,9 @@ export default function LandingPage() {
         </div>
 
         <motion.div
-          initial={{opacity: 0, y: 20}}
-          animate={{opacity: 1, y: 0}}
-          transition={{duration: 0.5}}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
           className="max-w-4xl mx-auto space-y-6"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ea580c]/10 text-[#ea580c] text-sm font-medium mb-4 border border-[#ea580c]/20">
@@ -78,10 +78,10 @@ export default function LandingPage() {
         {/* Features Grid */}
         <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
           <motion.div
-            initial={{opacity: 0, y: 20}}
-            whileInView={{opacity: 1, y: 0}}
-            viewport={{once: true}}
-            transition={{delay: 0.1}}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
             className="bg-white dark:bg-[#1b1b27] p-8 rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-lg hover:shadow-xl transition-shadow text-left"
           >
             <div className="size-12 rounded-xl bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-6">
@@ -96,10 +96,10 @@ export default function LandingPage() {
             </p>
           </motion.div>
           <motion.div
-            initial={{opacity: 0, y: 20}}
-            whileInView={{opacity: 1, y: 0}}
-            viewport={{once: true}}
-            transition={{delay: 0.2}}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
             className="bg-white dark:bg-[#1b1b27] p-8 rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-lg hover:shadow-xl transition-shadow text-left"
           >
             <div className="size-12 rounded-xl bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-6">
@@ -116,10 +116,10 @@ export default function LandingPage() {
             </p>
           </motion.div>
           <motion.div
-            initial={{opacity: 0, y: 20}}
-            whileInView={{opacity: 1, y: 0}}
-            viewport={{once: true}}
-            transition={{delay: 0.3}}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
             className="bg-white dark:bg-[#1b1b27] p-8 rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-lg hover:shadow-xl transition-shadow text-left"
           >
             <div className="size-12 rounded-xl bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 flex items-center justify-center mb-6">
@@ -151,7 +151,7 @@ export default function LandingPage() {
                 <span className="font-bold text-lg">StudyForge</span>
               </div>
               <p className="text-sm text-slate-500 dark:text-[#9c9cba]">
-                © 2023 StudyForge Inc. All rights reserved.
+                © {new Date().getFullYear()} StudyForge Inc. All rights reserved.
               </p>
             </div>
 
@@ -175,6 +175,7 @@ export default function LandingPage() {
                 <Link href="/forgot-password" className="hover:text-[#ea580c] transition-colors">Forgot Password</Link>
                 <Link href="/reset-password" className="hover:text-[#ea580c] transition-colors">Reset Password</Link>
                 <Link href="/verify-email" className="hover:text-[#ea580c] transition-colors">Verify Email</Link>
+                <Link href="/about" className="hover:text-[#ea580c] transition-colors">About</Link>
               </div>
             </div>
           </div>

@@ -136,6 +136,13 @@ export default function Sidebar() {
                         Personal
                     </div>
                     {renderLinks(personalLinks)}
+
+                    <div className="text-xs font-semibold text-slate-400 dark:text-[#6b6b8a] uppercase tracking-wider mb-2 mt-6 px-2">
+                        Company
+                    </div>
+                    {renderLinks([
+                        { name: 'About', href: '/about', icon: 'info' },
+                    ])}
                 </nav>
 
                 {/* User Profile Snippet */}

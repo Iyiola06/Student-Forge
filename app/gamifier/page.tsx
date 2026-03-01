@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useProfile } from '@/hooks/useProfile';
+import { BADGES } from '@/lib/constants/badges';
 import confetti from 'canvas-confetti';
 import Image from 'next/image';
 // PDF.js worker will be loaded dynamically
@@ -18,20 +19,7 @@ function getName(id?: string | null, fullName?: string | null) {
 }
 
 // Badges logic based on prompt
-const BADGES = [
-  { id: 'first_page', name: 'First Page', desc: 'Read the first page of any document', icon: 'book' },
-  { id: 'on_a_roll', name: 'On a Roll', desc: 'Read 5 pages in a single session', icon: 'local_fire_department' },
-  { id: 'chapter_champion', name: 'Chapter Champion', desc: 'Complete 25% of any document', icon: 'military_tech' },
-  { id: 'speed_reader', name: 'Speed Reader', desc: 'Complete a document in under 10 minutes', icon: 'timer' },
-  { id: 'halfway_hero', name: 'Halfway Hero', desc: 'Complete 50% of any document', icon: 'moving' },
-  { id: 'document_master', name: 'Document Master', desc: 'Complete 100% of any document', icon: 'workspace_premium' },
-  { id: 'consistent_learner', name: 'Consistent Learner', desc: 'Maintain a 3-day reading streak', icon: 'calendar_month' },
-  { id: 'study_warrior', name: 'Study Warrior', desc: 'Maintain a 7-day reading streak', icon: 'bolt' },
-  { id: 'night_owl', name: 'Night Owl', desc: 'Complete a document between 10PM and 2AM', icon: 'bedtime' },
-  { id: 'early_bird', name: 'Early Bird', desc: 'Complete a document between 5AM and 8AM', icon: 'wb_twilight' },
-  { id: 'xp_collector', name: 'XP Collector', desc: 'Earn 1000 total XP', icon: 'diamond' },
-  { id: 'level_up', name: 'Level Up', desc: 'Reach Level 5', icon: 'trending_up' }
-];
+
 
 function GamifierContent() {
   const router = useRouter();
@@ -62,6 +50,7 @@ function GamifierContent() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const unlockedBadgesRef = useRef<string[]>([]);
 
   const supabase = createClient();
 
@@ -211,10 +200,15 @@ function GamifierContent() {
     let newBadges: any[] = [];
 
     const awardBadge = (badgeId: string) => {
-      if (!existingBadges.includes(badgeId)) {
+      if (!existingBadges.includes(badgeId) && !newBadges.includes(badgeId) && !unlockedBadgesRef.current.includes(badgeId)) {
         const badgeDef = BADGES.find(b => b.id === badgeId);
         newBadges.push(badgeId);
-        setBadgesUnlockedSession(prev => [...prev, badgeDef]);
+        unlockedBadgesRef.current.push(badgeId);
+        setBadgesUnlockedSession(prev => {
+          // Extra safety check in state setter
+          if (prev.some(b => b?.id === badgeId)) return prev;
+          return [...prev, badgeDef];
+        });
         setActiveToast({ type: 'badge', data: badgeDef });
         setTimeout(() => setActiveToast(null), 4000);
       }
@@ -403,8 +397,8 @@ function GamifierContent() {
           <div className="mb-10 text-left">
             <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase mb-4">Badges Unlocked</h3>
             <div className="flex flex-wrap gap-4 justify-center">
-              {badgesUnlockedSession.map(b => (
-                <div key={b.id} className="flex items-center gap-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 px-4 py-2 rounded-lg">
+              {badgesUnlockedSession.map((b, i) => (
+                <div key={`${b.id}-${i}`} className="flex items-center gap-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 px-4 py-2 rounded-lg">
                   <span className="material-symbols-outlined text-amber-400">{b.icon}</span>
                   <span className="text-sm font-bold text-amber-100">{b.name}</span>
                 </div>
