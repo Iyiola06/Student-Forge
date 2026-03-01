@@ -126,12 +126,73 @@ export async function POST(request: Request) {
                     textExtracted: false
                 }, { status: 422 });
             }
+        } else if (fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || fileName.endsWith('.docx')) {
+            // DOCX extraction using mammoth
+            try {
+                const mammoth = await import('mammoth');
+                const arrayBuffer = await fileData.arrayBuffer();
+                const result = await mammoth.extractRawText({ buffer: Buffer.from(arrayBuffer) });
+                extractedText = result.value.trim();
+                isExtractionSuccessful = extractedText.length > 20;
+
+                if (!isExtractionSuccessful) {
+                    return NextResponse.json({
+                        error: 'Could not extract enough text from this DOCX file. It may be empty or contain only images.',
+                        textExtracted: false
+                    }, { status: 422 });
+                }
+            } catch (docxError: any) {
+                console.error('DOCX parsing error:', docxError);
+                return NextResponse.json({
+                    error: `Failed to parse DOCX: ${docxError.message || 'Unknown error'}. Please try pasting the text manually.`,
+                    textExtracted: false
+                }, { status: 422 });
+            }
+        } else if (fileType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation' || fileName.endsWith('.pptx')) {
+            // PPTX extraction using jszip to read slide XML
+            try {
+                const JSZip = (await import('jszip')).default;
+                const arrayBuffer = await fileData.arrayBuffer();
+                const zip = await JSZip.loadAsync(arrayBuffer);
+                const slideFiles = Object.keys(zip.files)
+                    .filter(name => name.startsWith('ppt/slides/slide') && name.endsWith('.xml'))
+                    .sort();
+
+                let fullText = '';
+                for (const slidePath of slideFiles) {
+                    const xmlContent = await zip.files[slidePath].async('text');
+                    // Extract text between <a:t> tags
+                    const textMatches = xmlContent.match(/<a:t>([^<]*)<\/a:t>/g);
+                    if (textMatches) {
+                        const slideText = textMatches
+                            .map((match: string) => match.replace(/<\/?a:t>/g, ''))
+                            .join(' ');
+                        fullText += slideText + '\n';
+                    }
+                }
+
+                extractedText = fullText.trim();
+                isExtractionSuccessful = extractedText.length > 20;
+
+                if (!isExtractionSuccessful) {
+                    return NextResponse.json({
+                        error: 'Could not extract enough text from this PPTX file. It may contain only images or diagrams.',
+                        textExtracted: false
+                    }, { status: 422 });
+                }
+            } catch (pptxError: any) {
+                console.error('PPTX parsing error:', pptxError);
+                return NextResponse.json({
+                    error: `Failed to parse PPTX: ${pptxError.message || 'Unknown error'}.`,
+                    textExtracted: false
+                }, { status: 422 });
+            }
         } else if (fileType === 'text/plain' || fileType === 'application/json') {
             extractedText = await fileData.text();
             isExtractionSuccessful = extractedText.length > 5;
         } else {
             return NextResponse.json({
-                error: `The file type '${fileType}' is not currently supported for text extraction. Please use PDF, Images, or TXT.`
+                error: `The file type '${fileType}' is not currently supported for text extraction. Please use PDF, DOCX, PPTX, Images, or TXT.`
             }, { status: 400 });
         }
 

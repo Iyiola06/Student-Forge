@@ -29,6 +29,26 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Content is required' }, { status: 400 });
         }
 
+        // Validate content is real study material, not an error message
+        const BLOCKED_PHRASES = [
+            'text extraction is currently only supported',
+            'failed to parse', 'could not extract',
+            'not currently supported for text extraction'
+        ];
+        const lowerContent = content.toLowerCase();
+        if (content.trim().length < 50) {
+            return NextResponse.json(
+                { error: 'Content is too short to generate meaningful questions. Please provide more study material (at least a paragraph).' },
+                { status: 400 }
+            );
+        }
+        if (BLOCKED_PHRASES.some((p: string) => lowerContent.includes(p))) {
+            return NextResponse.json(
+                { error: 'The stored content for this resource appears to be an error message, not study material. Please re-upload the file or paste the text manually.' },
+                { status: 400 }
+            );
+        }
+
         if (!type) {
             return NextResponse.json({ error: 'Generation type is required' }, { status: 400 });
         }

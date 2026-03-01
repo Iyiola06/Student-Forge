@@ -147,6 +147,19 @@ export default function GeneratorPage() {
       return;
     }
 
+    // Validate the content isn't garbage / error text
+    const BLOCKED_PHRASES = [
+      'text extraction is currently only supported',
+      'failed to parse', 'could not extract',
+      'parsing failed', 'no text content',
+      'not currently supported for text extraction'
+    ];
+    const lowerContent = contentToUse.toLowerCase();
+    if (BLOCKED_PHRASES.some(p => lowerContent.includes(p)) || contentToUse.trim().length < 50) {
+      setError('This resource does not contain valid study material. Please re-upload the file or paste the text directly into the text box.');
+      return;
+    }
+
     setIsGenerating(true);
     setError(null);
     setGeneratedData(null);
@@ -595,7 +608,7 @@ export default function GeneratorPage() {
                         ref={fileInputRef}
                         onChange={handleFileUpload}
                         className="hidden"
-                        accept="application/pdf,image/*,.doc,.docx,.txt"
+                        accept="application/pdf,image/*,.doc,.docx,.pptx,.txt"
                       />
                       <button
                         onClick={() => fileInputRef.current?.click()}
@@ -733,7 +746,7 @@ export default function GeneratorPage() {
                     <div className="p-6 pt-7">
                       <div className="flex items-start justify-between mb-4">
                         <div>
-                          <h3 className="text-xl font-bold text-slate-900 dark:text-white">Biology: Cell Structure</h3>
+                          <h3 className="text-xl font-bold text-slate-900 dark:text-white">{selectedResource ? resources.find(r => r.id === selectedResource)?.title || 'Generated Quiz' : 'Generated Quiz'}</h3>
                           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Generated just now • {generatedData.length} Questions</p>
                         </div>
                         <span className="bg-[#1a3826] border border-green-500/20 text-[#4ade80] text-xs font-bold px-3 py-1 rounded">Ready</span>
