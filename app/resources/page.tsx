@@ -229,7 +229,7 @@ export default function ResourcesPage() {
             <div className="relative overflow-hidden inline-block w-full md:w-auto">
               <button
                 disabled={isUploading}
-                className="w-full md:w-auto flex items-center justify-center gap-2 bg-[#ea580c] hover:bg-[#ea580c]/90 disabled:opacity-70 disabled:cursor-not-allowed text-white px-6 py-3 rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(59,59,250,0.3)]"
+                className="w-full md:w-auto flex items-center justify-center gap-2 bg-[#ea580c] hover:bg-[#ea580c]/90 disabled:opacity-70 disabled:cursor-not-allowed text-white px-6 py-3 rounded-xl font-bold transition-all shadow-[0_4px_20px_rgba(234,88,12,0.3)]"
               >
                 {isUploading ? (
                   <div className="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -251,28 +251,28 @@ export default function ResourcesPage() {
             </div>
           </div>
 
-          <main className="flex-1 overflow-y-auto px-6 md:px-8 flex flex-col xl:flex-row gap-8 pb-10">
-            <div className="flex-1 space-y-6">
+          <main className="flex-1 overflow-y-auto px-4 md:px-8 flex flex-col 2xl:flex-row gap-8 pb-10">
+            <div className="flex-1 space-y-6 min-w-0">
               {/* Search and Tabs */}
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
                 {activeTab === 'library' ? (
-                  <div className="relative w-full md:w-[400px]">
+                  <div className="relative w-full lg:w-[400px]">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
                       <span className="material-symbols-outlined text-[20px]">
                         search
                       </span>
                     </span>
                     <input
-                      className="w-full h-12 pl-12 pr-4 rounded-xl bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c] outline-none"
+                      className="w-full h-12 pl-12 pr-4 rounded-xl bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c] outline-none shadow-sm"
                       placeholder="Search topics, books, past papers..."
                       type="text"
                     />
-                    <button className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
+                    <button className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-[#ea580c] transition-colors">
                       <span className="material-symbols-outlined text-[20px]">tune</span>
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleBookSearch} className="relative w-full md:w-[400px]">
+                  <form onSubmit={handleBookSearch} className="relative w-full lg:w-[400px]">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
                       <span className="material-symbols-outlined text-[20px]">
                         search
@@ -281,7 +281,7 @@ export default function ResourcesPage() {
                     <input
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full h-12 pl-12 pr-28 rounded-xl bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c] outline-none"
+                      className="w-full h-12 pl-12 pr-28 rounded-xl bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c] outline-none shadow-sm"
                       placeholder="Search Google Books (e.g., Biology)..."
                       type="text"
                     />
@@ -295,16 +295,16 @@ export default function ResourcesPage() {
                   </form>
                 )}
 
-                <div className="flex bg-white dark:bg-[#1a1a24] p-1.5 rounded-xl border border-slate-200 dark:border-[#2d2d3f] w-full lg:w-auto">
+                <div className="flex bg-white dark:bg-[#1a1a24] p-1.5 rounded-xl border border-slate-200 dark:border-[#2d2d3f] w-full lg:w-auto shadow-sm">
                   <button
                     onClick={() => setActiveTab('library')}
-                    className={`flex-1 lg:px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'library' ? 'bg-slate-100 dark:bg-[#252535] text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+                    className={`flex-1 lg:px-8 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'library' ? 'bg-[#f5f5f8] dark:bg-[#252535] text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'}`}
                   >
                     My Uploads
                   </button>
                   <button
                     onClick={() => setActiveTab('books')}
-                    className={`flex-1 lg:px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'books' ? 'bg-slate-100 dark:bg-[#252535] text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+                    className={`flex-1 lg:px-8 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'books' ? 'bg-[#f5f5f8] dark:bg-[#252535] text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'}`}
                   >
                     Library Books
                   </button>
@@ -315,13 +315,13 @@ export default function ResourcesPage() {
               {activeTab === 'library' && (
                 <>
                   {resources.length > 0 && !isLoadingLibrary && (
-                    <div className="flex justify-between items-center mb-4 flex-wrap gap-4 mt-6">
-                      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                    <div className="flex justify-between items-center mb-2 flex-wrap gap-4 mt-6">
+                      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide max-w-full">
                         {folders.map(folder => (
                           <button
                             key={folder}
                             onClick={() => setSelectedFolder(folder)}
-                            className={`px-4 py-1.5 rounded-full text-sm font-bold whitespace-nowrap transition-colors ${selectedFolder === folder ? 'bg-[#ea580c] text-white' : 'bg-white dark:bg-[#1a1a24] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#2d2d3f] hover:border-[#ea580c]'}`}
+                            className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${selectedFolder === folder ? 'bg-[#ea580c] text-white shadow-lg shadow-[#ea580c]/20 scale-105' : 'bg-white dark:bg-[#1a1a24] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#2d2d3f] hover:border-[#ea580c]'}`}
                           >
                             {folder}
                           </button>
@@ -330,31 +330,32 @@ export default function ResourcesPage() {
                       {selectedIds.size > 0 && (
                         <button
                           onClick={handleBulkDelete}
-                          className="px-4 py-1.5 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-bold rounded-lg hover:bg-red-200 dark:hover:bg-red-900/40 transition-colors text-sm shrink-0"
+                          className="px-4 py-2 bg-red-500/10 text-red-600 dark:text-red-400 font-bold rounded-xl hover:bg-red-500 hover:text-white transition-all text-sm shrink-0 flex items-center gap-2"
                         >
-                          Delete Selected ({selectedIds.size})
+                          <span className="material-symbols-outlined text-[18px]">delete_sweep</span>
+                          Delete ({selectedIds.size})
                         </button>
                       )}
                     </div>
                   )}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
                     {isLoadingLibrary ? (
-                      <div className="col-span-full py-20 flex flex-col items-center justify-center text-slate-500">
-                        <div className="size-8 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin mb-4"></div>
-                        <p className="font-medium animate-pulse">Loading structured resources...</p>
+                      <div className="col-span-full py-24 flex flex-col items-center justify-center text-slate-500">
+                        <div className="size-10 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin mb-4"></div>
+                        <p className="font-bold text-lg animate-pulse tracking-tight">Syncing your secure vault...</p>
                       </div>
                     ) : resources.length === 0 ? (
-                      <div className="col-span-full py-20 flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 bg-white dark:bg-[#1a1a24] rounded-2xl border border-dashed border-slate-200 dark:border-[#2d2d3f]">
-                        <div className="bg-[#f5f5f8] dark:bg-[#13131a] p-4 rounded-full mb-4 border border-slate-200 dark:border-[#2d2d3f]">
-                          <span className="material-symbols-outlined text-4xl text-slate-500">folder_open</span>
+                      <div className="col-span-full py-24 flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 bg-white dark:bg-[#1a1a24] rounded-2xl border border-dashed border-slate-200 dark:border-[#2d2d3f] shadow-inner">
+                        <div className="bg-[#f5f5f8] dark:bg-[#13131a] p-5 rounded-full mb-4 border border-slate-200 dark:border-[#2d2d3f] shadow-sm">
+                          <span className="material-symbols-outlined text-5xl text-slate-400">cloud_off</span>
                         </div>
-                        <p className="text-base font-bold text-slate-900 dark:text-white mb-1">No resources found</p>
-                        <p className="text-sm">You haven&apos;t uploaded any files yet.</p>
+                        <p className="text-xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">Your vault is empty</p>
+                        <p className="text-sm opacity-70 mb-8">Upload study materials to begin your journey.</p>
                       </div>
                     ) : (
                       filteredResources.map((resource) => (
-                        <div key={resource.id} className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-5 hover:border-[#ea580c]/50 transition-colors group flex flex-col relative">
-                          <div className="absolute top-4 right-4 z-10 flex gap-2 items-center">
+                        <div key={resource.id} className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-5 hover:border-[#ea580c]/50 transition-all group flex flex-col relative hover:shadow-xl hover:shadow-[#ea580c]/5 hover:-translate-y-1">
+                          <div className="absolute top-4 right-4 z-10 flex gap-1.5 items-center">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -363,66 +364,81 @@ export default function ResourcesPage() {
                                 setEditSubject(resource.subject || '');
                                 setIsEditModalOpen(true);
                               }}
-                              className="p-1.5 rounded-lg bg-slate-100 dark:bg-[#252535] text-slate-500 hover:text-[#ea580c] transition-colors"
+                              className="size-8 rounded-lg bg-[#f5f5f8] dark:bg-[#252535] text-slate-500 hover:text-[#ea580c] transition-all flex items-center justify-center shadow-sm"
                               title="Edit Title/Folder"
                             >
-                              <span className="material-symbols-outlined text-[16px]">edit</span>
+                              <span className="material-symbols-outlined text-[18px]">edit</span>
                             </button>
-                            <input
-                              type="checkbox"
-                              checked={selectedIds.has(resource.id)}
-                              onChange={(e) => {
-                                const newSet = new Set(selectedIds);
-                                if (e.target.checked) newSet.add(resource.id);
-                                else newSet.delete(resource.id);
-                                setSelectedIds(newSet);
-                              }}
-                              className="size-5 rounded border-slate-300 text-[#ea580c] focus:ring-[#ea580c] cursor-pointer"
-                            />
-                          </div>
-                          <div className="flex items-start gap-4 mb-4 mt-2">
-                            <div className={`p-3 rounded-xl shrink-0 transition-colors ${getIconForType(resource.file_type).colorClass}`}>
-                              <span className="material-symbols-outlined text-3xl">{getIconForType(resource.file_type).icon}</span>
-                            </div>
-                            <div className="min-w-0 pr-12">
-                              <h3 className="font-bold text-slate-900 dark:text-white leading-snug line-clamp-2 break-words group-hover:text-[#ea580c] transition-colors" title={resource.title}>{resource.title}</h3>
+                            <div className="size-8 flex items-center justify-center">
+                              <input
+                                type="checkbox"
+                                checked={selectedIds.has(resource.id)}
+                                onChange={(e) => {
+                                  const newSet = new Set(selectedIds);
+                                  if (e.target.checked) newSet.add(resource.id);
+                                  else newSet.delete(resource.id);
+                                  setSelectedIds(newSet);
+                                }}
+                                className="size-5 rounded border-slate-300 dark:border-slate-600 text-[#ea580c] focus:ring-[#ea580c] cursor-pointer bg-transparent"
+                              />
                             </div>
                           </div>
-                          <div className="flex items-center gap-2 mb-6 flex-wrap">
-                            <span className={`text-[10px] font-black tracking-wider text-slate-500 dark:text-slate-400 bg-[#f5f5f8] dark:bg-[#13131a] px-2 py-1 rounded`}>
-                              {resource.file_type.includes('pdf') ? 'PDF'
-                                : resource.file_type.includes('presentation') || resource.file_type.includes('ppt') ? 'PPTX'
-                                  : resource.file_type.includes('document') || resource.file_type.includes('doc') ? 'DOCX'
-                                    : resource.file_type.includes('image') ? 'IMAGE'
-                                      : 'FILE'}
-                            </span>
-                            <span className="text-xs text-slate-500">•</span>
-                            <span className="text-xs text-slate-500 font-medium whitespace-nowrap">{formatSize(resource.file_size_bytes)}</span>
-                            <span className="text-xs text-slate-500">•</span>
-                            <span className="text-xs text-slate-500 font-medium whitespace-nowrap">Uploaded {formatDate(resource.created_at)}</span>
+
+                          <div className="flex items-start gap-4 mb-5 mt-2">
+                            <div className={`p-4 rounded-2xl shrink-0 transition-all shadow-sm ${getIconForType(resource.file_type).colorClass}`}>
+                              <span className="material-symbols-outlined text-4xl">{getIconForType(resource.file_type).icon}</span>
+                            </div>
+                            <div className="min-w-0 pr-10 flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className={`text-[9px] font-black tracking-widest text-slate-500 dark:text-slate-400 bg-[#f5f5f8] dark:bg-[#13131a] px-2 py-0.5 rounded border border-slate-200 dark:border-[#2d2d3f] uppercase`}>
+                                  {resource.file_type.includes('pdf') ? 'PDF'
+                                    : resource.file_type.includes('presentation') || resource.file_type.includes('ppt') ? 'PPTX'
+                                      : resource.file_type.includes('document') || resource.file_type.includes('doc') ? 'DOCX'
+                                        : resource.file_type.includes('image') ? 'IMAGE'
+                                          : 'FILE'}
+                                </span>
+                                <span className="text-[10px] text-slate-400 font-bold">•</span>
+                                <span className="text-[10px] text-slate-400 font-black tracking-wider uppercase">{formatSize(resource.file_size_bytes)}</span>
+                              </div>
+                              <h3 className="font-black text-[15px] text-slate-900 dark:text-white leading-tight line-clamp-2 break-words group-hover:text-[#ea580c] transition-colors" title={resource.title}>
+                                {resource.title}
+                              </h3>
+                            </div>
                           </div>
-                          <div className="flex flex-wrap gap-2 mt-auto">
-                            {resource.file_type.includes('pdf') || resource.file_type.includes('image') || resource.file_type.includes('text') ? (
-                              <button onClick={() => setSelectedResource(resource)} className="flex-1 min-w-[120px] bg-slate-100 dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
-                                <span className="material-symbols-outlined text-[16px]">visibility</span>
-                                View File
+
+                          <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400 mb-6 bg-[#f5f5f8] dark:bg-[#13131a] p-2 rounded-lg border border-slate-100 dark:border-[#1d1d2b]">
+                            <span className="material-symbols-outlined text-[14px]">calendar_today</span>
+                            <span>Uploaded {formatDate(resource.created_at)}</span>
+                            <span className="mx-1 opacity-50">•</span>
+                            <span className="truncate">{resource.subject || 'General'}</span>
+                          </div>
+
+                          {/* Action Buttons - Redesigned to never overlap */}
+                          <div className="grid grid-cols-1 gap-2 mt-auto">
+                            <div className="flex gap-2">
+                              {resource.file_type.includes('pdf') || resource.file_type.includes('image') || resource.file_type.includes('text') ? (
+                                <button onClick={() => setSelectedResource(resource)} className="flex-1 min-w-0 bg-[#f5f5f8] dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-700 dark:text-slate-200 font-black py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow-sm">
+                                  <span className="material-symbols-outlined text-[18px]">visibility</span>
+                                  <span className="truncate">View File</span>
+                                </button>
+                              ) : (
+                                <a href={resource.file_url} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-0 bg-[#f5f5f8] dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-700 dark:text-slate-200 font-black py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow-sm">
+                                  <span className="material-symbols-outlined text-[18px]">download</span>
+                                  <span className="truncate">Download</span>
+                                </a>
+                              )}
+
+                              <button onClick={() => handleDelete(resource.id)} className="size-11 shrink-0 bg-[#f5f5f8] dark:bg-[#252535] hover:bg-red-500 hover:text-white text-slate-400 font-bold rounded-xl transition-all flex items-center justify-center shadow-sm">
+                                <span className="material-symbols-outlined text-[20px]">delete</span>
                               </button>
-                            ) : (
-                              <a href={resource.file_url} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-[120px] bg-slate-100 dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
-                                <span className="material-symbols-outlined text-[16px]">download</span>
-                                Download
-                              </a>
-                            )}
+                            </div>
 
                             {(resource.file_type.includes('pdf') || resource.content) && (
-                              <Link href={`/gamifier?id=${resource.id}`} className="flex-1 min-w-[120px] bg-[#ea580c]/10 hover:bg-[#ea580c] text-[#ea580c] hover:text-white font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
-                                <span className="material-symbols-outlined text-[16px]">sports_esports</span>
-                                Read & Earn XP
+                              <Link href={`/gamifier?id=${resource.id}`} className="w-full bg-[#ea580c] hover:bg-[#d04e0a] text-white font-black py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow-lg shadow-[#ea580c]/20">
+                                <span className="material-symbols-outlined text-[18px]">rocket_launch</span>
+                                <span>Gamified Study Session</span>
                               </Link>
                             )}
-                            <button onClick={() => handleDelete(resource.id)} className="px-3 bg-slate-100 dark:bg-[#252535] hover:bg-red-500/20 hover:text-red-400 text-slate-500 dark:text-slate-400 font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center shrink-0">
-                              <span className="material-symbols-outlined text-[16px]">delete</span>
-                            </button>
                           </div>
                         </div>
                       ))
@@ -528,8 +544,9 @@ export default function ResourcesPage() {
             {/* Right Sidebar */}
             <div className="w-full xl:w-80 shrink-0 space-y-6">
               <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm flex flex-col overflow-hidden">
-                <div className="p-5 border-b border-slate-200 dark:border-[#2d2d3f]">
-                  <h3 className="font-bold text-white text-[15px]">Recently Viewed</h3>
+                <div className="p-5 border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between">
+                  <h3 className="font-bold text-slate-900 dark:text-white text-[15px]">Recently Viewed</h3>
+                  <span className="material-symbols-outlined text-[18px] text-slate-400">history</span>
                 </div>
                 <div className="p-2 py-3 space-y-1">
                   {resources.slice(0, 3).map((item) => (
@@ -554,11 +571,12 @@ export default function ResourcesPage() {
               <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm flex flex-col overflow-hidden p-6 gap-4">
                 <h3 className="font-bold text-slate-900 dark:text-white text-[15px]">Categories</h3>
                 <div className="flex flex-wrap gap-2">
-                  <button className="bg-[#ea580c] text-white text-xs font-bold px-4 py-2 rounded-full">All Subjects</button>
-                  <button className="bg-slate-100 dark:bg-[#252535] hover:bg-[#2d2d3f] text-slate-600 dark:text-slate-300 text-xs font-bold px-4 py-2 rounded-full transition-colors border border-slate-200 dark:border-[#2d2d3f]">Biology</button>
-                  <button className="bg-slate-100 dark:bg-[#252535] hover:bg-[#2d2d3f] text-slate-600 dark:text-slate-300 text-xs font-bold px-4 py-2 rounded-full transition-colors border border-slate-200 dark:border-[#2d2d3f]">Mathematics</button>
-                  <button className="bg-slate-100 dark:bg-[#252535] hover:bg-[#2d2d3f] text-slate-600 dark:text-slate-300 text-xs font-bold px-4 py-2 rounded-full transition-colors border border-slate-200 dark:border-[#2d2d3f]">Physics</button>
-                  <button className="bg-slate-100 dark:bg-[#252535] hover:bg-[#2d2d3f] text-slate-600 dark:text-slate-300 text-xs font-bold px-4 py-2 rounded-full transition-colors border border-slate-200 dark:border-[#2d2d3f]">Chemistry</button>
+                  <button className="bg-[#ea580c] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-sm shadow-[#ea580c]/20">All Subjects</button>
+                  {['Biology', 'Mathematics', 'Physics', 'Chemistry', 'Computer Science'].map((subject) => (
+                    <button key={subject} className="bg-slate-50 dark:bg-[#13131a] hover:bg-[#ea580c]/10 hover:text-[#ea580c] text-slate-600 dark:text-slate-300 text-xs font-bold px-4 py-2 rounded-xl transition-all border border-slate-200 dark:border-[#2d2d3f]">
+                      {subject}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>

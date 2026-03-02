@@ -92,12 +92,12 @@ export default function SharedFlashcardClient({ deck, flashcards }: SharedFlashc
 
                             {/* 3D Flip Card */}
                             <div
-                                className="w-full max-w-2xl h-[400px] perspective-1000 group cursor-pointer"
+                                className="w-full max-w-2xl h-[400px] [perspective:1000px] group cursor-pointer"
                                 onClick={() => setIsFlipped(!isFlipped)}
                             >
-                                <div className={`relative w-full h-full transition-transform duration-700 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
+                                <div className={`relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}>
                                     {/* Front */}
-                                    <div className="absolute w-full h-full backface-hidden bg-white dark:bg-[#1b1b27] border-2 border-slate-200 dark:border-[#2d2d3f] rounded-2xl shadow-xl p-10 flex flex-col items-center justify-center text-center hover:border-[#ea580c] transition-colors">
+                                    <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-white dark:bg-[#1b1b27] border-2 border-slate-200 dark:border-[#2d2d3f] rounded-2xl shadow-xl p-10 flex flex-col items-center justify-center text-center hover:border-[#ea580c] transition-colors">
                                         <p className="text-2xl font-bold text-slate-900 dark:text-white">
                                             {flashcards[currentIndex].front}
                                         </p>
@@ -108,8 +108,8 @@ export default function SharedFlashcardClient({ deck, flashcards }: SharedFlashc
                                     </div>
 
                                     {/* Back */}
-                                    <div className="absolute w-full h-full backface-hidden bg-slate-900 border-2 border-[#ea580c] rounded-2xl shadow-xl p-10 flex flex-col items-center justify-center text-center rotate-y-180">
-                                        <p className="text-xl text-slate-900 dark:text-white leading-relaxed">
+                                    <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-slate-900 border-2 border-[#ea580c] rounded-2xl shadow-xl p-10 flex flex-col items-center justify-center text-center [transform:rotateY(180deg)]">
+                                        <p className="text-xl text-white leading-relaxed">
                                             {flashcards[currentIndex].back}
                                         </p>
                                     </div>

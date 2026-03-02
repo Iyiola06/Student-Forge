@@ -109,15 +109,15 @@ export default function FlashcardsPage() {
             .single();
 
         if (profile) {
-            const newXp = profile.xp + 30; // 30 XP for flashcards
+            const newXp = (profile.xp || 0) + 30; // 30 XP for flashcards
             const newLevel = Math.floor(Math.sqrt(newXp / 100)) + 1;
 
             await supabase
                 .from('profiles')
-                .update({ xp: newXp, level: newLevel > profile.level ? newLevel : profile.level })
+                .update({ xp: newXp, level: newLevel > (profile.level || 0) ? newLevel : profile.level })
                 .eq('id', user.id);
 
-            if (newLevel > profile.level) {
+            if (newLevel > (profile.level || 0)) {
                 alert(`Level Up! You are now level ${newLevel}!`);
             }
         }
@@ -191,135 +191,157 @@ export default function FlashcardsPage() {
     return (
         <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
             <Sidebar />
-            <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
-                <div className="px-6 pt-6 pb-2 md:px-8">
-                    <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[#ea580c]">style</span>
-                        Smart Flashcards
-                    </h1>
-                    <p className="text-slate-500 text-sm mt-1">Generate concise flashcards from your study materials in seconds.</p>
+            <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden min-w-0">
+                <div className="px-6 pt-10 pb-6 md:px-8 border-b border-slate-200 dark:border-[#2d2d3f] bg-white dark:bg-[#1a1a24] shrink-0">
+                    <div className="max-w-[1440px] mx-auto w-full">
+                        <h1 className="text-3xl font-black text-slate-900 dark:text-white flex items-center gap-3">
+                            <span className="material-symbols-outlined text-[#ea580c] bg-[#ea580c]/10 p-2 rounded-xl">style</span>
+                            Smart Flashcards
+                        </h1>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm mt-3 font-medium">Generate high-fidelity flashcards from any resource using AI synthesis.</p>
+                    </div>
                 </div>
 
-                <main className="flex-1 overflow-y-auto p-6 md:p-8 flex flex-col lg:flex-row gap-8">
+                <main className="flex-1 overflow-y-auto px-6 md:px-8 py-8 flex flex-col xl:flex-row gap-8 max-w-[1440px] mx-auto w-full pb-12">
 
                     {/* Left Panel: Configuration */}
                     {!isDrilling && (
-                        <div className="w-full lg:w-[400px] shrink-0 space-y-6">
-                            <div className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm">
-                                <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <div className="w-full xl:w-[400px] shrink-0">
+                            <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-xl shadow-slate-200/50 dark:shadow-none sticky top-0 transition-all hover:border-[#ea580c]/30">
+                                <h2 className="text-xl font-black text-slate-900 dark:text-white mb-6 flex items-center gap-2">
                                     <span className="material-symbols-outlined text-[#ea580c]">
-                                        upload_file
+                                        rocket_launch
                                     </span>
-                                    Source Material
+                                    Deck Architect
                                 </h2>
 
                                 {error && (
-                                    <div className="mb-4 p-3 rounded bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 text-red-600 dark:text-red-400 text-sm">
+                                    <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
+                                        <span className="material-symbols-outlined text-[18px]">error</span>
                                         {error}
                                     </div>
                                 )}
 
-                                <div className="mb-4">
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                                        Select Library Resource:
-                                    </label>
-                                    <select
-                                        value={selectedResource}
-                                        onChange={(e) => {
-                                            setSelectedResource(e.target.value);
-                                            if (e.target.value) setPastedText('');
-                                        }}
-                                        className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-2.5 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white"
+                                <div className="space-y-5">
+                                    <div>
+                                        <label className="block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 ml-1">
+                                            Library Resource
+                                        </label>
+                                        <select
+                                            value={selectedResource}
+                                            onChange={(e) => {
+                                                setSelectedResource(e.target.value);
+                                                if (e.target.value) setPastedText('');
+                                            }}
+                                            className="w-full rounded-xl border border-slate-200 dark:border-[#2d2d3f] bg-[#f8fafc] dark:bg-[#13131a] p-3 text-sm font-bold focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white transition-all hover:bg-white dark:hover:bg-[#1b1b27]"
+                                        >
+                                            <option value="">-- Choose from vault --</option>
+                                            {resources.map(r => (
+                                                <option key={r.id} value={r.id}>{r.title}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div className="relative py-2">
+                                        <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                                            <div className="w-full border-t border-slate-200 dark:border-[#2d2d3f]"></div>
+                                        </div>
+                                        <div className="relative flex justify-center">
+                                            <span className="bg-white dark:bg-[#1a1a24] px-4 text-[10px] font-black tracking-widest text-slate-400 uppercase">Universal Input</span>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 ml-1">
+                                            Raw Data / Notes
+                                        </label>
+                                        <textarea
+                                            value={pastedText}
+                                            onChange={(e) => {
+                                                setPastedText(e.target.value);
+                                                if (e.target.value) setSelectedResource('');
+                                            }}
+                                            className="w-full h-40 rounded-xl border border-slate-200 dark:border-[#2d2d3f] bg-[#f8fafc] dark:bg-[#13131a] p-4 text-sm font-medium focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white transition-all hover:bg-white dark:hover:bg-[#1b1b27] resize-none"
+                                            placeholder="Engineered to extract facts from unstructured data..."
+                                        ></textarea>
+                                    </div>
+
+                                    <button
+                                        onClick={handleGenerate}
+                                        disabled={isGenerating}
+                                        className="w-full mt-4 bg-[#ea580c] hover:bg-[#d04e0a] disabled:opacity-70 text-white font-black py-4 rounded-xl shadow-xl shadow-[#ea580c]/20 transition-all active:scale-95 flex items-center justify-center gap-3 group"
                                     >
-                                        <option value="">-- Or paste text below --</option>
-                                        {resources.map(r => (
-                                            <option key={r.id} value={r.id}>{r.title}</option>
-                                        ))}
-                                    </select>
+                                        {isGenerating ? (
+                                            <div className="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                        ) : (
+                                            <span className="material-symbols-outlined group-hover:rotate-12 transition-transform">Auto_Awesome</span>
+                                        )}
+                                        {isGenerating ? 'Synthesizing...' : 'Build Custom Deck'}
+                                    </button>
                                 </div>
-
-                                <div className="mt-4 relative">
-                                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                        <div className="w-full border-t border-slate-300 dark:border-[#2d2d3f]"></div>
-                                    </div>
-                                    <div className="relative flex justify-center">
-                                        <span className="bg-white dark:bg-[#1b1b27] px-2 text-sm text-slate-500">OR</span>
-                                    </div>
-                                </div>
-
-                                <div className="mt-4">
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                                        Paste Note Excerpt:
-                                    </label>
-                                    <textarea
-                                        value={pastedText}
-                                        onChange={(e) => {
-                                            setPastedText(e.target.value);
-                                            if (e.target.value) setSelectedResource('');
-                                        }}
-                                        className="w-full h-32 rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-3 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white"
-                                        placeholder="Paste text here to extract key concepts..."
-                                    ></textarea>
-                                </div>
-
-                                <button
-                                    onClick={handleGenerate}
-                                    disabled={isGenerating}
-                                    className="w-full mt-6 bg-[#ea580c] hover:bg-[#ea580c]/90 disabled:opacity-70 text-white font-bold py-3 rounded-xl shadow-lg shadow-[#ea580c]/25 transition-all flex items-center justify-center gap-2"
-                                >
-                                    {isGenerating ? (
-                                        <div className="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                    ) : (
-                                        <span className="material-symbols-outlined">auto_awesome</span>
-                                    )}
-                                    {isGenerating ? 'Building Deck...' : 'Generate Deck'}
-                                </button>
                             </div>
                         </div>
                     )}
 
                     {/* Right Panel: Display / Drill Mode */}
-                    <div className="flex-1 flex flex-col">
+                    <div className="flex-1 min-w-0">
                         {isGenerating ? (
-                            <div className="flex-1 flex flex-col items-center justify-center text-center">
-                                <div className="size-16 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin mb-6"></div>
-                                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Analyzing Concepts</h3>
-                                <p className="text-slate-500 dark:text-[#9c9cba]">Extracting the most critical terminology and definitions...</p>
+                            <div className="h-full flex flex-col items-center justify-center text-center py-20 bg-white dark:bg-[#1a1a24] rounded-3xl border border-slate-200 dark:border-[#2d2d3f] shadow-inner">
+                                <div className="relative mb-8">
+                                    <div className="size-24 border-b-4 border-l-4 border-[#ea580c] rounded-full animate-spin"></div>
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <span className="material-symbols-outlined text-4xl text-[#ea580c] animate-pulse">neurology</span>
+                                    </div>
+                                </div>
+                                <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">AI Neural Synthesis</h3>
+                                <p className="text-slate-500 dark:text-slate-400 font-medium max-w-sm">Distilling your material into the most potent cognitive anchors...</p>
                             </div>
                         ) : flashcards.length > 0 ? (
                             isDrilling ? (
                                 // Interactive Drill Mode
-                                <div className="flex-1 flex flex-col items-center justify-center py-10 w-full max-w-3xl mx-auto">
-                                    <div className="w-full flex justify-between items-center mb-8 px-4">
-                                        <span className="text-sm font-bold text-slate-500">Card {currentIndex + 1} of {flashcards.length}</span>
+                                <div className="flex-1 flex flex-col items-center justify-start py-4 w-full h-full max-w-4xl mx-auto">
+                                    <div className="w-full flex justify-between items-center mb-10 bg-white dark:bg-[#1a1a24] p-5 rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm">
+                                        <div className="flex items-center gap-4">
+                                            <div className="h-2 w-48 bg-slate-100 dark:bg-[#13131a] rounded-full overflow-hidden">
+                                                <div className="h-full bg-[#ea580c] transition-all duration-500" style={{ width: `${((currentIndex + 1) / flashcards.length) * 100}%` }}></div>
+                                            </div>
+                                            <span className="text-xs font-black text-slate-500 uppercase tracking-widest">{currentIndex + 1} / {flashcards.length}</span>
+                                        </div>
                                         <button
                                             onClick={() => setIsDrilling(false)}
-                                            className="text-sm text-[#ea580c] font-bold hover:underline"
+                                            className="px-4 py-2 bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-slate-400 text-[11px] font-black uppercase tracking-wider rounded-lg hover:bg-red-500 hover:text-white transition-all flex items-center gap-2"
                                         >
-                                            Exit Drill
+                                            <span className="material-symbols-outlined text-[16px]">close</span>
+                                            Terminate Session
                                         </button>
                                     </div>
 
                                     {/* 3D Flip Card */}
                                     <div
-                                        className="w-full max-w-2xl h-[340px] md:h-[400px] perspective-1000 group cursor-pointer"
+                                        className="w-full max-w-2xl h-[400px] md:h-[460px] [perspective:2000px] group cursor-pointer"
                                         onClick={() => setIsFlipped(!isFlipped)}
                                     >
-                                        <div className={`relative w-full h-full transition-transform duration-700 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
+                                        <div className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}>
                                             {/* Front */}
-                                            <div className="absolute w-full h-full backface-hidden bg-white dark:bg-[#1b1b27] border-2 border-slate-200 dark:border-[#2d2d3f] rounded-2xl shadow-xl p-6 md:p-10 flex flex-col items-center justify-center text-center hover:border-[#ea580c] transition-colors">
-                                                <p className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">
+                                            <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-white dark:bg-[#1a1a24] border-2 border-slate-200 dark:border-[#2d2d3f] rounded-3xl shadow-2xl p-8 md:p-14 flex flex-col items-center justify-center text-center transition-all group-hover:border-[#ea580c]/50">
+                                                <div className="absolute top-8 left-1/2 -translate-x-1/2 bg-[#ea580c]/10 text-[#ea580c] px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-[#ea580c]/20">
+                                                    Prompt Card
+                                                </div>
+                                                <p className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white leading-snug tracking-tight">
                                                     {flashcards[currentIndex].front}
                                                 </p>
-                                                <div className="absolute bottom-6 flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
-                                                    <span className="material-symbols-outlined text-[18px]">ads_click</span>
-                                                    Click to reveal
+                                                <div className="absolute bottom-10 flex flex-col items-center gap-2 text-slate-400 dark:text-slate-500 text-xs font-bold animate-bounce opacity-50">
+                                                    <span className="material-symbols-outlined">touch_app</span>
+                                                    TAP TO REVEAL KEY
                                                 </div>
                                             </div>
 
                                             {/* Back */}
-                                            <div className="absolute w-full h-full backface-hidden bg-slate-900 border-2 border-[#ea580c] rounded-2xl shadow-xl p-6 md:p-10 flex flex-col items-center justify-center text-center rotate-y-180">
-                                                <p className="text-lg md:text-xl text-white leading-relaxed font-medium">
+                                            <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-slate-900 dark:bg-[#0a0a14] border-2 border-[#ea580c] rounded-3xl shadow-[0_0_50px_rgba(234,88,12,0.15)] p-8 md:p-14 flex flex-col items-center justify-center text-center [transform:rotateY(180deg)]">
+                                                <div className="absolute top-8 left-1/2 -translate-x-1/2 bg-green-500/10 text-green-400 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-green-500/20">
+                                                    Resolution
+                                                </div>
+                                                <p className="text-xl md:text-2xl text-white leading-relaxed font-bold tracking-tight">
                                                     {flashcards[currentIndex].back}
                                                 </p>
                                             </div>
@@ -327,87 +349,127 @@ export default function FlashcardsPage() {
                                     </div>
 
                                     {/* Controls (visible when flipped) */}
-                                    <div className={`mt-10 flex gap-4 transition-opacity duration-300 ${isFlipped ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                                        <button onClick={nextCard} className="px-6 py-3 rounded-lg bg-slate-200 dark:bg-[#252535] text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-300 dark:hover:bg-[#3b3b54] transition-colors">
+                                    <div className={`mt-12 flex gap-4 transition-all duration-500 transform ${isFlipped ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+                                        <button onClick={nextCard} className="px-8 py-4 rounded-2xl bg-slate-100 dark:bg-[#1a1a24] text-slate-700 dark:text-slate-300 font-black text-sm uppercase tracking-wider hover:bg-slate-200 dark:hover:bg-[#2d2d3f] transition-all flex items-center gap-2 border border-slate-200 dark:border-[#2d2d3f]">
+                                            <span className="material-symbols-outlined">replay</span>
                                             Review Again
                                         </button>
-                                        <button onClick={nextCard} className="px-6 py-3 rounded-lg bg-green-500 hover:bg-green-600 text-slate-900 dark:text-white font-bold shadow-lg shadow-green-500/20 transition-all">
-                                            Got It
+                                        <button onClick={nextCard} className="px-10 py-4 rounded-2xl bg-green-500 hover:bg-green-600 text-slate-900 font-black text-sm uppercase tracking-wider shadow-xl shadow-green-500/20 transition-all flex items-center gap-2">
+                                            <span className="material-symbols-outlined">check_circle</span>
+                                            Mastered
                                         </button>
                                     </div>
                                 </div>
                             ) : (
                                 // Deck Overview Mode
-                                <div className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm flex-1 overflow-y-auto">
-                                    <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-[#2d2d3f]">
+                                <div className="bg-white dark:bg-[#1a1a24] rounded-3xl border border-slate-200 dark:border-[#2d2d3f] p-8 shadow-sm flex-1 overflow-y-auto">
+                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-8 border-b border-slate-100 dark:border-[#2d2d3f]">
                                         <div>
-                                            <h2 className="text-xl font-bold text-slate-900 dark:text-white">Generated Deck</h2>
-                                            <p className="text-slate-500 text-sm mt-1">{flashcards.length} cards extracted</p>
+                                            <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">AI Generated Deck</h2>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <span className="bg-[#ea580c] text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">{flashcards.length} Integrated Cards</span>
+                                                <span className="text-slate-400 font-medium text-xs">Ready for neural formatting</span>
+                                            </div>
                                         </div>
-                                        <div className="flex gap-2">
+                                        <div className="flex flex-wrap gap-3">
                                             {savedDeckId ? (
                                                 <button
                                                     onClick={() => {
                                                         navigator.clipboard.writeText(`${window.location.origin}/shared/flashcard/${savedDeckId}`);
                                                         alert('Link copied to clipboard!');
                                                     }}
-                                                    className="bg-[#ea580c]/10 text-[#ea580c] hover:bg-[#ea580c]/20 px-6 py-2.5 rounded-lg text-sm font-bold transition-all flex items-center gap-2 border border-[#ea580c]/30"
+                                                    className="bg-[#ea580c] text-white hover:bg-[#d04e0a] px-6 py-3 rounded-xl text-xs font-black transition-all flex items-center gap-2 shadow-lg shadow-[#ea580c]/20"
                                                 >
-                                                    <span className="material-symbols-outlined">link</span>
-                                                    Copy Share Link
+                                                    <span className="material-symbols-outlined text-[18px]">share</span>
+                                                    Share Deck
                                                 </button>
                                             ) : (
                                                 <button
                                                     onClick={saveDeck}
                                                     disabled={isSaving}
-                                                    className="bg-slate-100 dark:bg-[#252535] hover:bg-slate-200 dark:hover:bg-[#2d2d3f] text-slate-700 dark:text-slate-300 disabled:opacity-50 px-6 py-2.5 rounded-lg text-sm font-bold transition-all flex items-center gap-2"
+                                                    className="bg-slate-100 dark:bg-[#252535] hover:bg-slate-200 dark:hover:bg-[#2d2d3f] text-slate-700 dark:text-slate-300 disabled:opacity-50 px-6 py-3 rounded-xl text-xs font-black transition-all flex items-center gap-2 border border-slate-200 dark:border-[#2d2d3f]"
                                                 >
-                                                    <span className="material-symbols-outlined">save</span>
-                                                    {isSaving ? 'Saving...' : 'Save Deck'}
+                                                    <span className="material-symbols-outlined text-[18px]">save</span>
+                                                    {isSaving ? 'Archiving...' : 'Secure to Vault'}
                                                 </button>
                                             )}
                                             <button
                                                 onClick={startDrill}
-                                                className="bg-[#ea580c] hover:bg-[#ea580c]/90 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-lg shadow-[#ea580c]/20 transition-all flex items-center gap-2"
+                                                className="bg-[#ea580c]/10 text-[#ea580c] hover:bg-[#ea580c] hover:text-white px-8 py-3 rounded-xl text-xs font-black transition-all flex items-center gap-2 border border-[#ea580c]/20"
                                             >
-                                                <span className="material-symbols-outlined">play_arrow</span>
-                                                Shuffle & Drill
+                                                <span className="material-symbols-outlined text-[20px]">play_circle</span>
+                                                Start Drill Session
                                             </button>
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5">
                                         {flashcards.map((card, i) => (
-                                            <div key={i} className="p-4 rounded-xl border border-slate-200 dark:border-[#3b3b54] bg-slate-50 dark:bg-[#252535] group">
-                                                <p className="font-bold text-sm text-[#ea580c] mb-2 border-b border-slate-200 dark:border-[#3b3b54] pb-2">
+                                            <div key={i} className="flex flex-col p-6 rounded-2xl border border-slate-100 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#13131a]/50 hover:border-[#ea580c]/30 hover:bg-white dark:hover:bg-[#1a1a24] transition-all group relative overflow-hidden shadow-sm hover:shadow-lg">
+                                                <div className="absolute top-0 left-0 w-1 h-full bg-[#ea580c]/20 group-hover:bg-[#ea580c] transition-all"></div>
+                                                <div className="flex justify-between items-start mb-4">
+                                                    <span className="text-[10px] font-black text-[#ea580c] uppercase tracking-wider bg-[#ea580c]/10 px-2 py-0.5 rounded">Prompt</span>
+                                                    <span className="text-[9px] font-bold text-slate-400 bg-slate-100 dark:bg-[#1b1b27] px-2 py-0.5 rounded border border-slate-200 dark:border-[#2d2d3f]">#{i + 1}</span>
+                                                </div>
+                                                <p className="font-black text-sm text-slate-900 dark:text-white mb-4 leading-snug">
                                                     {card.front}
                                                 </p>
-                                                <p className="text-sm text-slate-700 dark:text-slate-300">
-                                                    {card.back}
-                                                </p>
+                                                <div className="mt-auto pt-4 border-t border-slate-200/50 dark:border-[#2d2d3f]/50">
+                                                    <p className="text-xs font-bold text-slate-500 dark:text-slate-400 leading-relaxed italic">
+                                                        {card.back}
+                                                    </p>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
                             )
                         ) : (
-                            // Empty State
-                            <div className="bg-gradient-to-br from-slate-100 to-slate-200 dark:from-[#252535] dark:to-[#1b1b27] rounded-xl border border-dashed border-slate-300 dark:border-[#2d2d3f] p-10 flex flex-col items-center justify-center text-center h-full min-h-[400px]">
-                                <div className="bg-white dark:bg-[#1b1b27] p-5 rounded-full mb-4 shadow-sm">
-                                    <span className="material-symbols-outlined text-5xl text-[#ea580c]">
-                                        style
+                            // Premium Empty State
+                            <div className="bg-white dark:bg-[#1a1a24] rounded-3xl border border-slate-200 dark:border-[#2d2d3f] p-12 flex flex-col items-center justify-center text-center h-full min-h-[500px] shadow-sm relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-[#ea580c]/5 blur-[100px] -mr-32 -mt-32 rounded-full"></div>
+                                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#3b3bfa]/5 blur-[100px] -ml-32 -mb-32 rounded-full"></div>
+
+                                <div className="bg-[#f8fafc] dark:bg-[#13131a] p-8 rounded-[2.5rem] mb-8 border border-slate-100 dark:border-[#2d2d3f] shadow-inner relative z-10">
+                                    <span className="material-symbols-outlined text-7xl text-[#ea580c] drop-shadow-[0_0_15px_rgba(234,88,12,0.3)]">
+                                        biotech
                                     </span>
                                 </div>
-                                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Ready to Memorize?</h3>
-                                <p className="text-slate-500 dark:text-[#9c9cba] max-w-sm mb-6">
-                                    Select a resource or paste in your notes. Our AI will extract the most important facts and terminology into interactive flashcards.
+                                <h3 className="text-3xl font-black text-slate-900 dark:text-white mb-3 tracking-tight relative z-10">Forge Your Flashcards</h3>
+                                <p className="text-slate-500 dark:text-slate-400 font-medium max-w-sm mb-10 leading-relaxed text-base relative z-10">
+                                    Our AI architect synthesizes your study materials into high-potency cognitive blocks engineered for long-term retention.
                                 </p>
+                                <div className="flex gap-4 relative z-10">
+                                    <div className="flex flex-col items-center gap-2">
+                                        <div className="size-12 rounded-2xl bg-slate-50 dark:bg-[#13131a] flex items-center justify-center border border-slate-200 dark:border-[#2d2d3f]">
+                                            <span className="material-symbols-outlined text-[#ea580c]">inventory_2</span>
+                                        </div>
+                                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Step 1: Feed Input</span>
+                                    </div>
+                                    <div className="flex items-center text-slate-300 dark:text-slate-700">
+                                        <span className="material-symbols-outlined">arrow_forward_ios</span>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <div className="size-12 rounded-2xl bg-slate-50 dark:bg-[#13131a] flex items-center justify-center border border-slate-200 dark:border-[#2d2d3f]">
+                                            <span className="material-symbols-outlined text-[#ea580c]">psychology</span>
+                                        </div>
+                                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Step 2: AI Synthesis</span>
+                                    </div>
+                                    <div className="flex items-center text-slate-300 dark:text-slate-700">
+                                        <span className="material-symbols-outlined">arrow_forward_ios</span>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-2">
+                                        <div className="size-12 rounded-2xl bg-slate-50 dark:bg-[#13131a] flex items-center justify-center border border-slate-200 dark:border-[#2d2d3f]">
+                                            <span className="material-symbols-outlined text-[#ea580c]">bolt</span>
+                                        </div>
+                                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Step 3: Drill Mode</span>
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </div>
-
                 </main>
             </div>
-        </div >
+        </div>
     );
 }
