@@ -23,6 +23,8 @@ export default function SpaceReader({
     const [numPages, setNumPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [isRendering, setIsRendering] = useState(false);
+    const [textPages, setTextPages] = useState<string[]>([]);
+    const [isPdf, setIsPdf] = useState(false);
 
     const [sessionSeconds, setSessionSeconds] = useState(0);
     const [xpEarned, setXpEarned] = useState(0);
@@ -39,18 +41,52 @@ export default function SpaceReader({
         return () => clearInterval(timer);
     }, []);
 
-    // Load PDF
+    // Load Resource
     useEffect(() => {
-        const loadPdf = async () => {
-            try {
-                const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
-                pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
-                const loadingTask = pdfjsLib.getDocument(resource.file_url);
-                const pdf = await loadingTask.promise;
-                setPdfDoc(pdf);
-                setNumPages(pdf.numPages);
+        const loadResource = async () => {
+            const fileType = resource.file_type || '';
+            const isActuallyPdf = fileType.includes('pdf');
+            setIsPdf(isActuallyPdf);
 
-                // Fetch previous progress
+            if (isActuallyPdf) {
+                try {
+                    const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
+                    const loadingTask = pdfjsLib.getDocument(resource.file_url);
+                    const pdf = await loadingTask.promise;
+                    setPdfDoc(pdf);
+                    setNumPages(pdf.numPages);
+
+                    // Fetch previous progress
+                    if (profile?.id) {
+                        const { data: prog } = await supabase
+                            .from('reading_progress')
+                            .select('last_page')
+                            .eq('resource_id', resource.id)
+                            .eq('user_id', profile.id)
+                            .maybeSingle();
+
+                        if (prog && prog.last_page > 1 && prog.last_page <= pdf.numPages) {
+                            const resume = window.confirm(`Commander, resume mission from page ${prog.last_page}?`);
+                            if (resume) setCurrentPage(prog.last_page);
+                        }
+                    }
+                } catch (err) {
+                    console.error("PDF Load Error", err);
+                }
+            } else {
+                // Text/Docx/Pptx mode - split content into pages
+                const content = resource.content || 'Sector data corrupted or empty.';
+                const charsPerPage = 1500;
+                const pages = [];
+                for (let i = 0; i < content.length; i += charsPerPage) {
+                    pages.push(content.substring(i, i + charsPerPage));
+                }
+                const finalPages = pages.length > 0 ? pages : ['No readable content found.'];
+                setTextPages(finalPages);
+                setNumPages(finalPages.length);
+
+                // Fetch previous progress for text
                 if (profile?.id) {
                     const { data: prog } = await supabase
                         .from('reading_progress')
@@ -59,21 +95,19 @@ export default function SpaceReader({
                         .eq('user_id', profile.id)
                         .maybeSingle();
 
-                    if (prog && prog.last_page > 1 && prog.last_page <= pdf.numPages) {
-                        const resume = window.confirm(`Commander, resume mission from page ${prog.last_page}?`);
+                    if (prog && prog.last_page > 1 && prog.last_page <= finalPages.length) {
+                        const resume = window.confirm(`Commander, resume mission from sector ${prog.last_page}?`);
                         if (resume) setCurrentPage(prog.last_page);
                     }
                 }
-            } catch (err) {
-                console.error("PDF Load Error", err);
             }
         };
-        if (resource?.file_url) loadPdf();
+        if (resource) loadResource();
     }, [resource, profile]);
 
-    // Render Page
+    // Render Page (PDF Only)
     const renderPage = useCallback(async (pageNum: number) => {
-        if (!pdfDoc || !canvasRef.current || isRendering) return;
+        if (!pdfDoc || !canvasRef.current || isRendering || !isPdf) return;
         setIsRendering(true);
         try {
             const page = await pdfDoc.getPage(pageNum);
@@ -93,11 +127,11 @@ export default function SpaceReader({
         } finally {
             setIsRendering(false);
         }
-    }, [pdfDoc]);
+    }, [pdfDoc, isPdf]);
 
     useEffect(() => {
-        if (pdfDoc) renderPage(currentPage);
-    }, [pdfDoc, currentPage, renderPage]);
+        if (pdfDoc && isPdf) renderPage(currentPage);
+    }, [pdfDoc, currentPage, renderPage, isPdf]);
 
     const addFloatingXp = (amount: number, milestoneText?: string) => {
         const id = Date.now();
@@ -222,25 +256,36 @@ export default function SpaceReader({
                     </div>
                 ))}
 
-                {/* Left 68%: PDF Canvas */}
-                <main className="w-[68%] h-full bg-[#050510] relative flex items-center justify-center border-r border-[#2d2d3f] p-8">
-                    {!pdfDoc && (
+                {/* Left 68%: PDF Canvas or Text View */}
+                <main className="flex-1 lg:w-[68%] h-full bg-[#050510] relative flex items-center justify-center border-r border-[#2d2d3f] p-4 md:p-8">
+                    {!isPdf && textPages.length === 0 && (
                         <div className="flex flex-col items-center text-slate-500">
                             <div className="size-16 rounded-full border border-dashed border-[#ea580c] animate-spin border-t-transparent mx-auto mb-4" />
                             <div className="text-xs uppercase tracking-widest font-bold text-[#ea580c]">Entering Orbit...</div>
                         </div>
                     )}
 
-                    <div className="relative shadow-[0_0_30px_rgba(14,116,144,0.15)] rounded-md">
-                        <canvas ref={canvasRef} className="bg-white max-w-full h-auto object-contain rounded-md" />
+                    <div className="relative shadow-[0_0_30px_rgba(14,116,144,0.15)] rounded-md w-full max-w-4xl h-full flex items-center justify-center overflow-auto scrollbar-hide">
+                        {isPdf ? (
+                            <canvas ref={canvasRef} className="bg-white max-w-full h-auto object-contain rounded-md" />
+                        ) : (
+                            <div className="bg-[#101022]/80 backdrop-blur-xl border border-[#2d2d3f] p-6 md:p-12 rounded-3xl w-full max-h-full overflow-y-auto text-slate-200 shadow-2xl">
+                                <div className="text-xs font-black text-[#38bdf8] uppercase tracking-[0.3em] mb-6 opacity-60">Sector Data Transmission</div>
+                                <div className="prose prose-invert max-w-none text-lg md:text-xl leading-relaxed font-medium">
+                                    {textPages[currentPage - 1]?.split('\n').map((line, i) => (
+                                        <p key={i} className="mb-4">{line}</p>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Space Thruster Buttons */}
-                        {pdfDoc && (
+                        {numPages > 0 && (
                             <>
-                                <button onClick={() => handleTurn(-1)} disabled={currentPage <= 1} className="absolute top-1/2 -left-20 -translate-y-1/2 size-12 rounded-full border border-[#2d2d3f] bg-[#101022]/80 backdrop-blur hover:bg-[#1b1b2f] hover:border-[#38bdf8] flex items-center justify-center transition-all disabled:opacity-20 group">
+                                <button onClick={() => handleTurn(-1)} disabled={currentPage <= 1} className="absolute top-1/2 -left-4 md:-left-20 -translate-y-1/2 size-12 rounded-full border border-[#2d2d3f] bg-[#101022]/80 backdrop-blur hover:bg-[#1b1b2f] hover:border-[#38bdf8] flex items-center justify-center transition-all disabled:opacity-20 group z-50">
                                     <span className="material-symbols-outlined text-slate-400 group-hover:text-[#38bdf8]">chevron_left</span>
                                 </button>
-                                <button onClick={() => handleTurn(1)} disabled={currentPage >= numPages} className="absolute top-1/2 -right-20 -translate-y-1/2 size-12 rounded-full border border-[#2d2d3f] bg-[#101022]/80 backdrop-blur hover:bg-[#1b1b2f] hover:border-[#ea580c] flex items-center justify-center transition-all disabled:opacity-20 group shadow-[0_0_15px_rgba(234,88,12,0.1)] hover:shadow-[0_0_20px_rgba(234,88,12,0.4)]">
+                                <button onClick={() => handleTurn(1)} disabled={currentPage >= numPages} className="absolute top-1/2 -right-4 md:-right-20 -translate-y-1/2 size-12 rounded-full border border-[#2d2d3f] bg-[#101022]/80 backdrop-blur hover:bg-[#1b1b2f] hover:border-[#ea580c] flex items-center justify-center transition-all disabled:opacity-20 group shadow-[0_0_15px_rgba(234,88,12,0.1)] hover:shadow-[0_0_20px_rgba(234,88,12,0.4)] z-50">
                                     <span className="material-symbols-outlined text-slate-400 group-hover:text-[#ea580c]">chevron_right</span>
                                 </button>
                             </>

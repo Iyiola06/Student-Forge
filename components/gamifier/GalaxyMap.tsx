@@ -42,21 +42,21 @@ export default function GalaxyMap({
             <div className="absolute bottom-[-20%] right-[-10%] w-[70%] h-[70%] bg-[#0e7490]/15 rounded-full blur-[150px] pointer-events-none mix-blend-screen" />
 
             {/* HUD: Top Bar */}
-            <header className="relative z-20 flex items-start justify-between p-6 pointer-events-none">
+            <header className="relative z-20 flex flex-col md:flex-row items-center md:items-start justify-between p-4 md:p-6 gap-4 pointer-events-none">
                 {/* Top Left: Commander Profile */}
-                <div className="flex items-center gap-4 bg-[#101022]/80 backdrop-blur-md border border-[#2d2d3f] p-3 pl-4 pr-6 rounded-2xl pointer-events-auto shadow-2xl shadow-[#ea580c]/10">
+                <div className="flex items-center gap-4 bg-[#101022]/80 backdrop-blur-md border border-[#2d2d3f] p-3 pl-4 pr-6 rounded-2xl pointer-events-auto shadow-2xl shadow-[#ea580c]/10 w-full md:w-auto">
                     <div className="relative">
-                        <div className="size-14 rounded-full bg-cover bg-center border-2 border-[#ea580c] relative z-10"
+                        <div className="size-12 md:size-14 rounded-full bg-cover bg-center border-2 border-[#ea580c] relative z-10"
                             style={{ backgroundImage: `url("${profile?.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback'}")` }}
                         />
                         <div className="absolute inset-[-4px] border border-slate-700 rounded-full opacity-50 border-dashed animate-[spin_10s_linear_infinite]" />
                     </div>
-                    <div>
-                        <h2 className="text-lg font-black text-white leading-tight">{profile?.full_name || 'Student'}</h2>
-                        <div className="text-xs font-bold text-[#ea580c] uppercase tracking-widest mb-2">{getActiveTitle(profile)}</div>
+                    <div className="flex-1">
+                        <h2 className="text-base md:text-lg font-black text-white leading-tight truncate max-w-[120px] md:max-w-none">{profile?.full_name || 'Student'}</h2>
+                        <div className="text-[9px] md:text-xs font-bold text-[#ea580c] uppercase tracking-widest mb-1.5 md:mb-2 line-clamp-1">{getActiveTitle(profile)}</div>
 
                         {/* XP Fuel Gauge */}
-                        <div className="w-32 bg-[#1b1b27] rounded-full h-1.5 overflow-hidden mb-1">
+                        <div className="w-full md:w-32 bg-[#1b1b27] rounded-full h-1.5 overflow-hidden mb-1">
                             <div className="bg-gradient-to-r from-orange-600 via-orange-500 to-amber-400 h-full rounded-full transition-all duration-1000 relative"
                                 style={{ width: `${progressPercent}%` }}>
                                 <div className="absolute top-0 right-0 bottom-0 w-2 bg-white/40 blur-[1px]" />
@@ -67,39 +67,38 @@ export default function GalaxyMap({
                             <span>{userXp}/{targetXp} XP</span>
                         </div>
                     </div>
-                    <div className="ml-4 pl-4 border-l border-[#2d2d3f] flex flex-col items-center justify-center">
-                        <span className="text-xl">🔥</span>
-                        <span className="text-xs font-bold text-slate-400">{profile?.streak_days || 0}</span>
+                    <div className="ml-2 md:ml-4 pl-2 md:pl-4 border-l border-[#2d2d3f] flex flex-col items-center justify-center">
+                        <span className="text-lg md:text-xl">🔥</span>
+                        <span className="text-[10px] md:text-xs font-bold text-slate-400">{profile?.streak_days || 0}</span>
                     </div>
                 </div>
 
-                {/* Top Right: Stats */}
-                <div className="flex gap-3 pointer-events-auto">
+                {/* Top Right: Stats & Actions */}
+                <div className="flex gap-2 md:gap-3 pointer-events-auto w-full md:w-auto overflow-x-auto md:overflow-visible pb-2 md:pb-0 scrollbar-hide">
                     {[
-                        { label: 'Planets', value: planetsExplored, icon: 'public' },
-                        { label: 'Pages', value: totalPagesRead, icon: 'auto_stories' },
-                        { label: 'Total XP', value: userXp, icon: 'diamond' }
+                        { label: 'Planets', value: planetsExplored, icon: 'public', mobile: true },
+                        { label: 'Pages', value: totalPagesRead, icon: 'auto_stories', mobile: false },
+                        { label: 'Total XP', value: userXp, icon: 'diamond', mobile: true }
                     ].map((s, i) => (
-                        <div key={i} className="bg-[#101022]/80 backdrop-blur-md border border-[#2d2d3f] px-4 py-2 rounded-xl flex items-center gap-3">
-                            <span className="material-symbols-outlined text-[#38bdf8] opacity-70">{s.icon}</span>
+                        <div key={i} className={`bg-[#101022]/80 backdrop-blur-md border border-[#2d2d3f] px-4 py-2 rounded-xl flex items-center gap-3 shrink-0 ${!s.mobile && 'hidden sm:flex'}`}>
+                            <span className="material-symbols-outlined text-[#38bdf8] opacity-70 text-sm md:text-base">{s.icon}</span>
                             <div>
-                                <div className="text-sm font-black text-white">{s.value.toLocaleString()}</div>
-                                <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{s.label}</div>
+                                <div className="text-xs md:text-sm font-black text-white">{s.value.toLocaleString()}</div>
+                                <div className="text-[8px] md:text-[9px] font-bold text-slate-500 uppercase tracking-widest">{s.label}</div>
                             </div>
                         </div>
                     ))}
 
-                    {/* Mission Board Toggle */}
                     <button
                         onClick={() => setShowMissions(true)}
-                        className="bg-[#101022]/80 backdrop-blur-md border border-[#2d2d3f] hover:border-[#ea580c] px-4 py-2 rounded-xl flex items-center gap-2 transition-colors group pointer-events-auto"
+                        className="bg-[#101022]/80 backdrop-blur-md border border-[#2d2d3f] hover:border-[#ea580c] px-4 py-2 rounded-xl flex items-center gap-2 transition-colors group shrink-0"
                     >
-                        <span className="material-symbols-outlined text-purple-400 group-hover:text-[#ea580c]">assignment</span>
-                        <span className="text-xs font-bold text-white uppercase tracking-wider">Missions</span>
+                        <span className="material-symbols-outlined text-purple-400 group-hover:text-[#ea580c] text-sm md:text-base">assignment</span>
+                        <span className="text-[9px] md:text-xs font-bold text-white uppercase tracking-wider">Missions</span>
                     </button>
-                    <Link href="/resources" className="bg-[#ea580c] hover:bg-[#d04e0a] text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg shadow-[#ea580c]/20 transition-transform hover:scale-105">
+                    <Link href="/resources" className="bg-[#ea580c] hover:bg-[#d04e0a] text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg shadow-[#ea580c]/20 transition-transform hover:scale-105 shrink-0">
                         <span className="material-symbols-outlined text-sm">add</span>
-                        <span className="text-xs font-bold uppercase tracking-wider">Upload</span>
+                        <span className="text-[9px] md:text-xs font-bold uppercase tracking-wider">Upload</span>
                     </Link>
                 </div>
             </header>

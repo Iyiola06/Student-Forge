@@ -15,6 +15,7 @@ interface Resource {
   file_type: string;
   file_size_bytes: number;
   created_at: string;
+  content?: string;
 }
 
 export default function ResourcesPage() {
@@ -204,7 +205,7 @@ export default function ResourcesPage() {
   return (
     <div className="bg-[#f5f5f8] dark:bg-[#13131a] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       <Sidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
 
         {/* Upload Toast Indicator */}
         {isUploading && (
@@ -294,16 +295,16 @@ export default function ResourcesPage() {
                   </form>
                 )}
 
-                <div className="flex bg-white dark:bg-[#1a1a24] p-1.5 rounded-xl border border-slate-200 dark:border-[#2d2d3f] w-full md:w-auto">
+                <div className="flex bg-white dark:bg-[#1a1a24] p-1.5 rounded-xl border border-slate-200 dark:border-[#2d2d3f] w-full lg:w-auto">
                   <button
                     onClick={() => setActiveTab('library')}
-                    className={`flex-1 md:px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'library' ? 'bg-slate-100 dark:bg-[#252535] text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+                    className={`flex-1 lg:px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'library' ? 'bg-slate-100 dark:bg-[#252535] text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
                   >
                     My Uploads
                   </button>
                   <button
                     onClick={() => setActiveTab('books')}
-                    className={`flex-1 md:px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'books' ? 'bg-slate-100 dark:bg-[#252535] text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
+                    className={`flex-1 lg:px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'books' ? 'bg-slate-100 dark:bg-[#252535] text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-300'}`}
                   >
                     Library Books
                   </button>
@@ -384,7 +385,7 @@ export default function ResourcesPage() {
                               <span className="material-symbols-outlined text-3xl">{getIconForType(resource.file_type).icon}</span>
                             </div>
                             <div className="min-w-0 pr-12">
-                              <h3 className="font-bold text-slate-900 dark:text-white leading-snug line-clamp-2 break-all group-hover:text-[#5b5bfa] transition-colors" title={resource.title}>{resource.title}</h3>
+                              <h3 className="font-bold text-slate-900 dark:text-white leading-snug line-clamp-2 break-words group-hover:text-[#ea580c] transition-colors" title={resource.title}>{resource.title}</h3>
                             </div>
                           </div>
                           <div className="flex items-center gap-2 mb-6 flex-wrap">
@@ -400,21 +401,21 @@ export default function ResourcesPage() {
                             <span className="text-xs text-slate-500">•</span>
                             <span className="text-xs text-slate-500 font-medium whitespace-nowrap">Uploaded {formatDate(resource.created_at)}</span>
                           </div>
-                          <div className="flex gap-2 mt-auto">
+                          <div className="flex flex-wrap gap-2 mt-auto">
                             {resource.file_type.includes('pdf') || resource.file_type.includes('image') || resource.file_type.includes('text') ? (
-                              <button onClick={() => setSelectedResource(resource)} className="flex-1 bg-slate-100 dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
+                              <button onClick={() => setSelectedResource(resource)} className="flex-1 min-w-[120px] bg-slate-100 dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
                                 <span className="material-symbols-outlined text-[16px]">visibility</span>
                                 View File
                               </button>
                             ) : (
-                              <a href={resource.file_url} target="_blank" rel="noopener noreferrer" className="flex-1 bg-slate-100 dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
+                              <a href={resource.file_url} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-[120px] bg-slate-100 dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
                                 <span className="material-symbols-outlined text-[16px]">download</span>
                                 Download
                               </a>
                             )}
 
-                            {resource.file_type.includes('pdf') && (
-                              <Link href={`/gamifier?id=${resource.id}`} className="flex-1 bg-[#ea580c]/10 hover:bg-[#ea580c] text-[#ea580c] hover:text-white font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
+                            {(resource.file_type.includes('pdf') || resource.content) && (
+                              <Link href={`/gamifier?id=${resource.id}`} className="flex-1 min-w-[120px] bg-[#ea580c]/10 hover:bg-[#ea580c] text-[#ea580c] hover:text-white font-bold py-2.5 rounded-xl transition-colors text-[13px] flex items-center justify-center gap-2">
                                 <span className="material-symbols-outlined text-[16px]">sports_esports</span>
                                 Read & Earn XP
                               </Link>

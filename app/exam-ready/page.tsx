@@ -215,263 +215,263 @@ export default function ExamReadyPage() {
     return (
         <div className="bg-[#f5f5f8] dark:bg-[#13131a] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c] text-white">
             <Sidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        
-            <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto p-6 md:p-8">
-                {isGenerating ? (
-                    <div className="flex-1 flex flex-col items-center justify-center text-center">
-                        <div className="size-16 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin mb-6"></div>
-                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Building Exam Snapshot</h3>
-                        <p className="text-slate-500 dark:text-slate-400 max-w-sm">Generating abbreviations, extracting definition graphs, and predicting likely exam questions...</p>
-                    </div>
-                ) : !snapshotData ? (
-                    /* Input State */
-                    <div className="max-w-3xl mx-auto w-full mt-10">
-                        <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-8 shadow-sm">
-                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-                                <span className="material-symbols-outlined text-[#5b5bfa]">bolt</span>
-                                Generate Exam Readiness Snapshot
-                            </h2>
+            <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
 
-                            {error && (
-                                <div className="mb-6 p-4 rounded-xl bg-red-900/10 border border-red-900/30 text-red-400 text-sm font-medium">
-                                    {error}
-                                </div>
-                            )}
-
-                            <div className="space-y-6">
-                                <div>
-                                    <label className="block text-sm font-bold text-slate-500 dark:text-slate-400 mb-2">Select Exam Syllabus / Notes:</label>
-                                    <select
-                                        value={selectedResource}
-                                        onChange={(e) => {
-                                            setSelectedResource(e.target.value);
-                                            if (e.target.value) setPastedText('');
-                                        }}
-                                        className="w-full rounded-xl border border-slate-200 dark:border-[#2d2d3f] bg-[#f5f5f8] dark:bg-[#13131a] p-4 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none text-slate-900 dark:text-white"
-                                    >
-                                        <option value="">-- Choose from library --</option>
-                                        {resources.map(r => (
-                                            <option key={r.id} value={r.id}>{r.title}</option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                <div className="relative py-2">
-                                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                        <div className="w-full border-t border-slate-200 dark:border-[#2d2d3f]"></div>
-                                    </div>
-                                    <div className="relative flex justify-center">
-                                        <span className="bg-white dark:bg-[#1a1a24] px-4 text-xs font-bold text-slate-500 uppercase tracking-widest">OR</span>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-bold text-slate-500 dark:text-slate-400 mb-2">Paste chapter text here:</label>
-                                    <textarea
-                                        value={pastedText}
-                                        onChange={(e) => {
-                                            setPastedText(e.target.value);
-                                            if (e.target.value) setSelectedResource('');
-                                        }}
-                                        className="w-full h-40 rounded-xl border border-slate-200 dark:border-[#2d2d3f] bg-[#f5f5f8] dark:bg-[#13131a] p-4 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none text-slate-900 dark:text-white"
-                                        placeholder="Paste content..."
-                                    ></textarea>
-                                </div>
-
-                                <button
-                                    onClick={handleGenerate}
-                                    disabled={isGenerating}
-                                    className="w-full bg-[#ea580c] hover:bg-[#ea580c]/90 text-white font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(59,59,250,0.3)] transition-all flex items-center justify-center gap-2 mt-4"
-                                >
-                                    <span className="material-symbols-outlined">auto_awesome</span>
-                                    Generate Snapshot
-                                </button>
-                            </div>
+                <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto p-6 md:p-8">
+                    {isGenerating ? (
+                        <div className="flex-1 flex flex-col items-center justify-center text-center">
+                            <div className="size-16 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin mb-6"></div>
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Building Exam Snapshot</h3>
+                            <p className="text-slate-500 dark:text-slate-400 max-w-sm">Generating abbreviations, extracting definition graphs, and predicting likely exam questions...</p>
                         </div>
-                    </div>
-                ) : (
-                    /* Dashboard View matching Screenshot 2 */
-                    <div className="flex flex-col gap-6">
-                        {/* Top Section */}
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                            {/* Readiness Score Card */}
-                            <div className="lg:col-span-8 bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-6 lg:p-8 flex items-center gap-8 shadow-sm">
-                                <div className="relative size-32 shrink-0 flex items-center justify-center">
-                                    {/* Mock Circular Progress */}
-                                    <svg className="size-full -rotate-90 transform" viewBox="0 0 100 100">
-                                        <circle cx="50" cy="50" r="45" fill="none" stroke="#252535" strokeWidth="10" />
-                                        <circle cx="50" cy="50" r="45" fill="none" stroke="#ea580c" strokeWidth="10" strokeDasharray="282.7" strokeDashoffset="70.6" className="drop-shadow-[0_0_8px_rgba(59,59,250,0.5)]" />
-                                    </svg>
-                                    <div className="absolute flex flex-col items-center justify-center">
-                                        <span className="text-3xl font-black text-slate-900 dark:text-white">75%</span>
-                                        <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 tracking-wider">READY</span>
-                                    </div>
-                                </div>
+                    ) : !snapshotData ? (
+                        /* Input State */
+                        <div className="max-w-3xl mx-auto w-full mt-10">
+                            <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-8 shadow-sm">
+                                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-[#5b5bfa]">bolt</span>
+                                    Generate Exam Readiness Snapshot
+                                </h2>
 
-                                <div className="flex-1">
-                                    <div className="flex items-start justify-between mb-2">
-                                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Exam Readiness Score</h2>
-                                        <span className="bg-[#1a3826] text-[#4ade80] text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1 border border-green-500/20">
-                                            +5% <span className="text-[10px] opacity-80">this week</span>
-                                        </span>
+                                {error && (
+                                    <div className="mb-6 p-4 rounded-xl bg-red-900/10 border border-red-900/30 text-red-400 text-sm font-medium">
+                                        {error}
                                     </div>
-                                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-md leading-relaxed">
-                                        You are on track for your Biology Finals. Keep pushing through the genetic variations module!
-                                    </p>
-                                    <div className="flex gap-4">
-                                        <div className="bg-[#f5f5f8] dark:bg-[#13131a] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-4 flex-1 text-center">
-                                            <div className="text-xl font-black text-slate-900 dark:text-white mb-1">142</div>
-                                            <div className="text-[10px] font-bold text-slate-500 tracking-wider">CARDS MASTERED</div>
-                                        </div>
-                                        <div className="bg-[#f5f5f8] dark:bg-[#13131a] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-4 flex-1 text-center">
-                                            <div className="text-xl font-black text-slate-900 dark:text-white mb-1">12</div>
-                                            <div className="text-[10px] font-bold text-slate-500 tracking-wider">DAYS STREAK</div>
-                                        </div>
-                                        <div className="bg-[#f5f5f8] dark:bg-[#13131a] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-4 flex-1 text-center">
-                                            <div className="text-xl font-black text-slate-900 dark:text-white mb-1">4.5h</div>
-                                            <div className="text-[10px] font-bold text-slate-500 tracking-wider">STUDY TIME</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Actions Right Side */}
-                            <div className="lg:col-span-4 flex flex-col gap-4">
-                                <Link href="/flashcards" className="flex-1 bg-[#ea580c] hover:bg-[#ea580c]/90 rounded-2xl flex flex-col items-center justify-center text-white transition-all shadow-[0_0_20px_rgba(59,59,250,0.3)] hover:scale-[1.02]">
-                                    <span className="material-symbols-outlined text-3xl mb-2">shuffle</span>
-                                    <span className="font-bold text-lg">Launch Shuffle Mode</span>
-                                    <span className="text-xs text-slate-900 dark:text-white/70 mt-1">Review 50 random active cards</span>
-                                </Link>
-                                <div className="flex gap-4 h-24">
-                                    <button onClick={downloadPDF} className="flex-1 bg-white dark:bg-[#1a1a24] hover:bg-slate-100 dark:bg-[#252535] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] flex flex-col items-center justify-center text-slate-600 dark:text-slate-300 transition-all hover:text-white group">
-                                        <span className="material-symbols-outlined text-xl mb-1 text-slate-500 group-hover:text-white transition-colors">download</span>
-                                        <span className="text-sm font-bold">Download PDF</span>
-                                    </button>
-                                    <button onClick={() => setSnapshotData(null)} className="flex-1 bg-white dark:bg-[#1a1a24] hover:bg-slate-100 dark:bg-[#252535] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] flex flex-col items-center justify-center text-slate-600 dark:text-slate-300 transition-all hover:text-white group">
-                                        <span className="material-symbols-outlined text-xl mb-1 text-slate-500 group-hover:text-white transition-colors">add</span>
-                                        <span className="text-sm font-bold">New Snapshot</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Bottom Section: 3 Columns */}
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            {/* Abbreviations Column */}
-                            <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm flex flex-col">
-                                <div className="p-6 border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between">
-                                    <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                        <span className="text-[#ea580c] font-black tracking-widest text-sm">&lt;&gt;</span>
-                                        Abbreviations Decoder
-                                    </h3>
-                                    <button className="text-slate-500 hover:text-white"><span className="material-symbols-outlined">more_horiz</span></button>
-                                </div>
-                                <div className="flex items-center px-6 py-3 border-b border-slate-200 dark:border-[#2d2d3f]/50 bg-[#f5f5f8] dark:bg-[#13131a]/50">
-                                    <span className="text-[10px] font-bold text-slate-500 tracking-wider flex-1">ABBREV</span>
-                                    <span className="text-[10px] font-bold text-slate-500 tracking-wider flex-[2]">FULL MEANING</span>
-                                </div>
-                                <div className="flex-1 p-2">
-                                    {snapshotData.abbreviations && snapshotData.abbreviations.length > 0 ? (
-                                        <div className="space-y-1">
-                                            {snapshotData.abbreviations.map((abbr, i) => (
-                                                <div key={i} className="flex items-center px-4 py-3 hover:bg-slate-100 dark:bg-[#252535] rounded-xl transition-colors">
-                                                    <span className="text-[#ea580c] font-black text-sm flex-1">{abbr.short}</span>
-                                                    <span className="text-sm text-slate-600 dark:text-slate-300 flex-[2] truncate" title={abbr.full}>{abbr.full}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <div className="p-6 text-center text-sm text-slate-500">No abbreviations found.</div>
-                                    )}
-                                </div>
-                                {snapshotData.abbreviations && snapshotData.abbreviations.length > 6 && (
-                                    <button className="p-4 border-t border-slate-200 dark:border-[#2d2d3f] text-sm font-bold text-[#5b5bfa] hover:text-[#7b7bff] transition-colors w-full">
-                                        View all {snapshotData.abbreviations.length} terms
-                                    </button>
                                 )}
-                            </div>
 
-                            {/* Key Points Column */}
-                            <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm flex flex-col">
-                                <div className="p-6 border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between">
-                                    <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-yellow-500">lightbulb</span>
-                                        Key Points Spotlight
-                                    </h3>
-                                    <button className="text-slate-500 hover:text-white"><span className="material-symbols-outlined">filter_list</span></button>
-                                </div>
-                                <div className="p-6 space-y-4 overflow-y-auto max-h-[500px]">
-                                    {snapshotData.key_points && snapshotData.key_points.length > 0 ? (
-                                        snapshotData.key_points.map((kp, i) => {
-                                            const typeObj = i % 3 === 0
-                                                ? { label: 'DEFINITION', color: 'border-purple-500/50', icon: 'visibility', textColor: 'text-purple-400' }
-                                                : i % 3 === 1
-                                                    ? { label: 'FORMULA', color: 'border-green-500/50', icon: 'functions', textColor: 'text-green-400' }
-                                                    : { label: 'TIMELINE', color: 'border-orange-500/50', icon: 'event', textColor: 'text-orange-400' };
+                                <div className="space-y-6">
+                                    <div>
+                                        <label className="block text-sm font-bold text-slate-500 dark:text-slate-400 mb-2">Select Exam Syllabus / Notes:</label>
+                                        <select
+                                            value={selectedResource}
+                                            onChange={(e) => {
+                                                setSelectedResource(e.target.value);
+                                                if (e.target.value) setPastedText('');
+                                            }}
+                                            className="w-full rounded-xl border border-slate-200 dark:border-[#2d2d3f] bg-[#f5f5f8] dark:bg-[#13131a] p-4 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none text-slate-900 dark:text-white"
+                                        >
+                                            <option value="">-- Choose from library --</option>
+                                            {resources.map(r => (
+                                                <option key={r.id} value={r.id}>{r.title}</option>
+                                            ))}
+                                        </select>
+                                    </div>
 
-                                            return (
-                                                <div key={i} className={`p-5 rounded-xl bg-[#f5f5f8] dark:bg-[#13131a] border-l-2 ${typeObj.color} border-y border-r border-slate-200 dark:border-[#2d2d3f] hover:bg-white dark:bg-[#1a1a24] transition-colors group cursor-pointer`}>
-                                                    <div className="flex justify-between items-center mb-3">
-                                                        <span className={`text-[10px] font-black uppercase tracking-wider ${typeObj.textColor}`}>{kp.tag || typeObj.label}</span>
-                                                        <span className="material-symbols-outlined text-slate-600 text-[16px] group-hover:text-white transition-colors">{typeObj.icon}</span>
-                                                    </div>
-                                                    <h4 className="font-bold text-slate-900 dark:text-white mb-2 line-clamp-2">{kp.point}</h4>
-                                                    <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">
-                                                        {kp.point}
-                                                    </p>
-                                                </div>
-                                            )
-                                        })
-                                    ) : (
-                                        <div className="text-center text-sm text-slate-500">No key points extracted.</div>
-                                    )}
-                                </div>
-                            </div>
+                                    <div className="relative py-2">
+                                        <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                                            <div className="w-full border-t border-slate-200 dark:border-[#2d2d3f]"></div>
+                                        </div>
+                                        <div className="relative flex justify-center">
+                                            <span className="bg-white dark:bg-[#1a1a24] px-4 text-xs font-bold text-slate-500 uppercase tracking-widest">OR</span>
+                                        </div>
+                                    </div>
 
-                            {/* Hot List Column */}
-                            <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm flex flex-col">
-                                <div className="p-6 border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between">
-                                    <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-red-500">local_fire_department</span>
-                                        Examiner's Hot List
-                                    </h3>
-                                    <span className="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-1 rounded border border-red-500/20 uppercase tracking-wide">High Probability</span>
-                                </div>
-                                <div className="p-6 space-y-2 overflow-y-auto max-h-[500px]">
-                                    {snapshotData.hot_list && snapshotData.hot_list.length > 0 ? (
-                                        snapshotData.hot_list.map((hl, i) => {
-                                            const isHard = hl.difficulty.toLowerCase().includes('hard');
-                                            const isEasy = hl.difficulty.toLowerCase().includes('easy');
-                                            const diffColor = isHard ? 'bg-red-500/20 text-red-400 border-red-500/30'
-                                                : isEasy ? 'bg-green-500/20 text-green-400 border-green-500/30'
-                                                    : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+                                    <div>
+                                        <label className="block text-sm font-bold text-slate-500 dark:text-slate-400 mb-2">Paste chapter text here:</label>
+                                        <textarea
+                                            value={pastedText}
+                                            onChange={(e) => {
+                                                setPastedText(e.target.value);
+                                                if (e.target.value) setSelectedResource('');
+                                            }}
+                                            className="w-full h-40 rounded-xl border border-slate-200 dark:border-[#2d2d3f] bg-[#f5f5f8] dark:bg-[#13131a] p-4 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none text-slate-900 dark:text-white"
+                                            placeholder="Paste content..."
+                                        ></textarea>
+                                    </div>
 
-                                            return (
-                                                <div key={i} className="p-4 rounded-xl hover:bg-slate-100 dark:bg-[#252535] transition-colors cursor-pointer group flex items-start gap-3">
-                                                    <div className="flex-1">
-                                                        <div className="flex items-center gap-2 mb-2">
-                                                            <span className="size-6 rounded-full bg-[#ea580c]/20 text-[#ea580c] font-black text-[10px] flex items-center justify-center shrink-0">{i + 1}</span>
-                                                            <span className={`text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded border ${diffColor}`}>
-                                                                {hl.difficulty}
-                                                            </span>
-                                                        </div>
-                                                        <h4 className="text-sm font-bold text-white mb-1 leading-snug group-hover:text-[#5b5bfa] transition-colors">{hl.question}</h4>
-                                                    </div>
-                                                    <span className="material-symbols-outlined text-slate-600 group-hover:text-white transition-colors self-center">chevron_right</span>
-                                                </div>
-                                            )
-                                        })
-                                    ) : (
-                                        <div className="text-center text-sm text-slate-500">No hot list formulated.</div>
-                                    )}
+                                    <button
+                                        onClick={handleGenerate}
+                                        disabled={isGenerating}
+                                        className="w-full bg-[#ea580c] hover:bg-[#ea580c]/90 text-white font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(59,59,250,0.3)] transition-all flex items-center justify-center gap-2 mt-4"
+                                    >
+                                        <span className="material-symbols-outlined">auto_awesome</span>
+                                        Generate Snapshot
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    ) : (
+                        /* Dashboard View matching Screenshot 2 */
+                        <div className="flex flex-col gap-6">
+                            {/* Top Section */}
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                                {/* Readiness Score Card */}
+                                <div className="lg:col-span-8 bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-6 lg:p-8 flex items-center gap-8 shadow-sm">
+                                    <div className="relative size-32 shrink-0 flex items-center justify-center">
+                                        {/* Mock Circular Progress */}
+                                        <svg className="size-full -rotate-90 transform" viewBox="0 0 100 100">
+                                            <circle cx="50" cy="50" r="45" fill="none" stroke="#252535" strokeWidth="10" />
+                                            <circle cx="50" cy="50" r="45" fill="none" stroke="#ea580c" strokeWidth="10" strokeDasharray="282.7" strokeDashoffset="70.6" className="drop-shadow-[0_0_8px_rgba(59,59,250,0.5)]" />
+                                        </svg>
+                                        <div className="absolute flex flex-col items-center justify-center">
+                                            <span className="text-3xl font-black text-slate-900 dark:text-white">75%</span>
+                                            <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 tracking-wider">READY</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex-1">
+                                        <div className="flex items-start justify-between mb-2">
+                                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Exam Readiness Score</h2>
+                                            <span className="bg-[#1a3826] text-[#4ade80] text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1 border border-green-500/20">
+                                                +5% <span className="text-[10px] opacity-80">this week</span>
+                                            </span>
+                                        </div>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-md leading-relaxed">
+                                            You are on track for your Biology Finals. Keep pushing through the genetic variations module!
+                                        </p>
+                                        <div className="flex gap-4">
+                                            <div className="bg-[#f5f5f8] dark:bg-[#13131a] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-4 flex-1 text-center">
+                                                <div className="text-xl font-black text-slate-900 dark:text-white mb-1">142</div>
+                                                <div className="text-[10px] font-bold text-slate-500 tracking-wider">CARDS MASTERED</div>
+                                            </div>
+                                            <div className="bg-[#f5f5f8] dark:bg-[#13131a] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-4 flex-1 text-center">
+                                                <div className="text-xl font-black text-slate-900 dark:text-white mb-1">12</div>
+                                                <div className="text-[10px] font-bold text-slate-500 tracking-wider">DAYS STREAK</div>
+                                            </div>
+                                            <div className="bg-[#f5f5f8] dark:bg-[#13131a] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-4 flex-1 text-center">
+                                                <div className="text-xl font-black text-slate-900 dark:text-white mb-1">4.5h</div>
+                                                <div className="text-[10px] font-bold text-slate-500 tracking-wider">STUDY TIME</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Actions Right Side */}
+                                <div className="lg:col-span-4 flex flex-col gap-4">
+                                    <Link href="/flashcards" className="flex-1 bg-[#ea580c] hover:bg-[#ea580c]/90 rounded-2xl flex flex-col items-center justify-center text-white transition-all shadow-[0_0_20px_rgba(59,59,250,0.3)] hover:scale-[1.02]">
+                                        <span className="material-symbols-outlined text-3xl mb-2">shuffle</span>
+                                        <span className="font-bold text-lg">Launch Shuffle Mode</span>
+                                        <span className="text-xs text-slate-900 dark:text-white/70 mt-1">Review 50 random active cards</span>
+                                    </Link>
+                                    <div className="flex gap-4 h-24">
+                                        <button onClick={downloadPDF} className="flex-1 bg-white dark:bg-[#1a1a24] hover:bg-slate-100 dark:bg-[#252535] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] flex flex-col items-center justify-center text-slate-600 dark:text-slate-300 transition-all hover:text-white group">
+                                            <span className="material-symbols-outlined text-xl mb-1 text-slate-500 group-hover:text-white transition-colors">download</span>
+                                            <span className="text-sm font-bold">Download PDF</span>
+                                        </button>
+                                        <button onClick={() => setSnapshotData(null)} className="flex-1 bg-white dark:bg-[#1a1a24] hover:bg-slate-100 dark:bg-[#252535] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] flex flex-col items-center justify-center text-slate-600 dark:text-slate-300 transition-all hover:text-white group">
+                                            <span className="material-symbols-outlined text-xl mb-1 text-slate-500 group-hover:text-white transition-colors">add</span>
+                                            <span className="text-sm font-bold">New Snapshot</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Bottom Section: 3 Columns */}
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                {/* Abbreviations Column */}
+                                <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm flex flex-col">
+                                    <div className="p-6 border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between">
+                                        <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                            <span className="text-[#ea580c] font-black tracking-widest text-sm">&lt;&gt;</span>
+                                            Abbreviations Decoder
+                                        </h3>
+                                        <button className="text-slate-500 hover:text-white"><span className="material-symbols-outlined">more_horiz</span></button>
+                                    </div>
+                                    <div className="flex items-center px-6 py-3 border-b border-slate-200 dark:border-[#2d2d3f]/50 bg-[#f5f5f8] dark:bg-[#13131a]/50">
+                                        <span className="text-[10px] font-bold text-slate-500 tracking-wider flex-1">ABBREV</span>
+                                        <span className="text-[10px] font-bold text-slate-500 tracking-wider flex-[2]">FULL MEANING</span>
+                                    </div>
+                                    <div className="flex-1 p-2">
+                                        {snapshotData.abbreviations && snapshotData.abbreviations.length > 0 ? (
+                                            <div className="space-y-1">
+                                                {snapshotData.abbreviations.map((abbr, i) => (
+                                                    <div key={i} className="flex items-center px-4 py-3 hover:bg-slate-100 dark:bg-[#252535] rounded-xl transition-colors">
+                                                        <span className="text-[#ea580c] font-black text-sm flex-1">{abbr.short}</span>
+                                                        <span className="text-sm text-slate-600 dark:text-slate-300 flex-[2] truncate" title={abbr.full}>{abbr.full}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="p-6 text-center text-sm text-slate-500">No abbreviations found.</div>
+                                        )}
+                                    </div>
+                                    {snapshotData.abbreviations && snapshotData.abbreviations.length > 6 && (
+                                        <button className="p-4 border-t border-slate-200 dark:border-[#2d2d3f] text-sm font-bold text-[#5b5bfa] hover:text-[#7b7bff] transition-colors w-full">
+                                            View all {snapshotData.abbreviations.length} terms
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* Key Points Column */}
+                                <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm flex flex-col">
+                                    <div className="p-6 border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between">
+                                        <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                            <span className="material-symbols-outlined text-yellow-500">lightbulb</span>
+                                            Key Points Spotlight
+                                        </h3>
+                                        <button className="text-slate-500 hover:text-white"><span className="material-symbols-outlined">filter_list</span></button>
+                                    </div>
+                                    <div className="p-6 space-y-4 overflow-y-auto max-h-[500px]">
+                                        {snapshotData.key_points && snapshotData.key_points.length > 0 ? (
+                                            snapshotData.key_points.map((kp, i) => {
+                                                const typeObj = i % 3 === 0
+                                                    ? { label: 'DEFINITION', color: 'border-purple-500/50', icon: 'visibility', textColor: 'text-purple-400' }
+                                                    : i % 3 === 1
+                                                        ? { label: 'FORMULA', color: 'border-green-500/50', icon: 'functions', textColor: 'text-green-400' }
+                                                        : { label: 'TIMELINE', color: 'border-orange-500/50', icon: 'event', textColor: 'text-orange-400' };
+
+                                                return (
+                                                    <div key={i} className={`p-5 rounded-xl bg-[#f5f5f8] dark:bg-[#13131a] border-l-2 ${typeObj.color} border-y border-r border-slate-200 dark:border-[#2d2d3f] hover:bg-white dark:bg-[#1a1a24] transition-colors group cursor-pointer`}>
+                                                        <div className="flex justify-between items-center mb-3">
+                                                            <span className={`text-[10px] font-black uppercase tracking-wider ${typeObj.textColor}`}>{kp.tag || typeObj.label}</span>
+                                                            <span className="material-symbols-outlined text-slate-600 text-[16px] group-hover:text-white transition-colors">{typeObj.icon}</span>
+                                                        </div>
+                                                        <h4 className="font-bold text-slate-900 dark:text-white mb-2 line-clamp-2">{kp.point}</h4>
+                                                        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">
+                                                            {kp.point}
+                                                        </p>
+                                                    </div>
+                                                )
+                                            })
+                                        ) : (
+                                            <div className="text-center text-sm text-slate-500">No key points extracted.</div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Hot List Column */}
+                                <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm flex flex-col">
+                                    <div className="p-6 border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between">
+                                        <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                            <span className="material-symbols-outlined text-red-500">local_fire_department</span>
+                                            Examiner's Hot List
+                                        </h3>
+                                        <span className="text-[10px] font-bold text-red-400 bg-red-500/10 px-2 py-1 rounded border border-red-500/20 uppercase tracking-wide">High Probability</span>
+                                    </div>
+                                    <div className="p-6 space-y-2 overflow-y-auto max-h-[500px]">
+                                        {snapshotData.hot_list && snapshotData.hot_list.length > 0 ? (
+                                            snapshotData.hot_list.map((hl, i) => {
+                                                const isHard = hl.difficulty.toLowerCase().includes('hard');
+                                                const isEasy = hl.difficulty.toLowerCase().includes('easy');
+                                                const diffColor = isHard ? 'bg-red-500/20 text-red-400 border-red-500/30'
+                                                    : isEasy ? 'bg-green-500/20 text-green-400 border-green-500/30'
+                                                        : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+
+                                                return (
+                                                    <div key={i} className="p-4 rounded-xl hover:bg-slate-100 dark:bg-[#252535] transition-colors cursor-pointer group flex items-start gap-3">
+                                                        <div className="flex-1">
+                                                            <div className="flex items-center gap-2 mb-2">
+                                                                <span className="size-6 rounded-full bg-[#ea580c]/20 text-[#ea580c] font-black text-[10px] flex items-center justify-center shrink-0">{i + 1}</span>
+                                                                <span className={`text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded border ${diffColor}`}>
+                                                                    {hl.difficulty}
+                                                                </span>
+                                                            </div>
+                                                            <h4 className="text-sm font-bold text-white mb-1 leading-snug group-hover:text-[#5b5bfa] transition-colors">{hl.question}</h4>
+                                                        </div>
+                                                        <span className="material-symbols-outlined text-slate-600 group-hover:text-white transition-colors self-center">chevron_right</span>
+                                                    </div>
+                                                )
+                                            })
+                                        ) : (
+                                            <div className="text-center text-sm text-slate-500">No hot list formulated.</div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
-    </div>
-  );
+    );
 }

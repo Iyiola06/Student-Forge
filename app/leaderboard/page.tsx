@@ -53,7 +53,7 @@ export default function LeaderboardPage() {
       </div>
 
       <Sidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-hidden relative z-10">
+      <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden relative z-10">
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
@@ -87,10 +87,10 @@ export default function LeaderboardPage() {
                 <>
                   {/* Top 3 Podium */}
                   {top3.length > 0 && (
-                    <div className="flex justify-center items-end gap-2 md:gap-8 mb-16 pt-16 relative">
+                    <div className="flex flex-col md:flex-row justify-center items-center md:items-end gap-12 md:gap-8 mb-16 pt-16 relative">
                       {/* 2nd Place */}
                       {top3[1] ? (
-                        <div className="flex flex-col items-center group">
+                        <div className="flex flex-col items-center group order-2 md:order-1">
                           <div className="relative mb-6">
                             <div className="size-20 md:size-24 rounded-3xl border-4 border-slate-400/50 overflow-hidden bg-[#101022] rotate-3 group-hover:rotate-0 transition-transform duration-500 shadow-[0_0_30px_rgba(148,163,184,0.2)]">
                               <Image
@@ -108,7 +108,7 @@ export default function LeaderboardPage() {
                             <p className="font-black text-white truncate text-lg tracking-tighter">{getName(top3[1].id, top3[1].full_name)}</p>
                             <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">{top3[1].xp?.toLocaleString()} fuel</p>
                           </div>
-                          <div className="h-24 md:h-32 w-20 md:w-28 bg-gradient-to-b from-slate-400/20 to-transparent border-t-4 border-slate-400 rounded-t-3xl mt-4 opacity-40 group-hover:opacity-100 transition-opacity"></div>
+                          <div className="h-12 md:h-32 w-20 md:w-28 bg-gradient-to-b from-slate-400/20 to-transparent border-t-4 border-slate-400 rounded-t-3xl mt-4 opacity-40 group-hover:opacity-100 transition-opacity"></div>
                         </div>
                       ) : (
                         <div className="w-20 md:w-28"></div>
@@ -116,7 +116,7 @@ export default function LeaderboardPage() {
 
                       {/* 1st Place */}
                       {top3[0] && (
-                        <div className="flex flex-col items-center z-10 group -mt-10">
+                        <div className="flex flex-col items-center z-10 group -mt-10 md:mt-0 order-1 md:order-2">
                           <div className="relative mb-8">
                             {/* Crown/Apex Ring */}
                             <div className="absolute -top-12 left-1/2 -translate-x-1/2 flex flex-col items-center">
@@ -142,13 +142,13 @@ export default function LeaderboardPage() {
                               <p className="text-sm text-[#ea580c] font-black">{top3[0].xp?.toLocaleString()} <span className="text-[10px]">FUEL</span></p>
                             </div>
                           </div>
-                          <div className="h-40 md:h-52 w-28 md:w-36 bg-gradient-to-b from-yellow-500/30 via-yellow-500/5 to-transparent border-t-4 border-yellow-500 rounded-t-[3rem] mt-6 shadow-[0_-20px_40px_rgba(234,179,8,0.1)]"></div>
+                          <div className="h-20 md:h-52 w-28 md:w-36 bg-gradient-to-b from-yellow-500/30 via-yellow-500/5 to-transparent border-t-4 border-yellow-500 rounded-t-[3rem] mt-6 shadow-[0_-20px_40px_rgba(234,179,8,0.1)]"></div>
                         </div>
                       )}
 
                       {/* 3rd Place */}
                       {top3[2] ? (
-                        <div className="flex flex-col items-center group">
+                        <div className="flex flex-col items-center group order-3">
                           <div className="relative mb-6">
                             <div className="size-20 md:size-24 rounded-3xl border-4 border-orange-600/50 overflow-hidden bg-[#101022] -rotate-3 group-hover:rotate-0 transition-transform duration-500 shadow-[0_0_30px_rgba(234,88,12,0.2)]">
                               <Image

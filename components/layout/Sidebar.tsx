@@ -114,8 +114,8 @@ export default function Sidebar() {
                 />
             )}
 
-            <aside className={`fixed md:sticky top-0 left-0 h-screen z-[50] w-64 bg-white dark:bg-[#1b1b27] border-r border-slate-200 dark:border-[#2d2d3f] flex flex-col transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'}`}>
-                <div className="p-6 pt-5 pl-14 md:pl-6 flex items-center gap-3">
+            <aside className={`fixed md:sticky top-0 left-0 h-screen z-[100] w-64 bg-white dark:bg-[#1b1b27] border-r border-slate-200 dark:border-[#2d2d3f] flex flex-col transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'}`}>
+                <div className="p-6 pt-5 flex items-center gap-3">
                     <Link href="/dashboard" className="flex items-center gap-2">
                         <div className="size-8 text-[#ea580c] flex items-center justify-center">
                             <span className="material-symbols-outlined text-3xl">school</span>

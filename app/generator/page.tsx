@@ -574,7 +574,7 @@ export default function GeneratorPage() {
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
 
         {isQuizActive ? (
           renderQuiz()

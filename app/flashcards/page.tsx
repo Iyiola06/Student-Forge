@@ -189,13 +189,9 @@ export default function FlashcardsPage() {
     };
 
     return (
-        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
             <Sidebar />
-            <div className="flex-1 flex flex-col h-screen overflow-hidden">
-
-            </div>
-
-            <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
+            <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
                 <div className="px-6 pt-6 pb-2 md:px-8">
                     <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <span className="material-symbols-outlined text-[#ea580c]">style</span>
@@ -306,13 +302,13 @@ export default function FlashcardsPage() {
 
                                     {/* 3D Flip Card */}
                                     <div
-                                        className="w-full max-w-2xl h-[400px] perspective-1000 group cursor-pointer"
+                                        className="w-full max-w-2xl h-[340px] md:h-[400px] perspective-1000 group cursor-pointer"
                                         onClick={() => setIsFlipped(!isFlipped)}
                                     >
                                         <div className={`relative w-full h-full transition-transform duration-700 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
                                             {/* Front */}
-                                            <div className="absolute w-full h-full backface-hidden bg-white dark:bg-[#1b1b27] border-2 border-slate-200 dark:border-[#2d2d3f] rounded-2xl shadow-xl p-10 flex flex-col items-center justify-center text-center hover:border-[#ea580c] transition-colors">
-                                                <p className="text-2xl font-bold text-slate-900 dark:text-white">
+                                            <div className="absolute w-full h-full backface-hidden bg-white dark:bg-[#1b1b27] border-2 border-slate-200 dark:border-[#2d2d3f] rounded-2xl shadow-xl p-6 md:p-10 flex flex-col items-center justify-center text-center hover:border-[#ea580c] transition-colors">
+                                                <p className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">
                                                     {flashcards[currentIndex].front}
                                                 </p>
                                                 <div className="absolute bottom-6 flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
@@ -322,8 +318,8 @@ export default function FlashcardsPage() {
                                             </div>
 
                                             {/* Back */}
-                                            <div className="absolute w-full h-full backface-hidden bg-slate-900 border-2 border-[#ea580c] rounded-2xl shadow-xl p-10 flex flex-col items-center justify-center text-center rotate-y-180">
-                                                <p className="text-xl text-slate-900 dark:text-white leading-relaxed">
+                                            <div className="absolute w-full h-full backface-hidden bg-slate-900 border-2 border-[#ea580c] rounded-2xl shadow-xl p-6 md:p-10 flex flex-col items-center justify-center text-center rotate-y-180">
+                                                <p className="text-lg md:text-xl text-white leading-relaxed font-medium">
                                                     {flashcards[currentIndex].back}
                                                 </p>
                                             </div>
@@ -412,6 +408,6 @@ export default function FlashcardsPage() {
 
                 </main>
             </div>
-        </div>
+        </div >
     );
 }

@@ -134,7 +134,7 @@ function GamifierOrchestrator() {
   }
 
   return (
-    <div className="w-full h-screen bg-[#050510] overflow-hidden text-white font-display">
+    <div className="w-full min-h-screen md:h-screen bg-[#050510] md:overflow-hidden text-white font-display">
 
       {/* 1. Galaxy Map */}
       {viewState === 'galaxy' && (
