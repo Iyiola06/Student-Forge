@@ -1,4 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
+// @ts-ignore
+declare module 'pdfjs-dist/legacy/build/pdf.worker.mjs';
+
 import { createClient } from '@/lib/supabase/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
@@ -66,8 +70,15 @@ export async function POST(request: Request) {
         if (fileType === 'application/pdf') {
             try {
                 // Use a more robust way to load pdfjs in Node.js
-                // We'll use the legacy build and disable the worker for simplicity in serverless environments
                 const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+
+                // Explicitly set the worker source to avoid resolution errors on Vercel
+                try {
+                    const pdfWorker = await import('pdfjs-dist/legacy/build/pdf.worker.mjs');
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+                } catch (workerErr) {
+                    console.warn('Could not load separate PDF worker, falling back to bundled worker logic:', workerErr);
+                }
 
                 const arrayBuffer = await fileData.arrayBuffer();
                 const uint8Array = new Uint8Array(arrayBuffer);
@@ -76,7 +87,8 @@ export async function POST(request: Request) {
                     data: uint8Array,
                     useWorkerFetch: false,
                     isEvalSupported: false,
-                    useSystemFonts: true
+                    useSystemFonts: true,
+                    disableFontFace: true // Often needed in serverless Node environments
                 });
 
                 const pdfDocument = await loadingTask.promise;
