@@ -2,6 +2,18 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
+// Polyfill DOMMatrix for pdfjs-dist v5 in Node.js environment
+if (typeof global !== 'undefined' && !global.DOMMatrix) {
+    (global as any).DOMMatrix = class DOMMatrix {
+        a = 1; b = 0; c = 0; d = 1; e = 0; f = 0;
+        constructor(init?: string | number[]) {
+            if (Array.isArray(init) && init.length === 6) {
+                [this.a, this.b, this.c, this.d, this.e, this.f] = init;
+            }
+        }
+    };
+}
+
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey || '');
 

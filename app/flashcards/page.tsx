@@ -301,7 +301,7 @@ export default function FlashcardsPage() {
                                 // Interactive Drill Mode
                                 <div className="flex-1 flex flex-col items-center justify-start py-4 w-full h-full max-w-4xl mx-auto relative">
                                     {/* Dynamic Aura Background */}
-                                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full aura-glow pointer-events-none z-0 ${isFlipped ? 'bg-orange-500' : 'bg-blue-500'}`}></div>
+                                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full aura-glow pointer-events-none z-0 ${isFlipped ? 'aura-highlight' : 'aura-base'}`}></div>
 
                                     <div className="w-full flex justify-between items-center mb-10 bg-white/80 dark:bg-[#1a1a24]/80 backdrop-blur-xl p-5 rounded-3xl border border-slate-200 dark:border-[#2d2d3f] shadow-2xl relative z-10">
                                         <div className="flex items-center gap-6">
@@ -351,18 +351,18 @@ export default function FlashcardsPage() {
                                             </div>
 
                                             {/* Back */}
-                                            <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-[#0a0a0f] border-2 border-[#ea580c] rounded-[2.5rem] shadow-[0_0_80px_rgba(234,88,12,0.2)] p-8 md:p-14 flex flex-col items-center justify-center text-center [transform:rotateY(180deg)] holographic-sheen">
+                                            <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-white dark:bg-[#11111a] border-2 border-[#ea580c] rounded-[2.5rem] shadow-[0_0_80px_rgba(234,88,12,0.15)] p-8 md:p-14 flex flex-col items-center justify-center text-center [transform:rotateY(180deg)] holographic-sheen">
                                                 <div className="absolute top-10 left-1/2 -translate-x-1/2 bg-green-500/10 text-green-400 px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-green-500/20 flex items-center gap-2">
                                                     <span className="size-1.5 rounded-full bg-green-500 animate-pulse"></span>
                                                     Neural Resolution
                                                 </div>
                                                 <div className="w-full max-h-full overflow-y-auto custom-scrollbar px-4">
-                                                    <p className="text-xl md:text-2xl text-white/90 leading-relaxed font-bold tracking-tight text-balance">
+                                                    <p className="text-xl md:text-2xl text-slate-900 dark:text-white/90 leading-relaxed font-bold tracking-tight text-balance">
                                                         {flashcards[currentIndex].back}
                                                     </p>
                                                 </div>
                                                 <div className="absolute bottom-10 opacity-20 group-hover:opacity-100 transition-opacity">
-                                                    <span className="material-symbols-outlined text-white text-4xl">verified</span>
+                                                    <span className="material-symbols-outlined text-slate-900 dark:text-white text-4xl">verified</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -490,6 +490,44 @@ export default function FlashcardsPage() {
                     </div>
                 </main>
             </div>
+
+            <style jsx global>{`
+                .aura-glow {
+                    filter: blur(120px);
+                    opacity: 0.15;
+                    transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+                .dark .aura-glow {
+                    opacity: 0.1;
+                }
+                .aura-base {
+                    background: radial-gradient(circle, #3b82f6, transparent 70%);
+                }
+                .aura-highlight {
+                    background: radial-gradient(circle, #ea580c, transparent 70%);
+                    opacity: 0.25;
+                }
+                .dark .aura-highlight {
+                    opacity: 0.15;
+                }
+                .holographic-sheen {
+                    position: relative;
+                    overflow: hidden;
+                }
+                .holographic-sheen::after {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    background: linear-gradient(
+                        125deg,
+                        transparent 0%,
+                        rgba(234, 88, 12, 0.03) 40%,
+                        rgba(234, 88, 12, 0.05) 50%,
+                        transparent 60%
+                    );
+                    pointer-events: none;
+                }
+            `}</style>
         </div>
     );
 }
