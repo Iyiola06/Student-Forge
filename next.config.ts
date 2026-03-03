@@ -42,6 +42,8 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
   },
   output: 'standalone',
   transpilePackages: ['motion'],

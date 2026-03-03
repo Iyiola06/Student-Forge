@@ -38,6 +38,7 @@ export default function ProfilePage() {
                       className="object-cover"
                       src={profile?.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback'}
                       fill
+                      unoptimized={profile?.avatar_url?.includes('dicebear.com') || !profile?.avatar_url}
                     />
                   </div>
                   <div className="mb-2">

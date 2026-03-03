@@ -97,6 +97,7 @@ export default function LeaderboardPage() {
                                 alt="Rank 2"
                                 fill
                                 className="object-cover scale-110"
+                                unoptimized
                               />
                             </div>
                             <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-slate-400 text-[#050510] text-[10px] font-black px-4 py-1 rounded-full shadow-xl">
@@ -128,6 +129,7 @@ export default function LeaderboardPage() {
                                 alt="Rank 1"
                                 fill
                                 className="object-cover"
+                                unoptimized
                               />
                             </div>
                             <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-yellow-500 text-yellow-950 text-xs font-black px-6 py-1.5 rounded-full shadow-2xl tracking-[0.2em]">
@@ -155,6 +157,7 @@ export default function LeaderboardPage() {
                                 alt="Rank 3"
                                 fill
                                 className="object-cover scale-110"
+                                unoptimized
                               />
                             </div>
                             <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-orange-600 text-white text-[10px] font-black px-4 py-1 rounded-full shadow-xl">
@@ -218,6 +221,7 @@ export default function LeaderboardPage() {
                                 alt="User avatar"
                                 fill
                                 className="object-cover group-hover:scale-110 transition-transform"
+                                unoptimized
                               />
                             </div>
 

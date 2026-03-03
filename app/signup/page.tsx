@@ -199,7 +199,7 @@ export default function SignupPage() {
                     className="object-cover"
                     src={url}
                     fill
-                    unoptimized={url.startsWith('data:')}
+                    unoptimized={url.startsWith('data:') || url.includes('dicebear.com')}
                   />
                   {avatarUrl === url && (
                     <div className="absolute inset-0 bg-[#ea580c]/40 flex items-center justify-center">
@@ -223,7 +223,7 @@ export default function SignupPage() {
                     className="object-cover"
                     src={avatarUrl}
                     fill
-                    unoptimized={avatarUrl.startsWith('data:')}
+                    unoptimized={avatarUrl.startsWith('data:') || avatarUrl.includes('dicebear.com')}
                   />
                   <div className="absolute inset-0 bg-[#ea580c]/40 flex items-center justify-center">
                     <span className="material-symbols-outlined text-white font-bold">

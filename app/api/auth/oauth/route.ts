@@ -6,10 +6,11 @@ export async function POST(request: Request) {
         const { provider } = await request.json();
         const supabase = await createClient();
 
+        const { origin } = new URL(request.url);
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider,
             options: {
-                redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+                redirectTo: `${origin}/auth/callback`,
             },
         });
 
