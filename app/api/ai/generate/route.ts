@@ -61,7 +61,7 @@ export async function POST(request: Request) {
         // Initialize the model with JSON enforcement
         // We use gemini-2.5-flash as the new standard to prevent 404 errors from deprecated 1.5 endpoints.
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             generationConfig: {
                 responseMimeType: "application/json",
             }

@@ -59,7 +59,7 @@ export default function LandingPage() {
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.1]">
             Master Your Exams with <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ea580c] to-purple-600">
+            <span className="text-[#ea580c]">
               AI-Powered Study Tools
             </span>
           </h1>

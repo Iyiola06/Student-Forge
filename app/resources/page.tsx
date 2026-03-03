@@ -225,7 +225,7 @@ export default function ResourcesPage() {
   return (
     <div className="main-bg flex flex-col md:flex-row antialiased selection:bg-[#ea580c] selection:text-white">
       <Sidebar />
-      <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-screen">
 
         {/* Upload Toast Indicator */}
         {isUploading && (
@@ -436,7 +436,13 @@ export default function ResourcesPage() {
                           {/* Action Buttons - Redesigned to never overlap */}
                           <div className="grid grid-cols-1 gap-2 mt-auto">
                             <div className="flex gap-2">
-                              {resource.file_type.includes('pdf') || resource.file_type.includes('image') || resource.file_type.includes('text') ? (
+                              {resource.file_type.includes('pdf') ||
+                                resource.file_type.includes('image') ||
+                                resource.file_type.includes('text') ||
+                                resource.file_type.includes('wordprocessingml') ||
+                                resource.file_type.includes('presentationml') ||
+                                resource.title.endsWith('.docx') ||
+                                resource.title.endsWith('.pptx') ? (
                                 <button onClick={() => setSelectedResource(resource)} className="flex-1 min-w-0 bg-[#f5f5f8] dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-700 dark:text-slate-200 font-black py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow-sm">
                                   <span className="material-symbols-outlined text-[18px]">visibility</span>
                                   <span className="truncate">View File</span>
@@ -651,6 +657,47 @@ export default function ResourcesPage() {
                   alt={selectedResource.title}
                   className="max-w-full max-h-full object-contain shadow-2xl rounded-lg"
                 />
+              </div>
+            ) : selectedResource.file_type.includes('wordprocessingml') || selectedResource.title.endsWith('.docx') || selectedResource.file_type.includes('presentationml') || selectedResource.title.endsWith('.pptx') ? (
+              <div className="w-full max-w-4xl bg-white dark:bg-[#1a1a24] p-8 md:p-12 rounded-2xl shadow-2xl overflow-y-auto max-h-full border border-slate-200 dark:border-[#2d2d3f]">
+                <div className="flex items-center gap-3 mb-8 pb-6 border-b border-slate-100 dark:border-[#2d2d3f]">
+                  <div className={`p-3 rounded-xl ${getIconForType(selectedResource.file_type).colorClass}`}>
+                    <span className="material-symbols-outlined text-3xl">{getIconForType(selectedResource.file_type).icon}</span>
+                  </div>
+                  <div>
+                    <h3 className="font-black text-2xl text-slate-900 dark:text-white leading-tight">{selectedResource.title}</h3>
+                    <p className="text-sm text-slate-500 font-bold uppercase tracking-widest mt-1">
+                      {selectedResource.title.endsWith('.docx') ? 'Word Document' : 'PowerPoint Presentation'} • {formatSize(selectedResource.file_size_bytes)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="prose prose-slate dark:prose-invert max-w-none">
+                  {selectedResource.content ? (
+                    <div className="space-y-6">
+                      {selectedResource.content.split('\n').filter(line => line.trim()).map((line, i) => (
+                        <p key={i} className="text-slate-700 dark:text-slate-300 leading-relaxed text-lg">
+                          {line}
+                        </p>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <span className="material-symbols-outlined text-6xl text-slate-300 dark:text-slate-700 mb-4">find_in_page</span>
+                      <p className="text-slate-500 font-bold">No text content could be extracted from this file.</p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-12 pt-8 border-t border-slate-100 dark:border-[#2d2d3f] flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="text-sm text-slate-400 font-medium">
+                    Content extracted via AI analysis for study generation.
+                  </div>
+                  <a href={selectedResource.file_url} target="_blank" rel="noreferrer" className="bg-[#ea580c] hover:bg-[#d04e0a] text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-[#ea580c]/20">
+                    <span className="material-symbols-outlined">download</span>
+                    Download Original File
+                  </a>
+                </div>
               </div>
             ) : (
               <div className="w-full max-w-2xl bg-white dark:bg-[#1a1a24] p-8 rounded-xl shadow-2xl overflow-y-auto max-h-full">

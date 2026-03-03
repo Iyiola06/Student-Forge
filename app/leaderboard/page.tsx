@@ -53,13 +53,12 @@ export default function LeaderboardPage() {
       </div>
 
       <Sidebar />
-      <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden relative z-10">
-
+      <div className="flex-1 flex flex-col min-h-screen relative z-10">
         {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
+        <div className="flex-1 flex flex-col w-full max-w-[1440px] mx-auto">
           <div className="px-6 pt-10 pb-4 md:px-12 flex items-center justify-between">
             <div>
-              <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-[#38bdf8] to-[#7c3aed] tracking-tighter">
+              <h1 className="text-5xl font-black text-white tracking-tighter">
                 GALACTIC RANKS
               </h1>
               <p className="text-[10px] font-black text-[#ea580c] uppercase tracking-[0.5em] mt-1">Season 1: The Nebula Dawn</p>

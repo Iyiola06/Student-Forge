@@ -119,7 +119,7 @@ export default function DashboardPage() {
   return (
     <div className="main-bg flex flex-col md:flex-row antialiased selection:bg-[#ea580c] selection:text-white">
       <Sidebar />
-      <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-screen">
         {/* Main Content */}
         <main className="flex flex-1 flex-col gap-8 px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full md:overflow-y-auto">
           {/* Welcome Section */}

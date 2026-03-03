@@ -552,13 +552,13 @@ export default function SignupPage() {
                 </svg>
                 Google
               </button>
+              {/* 
               <button
                 className="flex items-center justify-center gap-2 h-11 rounded-lg border border-slate-200 dark:border-[#3b3b54] bg-white dark:bg-[#252535] hover:bg-slate-50 dark:hover:bg-[#2d2d3f] transition-colors text-slate-700 dark:text-white font-medium text-sm disabled:opacity-50"
                 type="button"
                 onClick={() => handleOAuth('apple')}
                 disabled={isLoading}
               >
-                {/* Apple Icon SVG */}
                 <svg
                   aria-hidden="true"
                   className="h-5 w-5 dark:fill-white fill-slate-900"
@@ -568,6 +568,7 @@ export default function SignupPage() {
                 </svg>
                 Apple
               </button>
+*/}
             </div>
             {/* Login Link */}
             <div className="text-center pt-2">
