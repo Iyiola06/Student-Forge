@@ -4,6 +4,7 @@ import Sidebar from '@/components/layout/Sidebar';
 import { useProfile } from '@/hooks/useProfile';
 import { createClient } from '@/lib/supabase/client';
 import { useState, useEffect } from 'react';
+import { pushService } from '@/lib/pushService';
 
 export default function SettingsPage() {
   const { profile, isLoading } = useProfile();
@@ -28,6 +29,16 @@ export default function SettingsPage() {
     if (notifs !== null) {
       setEmailNotifications(notifs === 'true');
     }
+
+    // Check push notification status
+    const checkPushStatus = async () => {
+      const subscription = await pushService.getSubscription();
+      setPushNotifications(!!subscription);
+    };
+    checkPushStatus();
+
+    // Register service worker
+    pushService.registerServiceWorker();
   }, []);
 
   useEffect(() => {
@@ -58,6 +69,32 @@ export default function SettingsPage() {
     const newVal = !emailNotifications;
     setEmailNotifications(newVal);
     localStorage.setItem('emailNotifications', String(newVal));
+  };
+
+  const handlePushToggle = async () => {
+    const newVal = !pushNotifications;
+    setIsSaving(true);
+    try {
+      if (newVal) {
+        // Request permission and subscribe
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          alert('Permission for notifications was denied.');
+          return;
+        }
+        await pushService.subscribeUser();
+        setPushNotifications(true);
+      } else {
+        // Unsubscribe
+        await pushService.unsubscribeUser();
+        setPushNotifications(false);
+      }
+    } catch (err: any) {
+      console.error('Push toggle error:', err);
+      alert(`Failed to update push notifications: ${err.message}`);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handlePasswordReset = async () => {
@@ -310,7 +347,8 @@ export default function SettingsPage() {
                     <input
                       className="sr-only peer"
                       checked={pushNotifications}
-                      onChange={() => setPushNotifications(!pushNotifications)}
+                      onChange={handlePushToggle}
+                      disabled={isSaving}
                       type="checkbox"
                     />
                     <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#ea580c]"></div>
