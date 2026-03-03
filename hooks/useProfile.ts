@@ -16,6 +16,7 @@ export interface Profile {
     resources_uploaded?: number;
     quizzes_taken?: number;
     badges?: string[];
+    exam_date?: string | null;
     last_active_date?: string;
     boss_wins?: number;
     missions?: any;

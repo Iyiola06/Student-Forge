@@ -4,6 +4,22 @@
 
 @theme {
   --font-display: var(--font-lexend), sans-serif;
+
+  /* Primary Theme Colors */
+  --color-brand-primary: #ea580c;
+  --color-brand-primary-hover: #c2410c;
+
+  /* Backgrounds */
+  --color-bg-light: #f8fafc;
+  --color-bg-dark: #0b0b10;
+
+  /* Card Backgrounds */
+  --color-card-light: #ffffff;
+  --color-card-dark: #161621;
+
+  /* Borders */
+  --color-border-light: #e2e8f0;
+  --color-border-dark: #2d2d3f;
 }
 
 @layer utilities {
@@ -26,5 +42,76 @@
 
   .rotate-y-180 {
     transform: rotateY(180deg);
+  }
+
+  /* Ultra-Premium effects */
+  .holographic-sheen {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .holographic-sheen::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg,
+        transparent 45%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 55%);
+    transform: rotate(-45deg);
+    animation: sheen 10s infinite;
+    pointer-events: none;
+  }
+
+  @keyframes sheen {
+    0% {
+      transform: translateX(-100%) rotate(-45deg);
+    }
+
+    20%,
+    100% {
+      transform: translateX(100%) rotate(-45deg);
+    }
+  }
+
+  .aura-glow {
+    filter: blur(80px);
+    opacity: 0.15;
+    transition: all 1s ease;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .premium-card {
+    @apply bg-white dark:bg-[#161621] border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:shadow-md transition-all duration-300 rounded-2xl overflow-hidden;
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .dark .glass-card {
+    background: rgba(22, 22, 33, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .premium-gradient {
+    background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  }
+
+  .smooth-transition {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .main-bg {
+    @apply bg-slate-50 dark:bg-[#0b0b10] min-h-screen;
   }
 }

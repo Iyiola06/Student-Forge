@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useProfile } from '@/hooks/useProfile';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 
 export default function TopNavigation({ children }: { children?: React.ReactNode }) {
     const pathname = usePathname();
@@ -58,6 +59,8 @@ export default function TopNavigation({ children }: { children?: React.ReactNode
 
                 <div className="flex items-center gap-4">
                     {children}
+
+                    <ThemeToggle />
 
                     <button className="bg-slate-100 dark:bg-[#252535] text-slate-900 dark:text-white p-2 rounded-full hover:bg-slate-200 dark:hover:bg-[#2d2d3f] transition-colors relative">
                         <span className="material-symbols-outlined text-[20px]">

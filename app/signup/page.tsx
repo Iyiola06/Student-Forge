@@ -38,9 +38,14 @@ export default function SignupPage() {
   };
 
   const AVATAR_OPTIONS = [
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuD_PrX8yOs64jgoF50R2Gdmak7Nq9XNBH6jrZGbcMeFZWiTc-RXHJIYwVod5RyMqvpXdyuCh67XqP8diyIZGjPdooGKAN9iNGBZXPBKwdB23Gl_zIV9531fy77kczue-ybewLFkxSWQMdUumyw1dvjOVV4QSWKgD582BzAkdewcGU2Q77mpv1aJco2awv_M5hlPCjjIrGKErnFpvl_jDnr7id6w0GMQFhPBYcB72xFQDQseoc8xqlWGGLMxg092WPdyPddhX5U-OjiN",
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuAWvxINhIexGAXnu4Ns3IbZUa5PjHvWsqArX5UebB00Ol5YRKll-fY4BkF2pvnGEB1I2oLRNoBithKJW5OHyk1xohOboakbW9GJpjpIHexaX47-6XevhottW4dsBJ_aFdnuRTzc5NLDFVoz1z94y-cxqO01pOmH23-XiZilm909rwK7YkMTzs-gLnbt5Ae1d80czYU_Lk8ugVpxPla58kr-R_ZSWfJey4o0jibCic808ySvMqsLIevJ4c1fSftRc7MbbG-UPIEQVYGX",
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuBfIeoBwn-qR9GrUqgj7kfBfDlDG3B89kXt9gJZyKjZhta-idR5go9J1qtbGg-9mkC7ZA_nCA06lY5DJIO6heBpQPi7TpP9HnW70HFPCiAqH2DQQawl4TheD8KWXvyjQ36kBgFfHrbKfyAiiKeguZB0aQbkr8MfoqCB2V_l7xl9a7VkSsmdZa8aPEhnwOZytVvZv6lwFw4Ss1BTW2KGd5ALN_C_iBGfpuPt6x2BBiafYx18kdUbUqWtkyZuH42gY69uhXM8wD1MSxo9"
+    'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4',
+    'https://api.dicebear.com/7.x/avataaars/svg?seed=Jack&backgroundColor=c06e8e',
+    'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka&backgroundColor=ffd5dc',
+    'https://api.dicebear.com/7.x/avataaars/svg?seed=Oliver&backgroundColor=ffdfbf',
+    'https://api.dicebear.com/7.x/avataaars/svg?seed=Luna&backgroundColor=d1d4f9',
+    'https://api.dicebear.com/7.x/avataaars/svg?seed=Leo&backgroundColor=c0aede',
+    'https://api.dicebear.com/7.x/avataaars/svg?seed=Milo&backgroundColor=b6f4e3',
+    'https://api.dicebear.com/7.x/avataaars/svg?seed=Zoe&backgroundColor=f4e3b6',
   ];
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -417,7 +422,7 @@ export default function SignupPage() {
                 {/* Strength Meter */}
                 <div className="flex gap-1 pt-1 h-1.5 w-full">
                   <div className={`h-full w-1/4 rounded-full ${password.length === 0 ? 'bg-slate-200 dark:bg-slate-700' : pwStrength >= 1 ? (pwStrength >= 3 ? 'bg-green-500' : pwStrength === 2 ? 'bg-yellow-500' : 'bg-red-500') : 'bg-red-500'}`}></div>
-                  <div className={`h-full w-1/4 rounded-full ${password.length === 0 ? 'bg-slate-200 dark:bg-slate-700' : pwStrength >= 2 ? (pwStrength >= 3 ? 'bg-green-500' : 'bg-yellow-500') : 'bg-slate-200 dark:bg-slate-700'}`}></div>
+                  <div className={`h-full w-1/4 rounded-full ${password.length === 0 ? 'bg-slate-200 dark:bg-slate-700' : pwStrength >= 2 ? (pwStrength >= 3 ? 'bg-green-500' : pwStrength === 2 ? 'bg-yellow-500' : 'bg-slate-200 dark:bg-slate-700') : 'bg-slate-200 dark:bg-slate-700'}`}></div>
                   <div className={`h-full w-1/4 rounded-full ${password.length === 0 ? 'bg-slate-200 dark:bg-slate-700' : pwStrength >= 3 ? 'bg-green-500' : 'bg-slate-200 dark:bg-slate-700'}`}></div>
                   <div className={`h-full w-1/4 rounded-full ${password.length === 0 ? 'bg-slate-200 dark:bg-slate-700' : pwStrength >= 4 ? 'bg-green-500' : 'bg-slate-200 dark:bg-slate-700'}`}></div>
                 </div>

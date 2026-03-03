@@ -7,24 +7,24 @@ const genAI = new GoogleGenerativeAI(apiKey || '');
 const MAX_CHARS = 30000;
 
 export async function POST(request: Request) {
-    try {
-        if (!apiKey) {
-            return NextResponse.json({ error: 'AI Service key is missing' }, { status: 500 });
-        }
+  try {
+    if (!apiKey) {
+      return NextResponse.json({ error: 'AI Service key is missing' }, { status: 500 });
+    }
 
-        const supabase = await createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-        const { sourceText, mode, count } = await request.json();
-        if (!sourceText) return NextResponse.json({ error: 'Source text is required' }, { status: 400 });
+    const { sourceText, mode, count } = await request.json();
+    if (!sourceText) return NextResponse.json({ error: 'Source text is required' }, { status: 400 });
 
-        const model = genAI.getGenerativeModel({
-            model: "gemini-2.5-flash",
-            generationConfig: { responseMimeType: "application/json" }
-        });
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      generationConfig: { responseMimeType: "application/json" }
+    });
 
-        const prompt = `
+    const prompt = `
         You are an expert academic tutor. Generate a high-quality study quiz based on the provided text.
         
         Quiz Mode: ${mode || 'mcq'}
@@ -47,11 +47,11 @@ export async function POST(request: Request) {
         ${sourceText.substring(0, MAX_CHARS)}
         `;
 
-        const result = await model.generateContent(prompt);
-        return NextResponse.json(JSON.parse(result.response.text()));
+    const result = await model.generateContent(prompt);
+    return NextResponse.json(JSON.parse(result.response.text()));
 
-    } catch (error: any) {
-        console.error('Quiz Route Error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
-    }
+  } catch (error: any) {
+    console.error('Quiz Route Error:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }

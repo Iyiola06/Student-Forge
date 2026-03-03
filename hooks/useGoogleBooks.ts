@@ -9,6 +9,7 @@ export interface GoogleBook {
     pdfAvailable: boolean;
     pdfLink?: string;
     previewLink?: string;
+    webReaderLink?: string;
     publicDomain: boolean;
 }
 
@@ -65,8 +66,9 @@ export function useGoogleBooks() {
                     // Use HTTPS to prevent mixed content warnings
                     thumbnail: volumeInfo.imageLinks?.thumbnail?.replace('http:', 'https:') || undefined,
                     pdfAvailable: !!accessInfo.pdf?.isAvailable,
-                    pdfLink: accessInfo.pdf?.acsTokenLink || accessInfo.pdf?.downloadLink || undefined,
+                    pdfLink: accessInfo.pdf?.downloadLink || undefined,
                     previewLink: volumeInfo.previewLink || undefined,
+                    webReaderLink: accessInfo.webReaderLink || undefined,
                     publicDomain: !!accessInfo.publicDomain,
                 };
             });

@@ -6,6 +6,7 @@ import Sidebar from '@/components/layout/Sidebar';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useGoogleBooks } from '@/hooks/useGoogleBooks';
+import { compressImage } from '@/lib/image-utils';
 
 interface Resource {
   id: string;
@@ -69,20 +70,39 @@ export default function ResourcesPage() {
     if (!file) return;
 
     setIsUploading(true);
-    setUploadProgress(`Uploading ${file.name} to secure storage...`);
+    let finalFile = file;
+
+    // Compress images if they are large
+    if (file.type.startsWith('image/')) {
+      setUploadProgress(`Optimizing image...`);
+      try {
+        finalFile = await compressImage(file);
+      } catch (err) {
+        console.error('Compression failed:', err);
+      }
+    }
+
+    // Check size limit (20MB)
+    if (finalFile.size > 20 * 1024 * 1024) {
+      alert(`File size (${(finalFile.size / (1024 * 1024)).toFixed(1)}MB) exceeds the 20MB limit even after optimization.`);
+      setIsUploading(false);
+      return;
+    }
+
+    setUploadProgress(`Uploading ${finalFile.name} to secure storage...`);
 
     try {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      const fileExt = file.name.split('.').pop();
+      const fileExt = finalFile.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
       const filePath = `${user.id}/${fileName}`;
 
       const { data: storageData, error: storageError } = await supabase.storage
         .from('resources')
-        .upload(filePath, file);
+        .upload(filePath, finalFile);
 
       if (storageError) {
         throw new Error(storageError.message || 'Failed to upload to storage');
@@ -96,9 +116,9 @@ export default function ResourcesPage() {
         },
         body: JSON.stringify({
           filePath,
-          fileName: file.name,
-          fileType: file.type,
-          fileSize: file.size,
+          fileName: finalFile.name,
+          fileType: finalFile.type,
+          fileSize: finalFile.size,
         }),
       });
 
@@ -203,7 +223,7 @@ export default function ResourcesPage() {
   };
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#13131a] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+    <div className="main-bg font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c] selection:text-white">
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
 
@@ -518,14 +538,23 @@ export default function ResourcesPage() {
                             {book.description || 'No description available for this volume.'}
                           </p>
                           <div className="mt-auto">
-                            {book.pdfLink || book.previewLink ? (
+                            {book.pdfLink ? (
                               <a
-                                href={book.pdfLink || book.previewLink}
+                                href={book.pdfLink}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="block w-full text-center bg-[#ea580c] text-white py-3 rounded-xl text-xs font-black transition-colors shadow-lg shadow-[#ea580c]/20"
+                              >
+                                Download PDF
+                              </a>
+                            ) : book.webReaderLink || book.previewLink ? (
+                              <a
+                                href={book.webReaderLink || book.previewLink}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="block w-full text-center bg-slate-100 dark:bg-[#252535] group-hover:bg-[#ea580c] text-slate-600 dark:text-slate-300 group-hover:text-white py-3 rounded-xl text-xs font-bold transition-colors truncate px-2"
                               >
-                                {book.pdfLink ? 'Download PDF' : 'Read Preview'}
+                                Read Online
                               </a>
                             ) : (
                               <button disabled className="w-full bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-slate-600 py-3 rounded-xl text-xs font-bold cursor-not-allowed">

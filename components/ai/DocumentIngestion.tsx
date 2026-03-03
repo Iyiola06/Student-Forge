@@ -57,8 +57,6 @@ const DocumentIngestion: React.FC<DocumentIngestionProps> = ({ onProcessed }) =>
             let fullText = '';
             if (file.type === 'application/pdf') {
                 const arrayBuffer = await file.arrayBuffer();
-                // Assuming pdfjs is available globally or imported
-                // In a real Next.js app, we'd use a dynamic import or the library we already have in package.json
                 const pdfjsLib = await import('pdfjs-dist');
                 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
@@ -70,6 +68,31 @@ const DocumentIngestion: React.FC<DocumentIngestionProps> = ({ onProcessed }) =>
                     const pageText = content.items.map((item: any) => item.str).join(' ');
                     fullText += pageText + '\n';
                 }
+            } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || file.name.endsWith('.docx')) {
+                const mammoth = await import('mammoth');
+                const arrayBuffer = await file.arrayBuffer();
+                const result = await mammoth.extractRawText({ arrayBuffer });
+                fullText = result.value.trim();
+            } else if (file.type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation' || file.name.endsWith('.pptx')) {
+                const JSZip = (await import('jszip')).default;
+                const arrayBuffer = await file.arrayBuffer();
+                const zip = await JSZip.loadAsync(arrayBuffer);
+                const slideFiles = Object.keys(zip.files)
+                    .filter(name => name.startsWith('ppt/slides/slide') && name.endsWith('.xml'))
+                    .sort();
+
+                let pptxText = '';
+                for (const slidePath of slideFiles) {
+                    const xmlContent = await zip.files[slidePath].async('text');
+                    const textMatches = xmlContent.match(/<a:t>([^<]*)<\/a:t>/g);
+                    if (textMatches) {
+                        const slideText = textMatches
+                            .map((match: string) => match.replace(/<\/?a:t>/g, ''))
+                            .join(' ');
+                        pptxText += slideText + '\n';
+                    }
+                }
+                fullText = pptxText.trim();
             } else {
                 fullText = await file.text();
             }
@@ -152,7 +175,7 @@ const DocumentIngestion: React.FC<DocumentIngestionProps> = ({ onProcessed }) =>
                                 : 'border-slate-200 dark:border-slate-800 hover:border-orange-500 hover:bg-orange-500/5 dark:hover:bg-orange-500/5'
                             }`}
                     >
-                        <input type="file" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && processFile(e.target.files[0])} className="hidden" accept=".pdf,.txt" />
+                        <input type="file" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && processFile(e.target.files[0])} className="hidden" accept=".pdf,.docx,.pptx,.txt" />
 
                         <div className="flex flex-col items-center">
                             <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 shadow-xl ${isDragging ? 'bg-orange-500 text-white scale-110 rotate-12' :
@@ -162,7 +185,7 @@ const DocumentIngestion: React.FC<DocumentIngestionProps> = ({ onProcessed }) =>
                                     {isDragging ? 'download' : fileName ? 'check_circle' : 'upload_file'}
                                 </span>
                             </div>
-                            <p className="font-black text-slate-900 dark:text-white text-xl md:text-2xl mb-2">{fileName ? fileName : 'Upload PDF'}</p>
+                            <p className="font-black text-slate-900 dark:text-white text-xl md:text-2xl mb-2">{fileName ? fileName : 'Upload Material'}</p>
                             <p className="text-sm text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest">{fileName ? 'File Ready' : 'Drop your textbook here'}</p>
                         </div>
                     </div>

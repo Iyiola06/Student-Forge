@@ -47,8 +47,8 @@ export default function MissionComplete({
                     <span className="material-symbols-outlined text-8xl text-[#ea580c] drop-shadow-[0_0_20px_#ea580c]">emoji_events</span>
                 </div>
 
-                <h1 className="text-7xl font-black mb-4 tracking-tighter">PLANET CONQUERED</h1>
-                <p className="text-xl text-[#38bdf8] font-bold uppercase tracking-[0.4em] mb-12">Sector {resource.title} Fully Explored</p>
+                <h1 className="text-4xl md:text-7xl font-black mb-4 tracking-tighter">PLANET CONQUERED</h1>
+                <p className="text-base md:text-xl text-[#38bdf8] font-bold uppercase tracking-[0.4em] mb-8 md:mb-12">Sector {resource.title} Fully Explored</p>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-12">
                     {[
@@ -64,16 +64,16 @@ export default function MissionComplete({
                     ))}
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-4 w-full justify-center">
+                <div className="flex flex-col md:flex-row gap-4 w-full justify-center px-4 md:px-0">
                     <button
                         onClick={onReturn}
-                        className="px-12 py-4 bg-[#ea580c] rounded-2xl font-black text-lg shadow-[0_0_30px_rgba(234,88,12,0.4)] hover:scale-105 transition-all"
+                        className="px-6 md:px-12 py-3 md:py-4 bg-[#ea580c] rounded-2xl font-black text-base md:text-lg shadow-[0_0_30px_rgba(234,88,12,0.4)] hover:scale-105 transition-all"
                     >
                         RETURN TO GALAXY
                     </button>
                     <Link
                         href={`/dashboard`}
-                        className="px-12 py-4 bg-[#101022] border border-[#2d2d3f] rounded-2xl font-black text-lg hover:bg-[#1b1b2f] hover:border-[#38bdf8] transition-all"
+                        className="px-6 md:px-12 py-3 md:py-4 bg-[#101022] border border-[#2d2d3f] rounded-2xl font-black text-base md:text-lg hover:bg-[#1b1b2f] hover:border-[#38bdf8] transition-all"
                     >
                         VIEW MISSION REPORT
                     </Link>

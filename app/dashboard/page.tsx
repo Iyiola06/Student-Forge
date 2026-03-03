@@ -21,14 +21,21 @@ export default function DashboardPage() {
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
-    // In a real app, this would be fetched from user settings/profile
-    // For now, we simulate a countdown to a fixed date or just keep it dynamic
-    const examDate = new Date(currentYear, 5, 15); // June 15th
-    const today = new Date();
-    const diffTime = examDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    setDaysToExam(diffDays > 0 ? diffDays : 14);
-  }, [currentYear]);
+    if (profile?.exam_date) {
+      const examDate = new Date(profile.exam_date);
+      const today = new Date();
+      const diffTime = examDate.getTime() - today.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      setDaysToExam(diffDays > 0 ? diffDays : 0);
+    } else {
+      // Fallback or just dynamic secondary date
+      const examDate = new Date(currentYear, 5, 15); // June 15th
+      const today = new Date();
+      const diffTime = examDate.getTime() - today.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      setDaysToExam(diffDays > 0 ? diffDays : 14);
+    }
+  }, [profile, currentYear]);
 
   // AI Feature States
   const [abbrInput, setAbbrInput] = useState('');
@@ -103,14 +110,14 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex items-center justify-center">
+      <div className="main-bg font-display min-h-screen flex items-center justify-center">
         <div className="size-10 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+    <div className="main-bg font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c] selection:text-white">
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
         {/* Main Content */}
@@ -127,7 +134,7 @@ export default function DashboardPage() {
           {/* Stats Grid */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Exam Readiness Score */}
-            <div className="flex flex-col p-5 bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm relative overflow-hidden group hover:border-[#ea580c]/50 transition-colors">
+            <div className="premium-card flex flex-col p-5 relative group">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-slate-900 dark:text-white text-lg font-bold leading-tight">
                   Exam Readiness
@@ -175,7 +182,7 @@ export default function DashboardPage() {
               </p>
             </div>
             {/* Cards Mastered */}
-            <div className="flex flex-col p-5 bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:border-[#ea580c]/50 transition-colors">
+            <div className="premium-card flex flex-col p-5">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-slate-500 dark:text-[#9c9cba] text-sm font-medium leading-tight">
                   Cards Mastered
@@ -200,7 +207,7 @@ export default function DashboardPage() {
               </div>
             </div>
             {/* Days Streak */}
-            <div className="flex flex-col p-5 bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:border-[#ea580c]/50 transition-colors">
+            <div className="premium-card flex flex-col p-5">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-slate-500 dark:text-[#9c9cba] text-sm font-medium leading-tight">
                   Days Streak
@@ -227,7 +234,7 @@ export default function DashboardPage() {
               </div>
             </div>
             {/* Level & XP */}
-            <div className="flex flex-col p-5 bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:border-[#ea580c]/50 transition-colors cursor-pointer group">
+            <div className="premium-card flex flex-col p-5 cursor-pointer group">
               <Link href="/leaderboard">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-slate-500 dark:text-[#9c9cba] text-sm font-medium leading-tight">

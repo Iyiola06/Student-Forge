@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body suppressHydrationWarning className="font-display antialiased">
+      <body suppressHydrationWarning className="font-display antialiased main-bg">
         {children}
         <ToastContainer
           position="bottom-right"

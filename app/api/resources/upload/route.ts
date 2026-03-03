@@ -103,7 +103,7 @@ export async function POST(request: Request) {
             try {
                 if (!apiKey) throw new Error('Gemini API key is not configured for OCR');
 
-                const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
                 const arrayBuffer = await fileData.arrayBuffer();
                 const base64Data = Buffer.from(arrayBuffer).toString('base64');
 

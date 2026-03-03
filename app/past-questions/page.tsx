@@ -7,6 +7,7 @@ import Sidebar from '@/components/layout/Sidebar';
 import { createClient } from '@/lib/supabase/client';
 import { useProfile } from '@/hooks/useProfile';
 import { toast } from 'react-toastify';
+import { compressImage } from '@/lib/image-utils';
 
 interface PastQuestion {
   id: string;
@@ -123,11 +124,23 @@ function PastQuestionsContent() {
     }
   }, [searchParams]);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
+      let file = e.target.files[0];
+
+      if (file.type.startsWith('image/')) {
+        const loadingToast = toast.info("Optimizing image...", { autoClose: false });
+        try {
+          file = await compressImage(file);
+          toast.dismiss(loadingToast);
+        } catch (err) {
+          toast.dismiss(loadingToast);
+          console.error('Compression failed:', err);
+        }
+      }
+
       if (file.size > 20 * 1024 * 1024) {
-        toast.error("File size exceeds 20MB limit.");
+        toast.error(`File size (${(file.size / (1024 * 1024)).toFixed(1)}MB) exceeds 20MB limit.`);
         return;
       }
       setFormFile(file);

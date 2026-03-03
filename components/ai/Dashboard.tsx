@@ -66,7 +66,7 @@ const Dashboard: React.FC = () => {
                             </div>
                         </div>
                         <h2 className="text-3xl font-black tracking-tighter mb-2">{loadingState}</h2>
-                        <p className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-[0.4em] text-xs">Gemini 2.5 Flash Engine Active</p>
+                        <p className="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-[0.4em] text-xs">Gemini 1.5 Flash Engine Active</p>
                     </div>
                 )}
 

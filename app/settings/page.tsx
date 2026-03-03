@@ -13,9 +13,11 @@ export default function SettingsPage() {
     firstName: '',
     lastName: '',
     avatarUrl: '',
+    examDate: '',
   });
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(true);
+  const [pushNotifications, setPushNotifications] = useState(false);
 
   useEffect(() => {
     // Initialize theme from document or localStorage
@@ -35,6 +37,7 @@ export default function SettingsPage() {
         firstName: parts[0] || '',
         lastName: parts.slice(1).join(' ') || '',
         avatarUrl: profile.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback',
+        examDate: profile.exam_date || '',
       });
     }
   }, [profile]);
@@ -87,6 +90,7 @@ export default function SettingsPage() {
           id: profile.id, // Explicitly provide ID for upsert
           full_name: fullName,
           avatar_url: formData.avatarUrl,
+          exam_date: formData.examDate || null,
           updated_at: new Date().toISOString()
         }, { onConflict: 'id' });
 
@@ -134,17 +138,17 @@ export default function SettingsPage() {
 
   const avatarOptions = [
     'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka&backgroundColor=c0aede',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Oliver&backgroundColor=ffd5dc',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Luna&backgroundColor=ffdfbf',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Leo&backgroundColor=d1d4f9',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Mia&backgroundColor=c0aede',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Jack&backgroundColor=b6e3f4',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Chloe&backgroundColor=ffd5dc',
+    'https://api.dicebear.com/7.x/avataaars/svg?seed=Jack&backgroundColor=c06e8e',
+    'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka&backgroundColor=ffd5dc',
+    'https://api.dicebear.com/7.x/avataaars/svg?seed=Oliver&backgroundColor=ffdfbf',
+    'https://api.dicebear.com/7.x/avataaars/svg?seed=Luna&backgroundColor=d1d4f9',
+    'https://api.dicebear.com/7.x/avataaars/svg?seed=Leo&backgroundColor=c0aede',
+    'https://api.dicebear.com/7.x/avataaars/svg?seed=Milo&backgroundColor=b6f4e3',
+    'https://api.dicebear.com/7.x/avataaars/svg?seed=Zoe&backgroundColor=f4e3b6',
   ];
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+    <div className="main-bg font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c] selection:text-white">
       <Sidebar />
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
@@ -182,6 +186,20 @@ export default function SettingsPage() {
                       type="text"
                     />
                   </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                    Examination Date
+                  </label>
+                  <input
+                    className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-2.5 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white"
+                    value={formData.examDate}
+                    onChange={(e) => setFormData({ ...formData, examDate: e.target.value })}
+                    type="date"
+                  />
+                  <p className="mt-1 text-xs text-slate-500 dark:text-[#9c9cba]">
+                    Setting your exam date allows us to personalize your study plan and reminders.
+                  </p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
@@ -274,6 +292,25 @@ export default function SettingsPage() {
                       className="sr-only peer"
                       checked={emailNotifications}
                       onChange={toggleNotifications}
+                      type="checkbox"
+                    />
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#ea580c]"></div>
+                  </label>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium text-slate-900 dark:text-white">
+                      Push Notifications
+                    </h3>
+                    <p className="text-sm text-slate-500 dark:text-[#9c9cba]">
+                      Receive daily reminders on your device
+                    </p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      className="sr-only peer"
+                      checked={pushNotifications}
+                      onChange={() => setPushNotifications(!pushNotifications)}
                       type="checkbox"
                     />
                     <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#ea580c]"></div>

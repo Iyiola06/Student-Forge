@@ -299,64 +299,84 @@ export default function FlashcardsPage() {
                         ) : flashcards.length > 0 ? (
                             isDrilling ? (
                                 // Interactive Drill Mode
-                                <div className="flex-1 flex flex-col items-center justify-start py-4 w-full h-full max-w-4xl mx-auto">
-                                    <div className="w-full flex justify-between items-center mb-10 bg-white dark:bg-[#1a1a24] p-5 rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm">
-                                        <div className="flex items-center gap-4">
-                                            <div className="h-2 w-48 bg-slate-100 dark:bg-[#13131a] rounded-full overflow-hidden">
-                                                <div className="h-full bg-[#ea580c] transition-all duration-500" style={{ width: `${((currentIndex + 1) / flashcards.length) * 100}%` }}></div>
+                                <div className="flex-1 flex flex-col items-center justify-start py-4 w-full h-full max-w-4xl mx-auto relative">
+                                    {/* Dynamic Aura Background */}
+                                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full aura-glow pointer-events-none z-0 ${isFlipped ? 'bg-orange-500' : 'bg-blue-500'}`}></div>
+
+                                    <div className="w-full flex justify-between items-center mb-10 bg-white/80 dark:bg-[#1a1a24]/80 backdrop-blur-xl p-5 rounded-3xl border border-slate-200 dark:border-[#2d2d3f] shadow-2xl relative z-10">
+                                        <div className="flex items-center gap-6">
+                                            <div className="relative group">
+                                                <div className="h-3 w-64 bg-slate-100 dark:bg-[#13131a] rounded-full overflow-hidden border border-slate-200 dark:border-[#2d2d3f] shadow-inner">
+                                                    <div className="h-full bg-gradient-to-r from-[#ea580c] to-[#f97316] transition-all duration-700 ease-out relative" style={{ width: `${((currentIndex + 1) / flashcards.length) * 100}%` }}>
+                                                        <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                                                    </div>
+                                                </div>
+                                                <div className="absolute -top-1 -right-1 size-3 bg-[#ea580c] rounded-full animate-ping opacity-50"></div>
                                             </div>
-                                            <span className="text-xs font-black text-slate-500 uppercase tracking-widest">{currentIndex + 1} / {flashcards.length}</span>
+                                            <div className="flex flex-col">
+                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Synapse Progress</span>
+                                                <span className="text-sm font-black text-[#ea580c]">{currentIndex + 1} <span className="text-slate-400 opacity-50">/</span> {flashcards.length}</span>
+                                            </div>
                                         </div>
                                         <button
                                             onClick={() => setIsDrilling(false)}
-                                            className="px-4 py-2 bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-slate-400 text-[11px] font-black uppercase tracking-wider rounded-lg hover:bg-red-500 hover:text-white transition-all flex items-center gap-2"
+                                            className="px-5 py-2.5 bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-slate-400 text-[11px] font-black uppercase tracking-wider rounded-xl hover:bg-red-500 hover:text-white transition-all flex items-center gap-2 group border border-slate-200 dark:border-[#2d2d3f] shadow-sm"
                                         >
-                                            <span className="material-symbols-outlined text-[16px]">close</span>
-                                            Terminate Session
+                                            <span className="material-symbols-outlined text-[18px] group-hover:rotate-90 transition-transform">close</span>
+                                            Abort Session
                                         </button>
                                     </div>
 
                                     {/* 3D Flip Card */}
                                     <div
-                                        className="w-full max-w-2xl h-[400px] md:h-[460px] [perspective:2000px] group cursor-pointer"
+                                        className="w-full max-w-2xl h-[400px] md:h-[500px] [perspective:2000px] group cursor-pointer relative z-10"
                                         onClick={() => setIsFlipped(!isFlipped)}
                                     >
                                         <div className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}>
                                             {/* Front */}
-                                            <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-white dark:bg-[#1a1a24] border-2 border-slate-200 dark:border-[#2d2d3f] rounded-3xl shadow-2xl p-8 md:p-14 flex flex-col items-center justify-center text-center transition-all group-hover:border-[#ea580c]/50">
-                                                <div className="absolute top-8 left-1/2 -translate-x-1/2 bg-[#ea580c]/10 text-[#ea580c] px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-[#ea580c]/20">
-                                                    Prompt Card
+                                            <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-white dark:bg-[#1a1a24] border-2 border-slate-200 dark:border-[#2d2d3f] rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] p-8 md:p-14 flex flex-col items-center justify-center text-center transition-all group-hover:border-[#ea580c]/50 holographic-sheen">
+                                                <div className="absolute top-10 left-1/2 -translate-x-1/2 bg-[#ea580c]/10 text-[#ea580c] px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-[#ea580c]/20 flex items-center gap-2">
+                                                    <span className="size-1.5 rounded-full bg-[#ea580c] animate-pulse"></span>
+                                                    Insight Prompt
                                                 </div>
-                                                <p className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white leading-snug tracking-tight">
-                                                    {flashcards[currentIndex].front}
-                                                </p>
-                                                <div className="absolute bottom-10 flex flex-col items-center gap-2 text-slate-400 dark:text-slate-500 text-xs font-bold animate-bounce opacity-50">
-                                                    <span className="material-symbols-outlined">touch_app</span>
-                                                    TAP TO REVEAL KEY
+                                                <div className="w-full max-h-full overflow-y-auto custom-scrollbar px-4">
+                                                    <p className="text-2xl md:text-4xl font-black text-slate-900 dark:text-white leading-tight tracking-tight text-balance">
+                                                        {flashcards[currentIndex].front}
+                                                    </p>
+                                                </div>
+                                                <div className="absolute bottom-12 flex flex-col items-center gap-2 text-[#ea580c]/60 dark:text-[#ea580c]/40 text-[10px] font-black uppercase tracking-widest animate-bounce">
+                                                    <span className="material-symbols-outlined text-lg">expand_circle_down</span>
+                                                    FLIP TO RESOLVE
                                                 </div>
                                             </div>
 
                                             {/* Back */}
-                                            <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-slate-900 dark:bg-[#0a0a14] border-2 border-[#ea580c] rounded-3xl shadow-[0_0_50px_rgba(234,88,12,0.15)] p-8 md:p-14 flex flex-col items-center justify-center text-center [transform:rotateY(180deg)]">
-                                                <div className="absolute top-8 left-1/2 -translate-x-1/2 bg-green-500/10 text-green-400 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-green-500/20">
-                                                    Resolution
+                                            <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-[#0a0a0f] border-2 border-[#ea580c] rounded-[2.5rem] shadow-[0_0_80px_rgba(234,88,12,0.2)] p-8 md:p-14 flex flex-col items-center justify-center text-center [transform:rotateY(180deg)] holographic-sheen">
+                                                <div className="absolute top-10 left-1/2 -translate-x-1/2 bg-green-500/10 text-green-400 px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-green-500/20 flex items-center gap-2">
+                                                    <span className="size-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                                                    Neural Resolution
                                                 </div>
-                                                <p className="text-xl md:text-2xl text-white leading-relaxed font-bold tracking-tight">
-                                                    {flashcards[currentIndex].back}
-                                                </p>
+                                                <div className="w-full max-h-full overflow-y-auto custom-scrollbar px-4">
+                                                    <p className="text-xl md:text-2xl text-white/90 leading-relaxed font-bold tracking-tight text-balance">
+                                                        {flashcards[currentIndex].back}
+                                                    </p>
+                                                </div>
+                                                <div className="absolute bottom-10 opacity-20 group-hover:opacity-100 transition-opacity">
+                                                    <span className="material-symbols-outlined text-white text-4xl">verified</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Controls (visible when flipped) */}
-                                    <div className={`mt-12 flex gap-4 transition-all duration-500 transform ${isFlipped ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
-                                        <button onClick={nextCard} className="px-8 py-4 rounded-2xl bg-slate-100 dark:bg-[#1a1a24] text-slate-700 dark:text-slate-300 font-black text-sm uppercase tracking-wider hover:bg-slate-200 dark:hover:bg-[#2d2d3f] transition-all flex items-center gap-2 border border-slate-200 dark:border-[#2d2d3f]">
-                                            <span className="material-symbols-outlined">replay</span>
+                                    <div className={`mt-12 flex gap-6 transition-all duration-700 transform relative z-10 ${isFlipped ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}>
+                                        <button onClick={nextCard} className="px-10 py-5 rounded-3xl bg-white dark:bg-[#1a1a24] text-slate-700 dark:text-white font-black text-xs uppercase tracking-[0.2em] hover:bg-slate-50 dark:hover:bg-[#2d2d3f] transition-all flex items-center gap-3 border-2 border-slate-200 dark:border-[#2d2d3f] shadow-xl hover:shadow-2xl hover:-translate-y-1">
+                                            <span className="material-symbols-outlined text-orange-500">retry</span>
                                             Review Again
                                         </button>
-                                        <button onClick={nextCard} className="px-10 py-4 rounded-2xl bg-green-500 hover:bg-green-600 text-slate-900 font-black text-sm uppercase tracking-wider shadow-xl shadow-green-500/20 transition-all flex items-center gap-2">
-                                            <span className="material-symbols-outlined">check_circle</span>
-                                            Mastered
+                                        <button onClick={nextCard} className="px-12 py-5 rounded-3xl bg-green-500 hover:bg-green-400 text-[#0a0a0f] font-black text-xs uppercase tracking-[0.2em] shadow-[0_20px_40px_-10px_rgba(34,197,94,0.4)] transition-all flex items-center gap-3 hover:-translate-y-1 active:scale-95 group">
+                                            <span className="material-symbols-outlined group-hover:rotate-12 transition-transform">verified_user</span>
+                                            Mark Mastered
                                         </button>
                                     </div>
                                 </div>
