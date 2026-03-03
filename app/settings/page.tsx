@@ -77,7 +77,14 @@ export default function SettingsPage() {
     try {
       if (newVal) {
         // Request permission and subscribe
-        const permission = await Notification.requestPermission();
+        const NotificationAPI = typeof window !== 'undefined' ? (window as any).Notification : null;
+
+        if (!NotificationAPI) {
+          alert('Push notifications are not supported in this browser.');
+          return;
+        }
+
+        const permission = await NotificationAPI.requestPermission();
         if (permission !== 'granted') {
           alert('Permission for notifications was denied.');
           return;
