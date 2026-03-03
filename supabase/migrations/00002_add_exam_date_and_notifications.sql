@@ -9,4 +9,4 @@ CREATE TABLE IF NOT EXISTS push_subscriptions (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   UNIQUE(user_id, subscription)
 );
- village
+

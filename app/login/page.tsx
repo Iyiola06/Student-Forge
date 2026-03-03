@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -59,16 +60,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display text-slate-900 dark:text-slate-100 min-h-screen flex items-center justify-center p-4">
+    <div className="main-bg font-display text-slate-900 dark:text-slate-100 min-h-screen flex items-center justify-center p-4">
       {/* Main Container */}
-      <div className="relative w-full max-w-md bg-white dark:bg-[#1b1b27] rounded-xl shadow-2xl overflow-hidden border border-slate-200 dark:border-[#2d2d3f]">
+      <div className="relative w-full max-w-md premium-card glass-card overflow-hidden">
         {/* Header / Logo Section */}
         <div className="pt-8 pb-4 flex flex-col items-center justify-center">
           {/* Logo Placeholder */}
-          <div className="w-16 h-16 rounded-xl bg-[#ea580c]/10 flex items-center justify-center mb-4">
-            <span className="material-symbols-outlined text-[#ea580c] text-4xl">
-              school
-            </span>
+          <div className="relative size-16 flex items-center justify-center mb-4">
+            <Image
+              src="/images/logo.png"
+              alt="StudyForge Logo"
+              width={64}
+              height={64}
+              className="object-contain"
+              priority
+            />
           </div>
           <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
             Welcome Back

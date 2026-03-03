@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'motion/react';
+import Image from 'next/image';
 
 export default function LandingPage() {
   return (
@@ -9,8 +10,15 @@ export default function LandingPage() {
       {/* Header */}
       <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#3b3b54] px-4 sm:px-10 py-4 bg-white dark:bg-[#101022]/80 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-4 text-slate-900 dark:text-white">
-          <div className="size-8 text-[#ea580c] flex items-center justify-center">
-            <span className="material-symbols-outlined text-3xl">school</span>
+          <div className="relative size-10 flex items-center justify-center">
+            <Image
+              src="/images/logo.png"
+              alt="StudyForge Logo"
+              width={40}
+              height={40}
+              className="object-contain"
+              priority
+            />
           </div>
           <h2 className="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">
             StudyForge
@@ -144,10 +152,16 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row justify-between items-start gap-8">
             {/* Logo and Copyright */}
             <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-2 text-slate-900 dark:text-white">
-                <span className="material-symbols-outlined text-[#ea580c] text-2xl">
-                  school
-                </span>
+              <div className="flex items-center gap-3 text-slate-900 dark:text-white">
+                <div className="relative size-8 flex items-center justify-center">
+                  <Image
+                    src="/images/logo.png"
+                    alt="StudyForge Logo"
+                    width={32}
+                    height={32}
+                    className="object-contain"
+                  />
+                </div>
                 <span className="font-bold text-lg">StudyForge</span>
               </div>
               <p className="text-sm text-slate-500 dark:text-[#9c9cba]">
@@ -176,6 +190,8 @@ export default function LandingPage() {
                 <Link href="/reset-password" className="hover:text-[#ea580c] transition-colors">Reset Password</Link>
                 <Link href="/verify-email" className="hover:text-[#ea580c] transition-colors">Verify Email</Link>
                 <Link href="/about" className="hover:text-[#ea580c] transition-colors">About</Link>
+                <Link href="/terms" className="hover:text-[#ea580c] transition-colors">Terms of Service</Link>
+                <Link href="/privacy" className="hover:text-[#ea580c] transition-colors">Privacy Policy</Link>
               </div>
             </div>
           </div>

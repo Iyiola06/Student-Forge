@@ -112,6 +112,12 @@
   }
 
   .main-bg {
-    @apply bg-slate-50 dark:bg-[#0b0b10] min-h-screen;
+    @apply bg-slate-50 dark:bg-[#0b0b10] min-h-screen font-display;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Global iOS Scroll Fix */
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
   }
 }

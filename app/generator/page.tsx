@@ -570,7 +570,7 @@ export default function GeneratorPage() {
     );
   };
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+    <div className="main-bg flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       <Sidebar />
 
       {/* Main Content Area */}
@@ -581,7 +581,7 @@ export default function GeneratorPage() {
         ) : userAnswers.length > 0 && userAnswers.length === generatedData?.length && !isQuizActive ? (
           renderResults()
         ) : (
-          <main className="flex-1 overflow-y-auto w-full max-w-[1440px] mx-auto">
+          <main className="flex-1 md:overflow-y-auto w-full max-w-[1440px] mx-auto">
             <div className="px-6 pt-10 pb-6 md:px-8">
               <h1 className="text-3xl font-black text-slate-900 dark:text-white">
                 AI Question Generator
@@ -591,7 +591,7 @@ export default function GeneratorPage() {
               </p>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 md:p-8 pt-0 flex flex-col xl:flex-row gap-6">
+            <div className="flex-1 md:overflow-y-auto p-6 md:p-8 pt-0 flex flex-col xl:flex-row gap-6">
               {/* Left Column */}
               <div className="flex-1 max-w-3xl space-y-6">
                 {/* Upload Card */}

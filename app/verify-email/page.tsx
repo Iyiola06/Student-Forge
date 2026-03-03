@@ -2,6 +2,7 @@
 
 import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 
 function VerifyEmailContent() {
@@ -42,13 +43,20 @@ function VerifyEmailContent() {
   };
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+    <div className="main-bg font-display min-h-screen flex flex-col antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
       <div className="layout-container flex h-full grow flex-col">
         {/* Header */}
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#3b3b54] px-4 sm:px-10 py-3 bg-white dark:bg-[#101022]/80 backdrop-blur-md sticky top-0 z-50">
           <div className="flex items-center gap-4 text-slate-900 dark:text-white">
-            <div className="size-6 text-[#ea580c] flex items-center justify-center">
-              <span className="material-symbols-outlined text-2xl">school</span>
+            <div className="relative size-8 flex items-center justify-center">
+              <Image
+                src="/images/logo.png"
+                alt="StudyForge Logo"
+                width={32}
+                height={32}
+                className="object-contain"
+                priority
+              />
             </div>
             <h2 className="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">
               StudyForge
@@ -57,7 +65,7 @@ function VerifyEmailContent() {
         </header>
         {/* Main Content */}
         <main className="flex flex-1 flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-          <div className="w-full max-w-md space-y-8 bg-white dark:bg-[#1b1b27] p-8 rounded-2xl shadow-xl ring-1 ring-slate-900/5 dark:ring-white/10 text-center">
+          <div className="w-full max-w-md space-y-8 premium-card glass-card p-8 text-center">
             {/* Icon */}
             <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-[#ea580c]/10 dark:bg-[#ea580c]/20 mb-6 animate-bounce">
               <span className="material-symbols-outlined text-[#ea580c] text-5xl">

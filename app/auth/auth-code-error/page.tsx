@@ -1,17 +1,34 @@
-import Link from 'next/link';
+'use client';
 
-export default function AuthErrorPage() {
+import { Suspense } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
+
+function AuthErrorContent() {
+    const searchParams = useSearchParams();
+    const errorMsg = searchParams.get('error') || 'The link may have expired or already been used.';
+
     return (
-        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display text-slate-900 dark:text-slate-100 min-h-screen flex items-center justify-center p-4">
-            <div className="w-full max-w-md bg-white dark:bg-[#1b1b27] rounded-xl shadow-2xl overflow-hidden border border-slate-200 dark:border-[#2d2d3f] p-8 text-center">
-                <div className="w-16 h-16 rounded-xl bg-red-500/10 flex items-center justify-center mx-auto mb-6">
-                    <span className="material-symbols-outlined text-red-500 text-4xl">error</span>
+        <div className="main-bg font-display text-slate-900 dark:text-slate-100 min-h-screen flex items-center justify-center p-4">
+            <div className="w-full max-w-md premium-card glass-card p-8 text-center">
+                <div className="relative size-16 flex items-center justify-center mx-auto mb-6">
+                    <Image
+                        src="/images/logo.png"
+                        alt="StudyForge Logo"
+                        width={64}
+                        height={64}
+                        className="object-contain"
+                    />
+                </div>
+                <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
+                    <span className="material-symbols-outlined text-red-500 text-3xl">error</span>
                 </div>
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
                     Authentication Error
                 </h2>
                 <p className="text-sm text-slate-500 dark:text-[#9c9cba] mb-8">
-                    Something went wrong during sign-in. The link may have expired or already been used.
+                    {errorMsg}
                 </p>
                 <Link
                     href="/login"
@@ -21,5 +38,13 @@ export default function AuthErrorPage() {
                 </Link>
             </div>
         </div>
+    );
+}
+
+export default function AuthErrorPage() {
+    return (
+        <Suspense>
+            <AuthErrorContent />
+        </Suspense>
     );
 }

@@ -223,7 +223,7 @@ export default function ResourcesPage() {
   };
 
   return (
-    <div className="main-bg font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c] selection:text-white">
+    <div className="main-bg flex flex-col md:flex-row antialiased selection:bg-[#ea580c] selection:text-white">
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
 
@@ -271,7 +271,7 @@ export default function ResourcesPage() {
             </div>
           </div>
 
-          <main className="flex-1 overflow-y-auto px-4 md:px-8 flex flex-col 2xl:flex-row gap-8 pb-10">
+          <main className="flex-1 md:overflow-y-auto px-4 md:px-8 flex flex-col 2xl:flex-row gap-8 pb-10">
             <div className="flex-1 space-y-6 min-w-0">
               {/* Search and Tabs */}
               <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
@@ -600,10 +600,16 @@ export default function ResourcesPage() {
               <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm flex flex-col overflow-hidden p-6 gap-4">
                 <h3 className="font-bold text-slate-900 dark:text-white text-[15px]">Categories</h3>
                 <div className="flex flex-wrap gap-2">
-                  <button className="bg-[#ea580c] text-white text-xs font-bold px-4 py-2 rounded-xl shadow-sm shadow-[#ea580c]/20">All Subjects</button>
-                  {['Biology', 'Mathematics', 'Physics', 'Chemistry', 'Computer Science'].map((subject) => (
-                    <button key={subject} className="bg-slate-50 dark:bg-[#13131a] hover:bg-[#ea580c]/10 hover:text-[#ea580c] text-slate-600 dark:text-slate-300 text-xs font-bold px-4 py-2 rounded-xl transition-all border border-slate-200 dark:border-[#2d2d3f]">
-                      {subject}
+                  {folders.map((folder) => (
+                    <button
+                      key={folder}
+                      onClick={() => setSelectedFolder(folder)}
+                      className={`text-xs font-bold px-4 py-2 rounded-xl transition-all border ${selectedFolder === folder
+                        ? 'bg-[#ea580c] text-white border-[#ea580c] shadow-sm shadow-[#ea580c]/20'
+                        : 'bg-slate-50 dark:bg-[#13131a] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[#2d2d3f] hover:border-[#ea580c]/30'
+                        }`}
+                    >
+                      {folder === 'All' ? 'All Subjects' : folder}
                     </button>
                   ))}
                 </div>

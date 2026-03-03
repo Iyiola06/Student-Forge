@@ -38,14 +38,14 @@ export default function SignupPage() {
   };
 
   const AVATAR_OPTIONS = [
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Jack&backgroundColor=c06e8e',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka&backgroundColor=ffd5dc',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Oliver&backgroundColor=ffdfbf',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Luna&backgroundColor=d1d4f9',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Leo&backgroundColor=c0aede',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Milo&backgroundColor=b6f4e3',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Zoe&backgroundColor=f4e3b6',
+    'https://api.dicebear.com/9.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4',
+    'https://api.dicebear.com/9.x/avataaars/svg?seed=Jack&backgroundColor=c06e8e',
+    'https://api.dicebear.com/9.x/avataaars/svg?seed=Aneka&backgroundColor=ffd5dc',
+    'https://api.dicebear.com/9.x/avataaars/svg?seed=Oliver&backgroundColor=ffdfbf',
+    'https://api.dicebear.com/9.x/avataaars/svg?seed=Luna&backgroundColor=d1d4f9',
+    'https://api.dicebear.com/9.x/avataaars/svg?seed=Leo&backgroundColor=c0aede',
+    'https://api.dicebear.com/9.x/avataaars/svg?seed=Milo&backgroundColor=b6f4e3',
+    'https://api.dicebear.com/9.x/avataaars/svg?seed=Zoe&backgroundColor=f4e3b6',
   ];
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -107,19 +107,19 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-x-hidden selection:bg-[#ea580c] selection:text-white">
+    <div className="main-bg font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-x-hidden selection:bg-[#ea580c] selection:text-white">
       {/* Header */}
       <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#2d2d45] px-10 py-4 bg-white dark:bg-[#1b1b2e]/50 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-4">
-          <div className="size-8 text-[#ea580c]">
-            <svg
-              className="w-full h-full"
-              fill="currentColor"
-              viewBox="0 0 48 48"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z"></path>
-            </svg>
+          <div className="relative size-10 flex items-center justify-center">
+            <Image
+              src="/images/logo.png"
+              alt="StudyForge Logo"
+              width={40}
+              height={40}
+              className="object-contain"
+              priority
+            />
           </div>
           <h2 className="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">
             StudyForge
@@ -162,17 +162,17 @@ export default function SignupPage() {
       {/* Main Content */}
       <main className="flex-grow flex items-center justify-center py-12 px-4 relative">
         {/* Decorative Background Elements */}
-        <div className="absolute top-20 left-10 text-[#ea580c]/10 animate-pulse hidden lg:block">
-          <span className="material-symbols-outlined text-9xl">school</span>
+        <div className="absolute top-20 left-10 opacity-10 animate-pulse hidden lg:block">
+          <Image src="/images/logo.png" alt="" width={120} height={120} className="grayscale" />
         </div>
         <div className="absolute bottom-20 right-10 text-[#ea580c]/10 animate-pulse hidden lg:block">
           <span className="material-symbols-outlined text-9xl">menu_book</span>
         </div>
-        <div className="absolute top-1/2 left-20 text-[#ea580c]/5 hidden lg:block rotate-12">
-          <span className="material-symbols-outlined text-8xl">edit_note</span>
+        <div className="absolute top-1/2 left-20 opacity-5 hidden lg:block rotate-12">
+          <Image src="/images/logo.png" alt="" width={80} height={80} className="grayscale" />
         </div>
         {/* Form Container */}
-        <div className="w-full max-w-[640px] bg-white dark:bg-[#1b1b2e] rounded-2xl shadow-xl dark:shadow-none border border-slate-200 dark:border-[#2d2d45] p-8 md:p-12 z-10">
+        <div className="w-full max-w-[640px] premium-card glass-card p-8 md:p-12 z-10">
           <div className="text-center mb-8">
             <h1 className="text-slate-900 dark:text-white tracking-tight text-3xl md:text-4xl font-bold leading-tight mb-3">
               Create your account
@@ -474,14 +474,14 @@ export default function SignupPage() {
                   I agree to the{' '}
                   <Link
                     className="font-semibold text-[#ea580c] hover:text-[#ea580c]/80 hover:underline"
-                    href="#"
+                    href="/terms"
                   >
                     Terms of Service
                   </Link>{' '}
                   and{' '}
                   <Link
                     className="font-semibold text-[#ea580c] hover:text-[#ea580c]/80 hover:underline"
-                    href="#"
+                    href="/privacy"
                   >
                     Privacy Policy
                   </Link>

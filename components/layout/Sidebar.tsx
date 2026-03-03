@@ -6,6 +6,7 @@ import { useProfile } from '@/hooks/useProfile';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function Sidebar() {
     const pathname = usePathname();
@@ -80,8 +81,15 @@ export default function Sidebar() {
             {/* Mobile Sticky Header */}
             <div className="md:hidden sticky top-0 left-0 w-full h-16 bg-white dark:bg-[#1b1b27] border-b border-slate-200 dark:border-[#2d2d3f] px-6 flex items-center justify-between z-[45]">
                 <Link href="/dashboard" className="flex items-center gap-2">
-                    <div className="size-8 text-[#ea580c] flex items-center justify-center">
-                        <span className="material-symbols-outlined text-3xl">school</span>
+                    <div className="relative size-10 flex items-center justify-center">
+                        <Image
+                            src="/images/logo.png"
+                            alt="StudyForge Logo"
+                            width={40}
+                            height={40}
+                            className="object-contain"
+                            priority
+                        />
                     </div>
                     <h2 className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
                         StudyForge
@@ -117,8 +125,15 @@ export default function Sidebar() {
             <aside className={`fixed md:sticky top-0 left-0 h-screen z-[100] w-64 bg-white dark:bg-[#1b1b27] border-r border-slate-200 dark:border-[#2d2d3f] flex flex-col transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'}`}>
                 <div className="p-6 pt-5 flex items-center gap-3">
                     <Link href="/dashboard" className="flex items-center gap-2">
-                        <div className="size-8 text-[#ea580c] flex items-center justify-center">
-                            <span className="material-symbols-outlined text-3xl">school</span>
+                        <div className="relative size-10 flex items-center justify-center">
+                            <Image
+                                src="/images/logo.png"
+                                alt="StudyForge Logo"
+                                width={40}
+                                height={40}
+                                className="object-contain"
+                                priority
+                            />
                         </div>
                         <h2 className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
                             StudyForge

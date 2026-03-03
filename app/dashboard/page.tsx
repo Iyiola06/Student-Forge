@@ -117,11 +117,11 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="main-bg font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c] selection:text-white">
+    <div className="main-bg flex flex-col md:flex-row antialiased selection:bg-[#ea580c] selection:text-white">
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
         {/* Main Content */}
-        <main className="flex flex-1 flex-col gap-8 px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full overflow-y-auto">
+        <main className="flex flex-1 flex-col gap-8 px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full md:overflow-y-auto">
           {/* Welcome Section */}
           <div className="flex flex-col gap-2">
             <h1 className="text-slate-900 dark:text-white text-3xl font-bold leading-tight tracking-[-0.015em]">
