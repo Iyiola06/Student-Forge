@@ -612,7 +612,9 @@ export default function GeneratorPage() {
                       >
                         <option value="">-- Or select an existing library resource --</option>
                         {resources.map(r => (
-                          <option key={r.id} value={r.id}>{r.title}</option>
+                          <option key={r.id} value={r.id}>
+                            {r.title} {r.processing_status === 'processing' ? '(Processing...)' : r.processing_status === 'error' ? '(Error - Re-upload)' : ''}
+                          </option>
                         ))}
                       </select>
                       <textarea

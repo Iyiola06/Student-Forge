@@ -62,8 +62,18 @@ async function processResource(
             }
             extractedText = fullText.trim();
 
-            if (extractedText.length < 20) {
-                throw new Error('Could not extract enough text from this PDF. It may be scanned or encrypted.');
+            if (extractedText.length < 50) {
+                throw new Error('Insufficient text extracted. The document may be scanned (OCR required), encrypted, or empty.');
+            }
+
+            const BLOCKED_PHRASES = [
+                'text extraction is currently only supported',
+                'failed to parse', 'could not extract',
+                'not currently supported for text extraction'
+            ];
+            const lowerContent = extractedText.toLowerCase();
+            if (BLOCKED_PHRASES.some(p => lowerContent.includes(p))) {
+                throw new Error('The document contains unsupported content or triggered a parsing error.');
             }
         } else if (fileType.startsWith('image/')) {
             if (!process.env.GEMINI_API_KEY) throw new Error('OCR not configured');
@@ -75,7 +85,7 @@ async function processResource(
                 { inlineData: { data: base64Data, mimeType: fileType } },
             ]);
             extractedText = result.response.text().trim();
-            if (extractedText.length < 10) throw new Error('Could not extract text from image');
+            if (extractedText.length < 20) throw new Error('Could not extract meaningful text from image. Please ensure the image is clear and contains text.');
         } else if (
             fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
             fileName.endsWith('.docx')
@@ -84,7 +94,7 @@ async function processResource(
             const arrayBuffer = await fileData.arrayBuffer();
             const result = await mammoth.extractRawText({ buffer: Buffer.from(arrayBuffer) });
             extractedText = result.value.trim();
-            if (extractedText.length < 20) throw new Error('Could not extract text from DOCX');
+            if (extractedText.length < 50) throw new Error('The DOCX file appears to have insufficient text content.');
         } else if (
             fileType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation' ||
             fileName.endsWith('.pptx')
@@ -104,9 +114,10 @@ async function processResource(
                 }
             }
             extractedText = fullText.trim();
-            if (extractedText.length < 20) throw new Error('Could not extract text from PPTX');
+            if (extractedText.length < 50) throw new Error('The PPTX file appears to have insufficient text content.');
         } else if (fileType === 'text/plain' || fileType === 'application/json') {
             extractedText = await fileData.text();
+            if (extractedText.trim().length < 10) throw new Error('The text file is empty or too short.');
         }
 
         // Update the resource with content and mark as ready
@@ -123,6 +134,7 @@ async function processResource(
         await supabase
             .from('resources')
             .update({
+                content: '', // Ensure content is empty on error
                 processing_status: 'error',
                 processing_error: err.message,
             })

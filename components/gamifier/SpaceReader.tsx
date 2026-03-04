@@ -368,6 +368,16 @@ export default function SpaceReader({
                                             <span className="material-symbols-outlined text-[16px]">rocket_launch</span>
                                         </span>
                                     </button>
+                                ) : resource.processing_status === 'error' ? (
+                                    <div className="space-y-3">
+                                        <div className="w-full py-3 bg-red-500/10 text-red-400 font-black text-[10px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 border border-red-500/30">
+                                            <span className="material-symbols-outlined text-[16px]">error</span>
+                                            Data Scan Failed
+                                        </div>
+                                        <p className="text-[9px] text-red-500/70 font-bold text-center leading-tight">
+                                            The AI could not extract enough data from this sector. Try re-uploading a clearer version.
+                                        </p>
+                                    </div>
                                 ) : (
                                     <div className="w-full py-3 bg-slate-800/50 text-slate-500 font-black text-[10px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 border border-slate-700/50 cursor-not-allowed">
                                         <div className="size-3 border-2 border-slate-500 border-t-transparent rounded-full animate-spin" />
