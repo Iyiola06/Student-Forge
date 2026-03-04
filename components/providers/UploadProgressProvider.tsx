@@ -148,9 +148,9 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
                 finalFile = await compressImage(file);
             }
 
-            // 15MB absolute limit
-            if (finalFile.size > 15 * 1024 * 1024) {
-                throw new Error(`File size (${(finalFile.size / (1024 * 1024)).toFixed(1)}MB) exceeds the 15MB limit.`);
+            // 25MB absolute limit
+            if (finalFile.size > 25 * 1024 * 1024) {
+                throw new Error(`File size (${(finalFile.size / (1024 * 1024)).toFixed(1)}MB) exceeds the 25MB limit.`);
             }
 
             setUploadState('uploading');
@@ -163,7 +163,7 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
             const filePath = `${user.id}/${storageFileName}`;
 
             // We use standard upload, simulating progress as XHR can be complex with Supabase JS client
-            // A full XHR implementation with signed URLs is possible, but standard upload is fast for <15MB files
+            // A full XHR implementation with signed URLs is possible, but standard upload is fast for <25MB files
             setProgress(50);
 
             const { data: storageData, error: storageError } = await supabase.storage

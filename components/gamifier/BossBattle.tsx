@@ -198,33 +198,33 @@ export default function BossBattle({
             <div className={`absolute inset-0 bg-red-600/20 pointer-events-none transition-opacity duration-300 ${isCorrect === false ? 'opacity-100' : 'opacity-0'}`} />
 
             {/* Battle Header */}
-            <header className="absolute top-10 left-0 w-full flex justify-between px-10 items-center">
-                <div className="flex flex-col gap-2 w-64 max-w-[30vw]">
-                    <div className="text-[10px] uppercase font-bold text-[#38bdf8] tracking-widest bg-[#38bdf8]/10 w-max px-2 py-0.5 rounded">Player Shields</div>
-                    <div className="h-4 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-700 relative">
+            <header className="absolute top-4 md:top-10 left-0 w-full flex justify-between px-4 md:px-10 items-center z-50">
+                <div className="flex flex-col gap-1 md:gap-2 w-32 md:w-64 max-w-[30vw]">
+                    <div className="text-[8px] md:text-[10px] uppercase font-bold text-[#38bdf8] tracking-widest bg-[#38bdf8]/10 w-max px-1 md:px-2 py-0.5 rounded truncate max-w-full">Shields</div>
+                    <div className="h-3 md:h-4 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-700 relative">
                         <div
                             className="h-full bg-gradient-to-r from-[#0369a1] to-[#38bdf8] transition-all duration-500 ease-out"
                             style={{ width: `${playerShields}%` }}
                         />
-                        <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white drop-shadow-md">
+                        <div className="absolute inset-0 flex items-center justify-center text-[8px] md:text-[10px] font-bold text-white drop-shadow-md">
                             {Math.ceil(playerShields)}%
                         </div>
                     </div>
                 </div>
 
                 <div className="text-center">
-                    <div className="text-4xl font-black text-[#ea580c] tracking-tighter uppercase drop-shadow-[0_0_15px_rgba(234,88,12,0.5)]">THE NEBULA BEAST</div>
-                    <div className="text-[10px] uppercase font-bold text-[#7c3aed] tracking-[0.5em] mt-1">Milestone {milestone}</div>
+                    <div className="text-lg md:text-4xl font-black text-[#ea580c] tracking-tighter uppercase drop-shadow-[0_0_15px_rgba(234,88,12,0.5)]">NEBULA BEAST</div>
+                    <div className="text-[8px] md:text-[10px] uppercase font-bold text-[#7c3aed] tracking-[0.2em] md:tracking-[0.5em] mt-1">Milestone {milestone}</div>
                 </div>
 
-                <div className="flex flex-col gap-2 items-end w-64 max-w-[30vw]">
-                    <div className="text-[10px] uppercase font-bold text-red-500 tracking-widest bg-red-500/10 w-max px-2 py-0.5 rounded">Anomaly Health</div>
-                    <div className="h-4 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-700 relative flex justify-end">
+                <div className="flex flex-col gap-1 md:gap-2 items-end w-32 md:w-64 max-w-[30vw]">
+                    <div className="text-[8px] md:text-[10px] uppercase font-bold text-red-500 tracking-widest bg-red-500/10 w-max px-1 md:px-2 py-0.5 rounded truncate max-w-full">Boss Health</div>
+                    <div className="h-3 md:h-4 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-700 relative flex justify-end">
                         <div
                             className="h-full bg-gradient-to-l from-[#7f1d1d] to-[#ef4444] transition-all duration-500 ease-out absolute right-0"
                             style={{ width: `${bossHealth}%` }}
                         />
-                        <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white drop-shadow-md">
+                        <div className="absolute inset-0 flex items-center justify-center text-[8px] md:text-[10px] font-bold text-white drop-shadow-md">
                             {Math.ceil(bossHealth)}%
                         </div>
                     </div>
@@ -249,19 +249,19 @@ export default function BossBattle({
                     </button>
                 </div>
             ) : battleState === 'fighting' ? (
-                <div className="flex flex-col items-center w-full max-w-4xl relative">
+                <div className="flex flex-col items-center w-full max-w-4xl relative mt-12 md:mt-0 h-full justify-center">
 
                     {/* Timer */}
-                    <div className={`absolute -top-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center ${timeLeft <= 5 && !selectedOption ? 'animate-bounce text-red-500' : 'text-slate-300'}`}>
-                        <div className="text-[10px] uppercase font-black tracking-widest mb-1 opacity-70">Time Remaining</div>
-                        <div className="text-5xl font-black drop-shadow-md">
+                    <div className={`absolute -top-10 md:-top-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center ${timeLeft <= 5 && !selectedOption ? 'animate-bounce text-red-500' : 'text-slate-300'}`}>
+                        <div className="text-[8px] md:text-[10px] uppercase font-black tracking-widest mb-1 opacity-70">Time Remaining</div>
+                        <div className="text-3xl md:text-5xl font-black drop-shadow-md">
                             0:{timeLeft.toString().padStart(2, '0')}
                         </div>
                     </div>
 
-                    <div className="mb-6 scale-75 mt-8 relative">
+                    <div className="mb-2 md:mb-6 scale-50 md:scale-75 mt-0 md:mt-8 relative hidden sm:block">
                         {/* Boss Trash Talk Bubble */}
-                        <div className="absolute -right-32 -top-10 bg-[#1e1b4b] border-2 border-[#7c3aed] p-4 rounded-2xl rounded-bl-none max-w-xs shadow-[0_0_20px_rgba(124,58,237,0.3)] z-20 transition-all transform origin-bottom-left animate-[bounce_3s_ease-in-out_infinite]">
+                        <div className="absolute -right-32 -top-10 bg-[#1e1b4b] border-2 border-[#7c3aed] p-4 rounded-2xl rounded-bl-none max-w-xs shadow-[0_0_20px_rgba(124,58,237,0.3)] z-20 transition-all transform origin-bottom-left animate-[bounce_3s_ease-in-out_infinite] hidden md:block">
                             <p className="text-white font-bold text-sm leading-tight italic">
                                 "{taunt}"
                             </p>
@@ -269,17 +269,17 @@ export default function BossBattle({
                         <BossSVG type="beast" isHit={hitEffect} />
                     </div>
 
-                    <div className="w-full bg-[#101022]/80 backdrop-blur-md border border-[#2d2d3f] p-8 rounded-3xl relative">
+                    <div className="w-full bg-[#101022]/80 backdrop-blur-md border border-[#2d2d3f] p-4 md:p-8 rounded-3xl relative overflow-y-auto max-h-[75vh] md:max-h-none scrollbar-hide">
                         {/* Question Badge */}
-                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#7c3aed] px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#7c3aed] px-3 md:px-4 py-1 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest whitespace-nowrap z-10">
                             Inquiry {currentIdx + 1} / 3
                         </div>
 
-                        <h3 className="text-2xl font-bold text-center mb-8 px-4 leading-normal">
+                        <h3 className="text-base md:text-2xl font-bold text-center mb-6 md:mb-8 px-2 md:px-4 leading-normal mt-4 md:mt-0">
                             {questions[currentIdx].question}
                         </h3>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                             {questions[currentIdx].options.map((option, idx) => {
                                 const isThisSelected = selectedOption === option;
                                 const isThisCorrect = option === questions[currentIdx].answer;
@@ -296,15 +296,15 @@ export default function BossBattle({
                                         key={idx}
                                         onClick={() => handleAnswer(option)}
                                         disabled={!!selectedOption}
-                                        className={`p-5 rounded-2xl border-2 transition-all text-left font-medium relative group ${style}`}
+                                        className={`p-3 md:p-5 rounded-2xl border-2 transition-all text-left font-medium relative group text-sm md:text-base ${style}`}
                                     >
-                                        <div className="flex items-center gap-4">
-                                            <div className={`size-8 rounded-full border-2 flex items-center justify-center shrink-0 font-bold ${isThisSelected ? 'border-white' : 'border-[#2d2d3f] group-hover:border-[#7c3aed]'}`}>
+                                        <div className="flex items-center gap-3 md:gap-4">
+                                            <div className={`size-6 md:size-8 text-xs md:text-base rounded-full border-2 flex items-center justify-center shrink-0 font-bold ${isThisSelected ? 'border-white' : 'border-[#2d2d3f] group-hover:border-[#7c3aed]'}`}>
                                                 {String.fromCharCode(65 + idx)}
                                             </div>
                                             <span className="flex-1">{option}</span>
                                             {isThisSelected && (
-                                                <span className="material-symbols-outlined text-2xl">
+                                                <span className="material-symbols-outlined text-xl md:text-2xl">
                                                     {isCorrect ? 'check_circle' : 'cancel'}
                                                 </span>
                                             )}
