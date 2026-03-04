@@ -48,7 +48,7 @@ export default function MissionComplete({
                 </div>
 
                 <h1 className="text-4xl md:text-7xl font-black mb-4 tracking-tighter">PLANET CONQUERED</h1>
-                <p className="text-base md:text-xl text-[#38bdf8] font-bold uppercase tracking-[0.4em] mb-8 md:mb-12">Sector {resource.title} Fully Explored</p>
+                <p className="text-base md:text-xl text-[#38bdf8] font-bold uppercase tracking-[0.2em] md:tracking-[0.4em] mb-8 md:mb-12">Sector {resource.title} Fully Explored</p>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-12">
                     {[

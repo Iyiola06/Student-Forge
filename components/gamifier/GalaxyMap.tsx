@@ -104,7 +104,7 @@ export default function GalaxyMap({
             </header>
 
             {/* Galaxy Area */}
-            <main className="flex-1 relative z-10 w-full h-full p-10 overflow-hidden flex items-center justify-center pointer-events-auto">
+            <main className="flex-1 relative z-10 w-full h-full p-4 md:p-10 overflow-hidden flex items-center justify-center pointer-events-auto">
                 {resources.length === 0 ? (
                     <div className="text-center">
                         <div className="size-24 rounded-full border-2 border-dashed border-slate-700 flex items-center justify-center mx-auto mb-6 opacity-50">
@@ -158,7 +158,7 @@ export default function GalaxyMap({
                                         )}
 
                                         {/* Planet Body */}
-                                        <div className={`relative size-20 rounded-full shadow-2xl transition-all duration-300 ${isHovered ? 'scale-125 shadow-[#38bdf8]/40' : ''}`}
+                                        <div className={`relative size-14 md:size-20 rounded-full shadow-2xl transition-all duration-300 ${isHovered ? 'scale-125 shadow-[#38bdf8]/40' : ''}`}
                                             style={{
                                                 background: getPlanetGradient(res.title),
                                                 boxShadow: isComplete ? '0 0 30px rgba(245, 158, 11, 0.4)' : (isHovered ? '0 0 40px rgba(56, 189, 248, 0.6)' : 'inset -10px -10px 20px rgba(0,0,0,0.5)')

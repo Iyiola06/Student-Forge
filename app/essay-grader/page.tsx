@@ -79,7 +79,7 @@ export default function EssayGraderPage() {
     return (
         <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
             <Sidebar />
-            <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto md:ml-64">
+            <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
                 <div className="px-6 pt-8 pb-4 md:px-10">
                     <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
                         <span className="material-symbols-outlined text-[#ea580c] text-3xl">grading</span>
@@ -162,7 +162,7 @@ export default function EssayGraderPage() {
                     {/* Right Panel: Grading Results */}
                     <div className="flex-1 w-full lg:w-auto">
                         {!result && !isGrading ? (
-                            <div className="bg-white/50 dark:bg-[#1b1b27]/30 border border-dashed border-slate-300 dark:border-[#2d2d3f] rounded-2xl h-full min-h-[500px] flex flex-col items-center justify-center text-center p-10">
+                            <div className="bg-white/50 dark:bg-[#1b1b27]/30 border border-dashed border-slate-300 dark:border-[#2d2d3f] rounded-2xl h-full min-h-[300px] lg:min-h-[500px] flex flex-col items-center justify-center text-center p-6 md:p-10">
                                 <div className="bg-slate-200 dark:bg-[#252535] p-5 rounded-full mb-6 text-slate-500 dark:text-slate-400">
                                     <span className="material-symbols-outlined text-5xl">fact_check</span>
                                 </div>
@@ -172,7 +172,7 @@ export default function EssayGraderPage() {
                                 </p>
                             </div>
                         ) : isGrading ? (
-                            <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] h-full min-h-[500px] flex flex-col items-center justify-center text-center p-10 shadow-sm">
+                            <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] h-full min-h-[300px] lg:min-h-[500px] flex flex-col items-center justify-center text-center p-6 md:p-10 shadow-sm">
                                 <div className="relative mb-8">
                                     <div className="size-20 border-4 border-slate-100 dark:border-[#252535] rounded-full"></div>
                                     <div className="absolute inset-0 size-20 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>

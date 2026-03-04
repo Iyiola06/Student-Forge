@@ -203,24 +203,25 @@ export default function SpaceReader({
     return (
         <div className="flex flex-col h-screen w-full bg-[#050510] text-white font-display overflow-hidden selection:bg-[#ea580c]/30">
             {/* Top Bar */}
-            <header className="h-14 border-b border-[#2d2d3f] bg-[#0c0c16]/90 backdrop-blur flex items-center justify-between px-6 shrink-0 z-40 relative shadow-md shadow-black/50">
-                <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[#38bdf8]">public</span>
-                    <h2 className="font-bold text-sm truncate max-w-[300px] text-slate-200">{resource.title}</h2>
+            <header className="h-14 border-b border-[#2d2d3f] bg-[#0c0c16]/90 backdrop-blur flex items-center justify-between px-3 md:px-6 shrink-0 z-40 relative shadow-md shadow-black/50">
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <span className="material-symbols-outlined text-[#38bdf8] text-[20px] shrink-0">public</span>
+                    <h2 className="font-bold text-xs md:text-sm truncate text-slate-200">{resource.title}</h2>
                 </div>
 
                 {/* Shields & XP */}
-                <div className="flex items-center gap-6">
-                    <div className="flex gap-1">
+                <div className="flex items-center gap-2 md:gap-6 shrink-0">
+                    <div className="flex gap-0.5 md:gap-1">
                         {[1, 2, 3].map(i => (
-                            <span key={i} className={`material-symbols-outlined text-sm ${i <= shields ? 'text-[#38bdf8] drop-shadow-[0_0_5px_#38bdf8]' : 'text-[#2d2d3f]'}`}>
+                            <span key={i} className={`material-symbols-outlined text-xs md:text-sm ${i <= shields ? 'text-[#38bdf8] drop-shadow-[0_0_5px_#38bdf8]' : 'text-[#2d2d3f]'}`}>
                                 verified_user
                             </span>
                         ))}
                     </div>
-                    <div className="text-[#ea580c] font-black text-sm drop-shadow-[0_0_5px_#ea580c]">+{xpEarned} XP</div>
-                    <button onClick={onAbort} className="text-xs font-bold text-slate-400 hover:text-red-400 uppercase tracking-widest transition-colors px-3 py-1.5 border border-transparent hover:border-red-500/30 rounded-lg">
-                        Abort Mission
+                    <div className="text-[#ea580c] font-black text-xs md:text-sm drop-shadow-[0_0_5px_#ea580c]">+{xpEarned}<span className="hidden md:inline"> XP</span></div>
+                    <button onClick={onAbort} className="text-[10px] md:text-xs font-bold text-slate-400 hover:text-red-400 uppercase tracking-wider md:tracking-widest transition-colors px-2 md:px-3 py-1.5 border border-transparent hover:border-red-500/30 rounded-lg whitespace-nowrap">
+                        <span className="hidden md:inline">Abort Mission</span>
+                        <span className="md:hidden">Abort</span>
                     </button>
                 </div>
 
@@ -239,11 +240,11 @@ export default function SpaceReader({
 
                 {/* Milestone Banner */}
                 {milestone && (
-                    <div className="absolute top-10 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-top-10 fade-in zoom-in duration-500">
-                        <div className="bg-[#101022]/90 backdrop-blur-md border border-[#ea580c] px-10 py-4 rounded-2xl shadow-[0_0_40px_rgba(234,88,12,0.4)] text-center flex flex-col items-center">
-                            <span className="material-symbols-outlined text-4xl text-[#ea580c] mb-1">workspace_premium</span>
-                            <h2 className="text-2xl font-black text-white">{milestone.text}</h2>
-                            <p className="text-sm font-bold text-[#ea580c] uppercase tracking-widest mt-1">Keep Pushing Forward!</p>
+                    <div className="absolute top-6 md:top-10 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-top-10 fade-in zoom-in duration-500 w-[90%] md:w-auto max-w-md">
+                        <div className="bg-[#101022]/90 backdrop-blur-md border border-[#ea580c] px-6 md:px-10 py-3 md:py-4 rounded-2xl shadow-[0_0_40px_rgba(234,88,12,0.4)] text-center flex flex-col items-center">
+                            <span className="material-symbols-outlined text-3xl md:text-4xl text-[#ea580c] mb-1">workspace_premium</span>
+                            <h2 className="text-lg md:text-2xl font-black text-white">{milestone.text}</h2>
+                            <p className="text-xs md:text-sm font-bold text-[#ea580c] uppercase tracking-widest mt-1">Keep Pushing Forward!</p>
                         </div>
                     </div>
                 )}
@@ -257,7 +258,7 @@ export default function SpaceReader({
                 ))}
 
                 {/* Left 68%: PDF Canvas or Text View */}
-                <main className="flex-1 lg:w-[68%] h-full bg-[#050510] relative flex items-center justify-center border-r border-[#2d2d3f] p-4 md:p-8">
+                <main className="flex-1 lg:w-[68%] h-full bg-[#050510] relative flex items-center justify-center border-r border-[#2d2d3f] p-2 md:p-8">
                     {!isPdf && textPages.length === 0 && (
                         <div className="flex flex-col items-center text-slate-500">
                             <div className="size-16 rounded-full border border-dashed border-[#ea580c] animate-spin border-t-transparent mx-auto mb-4" />
@@ -282,10 +283,10 @@ export default function SpaceReader({
                         {/* Space Thruster Buttons */}
                         {numPages > 0 && (
                             <>
-                                <button onClick={() => handleTurn(-1)} disabled={currentPage <= 1} className="absolute top-1/2 -left-4 md:-left-20 -translate-y-1/2 size-12 rounded-full border border-[#2d2d3f] bg-[#101022]/80 backdrop-blur hover:bg-[#1b1b2f] hover:border-[#38bdf8] flex items-center justify-center transition-all disabled:opacity-20 group z-50">
+                                <button onClick={() => handleTurn(-1)} disabled={currentPage <= 1} className="absolute top-1/2 left-1 md:-left-20 -translate-y-1/2 size-10 md:size-12 rounded-full border border-[#2d2d3f] bg-[#101022]/80 backdrop-blur hover:bg-[#1b1b2f] hover:border-[#38bdf8] flex items-center justify-center transition-all disabled:opacity-20 group z-50">
                                     <span className="material-symbols-outlined text-slate-400 group-hover:text-[#38bdf8]">chevron_left</span>
                                 </button>
-                                <button onClick={() => handleTurn(1)} disabled={currentPage >= numPages} className="absolute top-1/2 -right-4 md:-right-20 -translate-y-1/2 size-12 rounded-full border border-[#2d2d3f] bg-[#101022]/80 backdrop-blur hover:bg-[#1b1b2f] hover:border-[#ea580c] flex items-center justify-center transition-all disabled:opacity-20 group shadow-[0_0_15px_rgba(234,88,12,0.1)] hover:shadow-[0_0_20px_rgba(234,88,12,0.4)] z-50">
+                                <button onClick={() => handleTurn(1)} disabled={currentPage >= numPages} className="absolute top-1/2 right-1 md:-right-20 -translate-y-1/2 size-10 md:size-12 rounded-full border border-[#2d2d3f] bg-[#101022]/80 backdrop-blur hover:bg-[#1b1b2f] hover:border-[#ea580c] flex items-center justify-center transition-all disabled:opacity-20 group shadow-[0_0_15px_rgba(234,88,12,0.1)] hover:shadow-[0_0_20px_rgba(234,88,12,0.4)] z-50">
                                     <span className="material-symbols-outlined text-slate-400 group-hover:text-[#ea580c]">chevron_right</span>
                                 </button>
                             </>

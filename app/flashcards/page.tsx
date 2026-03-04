@@ -303,33 +303,33 @@ export default function FlashcardsPage() {
                                     {/* Dynamic Aura Background */}
                                     <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full aura-glow pointer-events-none z-0 ${isFlipped ? 'aura-highlight' : 'aura-base'}`}></div>
 
-                                    <div className="w-full flex justify-between items-center mb-10 bg-white/80 dark:bg-[#1a1a24]/80 backdrop-blur-xl p-5 rounded-3xl border border-slate-200 dark:border-[#2d2d3f] shadow-2xl relative z-10">
-                                        <div className="flex items-center gap-6">
-                                            <div className="relative group">
-                                                <div className="h-3 w-64 bg-slate-100 dark:bg-[#13131a] rounded-full overflow-hidden border border-slate-200 dark:border-[#2d2d3f] shadow-inner">
+                                    <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 md:mb-10 bg-white/80 dark:bg-[#1a1a24]/80 backdrop-blur-xl p-3 md:p-5 rounded-2xl md:rounded-3xl border border-slate-200 dark:border-[#2d2d3f] shadow-2xl relative z-10 gap-3">
+                                        <div className="flex items-center gap-3 md:gap-6 w-full sm:w-auto">
+                                            <div className="relative group flex-1 sm:flex-none">
+                                                <div className="h-3 w-full sm:w-64 bg-slate-100 dark:bg-[#13131a] rounded-full overflow-hidden border border-slate-200 dark:border-[#2d2d3f] shadow-inner">
                                                     <div className="h-full bg-gradient-to-r from-[#ea580c] to-[#f97316] transition-all duration-700 ease-out relative" style={{ width: `${((currentIndex + 1) / flashcards.length) * 100}%` }}>
                                                         <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
                                                     </div>
                                                 </div>
                                                 <div className="absolute -top-1 -right-1 size-3 bg-[#ea580c] rounded-full animate-ping opacity-50"></div>
                                             </div>
-                                            <div className="flex flex-col">
-                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Synapse Progress</span>
-                                                <span className="text-sm font-black text-[#ea580c]">{currentIndex + 1} <span className="text-slate-400 opacity-50">/</span> {flashcards.length}</span>
+                                            <div className="flex flex-col shrink-0">
+                                                <span className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Progress</span>
+                                                <span className="text-xs md:text-sm font-black text-[#ea580c]">{currentIndex + 1} <span className="text-slate-400 opacity-50">/</span> {flashcards.length}</span>
                                             </div>
                                         </div>
                                         <button
                                             onClick={() => setIsDrilling(false)}
-                                            className="px-5 py-2.5 bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-slate-400 text-[11px] font-black uppercase tracking-wider rounded-xl hover:bg-red-500 hover:text-white transition-all flex items-center gap-2 group border border-slate-200 dark:border-[#2d2d3f] shadow-sm"
+                                            className="px-4 md:px-5 py-2 md:py-2.5 bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-slate-400 text-[10px] md:text-[11px] font-black uppercase tracking-wider rounded-xl hover:bg-red-500 hover:text-white transition-all flex items-center gap-1.5 md:gap-2 group border border-slate-200 dark:border-[#2d2d3f] shadow-sm w-full sm:w-auto justify-center"
                                         >
-                                            <span className="material-symbols-outlined text-[18px] group-hover:rotate-90 transition-transform">close</span>
+                                            <span className="material-symbols-outlined text-[16px] md:text-[18px] group-hover:rotate-90 transition-transform">close</span>
                                             Abort Session
                                         </button>
                                     </div>
 
                                     {/* 3D Flip Card */}
                                     <div
-                                        className="w-full max-w-2xl h-[400px] md:h-[500px] [perspective:2000px] group cursor-pointer relative z-10"
+                                        className="w-full max-w-2xl h-[350px] md:h-[500px] [perspective:2000px] group cursor-pointer relative z-10"
                                         onClick={() => setIsFlipped(!isFlipped)}
                                     >
                                         <div className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}>
@@ -369,12 +369,12 @@ export default function FlashcardsPage() {
                                     </div>
 
                                     {/* Controls (visible when flipped) */}
-                                    <div className={`mt-12 flex gap-6 transition-all duration-700 transform relative z-10 ${isFlipped ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}>
-                                        <button onClick={nextCard} className="px-10 py-5 rounded-3xl bg-white dark:bg-[#1a1a24] text-slate-700 dark:text-white font-black text-xs uppercase tracking-[0.2em] hover:bg-slate-50 dark:hover:bg-[#2d2d3f] transition-all flex items-center gap-3 border-2 border-slate-200 dark:border-[#2d2d3f] shadow-xl hover:shadow-2xl hover:-translate-y-1">
+                                    <div className={`mt-6 md:mt-12 flex flex-col sm:flex-row gap-3 md:gap-6 transition-all duration-700 transform relative z-10 w-full max-w-2xl ${isFlipped ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}>
+                                        <button onClick={nextCard} className="flex-1 px-6 md:px-10 py-4 md:py-5 rounded-2xl md:rounded-3xl bg-white dark:bg-[#1a1a24] text-slate-700 dark:text-white font-black text-xs uppercase tracking-[0.2em] hover:bg-slate-50 dark:hover:bg-[#2d2d3f] transition-all flex items-center justify-center gap-2 md:gap-3 border-2 border-slate-200 dark:border-[#2d2d3f] shadow-xl hover:shadow-2xl hover:-translate-y-1">
                                             <span className="material-symbols-outlined text-orange-500">retry</span>
                                             Review Again
                                         </button>
-                                        <button onClick={nextCard} className="px-12 py-5 rounded-3xl bg-green-500 hover:bg-green-400 text-[#0a0a0f] font-black text-xs uppercase tracking-[0.2em] shadow-[0_20px_40px_-10px_rgba(34,197,94,0.4)] transition-all flex items-center gap-3 hover:-translate-y-1 active:scale-95 group">
+                                        <button onClick={nextCard} className="flex-1 px-6 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl bg-green-500 hover:bg-green-400 text-[#0a0a0f] font-black text-xs uppercase tracking-[0.2em] shadow-[0_20px_40px_-10px_rgba(34,197,94,0.4)] transition-all flex items-center justify-center gap-2 md:gap-3 hover:-translate-y-1 active:scale-95 group">
                                             <span className="material-symbols-outlined group-hover:rotate-12 transition-transform">verified_user</span>
                                             Mark Mastered
                                         </button>
@@ -446,7 +446,7 @@ export default function FlashcardsPage() {
                             )
                         ) : (
                             // Premium Empty State
-                            <div className="bg-white dark:bg-[#1a1a24] rounded-3xl border border-slate-200 dark:border-[#2d2d3f] p-12 flex flex-col items-center justify-center text-center h-full min-h-[500px] shadow-sm relative overflow-hidden group">
+                            <div className="bg-white dark:bg-[#1a1a24] rounded-3xl border border-slate-200 dark:border-[#2d2d3f] p-6 md:p-12 flex flex-col items-center justify-center text-center h-full min-h-[300px] md:min-h-[500px] shadow-sm relative overflow-hidden group">
                                 <div className="absolute top-0 right-0 w-64 h-64 bg-[#ea580c]/5 blur-[100px] -mr-32 -mt-32 rounded-full"></div>
                                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#3b3bfa]/5 blur-[100px] -ml-32 -mb-32 rounded-full"></div>
 

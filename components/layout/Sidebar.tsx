@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Swal from 'sweetalert2';
 
 export default function Sidebar() {
     const pathname = usePathname();
@@ -30,6 +31,21 @@ export default function Sidebar() {
     }, [isOpen]);
 
     const handleLogout = async () => {
+        const result = await Swal.fire({
+            title: 'Leaving so soon?',
+            text: 'Are you sure you want to log out?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#ea580c',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, log out',
+            cancelButtonText: 'Stay',
+            background: document.documentElement.classList.contains('dark') ? '#1b1b27' : '#ffffff',
+            color: document.documentElement.classList.contains('dark') ? '#ffffff' : '#0f172a',
+        });
+
+        if (!result.isConfirmed) return;
+
         const supabase = createClient();
         await supabase.auth.signOut();
         router.push('/login');

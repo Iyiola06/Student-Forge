@@ -58,10 +58,10 @@ export default function LeaderboardPage() {
         <div className="flex-1 flex flex-col w-full max-w-[1440px] mx-auto">
           <div className="px-6 pt-10 pb-4 md:px-12 flex items-center justify-between">
             <div>
-              <h1 className="text-5xl font-black text-white tracking-tighter">
+              <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter">
                 GALACTIC RANKS
               </h1>
-              <p className="text-[10px] font-black text-[#ea580c] uppercase tracking-[0.5em] mt-1">Season 1: The Nebula Dawn</p>
+              <p className="text-[9px] md:text-[10px] font-black text-[#ea580c] uppercase tracking-[0.3em] md:tracking-[0.5em] mt-1">Season 1: The Nebula Dawn</p>
             </div>
 
             <div className="hidden md:flex items-center gap-4">
@@ -86,7 +86,7 @@ export default function LeaderboardPage() {
                 <>
                   {/* Top 3 Podium */}
                   {top3.length > 0 && (
-                    <div className="flex flex-col md:flex-row justify-center items-center md:items-end gap-12 md:gap-8 mb-16 pt-16 relative">
+                    <div className="flex flex-col md:flex-row justify-center items-center md:items-end gap-6 md:gap-8 mb-10 md:mb-16 pt-8 md:pt-16 relative">
                       {/* 2nd Place */}
                       {top3[1] ? (
                         <div className="flex flex-col items-center group order-2 md:order-1">
@@ -104,9 +104,9 @@ export default function LeaderboardPage() {
                               RANK 02
                             </div>
                           </div>
-                          <div className="text-center w-32">
-                            <p className="font-black text-white truncate text-lg tracking-tighter">{getName(top3[1].id, top3[1].full_name)}</p>
-                            <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">{top3[1].xp?.toLocaleString()} fuel</p>
+                          <div className="text-center w-28 md:w-32">
+                            <p className="font-black text-white truncate text-base md:text-lg tracking-tighter">{getName(top3[1].id, top3[1].full_name)}</p>
+                            <p className="text-[10px] md:text-xs text-slate-400 font-bold uppercase tracking-widest">{top3[1].xp?.toLocaleString()} fuel</p>
                           </div>
                           <div className="h-12 md:h-32 w-20 md:w-28 bg-gradient-to-b from-slate-400/20 to-transparent border-t-4 border-slate-400 rounded-t-3xl mt-4 opacity-40 group-hover:opacity-100 transition-opacity"></div>
                         </div>
@@ -136,8 +136,8 @@ export default function LeaderboardPage() {
                               APEX
                             </div>
                           </div>
-                          <div className="text-center w-40">
-                            <p className="text-2xl font-black text-white tracking-tighter">{getName(top3[0].id, top3[0].full_name)}</p>
+                          <div className="text-center w-36 md:w-40">
+                            <p className="text-xl md:text-2xl font-black text-white tracking-tighter">{getName(top3[0].id, top3[0].full_name)}</p>
                             <div className="flex items-center justify-center gap-2 mt-1">
                               <span className="px-2 py-0.5 bg-yellow-500/10 border border-yellow-500/30 rounded text-[9px] font-black text-yellow-500 uppercase">Grand Marshal</span>
                               <p className="text-sm text-[#ea580c] font-black">{top3[0].xp?.toLocaleString()} <span className="text-[10px]">FUEL</span></p>
@@ -164,9 +164,9 @@ export default function LeaderboardPage() {
                               RANK 03
                             </div>
                           </div>
-                          <div className="text-center w-32">
-                            <p className="font-black text-white truncate text-lg tracking-tighter">{getName(top3[2].id, top3[2].full_name)}</p>
-                            <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">{top3[2].xp?.toLocaleString()} fuel</p>
+                          <div className="text-center w-28 md:w-32">
+                            <p className="font-black text-white truncate text-base md:text-lg tracking-tighter">{getName(top3[2].id, top3[2].full_name)}</p>
+                            <p className="text-[10px] md:text-xs text-slate-400 font-bold uppercase tracking-widest">{top3[2].xp?.toLocaleString()} fuel</p>
                           </div>
                           <div className="h-16 md:h-24 w-20 md:w-28 bg-gradient-to-b from-orange-600/20 to-transparent border-t-4 border-orange-600 rounded-t-3xl mt-4 opacity-40 group-hover:opacity-100 transition-opacity"></div>
                         </div>
@@ -177,8 +177,8 @@ export default function LeaderboardPage() {
                   )}
 
                   {/* List */}
-                  <div className="bg-[#101022]/40 backdrop-blur-xl rounded-[2rem] border border-[#2d2d3f] overflow-hidden shadow-2xl">
-                    <div className="p-8 border-b border-[#2d2d3f] flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div className="bg-[#101022]/40 backdrop-blur-xl rounded-2xl md:rounded-[2rem] border border-[#2d2d3f] overflow-hidden shadow-2xl">
+                    <div className="p-4 md:p-8 border-b border-[#2d2d3f] flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
                       <div className="flex items-center gap-3">
                         <div className="size-10 rounded-full bg-[#ea580c]/10 border border-[#ea580c]/30 flex items-center justify-center">
                           <span className="material-symbols-outlined text-[#ea580c]">rocket_launch</span>
@@ -210,12 +210,12 @@ export default function LeaderboardPage() {
                         const rank = index + 4;
                         const isMe = user.id === profile?.id;
                         return (
-                          <div key={user.id} className={`flex items-center gap-6 p-6 transition-all group ${isMe ? 'bg-[#ea580c]/10 relative' : 'hover:bg-white/5'}`}>
+                          <div key={user.id} className={`flex items-center gap-3 md:gap-6 p-4 md:p-6 transition-all group ${isMe ? 'bg-[#ea580c]/10 relative' : 'hover:bg-white/5'}`}>
                             {isMe && <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#ea580c]"></div>}
 
-                            <span className={`w-8 text-center font-black text-xl tabular-nums ${isMe ? 'text-[#ea580c]' : (rank < 10 ? 'text-slate-500' : 'text-slate-700')}`}>{rank}</span>
+                            <span className={`w-6 md:w-8 text-center font-black text-base md:text-xl tabular-nums ${isMe ? 'text-[#ea580c]' : (rank < 10 ? 'text-slate-500' : 'text-slate-700')}`}>{rank}</span>
 
-                            <div className="size-14 rounded-2xl bg-[#0c0c16] overflow-hidden relative border border-[#2d2d3f] group-hover:border-[#38bdf8] transition-colors">
+                            <div className="size-10 md:size-14 rounded-xl md:rounded-2xl bg-[#0c0c16] overflow-hidden relative border border-[#2d2d3f] group-hover:border-[#38bdf8] transition-colors shrink-0">
                               <Image
                                 src={getAvatar(user.avatar_url)}
                                 alt="User avatar"
@@ -226,22 +226,22 @@ export default function LeaderboardPage() {
                             </div>
 
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2">
-                                <p className="font-black text-white text-lg tracking-tight truncate">{getName(user.id, user.full_name)}</p>
-                                {rank < 10 && <span className="material-symbols-outlined text-[#38bdf8] text-sm">verified</span>}
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <p className="font-black text-white text-sm md:text-lg tracking-tight truncate">{getName(user.id, user.full_name)}</p>
+                                {rank < 10 && <span className="material-symbols-outlined text-[#38bdf8] text-xs md:text-sm shrink-0">verified</span>}
                               </div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-black text-[#ea580c] uppercase">Lvl {user.level || 1}</span>
-                                <span className="text-[10px] text-slate-600 font-bold">•</span>
-                                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{rank < 20 ? 'Elite Pilot' : 'Space Cadet'}</span>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-[9px] md:text-[10px] font-black text-[#ea580c] uppercase">Lvl {user.level || 1}</span>
+                                <span className="text-[9px] md:text-[10px] text-slate-600 font-bold hidden xs:inline">•</span>
+                                <span className="text-[9px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest truncate">{rank < 20 ? 'Elite Pilot' : 'Cadet'}</span>
                               </div>
                             </div>
 
-                            <div className="text-right">
-                              <span className={`text-xl font-black tabular-nums transition-colors ${isMe ? 'text-[#ea580c]' : 'text-white'}`}>
+                            <div className="text-right shrink-0">
+                              <span className={`text-base md:text-xl font-black tabular-nums transition-colors ${isMe ? 'text-[#ea580c]' : 'text-white'}`}>
                                 {user.xp?.toLocaleString()}
                               </span>
-                              <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-0.5">Quantum Fuel</div>
+                              <div className="text-[8px] md:text-[9px] font-black text-slate-500 uppercase tracking-widest mt-0.5">FUEL</div>
                             </div>
                           </div>
                         );
