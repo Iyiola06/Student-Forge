@@ -12,14 +12,27 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 export const runtime = 'nodejs';
 export const maxDuration = 60; // 60 second background processing budget
 
+import { createClient } from '@supabase/supabase-js';
+
 async function processResource(
     filePath: string,
     fileName: string,
     fileType: string,
     fileSize: number,
-    resourceId: string
+    resourceId: string,
+    accessToken: string
 ) {
-    const supabase = await createServerClient();
+    const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            global: {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        }
+    );
 
     try {
         // Download from storage
@@ -145,11 +158,13 @@ async function processResource(
 export async function POST(request: Request) {
     try {
         const supabase = await createServerClient();
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        const { data: { session }, error: authError } = await supabase.auth.getSession();
 
-        if (authError || !user) {
+        if (authError || !session?.user || !session.access_token) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
+
+        const user = session.user;
 
         const { filePath, fileName, fileType, fileSize } = await request.json();
 
@@ -184,7 +199,7 @@ export async function POST(request: Request) {
 
         // Schedule the background processing after the response is sent
         after(async () => {
-            await processResource(filePath, fileName, fileType, fileSize, resourceData.id);
+            await processResource(filePath, fileName, fileType, fileSize, resourceData.id, session.access_token);
         });
 
         // Return immediately with 202 Accepted

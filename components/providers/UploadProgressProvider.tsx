@@ -38,14 +38,17 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
                 },
                 (payload) => {
                     const newStatus = payload.new.processing_status;
-                    // Only react if we are currently tracking a processing file
-                    // (In a real app, we might match by resource ID)
-                    if (uploadState === 'processing') {
-                        if (newStatus === 'ready') {
+                    const oldStatus = payload.old.processing_status;
+
+                    if (newStatus === 'ready' && oldStatus !== 'ready') {
+                        toast.success(`${payload.new.title || 'Your file'} is ready and analyzed in the background!`);
+                        if (uploadState === 'processing') {
                             setUploadState('ready');
-                            toast.success(`Your file is ready — view questions!`);
-                            setTimeout(() => dismiss(), 5000); // auto dismiss after 5s
-                        } else if (newStatus === 'error') {
+                            setTimeout(() => dismiss(), 5000);
+                        }
+                    } else if (newStatus === 'error' && oldStatus !== 'error') {
+                        toast.error(`${payload.new.title || 'File'} analysis failed: ${payload.new.processing_error || 'Background error'}`);
+                        if (uploadState === 'processing') {
                             setUploadState('error');
                             setError(payload.new.processing_error || 'Background processing failed');
                         }
@@ -225,7 +228,7 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
                                 {uploadState === 'error' && <span className="text-red-500 font-bold">Failed to upload</span>}
                             </span>
                         </div>
-                        {(uploadState === 'ready' || uploadState === 'error') && (
+                        {(uploadState === 'ready' || uploadState === 'error' || uploadState === 'processing') && (
                             <button onClick={dismiss} className="text-slate-400 hover:text-slate-600 dark:hover:text-white">
                                 <span className="material-symbols-outlined text-[18px]">close</span>
                             </button>

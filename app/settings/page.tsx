@@ -292,7 +292,7 @@ export default function SettingsPage() {
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                     Email Address
                   </label>
-                  <div className="flex gap-4">
+                  <div className="flex flex-wrap gap-4">
                     <input
                       className="flex-1 rounded-lg text-slate-500 border border-slate-300 dark:border-[#2d2d3f] bg-slate-100 dark:bg-[#252535] p-2.5 text-sm outline-none dark:text-slate-400 cursor-not-allowed"
                       defaultValue="Linked via Authentication"

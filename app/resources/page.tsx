@@ -28,7 +28,7 @@ export default function ResourcesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
   const { uploadFile, uploadState } = useUpload();
-  const isUploading = uploadState === 'uploading' || uploadState === 'compressing' || uploadState === 'processing';
+  const isUploading = uploadState === 'uploading' || uploadState === 'compressing';
 
   // Resource Management State
   const [selectedFolder, setSelectedFolder] = useState<string>('All');

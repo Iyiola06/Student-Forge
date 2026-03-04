@@ -25,6 +25,8 @@ export default function SpaceReader({
     const [isRendering, setIsRendering] = useState(false);
     const [textPages, setTextPages] = useState<string[]>([]);
     const [isPdf, setIsPdf] = useState(false);
+    const [isDocx, setIsDocx] = useState(false);
+    const [isPptx, setIsPptx] = useState(false);
 
     const [sessionSeconds, setSessionSeconds] = useState(0);
     const [xpEarned, setXpEarned] = useState(0);
@@ -46,7 +48,12 @@ export default function SpaceReader({
         const loadResource = async () => {
             const fileType = resource.file_type || '';
             const isActuallyPdf = fileType.includes('pdf');
+            const isActuallyDocx = fileType.includes('wordprocessingml') || resource.title.endsWith('.docx');
+            const isActuallyPptx = fileType.includes('presentationml') || resource.title.endsWith('.pptx');
+
             setIsPdf(isActuallyPdf);
+            setIsDocx(isActuallyDocx);
+            setIsPptx(isActuallyPptx);
 
             if (isActuallyPdf) {
                 try {
@@ -269,6 +276,23 @@ export default function SpaceReader({
                     <div className="relative shadow-[0_0_30px_rgba(14,116,144,0.15)] rounded-md w-full max-w-4xl h-full flex items-center justify-center overflow-auto scrollbar-hide">
                         {isPdf ? (
                             <canvas ref={canvasRef} className="bg-white max-w-full h-auto object-contain rounded-md" />
+                        ) : isPptx ? (
+                            <div className="bg-slate-900 border-4 border-slate-700/50 p-6 md:p-12 w-full max-w-5xl aspect-video overflow-y-auto text-slate-100 shadow-2xl flex flex-col items-center justify-center text-center rounded-xl relative">
+                                <span className="absolute top-4 left-4 material-symbols-outlined text-orange-500 opacity-50 text-4xl">slideshow</span>
+                                <div className="prose prose-invert max-w-none text-xl md:text-3xl leading-relaxed font-black">
+                                    {textPages[currentPage - 1]?.split('\n').filter(l => l.trim()).map((line, i) => (
+                                        <p key={i} className="mb-6">{line}</p>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : isDocx ? (
+                            <div className="bg-white border text-slate-900 border-slate-200 p-8 md:p-14 w-full max-w-3xl aspect-[1/1.4] overflow-y-auto shadow-2xl rounded-sm">
+                                <div className="prose prose-slate max-w-none text-lg leading-relaxed pt-4">
+                                    {textPages[currentPage - 1]?.split('\n').filter(l => l.trim()).map((line, i) => (
+                                        <p key={i} className="mb-4">{line}</p>
+                                    ))}
+                                </div>
+                            </div>
                         ) : (
                             <div className="bg-[#101022]/80 backdrop-blur-xl border border-[#2d2d3f] p-6 md:p-12 rounded-3xl w-full max-h-full overflow-y-auto text-slate-200 shadow-2xl">
                                 <div className="text-xs font-black text-[#38bdf8] uppercase tracking-[0.3em] mb-6 opacity-60">Sector Data Transmission</div>
