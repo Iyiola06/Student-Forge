@@ -157,23 +157,19 @@ export default function SettingsPage() {
 
     setIsUploadingAvatar(true);
     try {
-      const supabase = createClient();
-      const fileExt = file.name.split('.').pop();
-      const fileName = `avatar_${Date.now()}.${fileExt}`;
-      const filePath = `${profile.id}/${fileName}`;
+      const body = new FormData();
+      body.append('file', file);
 
-      // We'll use the existing avatars bucket
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file);
+      const res = await fetch('/api/upload-avatar', {
+        method: 'POST',
+        body,
+      });
 
-      if (uploadError) throw uploadError;
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload failed');
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
-
-      setFormData({ ...formData, avatarUrl: publicUrl });
+      setFormData({ ...formData, avatarUrl: data.url });
+      toast.success('Avatar uploaded!');
     } catch (err: any) {
       toast.error(`Error uploading avatar: ${err.message}`);
     } finally {

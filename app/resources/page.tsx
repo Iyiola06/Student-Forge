@@ -213,16 +213,16 @@ export default function ResourcesPage() {
           <main className="flex-1 md:overflow-y-auto px-4 md:px-8 flex flex-col 2xl:flex-row gap-8 pb-10">
             <div className="flex-1 space-y-6 min-w-0">
               {/* Search and Tabs */}
-              <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
+              <div className="flex flex-col gap-4">
                 {activeTab === 'library' ? (
-                  <div className="relative w-full lg:w-[400px]">
+                  <div className="relative w-full">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
                       <span className="material-symbols-outlined text-[20px]">
                         search
                       </span>
                     </span>
                     <input
-                      className="w-full h-12 pl-12 pr-4 rounded-xl bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c] outline-none shadow-sm"
+                      className="w-full h-12 md:h-14 pl-12 pr-4 rounded-xl bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] text-sm md:text-base text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c] outline-none shadow-sm"
                       placeholder="Search topics, books, past papers..."
                       type="text"
                     />
@@ -231,7 +231,7 @@ export default function ResourcesPage() {
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleBookSearch} className="relative w-full lg:w-[400px]">
+                  <form onSubmit={handleBookSearch} className="relative w-full">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
                       <span className="material-symbols-outlined text-[20px]">
                         search
@@ -240,30 +240,30 @@ export default function ResourcesPage() {
                     <input
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full h-12 pl-12 pr-28 rounded-xl bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c] outline-none shadow-sm"
+                      className="w-full h-12 md:h-14 pl-12 pr-28 rounded-xl bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] text-sm md:text-base text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c] outline-none shadow-sm"
                       placeholder="Search Google Books (e.g., Biology)..."
                       type="text"
                     />
                     <button
                       type="submit"
                       disabled={isLoadingBooks}
-                      className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[#ea580c] hover:bg-[#ea580c]/90 text-white rounded-lg text-xs font-bold transition-colors disabled:opacity-50"
+                      className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[#ea580c] hover:bg-[#ea580c]/90 text-white rounded-lg text-xs md:text-sm font-bold transition-colors disabled:opacity-50"
                     >
                       {isLoadingBooks ? 'Searching' : 'Search'}
                     </button>
                   </form>
                 )}
 
-                <div className="flex bg-white dark:bg-[#1a1a24] p-1.5 rounded-xl border border-slate-200 dark:border-[#2d2d3f] w-full lg:w-auto shadow-sm">
+                <div className="flex bg-white dark:bg-[#1a1a24] p-1.5 rounded-xl border border-slate-200 dark:border-[#2d2d3f] w-full shadow-sm">
                   <button
                     onClick={() => setActiveTab('library')}
-                    className={`flex-1 lg:px-8 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'library' ? 'bg-[#f5f5f8] dark:bg-[#252535] text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'}`}
+                    className={`flex-1 px-4 md:px-8 py-2.5 md:py-3 rounded-lg text-xs md:text-sm font-bold transition-all ${activeTab === 'library' ? 'bg-[#f5f5f8] dark:bg-[#252535] text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'}`}
                   >
                     My Uploads
                   </button>
                   <button
                     onClick={() => setActiveTab('books')}
-                    className={`flex-1 lg:px-8 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'books' ? 'bg-[#f5f5f8] dark:bg-[#252535] text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'}`}
+                    className={`flex-1 px-4 md:px-8 py-2.5 md:py-3 rounded-lg text-xs md:text-sm font-bold transition-all ${activeTab === 'books' ? 'bg-[#f5f5f8] dark:bg-[#252535] text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'}`}
                   >
                     Library Books
                   </button>
@@ -598,10 +598,10 @@ export default function ResourcesPage() {
                 />
               </div>
             ) : selectedResource.file_type.includes('wordprocessingml') || selectedResource.title.endsWith('.docx') || selectedResource.file_type.includes('presentationml') || selectedResource.title.endsWith('.pptx') ? (
-              <div className="w-full max-w-4xl bg-white dark:bg-[#1a1a24] p-8 md:p-12 rounded-2xl shadow-2xl overflow-y-auto max-h-full border border-slate-200 dark:border-[#2d2d3f]">
-                <div className="flex items-center gap-3 mb-8 pb-6 border-b border-slate-100 dark:border-[#2d2d3f]">
-                  <div className={`p-3 rounded-xl ${getIconForType(selectedResource.file_type).colorClass}`}>
-                    <span className="material-symbols-outlined text-3xl">{getIconForType(selectedResource.file_type).icon}</span>
+              <div className="w-full max-w-4xl bg-white dark:bg-[#1a1a24] p-5 md:p-12 rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh] md:max-h-full border border-slate-200 dark:border-[#2d2d3f] my-auto">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-3 mb-6 md:mb-8 pb-4 md:pb-6 border-b border-slate-100 dark:border-[#2d2d3f]">
+                  <div className={`p-2 md:p-3 rounded-xl ${getIconForType(selectedResource.file_type).colorClass}`}>
+                    <span className="material-symbols-outlined text-2xl md:text-3xl">{getIconForType(selectedResource.file_type).icon}</span>
                   </div>
                   <div>
                     <h3 className="font-black text-2xl text-slate-900 dark:text-white leading-tight">{selectedResource.title}</h3>
