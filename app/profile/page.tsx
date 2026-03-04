@@ -56,8 +56,8 @@ export default function ProfilePage() {
         {/* Main Content */}
         <main className="flex flex-1 flex-col px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full">
           {/* Profile Header */}
-          <div className="bg-[#101022]/60 backdrop-blur-xl rounded-[2rem] border border-[#2d2d3f] overflow-hidden mb-8 shadow-2xl relative">
-            <div className="h-48 bg-gradient-to-r from-[#ea580c] via-purple-900 to-[#050510] relative overflow-hidden">
+          <div className="bg-white dark:bg-[#101022]/60 backdrop-blur-xl rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] overflow-hidden mb-8 shadow-xl dark:shadow-2xl relative">
+            <div className="h-48 bg-gradient-to-r from-[#ea580c] via-purple-900 to-[#0c0c16] relative overflow-hidden">
               <div className="absolute inset-0 opacity-30" style={{ background: 'radial-gradient(circle at top right, #38bdf8 0%, transparent 70%)' }}></div>
               <div className="absolute inset-0 stars-container opacity-20"></div>
             </div>
@@ -74,7 +74,7 @@ export default function ProfilePage() {
                     />
                   </div>
                   <div className="mb-2">
-                    <h1 className="text-3xl md:text-4xl font-black text-white tracking-tighter flex flex-col md:flex-row items-center gap-2 md:gap-3">
+                    <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tighter flex flex-col md:flex-row items-center gap-2 md:gap-3">
                       {profile?.full_name || 'Student'}
                       {profile?.active_title && (
                         <span className="text-[10px] bg-[#ea580c]/20 text-[#ea580c] border border-[#ea580c]/40 px-3 py-1 rounded-full uppercase tracking-widest font-black">
@@ -94,24 +94,24 @@ export default function ProfilePage() {
                 </Link>
               </div>
               {/* Stats Row */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 border-t border-[#2d2d3f] pt-10">
-                <div className="flex flex-col items-center border-r border-[#2d2d3f]">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 border-t border-slate-100 dark:border-[#2d2d3f] pt-10">
+                <div className="flex flex-col items-center border-r border-slate-100 dark:border-[#2d2d3f]">
                   <span className="material-symbols-outlined text-[#38bdf8] mb-2">rocket_launch</span>
-                  <span className="text-2xl md:text-3xl font-black text-white">
+                  <span className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">
                     {profile?.resources_uploaded || 0}
                   </span>
                   <span className="text-[9px] md:text-[10px] text-center font-black text-slate-500 uppercase tracking-widest mt-1 px-2">Planets Conquered</span>
                 </div>
-                <div className="flex flex-col items-center md:border-r border-[#2d2d3f]">
+                <div className="flex flex-col items-center md:border-r border-slate-100 dark:border-[#2d2d3f]">
                   <span className="material-symbols-outlined text-[#7c3aed] mb-2">military_tech</span>
-                  <span className="text-2xl md:text-3xl font-black text-white">
+                  <span className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">
                     {profile?.boss_wins || 0}
                   </span>
                   <span className="text-[9px] md:text-[10px] text-center font-black text-slate-500 uppercase tracking-widest mt-1 px-2">Beasts Slayed</span>
                 </div>
-                <div className="flex flex-col items-center border-r border-[#2d2d3f] md:border-r-0 lg:border-r">
+                <div className="flex flex-col items-center border-r border-slate-100 dark:border-[#2d2d3f] md:border-r-0 lg:border-r">
                   <span className="material-symbols-outlined text-[#38bdf8] mb-2">auto_stories</span>
-                  <span className="text-2xl md:text-3xl font-black text-white">
+                  <span className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">
                     {profile?.quizzes_taken || 0}
                   </span>
                   <span className="text-[9px] md:text-[10px] text-center font-black text-slate-500 uppercase tracking-widest mt-1 px-2">Data Scans</span>
@@ -130,9 +130,9 @@ export default function ProfilePage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-8">
               {/* Badges Section */}
-              <section className="bg-[#101022]/40 backdrop-blur-xl border border-[#2d2d3f] rounded-[2rem] p-8">
+              <section className="bg-white dark:bg-[#101022]/40 backdrop-blur-xl border border-slate-200 dark:border-[#2d2d3f] rounded-[2rem] p-8 shadow-sm dark:shadow-none">
                 <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-xl font-black text-white tracking-widest uppercase">Ribbons & Commendations</h2>
+                  <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-widest uppercase">Ribbons & Commendations</h2>
                   <span className="text-[10px] font-black text-[#38bdf8] uppercase tracking-[0.2em]">{profile?.badges?.length || 0} / {BADGES.length} UNLOCKED</span>
                 </div>
 
@@ -142,14 +142,14 @@ export default function ProfilePage() {
                     return (
                       <div
                         key={badge.id}
-                        className={`bg-[#0c0c16]/50 rounded-2xl border transition-all p-4 flex flex-col items-center text-center group ${isUnlocked ? 'border-[#ea580c]/30 hover:border-[#ea580c] shadow-lg shadow-[#ea580c]/5' : 'border-[#2d2d3f] grayscale opacity-40'}`}
+                        className={`bg-slate-50 dark:bg-[#0c0c16]/50 rounded-2xl border transition-all p-4 flex flex-col items-center text-center group ${isUnlocked ? 'border-[#ea580c]/30 hover:border-[#ea580c] shadow-lg shadow-[#ea580c]/5' : 'border-slate-100 dark:border-[#2d2d3f] grayscale opacity-40'}`}
                       >
-                        <div className={`size-14 rounded-full flex items-center justify-center border-2 mb-3 transition-transform ${isUnlocked ? 'bg-[#ea580c]/10 text-[#ea580c] border-[#ea580c]/20 group-hover:scale-110' : 'bg-[#101022] text-slate-700 border-[#2d2d3f]'}`}>
+                        <div className={`size-14 rounded-full flex items-center justify-center border-2 mb-3 transition-transform ${isUnlocked ? 'bg-[#ea580c]/10 text-[#ea580c] border-[#ea580c]/20 group-hover:scale-110' : 'bg-white dark:bg-[#101022] text-slate-300 dark:text-slate-700 border-slate-100 dark:border-[#2d2d3f]'}`}>
                           <span className="material-symbols-outlined text-2xl">
                             {isUnlocked ? badge.icon : 'lock'}
                           </span>
                         </div>
-                        <h3 className="font-black text-[10px] mb-1 text-white uppercase truncate w-full">
+                        <h3 className="font-black text-[10px] mb-1 text-slate-800 dark:text-white uppercase truncate w-full">
                           {badge.name}
                         </h3>
                         <p className="text-[8px] text-slate-500 font-bold leading-tight">
@@ -164,8 +164,8 @@ export default function ProfilePage() {
 
             <div className="space-y-8">
               {/* Customization Section */}
-              <section className="bg-[#101022]/40 backdrop-blur-xl border border-[#2d2d3f] rounded-[2rem] p-8">
-                <h2 className="text-xl font-black text-white tracking-widest uppercase mb-6">Galactic Identity</h2>
+              <section className="bg-white dark:bg-[#101022]/40 backdrop-blur-xl border border-slate-200 dark:border-[#2d2d3f] rounded-[2rem] p-8 shadow-sm dark:shadow-none">
+                <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-widest uppercase mb-6">Galactic Identity</h2>
 
                 <div className="space-y-6">
                   <div>
@@ -174,7 +174,7 @@ export default function ProfilePage() {
                       <span className="text-[10px] font-black text-[#38bdf8] uppercase tracking-widest">{(profile?.unlocked_titles?.length || 0)} Found</span>
                     </div>
                     <select
-                      className="w-full bg-[#0c0c16] border border-[#2d2d3f] text-white rounded-xl px-4 py-3 font-bold text-xs focus:ring-2 focus:ring-[#ea580c] outline-none"
+                      className="w-full bg-slate-50 dark:bg-[#0c0c16] border border-slate-200 dark:border-[#2d2d3f] text-slate-900 dark:text-white rounded-xl px-4 py-3 font-bold text-xs focus:ring-2 focus:ring-[#ea580c] outline-none"
                       value={profile?.active_title || ''}
                       onChange={(e) => handleTitleChange(e.target.value)}
                     >
@@ -194,14 +194,14 @@ export default function ProfilePage() {
                         <button
                           key={t}
                           onClick={() => handleThemeChange(t)}
-                          className={`py-6 rounded-xl border-2 flex flex-col items-center justify-center gap-2 group transition-all ${profile?.active_theme === t ? 'border-[#ea580c] bg-[#ea580c]/5' : 'border-[#2d2d3f] bg-[#0c0c16] hover:border-slate-600'}`}
+                          className={`py-6 rounded-xl border-2 flex flex-col items-center justify-center gap-2 group transition-all ${profile?.active_theme === t ? 'border-[#ea580c] bg-[#ea580c]/5' : 'border-slate-100 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#0c0c16] hover:border-slate-300 dark:hover:border-slate-600'}`}
                         >
                           <div className={`size-4 rounded-full ${t === 'Standard' ? 'bg-slate-400' :
                             t === 'Nebula' ? 'bg-purple-500 shadow-[0_0_10px_purple]' :
                               t === 'Eclipse' ? 'bg-[#38bdf8] shadow-[0_0_10px_cyan]' :
                                 'bg-red-500 shadow-[0_0_10px_red]'
                             }`} />
-                          <span className="text-[8px] font-black text-white uppercase tracking-tighter">{t}</span>
+                          <span className="text-[8px] font-black text-slate-700 dark:text-white uppercase tracking-tighter">{t}</span>
                         </button>
                       ))}
                     </div>

@@ -12,6 +12,7 @@ interface Resource {
   id: string;
   title: string;
   content: string;
+  processing_status: string;
 }
 
 export default function GeneratorPage() {
@@ -54,7 +55,7 @@ export default function GeneratorPage() {
 
       const { data } = await supabase
         .from('resources')
-        .select('id, title, content')
+        .select('id, title, content, processing_status')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
@@ -85,7 +86,7 @@ export default function GeneratorPage() {
           if (user) {
             const { data } = await supabase
               .from('resources')
-              .select('id, title, content')
+              .select('id, title, content, processing_status')
               .eq('user_id', user.id)
               .order('created_at', { ascending: false });
             if (data) setResources(data);
@@ -106,8 +107,14 @@ export default function GeneratorPage() {
 
     if (selectedResource) {
       const resource = resources.find(r => r.id === selectedResource);
-      if (resource && resource.content) {
-        contentToUse = resource.content;
+      if (resource) {
+        if (resource.processing_status !== 'ready') {
+          setError('Sector data is still warping (AI processing). Please wait a moment until the scan is complete.');
+          return;
+        }
+        if (resource.content) {
+          contentToUse = resource.content;
+        }
       }
     }
 

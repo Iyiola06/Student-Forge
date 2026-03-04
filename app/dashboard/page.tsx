@@ -133,8 +133,8 @@ export default function DashboardPage() {
   let smartCTA = null;
   if (!recentResource && generatedReadiness === 0) {
     smartCTA = (
-      <div className="bg-gradient-to-r from-blue-600 to-[#7c3aed] rounded-2xl p-6 text-white shadow-xl shadow-blue-500/20 mb-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-        <div>
+      <div className="bg-gradient-to-r from-blue-600 to-[#7c3aed] rounded-2xl p-6 text-white shadow-xl shadow-blue-500/20 mb-8 flex flex-col lg:flex-row items-center justify-between gap-6">
+        <div className="text-center lg:text-left">
           <h2 className="text-2xl font-black mb-2 flex items-center gap-2">
             <span className="text-3xl">👋</span> You haven't studied anything yet!
           </h2>
@@ -167,8 +167,8 @@ export default function DashboardPage() {
     );
   } else if (profile && profile.streak_days > 0 && profile.streak_days < 3) {
     smartCTA = (
-      <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-6 text-white shadow-xl shadow-orange-500/20 mb-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-        <div>
+      <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-6 text-white shadow-xl shadow-orange-500/20 mb-8 flex flex-col lg:flex-row items-center justify-between gap-6">
+        <div className="text-center lg:text-left">
           <h2 className="text-2xl font-black mb-2 flex items-center gap-2">
             <span className="material-symbols-outlined">local_fire_department</span> Keep Your Streak Alive!
           </h2>

@@ -520,9 +520,9 @@ export default function SignupPage() {
             </div>
 
             {/* Social Login Buttons */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="w-full">
               <button
-                className="flex items-center justify-center gap-2 h-11 rounded-lg border border-slate-200 dark:border-[#3b3b54] bg-white dark:bg-[#252535] hover:bg-slate-50 dark:hover:bg-[#2d2d3f] transition-colors text-slate-700 dark:text-white font-medium text-sm disabled:opacity-50"
+                className="flex items-center justify-center gap-2 h-11 w-full rounded-lg border border-slate-200 dark:border-[#3b3b54] bg-white dark:bg-[#252535] hover:bg-slate-50 dark:hover:bg-[#2d2d3f] transition-colors text-slate-700 dark:text-white font-medium text-sm disabled:opacity-50"
                 type="button"
                 onClick={() => handleOAuth('google')}
                 disabled={isLoading}
@@ -550,25 +550,8 @@ export default function SignupPage() {
                     fill="#EA4335"
                   ></path>
                 </svg>
-                Google
+                Sign up with Google
               </button>
-              {/* 
-              <button
-                className="flex items-center justify-center gap-2 h-11 rounded-lg border border-slate-200 dark:border-[#3b3b54] bg-white dark:bg-[#252535] hover:bg-slate-50 dark:hover:bg-[#2d2d3f] transition-colors text-slate-700 dark:text-white font-medium text-sm disabled:opacity-50"
-                type="button"
-                onClick={() => handleOAuth('apple')}
-                disabled={isLoading}
-              >
-                <svg
-                  aria-hidden="true"
-                  className="h-5 w-5 dark:fill-white fill-slate-900"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12.9103 1.76562C13.5786 0.94236 14.6713 0.281896 15.6558 0.3125C15.7516 1.48705 15.313 2.65191 14.6433 3.45347C13.9213 4.31846 12.8735 4.92728 11.9079 4.85806C11.7825 3.63321 12.285 2.49306 12.9103 1.76562ZM17.4776 17.5106C16.8906 18.3698 16.0967 19.5594 15.0694 19.5855C14.0772 19.6053 13.7547 18.9959 12.6074 18.9959C11.4503 18.9959 11.0858 19.5761 10.1343 19.6152C9.13111 19.6644 8.2721 18.3797 7.64304 17.4699C6.35703 15.6083 5.37894 12.1932 6.66699 9.95755C7.30691 8.84752 8.44855 8.14088 9.61273 8.12134C10.6055 8.09893 11.3653 8.79093 11.9701 8.79093C12.5649 8.79093 13.5283 7.97092 14.7171 8.08272C15.2078 8.10665 16.5925 8.28318 17.4873 9.59368C17.4124 9.64095 15.7486 10.6095 15.7725 12.6288C15.7951 14.6853 17.5459 15.6881 17.6111 15.7229C17.4716 16.4258 17.0252 17.4938 17.4776 17.5106Z"></path>
-                </svg>
-                Apple
-              </button>
-*/}
             </div>
             {/* Login Link */}
             <div className="text-center pt-2">

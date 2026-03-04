@@ -349,6 +349,32 @@ export default function SpaceReader({
                                 </div>
                             </div>
 
+                            {/* Final Boss CTA (appears near end or fixed) */}
+                            <div className="mt-12 bg-gradient-to-br from-[#1e1b4b] to-[#0c0c16] border border-[#ea580c]/30 p-6 rounded-2xl shadow-xl shadow-[#ea580c]/10 relative group overflow-hidden">
+                                <h4 className="text-[#ea580c] font-black text-xs uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-[14px]">warning</span>
+                                    Sector Anomaly Detected
+                                </h4>
+                                <p className="text-[10px] text-slate-400 font-bold mb-4 leading-relaxed group-hover:text-slate-300 transition-colors">
+                                    A high-density knowledge rift has stabilized. Defeat the Nebula Beast to secure your data and earn bonus XP.
+                                </p>
+                                {resource.processing_status === 'ready' ? (
+                                    <button
+                                        onClick={() => onBossEncounter('Final Arena')}
+                                        className="w-full py-3 bg-[#ea580c] hover:bg-[#f97316] text-[#0c0c16] font-black text-[10px] uppercase tracking-widest rounded-xl transition-all shadow-[0_10px_20px_-5px_rgba(234,88,12,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(234,88,12,0.6)] active:scale-95 group/btn"
+                                    >
+                                        <span className="flex items-center justify-center gap-2 group-hover/btn:translate-x-1 transition-transform">
+                                            Engage Target
+                                            <span className="material-symbols-outlined text-[16px]">rocket_launch</span>
+                                        </span>
+                                    </button>
+                                ) : (
+                                    <div className="w-full py-3 bg-slate-800/50 text-slate-500 font-black text-[10px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 border border-slate-700/50 cursor-not-allowed">
+                                        <div className="size-3 border-2 border-slate-500 border-t-transparent rounded-full animate-spin" />
+                                        Scanning Sector...
+                                    </div>
+                                )}
+                            </div>
                             <div className="bg-[#101022]/60 border border-[#2d2d3f] rounded-xl p-4 mt-auto mb-10 w-full relative overflow-hidden group">
                                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#ea580c]/5 to-[#ea580c]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 <div className="text-[10px] uppercase font-bold text-slate-500 flex items-center gap-1 mb-2">

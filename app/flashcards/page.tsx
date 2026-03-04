@@ -334,7 +334,7 @@ export default function FlashcardsPage() {
                                     >
                                         <div className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}>
                                             {/* Front */}
-                                            <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-white dark:bg-[#1a1a24] border-2 border-slate-200 dark:border-[#2d2d3f] rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] p-8 md:p-14 flex flex-col items-center justify-center text-center transition-all group-hover:border-[#ea580c]/50 holographic-sheen">
+                                            <div className="absolute top-0 left-0 w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-white dark:bg-[#1a1a24] border-2 border-slate-200 dark:border-[#2d2d3f] rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] p-8 md:p-14 flex flex-col items-center justify-center text-center transition-all group-hover:border-[#ea580c]/50 holographic-sheen">
                                                 <div className="absolute top-10 left-1/2 -translate-x-1/2 bg-[#ea580c]/10 text-[#ea580c] px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-[#ea580c]/20 flex items-center gap-2">
                                                     <span className="size-1.5 rounded-full bg-[#ea580c] animate-pulse"></span>
                                                     Insight Prompt
