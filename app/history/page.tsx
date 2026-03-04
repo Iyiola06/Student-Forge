@@ -16,6 +16,10 @@ interface HistoryItem {
 export default function HistoryPage() {
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const PAGE_SIZE = 20;
 
   useEffect(() => {
     async function fetchHistory() {
@@ -27,16 +31,46 @@ export default function HistoryPage() {
         .from('study_history')
         .select('*')
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .range(0, PAGE_SIZE - 1);
 
       if (data) {
         setHistoryItems(data as HistoryItem[]);
+        setHasMore(data.length === PAGE_SIZE);
       }
       setIsLoading(false);
     }
 
     fetchHistory();
   }, []);
+
+  const loadMore = async () => {
+    setIsLoadingMore(true);
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data } = await supabase
+      .from('study_history')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .range(historyItems.length, historyItems.length + PAGE_SIZE - 1);
+
+    if (data) {
+      setHistoryItems(prev => [...prev, ...(data as HistoryItem[])]);
+      setHasMore(data.length === PAGE_SIZE);
+    }
+    setIsLoadingMore(false);
+  };
+
+  const filteredItems = searchQuery.trim()
+    ? historyItems.filter(item => {
+      const q = searchQuery.toLowerCase();
+      const info = formatItemInfo(item);
+      return info.title.toLowerCase().includes(q) || item.action_type.toLowerCase().includes(q);
+    })
+    : historyItems;
 
   const formatItemInfo = (item: HistoryItem) => {
     const action = item.action_type.toLowerCase();
@@ -115,6 +149,8 @@ export default function HistoryPage() {
                   className="w-full sm:w-64 h-10 pl-10 pr-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c]"
                   placeholder="Search history..."
                   type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
               <button className="p-2 border border-slate-200 dark:border-[#2d2d3f] bg-white dark:bg-[#1b1b27] text-slate-500 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-slate-100 dark:bg-[#252535] rounded-lg transition-colors flex items-center justify-center">
@@ -135,7 +171,7 @@ export default function HistoryPage() {
                     <div className="size-5 border-2 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
                     Loading history...
                   </div>
-                ) : historyItems.length === 0 ? (
+                ) : filteredItems.length === 0 ? (
                   <div className="pl-20 py-12 flex flex-col items-start gap-2">
                     <div className="bg-slate-100 dark:bg-[#252535] p-3 rounded-xl mb-2">
                       <span className="material-symbols-outlined text-3xl text-slate-500 dark:text-slate-400">history_toggle_off</span>
@@ -144,7 +180,7 @@ export default function HistoryPage() {
                     <p className="text-sm text-slate-500 dark:text-[#9c9cba]">Your study history and timeline will appear here once you start taking quizzes or reading documents.</p>
                   </div>
                 ) : (
-                  historyItems.map((item, index) => {
+                  filteredItems.map((item, index) => {
                     const info = formatItemInfo(item);
                     return (
                       <div key={item.id} className="relative pl-20">
@@ -186,10 +222,14 @@ export default function HistoryPage() {
               </div>
 
               {/* Load More */}
-              {historyItems.length > 0 && (
+              {hasMore && !searchQuery && historyItems.length > 0 && (
                 <div className="text-center mt-8">
-                  <button className="px-4 py-2 bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm font-medium text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-slate-100 dark:bg-[#252535] transition-colors shadow-sm">
-                    Load More History
+                  <button
+                    onClick={loadMore}
+                    disabled={isLoadingMore}
+                    className="px-4 py-2 bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm font-medium text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] transition-colors shadow-sm disabled:opacity-50"
+                  >
+                    {isLoadingMore ? 'Loading...' : 'Load More History'}
                   </button>
                 </div>
               )}

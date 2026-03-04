@@ -1,9 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
+
+function getPasswordStrength(password: string) {
+  let score = 0;
+  if (password.length >= 6) score++;
+  if (password.length >= 10) score++;
+  if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+  const clamped = Math.min(score, 4);
+  const labels = ['Too weak', 'Weak', 'Medium', 'Strong', 'Very strong'];
+  const colors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-green-500', 'bg-emerald-500'];
+  return { score: clamped, label: labels[clamped], color: colors[clamped] };
+}
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -12,11 +26,12 @@ export default function ResetPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const strength = useMemo(() => getPasswordStrength(password), [password]);
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      toast.error('Passwords do not match');
       return;
     }
     if (password.length < 6) {
@@ -159,15 +174,18 @@ export default function ResetPasswordPage() {
                     </div>
                   </label>
                   {/* Strength Meter */}
-                  <div className="flex gap-1 pt-1 h-1.5 w-full">
-                    <div className="h-full w-1/4 rounded-full bg-green-500"></div>
-                    <div className="h-full w-1/4 rounded-full bg-green-500"></div>
-                    <div className="h-full w-1/4 rounded-full bg-slate-200 dark:bg-slate-700"></div>
-                    <div className="h-full w-1/4 rounded-full bg-slate-200 dark:bg-slate-700"></div>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Medium strength
-                  </p>
+                  {password.length > 0 && (
+                    <>
+                      <div className="flex gap-1 pt-1 h-1.5 w-full">
+                        {[0, 1, 2, 3].map((i) => (
+                          <div key={i} className={`h-full w-1/4 rounded-full transition-colors ${i < strength.score ? strength.color : 'bg-slate-200 dark:bg-slate-700'}`} />
+                        ))}
+                      </div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        {strength.label}
+                      </p>
+                    </>
+                  )}
                 </div>
                 <div>
                   <button

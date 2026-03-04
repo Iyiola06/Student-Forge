@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { toast } from 'react-toastify';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');

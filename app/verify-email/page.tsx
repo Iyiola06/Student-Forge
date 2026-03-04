@@ -4,6 +4,7 @@ import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 function VerifyEmailContent() {
   const searchParams = useSearchParams();
@@ -34,9 +35,9 @@ function VerifyEmailContent() {
       });
       if (error) throw error;
       setTimeLeft(60);
-      alert('Verification email resent!');
+      toast.success('Verification email resent!');
     } catch (err: any) {
-      alert(err.message || 'Error resending email');
+      toast.error(err.message || 'Error resending email');
     } finally {
       setIsResending(false);
     }

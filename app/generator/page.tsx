@@ -6,6 +6,7 @@ import Sidebar from '@/components/layout/Sidebar';
 import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { jsPDF } from 'jspdf';
+import { useUpload } from '@/components/providers/UploadProgressProvider';
 
 interface Resource {
   id: string;
@@ -21,12 +22,17 @@ export default function GeneratorPage() {
   const [type, setType] = useState('mcq');
   const [difficulty, setDifficulty] = useState('medium');
   const [count, setCount] = useState(10);
+  const [curriculum, setCurriculum] = useState<string>('');
+  const [topic, setTopic] = useState<string>('');
 
   const [isGenerating, setIsGenerating] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
   const [generatedData, setGeneratedData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
   const [isUploading, setIsUploading] = useState(false);
+  const { uploadFile, uploadState } = useUpload();
+  const isFileUploading = uploadState === 'uploading' || uploadState === 'compressing' || uploadState === 'processing';
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Quiz Interaction States
@@ -60,77 +66,40 @@ export default function GeneratorPage() {
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
+    event.target.value = '';
     setIsUploading(true);
-    setPastedText(`Uploading and analyzing ${file.name}...`);
+    setPastedText('');
     setSelectedResource('');
 
-    try {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
+    // subscribe to realtime so when background processing finishes we auto-select
+    const supabase = createClient();
+    const ch = supabase
+      .channel('generator-upload-' + Date.now())
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'resources' }, async (payload) => {
+        if (payload.new.processing_status === 'ready') {
+          setSelectedResource(payload.new.id);
+          setIsUploading(false);
+          supabase.removeChannel(ch);
+          // Refresh resource list inline
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            const { data } = await supabase
+              .from('resources')
+              .select('id, title, content')
+              .eq('user_id', user.id)
+              .order('created_at', { ascending: false });
+            if (data) setResources(data);
+          }
+        } else if (payload.new.processing_status === 'error') {
+          setIsUploading(false);
+          supabase.removeChannel(ch);
+        }
+      })
+      .subscribe();
 
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
-      const filePath = `${user.id}/${fileName}`;
-
-      const { data: storageData, error: storageError } = await supabase.storage
-        .from('resources')
-        .upload(filePath, file);
-
-      if (storageError) {
-        throw new Error(storageError.message || 'Failed to upload to storage');
-      }
-
-      setPastedText(`Analyzing document content...`);
-      const response = await fetch('/api/resources/upload', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          filePath,
-          fileName: file.name,
-          fileType: file.type,
-          fileSize: file.size,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Processing failed');
-      }
-
-      // Refresh the library to show the new file
-      async function fetchUpdatedResources() {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
-        const { data } = await supabase
-          .from('resources')
-          .select('id, title, content')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false });
-        if (data) setResources(data);
-      }
-      await fetchUpdatedResources();
-
-      // Automatically select the new resource
-      if (result.resource && result.resource.id) {
-        setSelectedResource(result.resource.id);
-        setPastedText('');
-      } else {
-        setPastedText(result.resource?.content || 'Text extraction completed.');
-      }
-
-    } catch (error: any) {
-      alert(`Error uploading file: ${error.message}`);
-      setPastedText('');
-    } finally {
-      setIsUploading(false);
-      event.target.value = '';
-    }
+    await uploadFile(file);
   };
+
 
   const handleGenerate = async () => {
     let contentToUse = pastedText;
@@ -161,8 +130,14 @@ export default function GeneratorPage() {
     }
 
     setIsGenerating(true);
+    setLoadingStep(0);
     setError(null);
     setGeneratedData(null);
+
+    // Dynamic loading steps
+    const loadingInterval = setInterval(() => {
+      setLoadingStep(prev => (prev < 4 ? prev + 1 : prev));
+    }, 2500);
 
     try {
       const response = await fetch('/api/ai/generate', {
@@ -172,7 +147,9 @@ export default function GeneratorPage() {
           content: contentToUse,
           type,
           difficulty,
-          count
+          count,
+          curriculum: curriculum.trim() || undefined,
+          topic: topic.trim() || undefined
         })
       });
 
@@ -190,6 +167,7 @@ export default function GeneratorPage() {
     } catch (err: any) {
       setError(err.message);
     } finally {
+      clearInterval(loadingInterval);
       setIsGenerating(false);
     }
   };
@@ -730,9 +708,49 @@ export default function GeneratorPage() {
                       </div>
                     </div>
 
-                    <button disabled={isGenerating} onClick={handleGenerate} className="w-full mt-2 bg-[#5b5bfa] hover:bg-[#5b5bfa]/90 border-[1.5px] border-[#7b7bff] disabled:opacity-70 text-slate-900 dark:text-white font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(91,91,250,0.3)] transition-all flex items-center justify-center gap-2">
-                      {isGenerating ? <div className="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : <span className="material-symbols-outlined">auto_awesome</span>}
-                      {isGenerating ? 'Generating...' : 'Generate Questions'}
+                    {/* OPTIONAL CONTEXT */}
+                    <div className="flex flex-col md:flex-row gap-8">
+                      <div className="flex-1">
+                        <label className="block text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                          Curriculum (Optional)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. IB, AP, GCSE..."
+                          value={curriculum}
+                          onChange={(e) => setCurriculum(e.target.value)}
+                          className="w-full bg-slate-100 dark:bg-[#252535] border border-transparent focus:border-[#ea580c] rounded-xl px-4 py-3 text-sm focus:outline-none dark:text-white transition-colors"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <label className="block text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                          Specific Topic (Optional)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Mitochondria, World War 2..."
+                          value={topic}
+                          onChange={(e) => setTopic(e.target.value)}
+                          className="w-full bg-slate-100 dark:bg-[#252535] border border-transparent focus:border-[#ea580c] rounded-xl px-4 py-3 text-sm focus:outline-none dark:text-white transition-colors"
+                        />
+                      </div>
+                    </div>
+
+                    <button disabled={isGenerating} onClick={handleGenerate} className="w-full mt-2 bg-[#5b5bfa] hover:bg-[#5b5bfa]/90 border-[1.5px] border-[#7b7bff] disabled:opacity-70 text-slate-900 dark:text-white font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(91,91,250,0.3)] transition-all flex items-center justify-center gap-2 relative overflow-hidden">
+                      {isGenerating ? (
+                        <>
+                          <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                          <div className="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin z-10"></div>
+                          <span className="z-10 relative">
+                            {['Reading document text...', 'Extracting core concepts...', 'Formulating questions...', 'Validating answers...', 'Finalizing quiz...'][loadingStep]}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="material-symbols-outlined">auto_awesome</span>
+                          Generate Questions
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>

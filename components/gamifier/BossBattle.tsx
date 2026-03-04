@@ -27,12 +27,40 @@ export default function BossBattle({
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const [bossHealth, setBossHealth] = useState(3);
-    const [playerShields, setPlayerShields] = useState(3);
+    const [bossHealth, setBossHealth] = useState(100);
+    const [playerShields, setPlayerShields] = useState(100);
     const [hitEffect, setHitEffect] = useState(false);
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
     const [battleState, setBattleState] = useState<'intro' | 'fighting' | 'won' | 'lost'>('intro');
+
+    // Overhaul States
+    const [timeLeft, setTimeLeft] = useState(20);
+    const [taunt, setTaunt] = useState("Your primitive brain cannot fathom this knowledge!");
+
+    const INTRO_TAUNTS = [
+        "A challenger? How predictably pathetic.",
+        "I feed on the ignorant. Come closer.",
+        "Your 'study' means nothing in the void!"
+    ];
+
+    const HIT_TAUNTS = [
+        "A lucky strike, insect!",
+        "Gah! You actually read that chapter?!",
+        "Impossible! My shields are impregnable!"
+    ];
+
+    const MISS_TAUNTS = [
+        "Hahaha! Is that all you got?",
+        "Weak! Your focus wanes!",
+        "Predictable. Your failure was assured."
+    ];
+
+    const HURRY_TAUNTS = [
+        "Time is ticking, fleshling!",
+        "Thinking hard? Or hardly thinking?",
+        "Hesitation is defeat!"
+    ];
 
     useEffect(() => {
         async function fetchQuestions() {
@@ -62,6 +90,40 @@ export default function BossBattle({
         fetchQuestions();
     }, [content]);
 
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (battleState === 'fighting' && !selectedOption && timeLeft > 0) {
+            timer = setInterval(() => {
+                setTimeLeft(t => {
+                    const newTime = t - 1;
+                    if (newTime === 5) {
+                        setTaunt(HURRY_TAUNTS[Math.floor(Math.random() * HURRY_TAUNTS.length)]);
+                    }
+                    if (newTime <= 0) {
+                        handleAnswerTimeout();
+                        return 0;
+                    }
+                    return newTime;
+                });
+            }, 1000);
+        }
+        return () => clearInterval(timer);
+    }, [battleState, selectedOption, timeLeft]);
+
+    const handleAnswerTimeout = () => {
+        if (selectedOption || battleState !== 'fighting') return;
+
+        setSelectedOption('TIMEOUT'); // Dummy value
+        setIsCorrect(false);
+        setTaunt("Too slow! The void claims your shields!");
+        takeDamage();
+    };
+
+    const takeDamage = () => {
+        setPlayerShields(s => Math.max(0, s - 34));
+        setTimeout(() => checkEncounterEnd(false), 2000);
+    };
+
     const handleAnswer = (option: string) => {
         if (selectedOption || battleState !== 'fighting') return;
 
@@ -70,24 +132,41 @@ export default function BossBattle({
         setIsCorrect(correct);
 
         if (correct) {
-            setBossHealth(h => h - 1);
+            setBossHealth(h => Math.max(0, h - 34));
             setHitEffect(true);
+            setTaunt(HIT_TAUNTS[Math.floor(Math.random() * HIT_TAUNTS.length)]);
             setTimeout(() => setHitEffect(false), 500);
         } else {
-            setPlayerShields(s => s - 1);
+            setTaunt(MISS_TAUNTS[Math.floor(Math.random() * MISS_TAUNTS.length)]);
+            setPlayerShields(s => Math.max(0, s - 34));
         }
 
-        setTimeout(() => {
-            if (correct && bossHealth === 1) {
-                setBattleState('won');
-            } else if (!correct && playerShields === 1) {
-                setBattleState('lost');
-            } else {
-                setCurrentIdx(i => i + 1);
-                setSelectedOption(null);
-                setIsCorrect(null);
-            }
-        }, 2000);
+        setTimeout(() => checkEncounterEnd(correct), 2000);
+    };
+
+    const checkEncounterEnd = (wasCorrect: boolean) => {
+        setBossHealth(bh => {
+            setPlayerShields(ps => {
+                if (wasCorrect && bh <= 0) {
+                    setBattleState('won');
+                } else if (!wasCorrect && ps <= 0) {
+                    setBattleState('lost');
+                } else {
+                    setCurrentIdx(i => i + 1);
+                    setSelectedOption(null);
+                    setIsCorrect(null);
+                    setTimeLeft(20);
+                }
+                return ps;
+            });
+            return bh;
+        });
+    };
+
+    const startFight = () => {
+        setBattleState('fighting');
+        setTaunt(INTRO_TAUNTS[Math.floor(Math.random() * INTRO_TAUNTS.length)]);
+        setTimeLeft(20);
     };
 
     if (isLoading) {
@@ -120,26 +199,34 @@ export default function BossBattle({
 
             {/* Battle Header */}
             <header className="absolute top-10 left-0 w-full flex justify-between px-10 items-center">
-                <div className="flex flex-col gap-2">
-                    <div className="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Shield Integrity</div>
-                    <div className="flex gap-2">
-                        {[1, 2, 3].map(i => (
-                            <div key={i} className={`h-2 w-12 rounded-full ${i <= playerShields ? 'bg-[#38bdf8] shadow-[0_0_10px_#38bdf8]' : 'bg-slate-800'}`} />
-                        ))}
+                <div className="flex flex-col gap-2 w-64 max-w-[30vw]">
+                    <div className="text-[10px] uppercase font-bold text-[#38bdf8] tracking-widest bg-[#38bdf8]/10 w-max px-2 py-0.5 rounded">Player Shields</div>
+                    <div className="h-4 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-700 relative">
+                        <div
+                            className="h-full bg-gradient-to-r from-[#0369a1] to-[#38bdf8] transition-all duration-500 ease-out"
+                            style={{ width: `${playerShields}%` }}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white drop-shadow-md">
+                            {Math.ceil(playerShields)}%
+                        </div>
                     </div>
                 </div>
 
                 <div className="text-center">
-                    <div className="text-3xl font-black text-[#ea580c] tracking-tighter">THE NEBULA BEAST</div>
-                    <div className="text-[10px] uppercase font-bold text-[#7c3aed] tracking-[0.5em]">Milestone {milestone}</div>
+                    <div className="text-4xl font-black text-[#ea580c] tracking-tighter uppercase drop-shadow-[0_0_15px_rgba(234,88,12,0.5)]">THE NEBULA BEAST</div>
+                    <div className="text-[10px] uppercase font-bold text-[#7c3aed] tracking-[0.5em] mt-1">Milestone {milestone}</div>
                 </div>
 
-                <div className="flex flex-col gap-2 items-end">
-                    <div className="text-[10px] uppercase font-bold text-slate-500 tracking-widest text-right">Anomaly Health</div>
-                    <div className="flex gap-2">
-                        {[1, 2, 3].map(i => (
-                            <div key={i} className={`h-2 w-12 rounded-full ${i <= bossHealth ? 'bg-red-500 shadow-[0_0_10px_#ef4444]' : 'bg-slate-800'}`} />
-                        ))}
+                <div className="flex flex-col gap-2 items-end w-64 max-w-[30vw]">
+                    <div className="text-[10px] uppercase font-bold text-red-500 tracking-widest bg-red-500/10 w-max px-2 py-0.5 rounded">Anomaly Health</div>
+                    <div className="h-4 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-700 relative flex justify-end">
+                        <div
+                            className="h-full bg-gradient-to-l from-[#7f1d1d] to-[#ef4444] transition-all duration-500 ease-out absolute right-0"
+                            style={{ width: `${bossHealth}%` }}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white drop-shadow-md">
+                            {Math.ceil(bossHealth)}%
+                        </div>
                     </div>
                 </div>
             </header>
@@ -148,20 +235,37 @@ export default function BossBattle({
                 <div className="flex flex-col items-center max-w-2xl text-center">
                     <BossSVG type="beast" isHit={false} />
                     <h2 className="text-4xl font-black mt-8 mb-4">A Knowledge Rift Has Opened!</h2>
-                    <p className="text-slate-400 mb-10 leading-relaxed">
-                        To survive this encounter, you must correctly answer 3 questions derived from the data you've just uploaded. Wrong answers will deplete your energy shields.
+                    <p className="text-slate-400 mb-10 leading-relaxed text-lg">
+                        To survive this encounter, you must correctly answer 3 questions derived from the data you've just uploaded.<br />
+                        <span className="text-red-400 font-bold mt-2 inline-block">Warning: Questions are timed. Hesitation equals damage!</span>
                     </p>
                     <button
-                        onClick={() => setBattleState('fighting')}
-                        className="px-12 py-4 bg-gradient-to-r from-[#7c3aed] to-[#3b82f6] rounded-2xl font-black text-lg shadow-[0_0_30px_rgba(124,58,237,0.4)] hover:scale-105 transition-transform"
+                        onClick={startFight}
+                        className="px-14 py-5 bg-gradient-to-r from-[#7c3aed] to-[#3b82f6] rounded-2xl font-black text-xl shadow-[0_0_40px_rgba(124,58,237,0.5)] hover:scale-105 transition-all w-full max-w-sm hover:from-[#8b5cf6] hover:to-[#60a5fa] uppercase tracking-wider relative overflow-hidden group"
                     >
-                        ENGAGE TARGET
+                        <span className="relative z-10 hidden sm:inline">Engage Target</span>
+                        <span className="relative z-10 sm:hidden">Engage</span>
+                        <div className="absolute inset-0 w-full h-full bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12" />
                     </button>
                 </div>
             ) : battleState === 'fighting' ? (
                 <div className="flex flex-col items-center w-full max-w-4xl relative">
 
-                    <div className="mb-8 scale-75">
+                    {/* Timer */}
+                    <div className={`absolute -top-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center ${timeLeft <= 5 && !selectedOption ? 'animate-bounce text-red-500' : 'text-slate-300'}`}>
+                        <div className="text-[10px] uppercase font-black tracking-widest mb-1 opacity-70">Time Remaining</div>
+                        <div className="text-5xl font-black drop-shadow-md">
+                            0:{timeLeft.toString().padStart(2, '0')}
+                        </div>
+                    </div>
+
+                    <div className="mb-6 scale-75 mt-8 relative">
+                        {/* Boss Trash Talk Bubble */}
+                        <div className="absolute -right-32 -top-10 bg-[#1e1b4b] border-2 border-[#7c3aed] p-4 rounded-2xl rounded-bl-none max-w-xs shadow-[0_0_20px_rgba(124,58,237,0.3)] z-20 transition-all transform origin-bottom-left animate-[bounce_3s_ease-in-out_infinite]">
+                            <p className="text-white font-bold text-sm leading-tight italic">
+                                "{taunt}"
+                            </p>
+                        </div>
                         <BossSVG type="beast" isHit={hitEffect} />
                     </div>
 

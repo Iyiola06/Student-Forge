@@ -5,9 +5,12 @@ import { useProfile } from '@/hooks/useProfile';
 import { createClient } from '@/lib/supabase/client';
 import { useState, useEffect } from 'react';
 import { pushService } from '@/lib/pushService';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 export default function SettingsPage() {
-  const { profile, isLoading } = useProfile();
+  const { profile, isLoading, mutate } = useProfile();
+  const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [formData, setFormData] = useState({
@@ -80,13 +83,13 @@ export default function SettingsPage() {
         const NotificationAPI = typeof window !== 'undefined' ? (window as any).Notification : null;
 
         if (!NotificationAPI) {
-          alert('Push notifications are not supported in this browser.');
+          toast.warning('Push notifications are not supported in this browser.');
           return;
         }
 
         const permission = await NotificationAPI.requestPermission();
         if (permission !== 'granted') {
-          alert('Permission for notifications was denied.');
+          toast.warning('Permission for notifications was denied.');
           return;
         }
         await pushService.subscribeUser();
@@ -98,7 +101,7 @@ export default function SettingsPage() {
       }
     } catch (err: any) {
       console.error('Push toggle error:', err);
-      alert(`Failed to update push notifications: ${err.message}`);
+      toast.error(`Failed to update push notifications: ${err.message}`);
     } finally {
       setIsSaving(false);
     }
@@ -109,16 +112,16 @@ export default function SettingsPage() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user?.email) {
-        alert('No email associated with this account.');
+        toast.warning('No email associated with this account.');
         return;
       }
       const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) throw error;
-      alert('Password reset link sent to your email!');
+      toast.success('Password reset link sent to your email!');
     } catch (err: any) {
-      alert(`Error sending reset link: ${err.message}`);
+      toast.error(`Error sending reset link: ${err.message}`);
     }
   };
 
@@ -139,11 +142,10 @@ export default function SettingsPage() {
         }, { onConflict: 'id' });
 
       if (error) throw error;
-      alert('Profile updated successfully!');
-      // Force reload to update sidebar/header avatars
-      window.location.reload();
+      toast.success('Profile updated successfully!');
+      mutate?.();
     } catch (err: any) {
-      alert(`Error updating profile: ${err.message}`);
+      toast.error(`Error updating profile: ${err.message}`);
     } finally {
       setIsSaving(false);
     }
@@ -173,7 +175,7 @@ export default function SettingsPage() {
 
       setFormData({ ...formData, avatarUrl: publicUrl });
     } catch (err: any) {
-      alert(`Error uploading avatar: ${err.message}`);
+      toast.error(`Error uploading avatar: ${err.message}`);
     } finally {
       setIsUploadingAvatar(false);
       event.target.value = '';
@@ -361,6 +363,29 @@ export default function SettingsPage() {
                     <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#ea580c]"></div>
                   </label>
                 </div>
+                {pushNotifications && (
+                  <div className="pt-2 pl-0">
+                    <button
+                      onClick={async () => {
+                        try {
+                          const res = await fetch('/api/push/test', { method: 'POST' });
+                          const data = await res.json();
+                          if (res.ok) {
+                            toast.success(`Test notification sent! (${data.count} device${data.count !== 1 ? 's' : ''})`);
+                          } else {
+                            toast.error(data.error || 'Failed to send test notification');
+                          }
+                        } catch (err: any) {
+                          toast.error('Failed to reach notification server');
+                        }
+                      }}
+                      className="px-4 py-2 bg-[#ea580c]/10 text-[#ea580c] font-bold rounded-lg hover:bg-[#ea580c]/20 transition-colors text-sm flex items-center gap-2"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">notifications_active</span>
+                      Send Test Notification
+                    </button>
+                  </div>
+                )}
               </div>
             </section>
             {/* Danger Zone */}
@@ -377,7 +402,29 @@ export default function SettingsPage() {
                     Permanently delete your account and all data
                   </p>
                 </div>
-                <button className="px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors">
+                <button
+                  onClick={async () => {
+                    if (!window.confirm('Are you absolutely sure? This will permanently delete your account and all your data. This action cannot be undone.')) return;
+                    try {
+                      const supabase = createClient();
+                      const { data: { user } } = await supabase.auth.getUser();
+                      if (!user) return;
+                      // Delete profile data first
+                      await supabase.from('profiles').delete().eq('id', user.id);
+                      await supabase.from('resources').delete().eq('user_id', user.id);
+                      await supabase.from('flashcards').delete().eq('user_id', user.id);
+                      await supabase.from('study_history').delete().eq('user_id', user.id);
+                      await supabase.from('push_subscriptions').delete().eq('user_id', user.id);
+                      // Sign out
+                      await supabase.auth.signOut();
+                      toast.success('Account deleted. Goodbye!');
+                      router.push('/');
+                    } catch (err: any) {
+                      toast.error(`Failed to delete account: ${err.message}`);
+                    }
+                  }}
+                  className="px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors"
+                >
                   Delete Account
                 </button>
               </div>

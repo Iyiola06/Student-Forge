@@ -5,9 +5,41 @@ import Image from 'next/image';
 import Sidebar from '@/components/layout/Sidebar';
 import { useProfile } from '@/hooks/useProfile';
 import { BADGES } from '@/lib/constants/badges';
+import { createClient } from '@/lib/supabase/client';
+import { toast } from 'react-toastify';
 
 export default function ProfilePage() {
-  const { profile, isLoading } = useProfile();
+  const { profile, isLoading, mutate } = useProfile();
+
+  const handleTitleChange = async (title: string) => {
+    if (!profile) return;
+    const supabase = createClient();
+    const { error } = await supabase
+      .from('profiles')
+      .update({ active_title: title || null })
+      .eq('id', profile.id);
+    if (error) {
+      toast.error('Failed to update title');
+    } else {
+      toast.success('Title updated!');
+      mutate?.();
+    }
+  };
+
+  const handleThemeChange = async (theme: string) => {
+    if (!profile) return;
+    const supabase = createClient();
+    const { error } = await supabase
+      .from('profiles')
+      .update({ active_theme: theme })
+      .eq('id', profile.id);
+    if (error) {
+      toast.error('Failed to update theme');
+    } else {
+      toast.success(`Theme set to ${theme}!`);
+      mutate?.();
+    }
+  };
 
   if (isLoading) {
     return (
@@ -141,10 +173,14 @@ export default function ProfilePage() {
                       <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Selected Title</label>
                       <span className="text-[10px] font-black text-[#38bdf8] uppercase tracking-widest">{(profile?.unlocked_titles?.length || 0)} Found</span>
                     </div>
-                    <select className="w-full bg-[#0c0c16] border border-[#2d2d3f] text-white rounded-xl px-4 py-3 font-bold text-xs focus:ring-2 focus:ring-[#ea580c] outline-none">
+                    <select
+                      className="w-full bg-[#0c0c16] border border-[#2d2d3f] text-white rounded-xl px-4 py-3 font-bold text-xs focus:ring-2 focus:ring-[#ea580c] outline-none"
+                      value={profile?.active_title || ''}
+                      onChange={(e) => handleTitleChange(e.target.value)}
+                    >
                       <option value="">No Title</option>
                       {profile?.unlocked_titles?.map((t: string) => (
-                        <option key={t} value={t} selected={profile.active_title === t}>{t}</option>
+                        <option key={t} value={t}>{t}</option>
                       ))}
                     </select>
                   </div>
@@ -157,6 +193,7 @@ export default function ProfilePage() {
                       {['Standard', 'Nebula', 'Eclipse', 'Void', 'Nova', 'Supernova'].map(t => (
                         <button
                           key={t}
+                          onClick={() => handleThemeChange(t)}
                           className={`py-6 rounded-xl border-2 flex flex-col items-center justify-center gap-2 group transition-all ${profile?.active_theme === t ? 'border-[#ea580c] bg-[#ea580c]/5' : 'border-[#2d2d3f] bg-[#0c0c16] hover:border-slate-600'}`}
                         >
                           <div className={`size-4 rounded-full ${t === 'Standard' ? 'bg-slate-400' :

@@ -74,6 +74,7 @@ export async function POST(request: Request) {
 
                 // Explicitly set the worker source to avoid resolution errors on Vercel
                 try {
+                    // @ts-ignore
                     const pdfWorker = await import('pdfjs-dist/legacy/build/pdf.worker.mjs');
                     pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
                 } catch (workerErr) {

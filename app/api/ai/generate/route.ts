@@ -23,7 +23,7 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json();
-        const { content, type, difficulty, count } = body;
+        const { content, type, difficulty, count, curriculum, topic } = body;
 
         if (!content) {
             return NextResponse.json({ error: 'Content is required' }, { status: 400 });
@@ -73,6 +73,8 @@ export async function POST(request: Request) {
         switch (type) {
             case 'mcq':
                 systemInstruction = `You are an expert educator. Generate exactly ${count || 5} multiple-choice questions from the provided text. The difficulty should be ${difficulty || 'medium'}.
+${curriculum ? `Align the questions to the ${curriculum} curriculum standards.` : ''}
+${topic ? `Focus the questions heavily on the topic of: ${topic}.` : ''}
         
 You must return a JSON array of objects adhering exactly to this structure:
 [{
@@ -85,7 +87,9 @@ You must return a JSON array of objects adhering exactly to this structure:
 
             case 'fill_in_gap':
                 systemInstruction = `You are an expert educator. Generate exactly ${count || 5} fill-in-the-gap questions from the provided text. The difficulty should be ${difficulty || 'medium'}.
-        
+${curriculum ? `Align the questions to the ${curriculum} curriculum standards.` : ''}
+${topic ? `Focus the questions heavily on the topic of: ${topic}.` : ''}
+
 You must return a JSON array of objects adhering exactly to this structure:
 [{
   "sentence": "A factual sentence with a key term replaced by '___'. Example: The ___ is the powerhouse of the cell.",
@@ -96,7 +100,9 @@ You must return a JSON array of objects adhering exactly to this structure:
 
             case 'theory':
                 systemInstruction = `You are an expert educator. Generate exactly ${count || 3} theoretical or open-ended questions from the provided text. The difficulty should be ${difficulty || 'medium'}.
-        
+${curriculum ? `Align the questions to the ${curriculum} curriculum standards.` : ''}
+${topic ? `Focus the topic specifically on: ${topic}.` : ''}
+
 You must return a JSON array of objects adhering exactly to this structure:
 [{
   "question": "The open-ended question prompt",

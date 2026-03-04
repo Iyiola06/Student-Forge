@@ -6,7 +6,7 @@ import Sidebar from '@/components/layout/Sidebar';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useGoogleBooks } from '@/hooks/useGoogleBooks';
-import { compressImage } from '@/lib/image-utils';
+import { useUpload } from '@/components/providers/UploadProgressProvider';
 
 interface Resource {
   id: string;
@@ -17,16 +17,18 @@ interface Resource {
   file_size_bytes: number;
   created_at: string;
   content?: string;
+  processing_status?: string;
+  processing_error?: string;
 }
 
 export default function ResourcesPage() {
   const [activeTab, setActiveTab] = useState<'library' | 'books'>('library');
   const [resources, setResources] = useState<Resource[]>([]);
   const [isLoadingLibrary, setIsLoadingLibrary] = useState(true);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
+  const { uploadFile, uploadState } = useUpload();
+  const isUploading = uploadState === 'uploading' || uploadState === 'compressing' || uploadState === 'processing';
 
   // Resource Management State
   const [selectedFolder, setSelectedFolder] = useState<string>('All');
@@ -63,83 +65,32 @@ export default function ResourcesPage() {
 
   useEffect(() => {
     fetchResources();
+
+    // Subscribe to realtime changes to refresh list when processing finishes
+    const supabase = createClient();
+    const channel = supabase
+      .channel('resources-list-refresh')
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'resources' }, () => {
+        fetchResources();
+      })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'resources' }, () => {
+        fetchResources();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    setIsUploading(true);
-    let finalFile = file;
-
-    // Compress images if they are large
-    if (file.type.startsWith('image/')) {
-      setUploadProgress(`Optimizing image...`);
-      try {
-        finalFile = await compressImage(file);
-      } catch (err) {
-        console.error('Compression failed:', err);
-      }
-    }
-
-    // Check size limit (20MB)
-    if (finalFile.size > 20 * 1024 * 1024) {
-      alert(`File size (${(finalFile.size / (1024 * 1024)).toFixed(1)}MB) exceeds the 20MB limit even after optimization.`);
-      setIsUploading(false);
-      return;
-    }
-
-    setUploadProgress(`Uploading ${finalFile.name} to secure storage...`);
-
-    try {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
-
-      const fileExt = finalFile.name.split('.').pop();
-      const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
-      const filePath = `${user.id}/${fileName}`;
-
-      const { data: storageData, error: storageError } = await supabase.storage
-        .from('resources')
-        .upload(filePath, finalFile);
-
-      if (storageError) {
-        throw new Error(storageError.message || 'Failed to upload to storage');
-      }
-
-      setUploadProgress(`Analyzing document content...`);
-      const response = await fetch('/api/resources/upload', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          filePath,
-          fileName: finalFile.name,
-          fileType: finalFile.type,
-          fileSize: finalFile.size,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Processing failed');
-      }
-
-      // Refresh the library to show the new file
-      await fetchResources();
-      setActiveTab('library');
-    } catch (error: any) {
-      alert(`Error uploading file: ${error.message}`);
-    } finally {
-      setIsUploading(false);
-      setUploadProgress('');
-      // Reset the file input
-      event.target.value = '';
-    }
+    event.target.value = ''; // reset immediately so user can re-select same file
+    setActiveTab('library');
+    await uploadFile(file);
   };
+
 
   const handleDelete = async (resourceId: string) => {
     if (!window.confirm("Are you sure you want to delete this resource?")) return;
@@ -227,18 +178,6 @@ export default function ResourcesPage() {
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen">
 
-        {/* Upload Toast Indicator */}
-        {isUploading && (
-          <div className="fixed bottom-6 right-6 z-50 bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] shadow-xl rounded-xl p-4 flex items-center gap-4 animate-in slide-in-from-bottom-5">
-            <div className="size-8 bg-[#ea580c]/20 rounded-full flex items-center justify-center shrink-0">
-              <div className="size-4 border-2 border-[#5b5bfa] border-t-transparent rounded-full animate-spin"></div>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-slate-900 dark:text-white">Processing Document</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">{uploadProgress}</p>
-            </div>
-          </div>
-        )}
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
