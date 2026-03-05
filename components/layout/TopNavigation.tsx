@@ -50,8 +50,8 @@ export default function TopNavigation({ children }: { children?: React.ReactNode
                             href={link.href}
                             className={
                                 pathname === link.href
-                                    ? 'text-slate-900 dark:text-white font-bold text-sm leading-normal border-b-2 border-[#ea580c]'
-                                    : 'text-slate-600 dark:text-slate-400 hover:text-[#ea580c] dark:hover:text-white transition-colors text-sm font-medium leading-normal'
+                                    ? 'text-slate-900 dark:text-white font-bold text-sm leading-normal border-b-2 border-[#1a5c2a]'
+                                    : 'text-slate-600 dark:text-slate-400 hover:text-[#1a5c2a] dark:hover:text-white transition-colors text-sm font-medium leading-normal'
                             }
                         >
                             {link.name}

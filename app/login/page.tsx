@@ -106,7 +106,7 @@ export default function LoginPage() {
                   </span>
                 </span>
                 <input
-                  className="flex h-12 w-full rounded-lg border border-slate-300 dark:border-[#3b3b54] bg-transparent px-3 py-2 text-sm placeholder:text-slate-400 dark:placeholder:text-[#6b6b8a] focus:outline-none focus:ring-2 focus:ring-[#ea580c] focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 pl-10 text-slate-900 dark:text-white bg-slate-50 dark:bg-[#111118]"
+                  className="flex h-12 w-full rounded-lg border border-slate-300 dark:border-[#3b3b54] bg-transparent px-3 py-2 text-sm placeholder:text-slate-400 dark:placeholder:text-[#6b6b8a] focus:outline-none focus:ring-2 focus:ring-[#1a5c2a] focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 pl-10 text-slate-900 dark:text-white bg-slate-50 dark:bg-[#111118]"
                   id="email"
                   placeholder="Enter your student email"
                   type="email"
@@ -133,7 +133,7 @@ export default function LoginPage() {
                   </span>
                 </span>
                 <input
-                  className="flex h-12 w-full rounded-lg border border-slate-300 dark:border-[#3b3b54] bg-transparent px-3 py-2 text-sm placeholder:text-slate-400 dark:placeholder:text-[#6b6b8a] focus:outline-none focus:ring-2 focus:ring-[#ea580c] focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 pl-10 pr-10 text-slate-900 dark:text-white bg-slate-50 dark:bg-[#111118]"
+                  className="flex h-12 w-full rounded-lg border border-slate-300 dark:border-[#3b3b54] bg-transparent px-3 py-2 text-sm placeholder:text-slate-400 dark:placeholder:text-[#6b6b8a] focus:outline-none focus:ring-2 focus:ring-[#1a5c2a] focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 pl-10 pr-10 text-slate-900 dark:text-white bg-slate-50 dark:bg-[#111118]"
                   id="password"
                   placeholder="Enter your password"
                   type={showPassword ? 'text' : 'password'}
@@ -156,7 +156,7 @@ export default function LoginPage() {
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-x-2 cursor-pointer">
                 <input
-                  className="h-4 w-4 rounded border-slate-300 dark:border-[#3b3b54] text-[#ea580c] focus:ring-[#ea580c] bg-transparent"
+                  className="h-4 w-4 rounded border-slate-300 dark:border-[#3b3b54] text-[#1a5c2a] focus:ring-[#1a5c2a] bg-transparent"
                   type="checkbox"
                 />
                 <span className="text-sm font-medium text-slate-600 dark:text-[#9c9cba]">
@@ -164,7 +164,7 @@ export default function LoginPage() {
                 </span>
               </label>
               <Link
-                className="text-sm font-medium text-[#ea580c] hover:text-[#ea580c]/80 transition-colors"
+                className="text-sm font-medium text-[#1a5c2a] hover:text-[#1a5c2a]/80 transition-colors"
                 href="/forgot-password"
               >
                 Forgot Password?
@@ -172,7 +172,7 @@ export default function LoginPage() {
             </div>
             {/* Login Button */}
             <button
-              className="w-full h-12 bg-[#ea580c] hover:bg-[#ea580c]/90 disabled:opacity-70 text-white font-medium rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-[#ea580c]/25 mt-5"
+              className="w-full h-12 bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 disabled:opacity-70 text-white font-medium rounded-lg transition-colors flex items-center justify-center shadow-lg shadow-[#1a5c2a]/25 mt-5"
               type="submit"
               disabled={isLoading}
             >
@@ -233,7 +233,7 @@ export default function LoginPage() {
             <p className="text-sm text-slate-500 dark:text-[#9c9cba]">
               Don&apos;t have an account?{' '}
               <Link
-                className="font-semibold text-[#ea580c] hover:text-[#ea580c]/80 transition-colors"
+                className="font-semibold text-[#1a5c2a] hover:text-[#1a5c2a]/80 transition-colors"
                 href="/signup"
               >
                 Sign Up
@@ -244,7 +244,7 @@ export default function LoginPage() {
       </div>
       {/* Optional: Subtle decorative background elements */}
       <div className="fixed top-0 left-0 -z-10 h-full w-full opacity-30 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-[#ea580c]/20 blur-[120px]"></div>
+        <div className="absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-[#1a5c2a]/20 blur-[120px]"></div>
         <div className="absolute bottom-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-[#101022]/40 blur-[120px]"></div>
       </div>
     </div>

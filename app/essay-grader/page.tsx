@@ -77,12 +77,12 @@ export default function EssayGraderPage() {
     };
 
     return (
-        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
             <Sidebar />
             <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
                 <div className="px-6 pt-8 pb-4 md:px-10">
                     <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
-                        <span className="material-symbols-outlined text-[#ea580c] text-3xl">grading</span>
+                        <span className="material-symbols-outlined text-[#1a5c2a] text-3xl">grading</span>
                         AI Essay Grader
                     </h1>
                     <p className="text-slate-500 dark:text-[#9c9cba] text-base mt-2">Get instant, rubric-based feedback on your long-form answers and essays.</p>
@@ -112,7 +112,7 @@ export default function EssayGraderPage() {
                                     <textarea
                                         value={question}
                                         onChange={(e) => setQuestion(e.target.value)}
-                                        className="w-full h-24 rounded-xl border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-4 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white transition-shadow resize-none"
+                                        className="w-full h-24 rounded-xl border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-4 text-sm focus:ring-2 focus:ring-[#1a5c2a] focus:outline-none dark:text-white transition-shadow resize-none"
                                         placeholder="e.g. Explain the impact of the Industrial Revolution on European society."
                                     ></textarea>
                                 </div>
@@ -126,7 +126,7 @@ export default function EssayGraderPage() {
                                         type="text"
                                         value={context}
                                         onChange={(e) => setContext(e.target.value)}
-                                        className="w-full rounded-xl border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-3 pl-4 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white transition-shadow"
+                                        className="w-full rounded-xl border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-3 pl-4 text-sm focus:ring-2 focus:ring-[#1a5c2a] focus:outline-none dark:text-white transition-shadow"
                                         placeholder="e.g. 19th Century European History"
                                     />
                                 </div>
@@ -138,7 +138,7 @@ export default function EssayGraderPage() {
                                     <textarea
                                         value={typedAnswer}
                                         onChange={(e) => setTypedAnswer(e.target.value)}
-                                        className="w-full h-64 rounded-xl border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-4 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white transition-shadow leading-relaxed"
+                                        className="w-full h-64 rounded-xl border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-4 text-sm focus:ring-2 focus:ring-[#1a5c2a] focus:outline-none dark:text-white transition-shadow leading-relaxed"
                                         placeholder="Paste your essay or paragraph here..."
                                     ></textarea>
                                 </div>
@@ -147,7 +147,7 @@ export default function EssayGraderPage() {
                             <button
                                 onClick={handleGrade}
                                 disabled={isGrading}
-                                className="w-full mt-6 bg-[#ea580c] hover:bg-[#ea580c]/90 disabled:opacity-70 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-[#ea580c]/25 transition-all flex items-center justify-center gap-2 text-[15px] relative z-10"
+                                className="w-full mt-6 bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 disabled:opacity-70 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-[#1a5c2a]/25 transition-all flex items-center justify-center gap-2 text-[15px] relative z-10"
                             >
                                 {isGrading ? (
                                     <div className="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -175,8 +175,8 @@ export default function EssayGraderPage() {
                             <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] h-full min-h-[300px] lg:min-h-[500px] flex flex-col items-center justify-center text-center p-6 md:p-10 shadow-sm">
                                 <div className="relative mb-8">
                                     <div className="size-20 border-4 border-slate-100 dark:border-[#252535] rounded-full"></div>
-                                    <div className="absolute inset-0 size-20 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
-                                    <span className="absolute inset-0 flex items-center justify-center material-symbols-outlined text-[#ea580c] text-3xl animate-pulse">
+                                    <div className="absolute inset-0 size-20 border-4 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
+                                    <span className="absolute inset-0 flex items-center justify-center material-symbols-outlined text-[#1a5c2a] text-3xl animate-pulse">
                                         psychology
                                     </span>
                                 </div>
@@ -239,7 +239,7 @@ export default function EssayGraderPage() {
                                 {/* Detailed Feedback */}
                                 <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-8 shadow-sm">
                                     <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2 pb-4 border-b border-slate-100 dark:border-[#2d2d3f]">
-                                        <span className="material-symbols-outlined text-[#ea580c] bg-[#ea580c]/10 p-1.5 rounded-lg">rate_review</span>
+                                        <span className="material-symbols-outlined text-[#1a5c2a] bg-[#1a5c2a]/10 p-1.5 rounded-lg">rate_review</span>
                                         Examiner's Feedback
                                     </h3>
                                     <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap text-[15px]">

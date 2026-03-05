@@ -95,7 +95,7 @@ export default function HistoryPage() {
     if (action.includes('upload')) {
       return {
         icon: 'upload_file',
-        colorClass: 'bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400',
+        colorClass: 'bg-orange-100 dark:bg-orange-900/20 text-[#144823] dark:text-orange-400',
         title: `Uploaded: ${item.details?.title || 'File'}`,
         subtitle: 'Resource Addition',
         badge: null,
@@ -129,7 +129,7 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen">
         {/* Main Content Area */}
@@ -146,7 +146,7 @@ export default function HistoryPage() {
                   </span>
                 </span>
                 <input
-                  className="w-full sm:w-64 h-10 pl-10 pr-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c]"
+                  className="w-full sm:w-64 h-10 pl-10 pr-4 rounded-lg bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#1a5c2a]"
                   placeholder="Search history..."
                   type="text"
                   value={searchQuery}
@@ -168,7 +168,7 @@ export default function HistoryPage() {
               <div className="space-y-8 pb-12">
                 {isLoading ? (
                   <div className="pl-20 py-8 flex items-center gap-3 text-slate-500 dark:text-[#9c9cba]">
-                    <div className="size-5 border-2 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
+                    <div className="size-5 border-2 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
                     Loading history...
                   </div>
                 ) : filteredItems.length === 0 ? (
@@ -192,7 +192,7 @@ export default function HistoryPage() {
                             {formatTime(item.created_at)}
                           </span>
                         </div>
-                        <div className={`absolute left-[30px] top-1.5 w-4 h-4 rounded-full ${index === 0 ? 'bg-[#ea580c]' : 'bg-slate-300 dark:bg-slate-600'} border-4 border-[#f5f5f8] dark:border-[#101022] shadow-sm z-10`}></div>
+                        <div className={`absolute left-[30px] top-1.5 w-4 h-4 rounded-full ${index === 0 ? 'bg-[#1a5c2a]' : 'bg-slate-300 dark:bg-slate-600'} border-4 border-[#f5f5f8] dark:border-[#101022] shadow-sm z-10`}></div>
                         <div className="bg-white dark:bg-[#1b1b27] p-4 rounded-xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm hover:shadow-md transition-shadow">
                           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                             <div className="flex items-center sm:items-start gap-4 mb-2 sm:mb-0">

@@ -34,8 +34,8 @@ const VoiceButton: React.FC<VoiceButtonProps> = ({ text, size = 'md' }) => {
         <button
             onClick={(e) => { e.stopPropagation(); speak(); }}
             className={`${dims} rounded-xl flex items-center justify-center transition-all ${isPlaying
-                    ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30 scale-110 active:scale-95'
-                    : 'bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-500 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-500/10 border border-slate-100 dark:border-slate-800 active:scale-95'
+                    ? 'bg-[#1a5c2a] text-white shadow-lg shadow-orange-500/30 scale-110 active:scale-95'
+                    : 'bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-500 hover:text-[#1a5c2a] hover:bg-orange-50 dark:hover:bg-[#1a5c2a]/10 border border-slate-100 dark:border-slate-800 active:scale-95'
                 }`}
             title={isPlaying ? "Stop Text-to-Speech" : "Read Aloud"}
         >

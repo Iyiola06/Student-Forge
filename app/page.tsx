@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 export default function LandingPage() {
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
       {/* Header */}
       <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#3b3b54] px-4 sm:px-10 py-4 bg-white dark:bg-[#101022]/80 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-4 text-slate-900 dark:text-white">
@@ -26,13 +26,13 @@ export default function LandingPage() {
         </div>
         <div className="flex items-center gap-4">
           <Link
-            className="text-slate-600 dark:text-slate-300 hover:text-[#ea580c] dark:hover:text-[#ea580c] transition-colors text-sm font-medium leading-normal hidden sm:block"
+            className="text-slate-600 dark:text-slate-300 hover:text-[#1a5c2a] dark:hover:text-[#1a5c2a] transition-colors text-sm font-medium leading-normal hidden sm:block"
             href="/login"
           >
             Log In
           </Link>
           <Link href="/signup">
-            <button className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-[#ea580c] hover:bg-[#ea580c]/90 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-[#ea580c]/20">
+            <button className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-[#1a5c2a]/20">
               <span className="truncate">Get Started</span>
             </button>
           </Link>
@@ -43,7 +43,7 @@ export default function LandingPage() {
       <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20 md:py-32 relative overflow-hidden">
         {/* Background Elements */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-[#ea580c]/10 rounded-full blur-[120px]"></div>
+          <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-[#1a5c2a]/10 rounded-full blur-[120px]"></div>
           <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-purple-500/10 rounded-full blur-[120px]"></div>
         </div>
 
@@ -53,13 +53,13 @@ export default function LandingPage() {
           transition={{ duration: 0.5 }}
           className="max-w-4xl mx-auto space-y-6"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ea580c]/10 text-[#ea580c] text-sm font-medium mb-4 border border-[#ea580c]/20">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1a5c2a]/10 text-[#1a5c2a] text-sm font-medium mb-4 border border-[#1a5c2a]/20">
             <span className="material-symbols-outlined text-lg">rocket_launch</span>
             <span>The Future of Learning is Here</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.1]">
             Master Your Exams with <br />
-            <span className="text-[#ea580c]">
+            <span className="text-[#1a5c2a]">
               AI-Powered Study Tools
             </span>
           </h1>
@@ -69,7 +69,7 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
             <Link href="/signup">
-              <button className="h-14 px-8 rounded-xl bg-[#ea580c] hover:bg-[#ea580c]/90 text-white font-bold text-lg shadow-xl shadow-[#ea580c]/30 transition-all hover:scale-105 flex items-center gap-2">
+              <button className="h-14 px-8 rounded-xl bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 text-white font-bold text-lg shadow-xl shadow-[#1a5c2a]/30 transition-all hover:scale-105 flex items-center gap-2">
                 Start Learning for Free
                 <span className="material-symbols-outlined">arrow_forward</span>
               </button>
@@ -175,23 +175,23 @@ export default function LandingPage() {
                 Site Map
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-3 text-sm font-medium text-slate-600 dark:text-slate-400">
-                <Link href="/login" className="hover:text-[#ea580c] transition-colors">Login</Link>
-                <Link href="/signup" className="hover:text-[#ea580c] transition-colors">Signup</Link>
-                <Link href="/dashboard" className="hover:text-[#ea580c] transition-colors">Dashboard</Link>
-                <Link href="/resources" className="hover:text-[#ea580c] transition-colors">Resources</Link>
-                <Link href="/gamifier" className="hover:text-[#ea580c] transition-colors">Gamifier</Link>
-                <Link href="/leaderboard" className="hover:text-[#ea580c] transition-colors">Leaderboard</Link>
-                <Link href="/history" className="hover:text-[#ea580c] transition-colors">History</Link>
-                <Link href="/generator" className="hover:text-[#ea580c] transition-colors">Generator</Link>
-                <Link href="/past-questions" className="hover:text-[#ea580c] transition-colors">Past Questions</Link>
-                <Link href="/profile" className="hover:text-[#ea580c] transition-colors">Profile</Link>
-                <Link href="/settings" className="hover:text-[#ea580c] transition-colors">Settings</Link>
-                <Link href="/forgot-password" className="hover:text-[#ea580c] transition-colors">Forgot Password</Link>
-                <Link href="/reset-password" className="hover:text-[#ea580c] transition-colors">Reset Password</Link>
-                <Link href="/verify-email" className="hover:text-[#ea580c] transition-colors">Verify Email</Link>
-                <Link href="/about" className="hover:text-[#ea580c] transition-colors">About</Link>
-                <Link href="/terms" className="hover:text-[#ea580c] transition-colors">Terms of Service</Link>
-                <Link href="/privacy" className="hover:text-[#ea580c] transition-colors">Privacy Policy</Link>
+                <Link href="/login" className="hover:text-[#1a5c2a] transition-colors">Login</Link>
+                <Link href="/signup" className="hover:text-[#1a5c2a] transition-colors">Signup</Link>
+                <Link href="/dashboard" className="hover:text-[#1a5c2a] transition-colors">Dashboard</Link>
+                <Link href="/resources" className="hover:text-[#1a5c2a] transition-colors">Resources</Link>
+                <Link href="/gamifier" className="hover:text-[#1a5c2a] transition-colors">Gamifier</Link>
+                <Link href="/leaderboard" className="hover:text-[#1a5c2a] transition-colors">Leaderboard</Link>
+                <Link href="/history" className="hover:text-[#1a5c2a] transition-colors">History</Link>
+                <Link href="/generator" className="hover:text-[#1a5c2a] transition-colors">Generator</Link>
+                <Link href="/past-questions" className="hover:text-[#1a5c2a] transition-colors">Past Questions</Link>
+                <Link href="/profile" className="hover:text-[#1a5c2a] transition-colors">Profile</Link>
+                <Link href="/settings" className="hover:text-[#1a5c2a] transition-colors">Settings</Link>
+                <Link href="/forgot-password" className="hover:text-[#1a5c2a] transition-colors">Forgot Password</Link>
+                <Link href="/reset-password" className="hover:text-[#1a5c2a] transition-colors">Reset Password</Link>
+                <Link href="/verify-email" className="hover:text-[#1a5c2a] transition-colors">Verify Email</Link>
+                <Link href="/about" className="hover:text-[#1a5c2a] transition-colors">About</Link>
+                <Link href="/terms" className="hover:text-[#1a5c2a] transition-colors">Terms of Service</Link>
+                <Link href="/privacy" className="hover:text-[#1a5c2a] transition-colors">Privacy Policy</Link>
               </div>
             </div>
           </div>

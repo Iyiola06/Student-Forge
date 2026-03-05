@@ -110,12 +110,12 @@ const QuizView: React.FC<QuizViewProps> = ({ quiz, sourceText, onRestart }) => {
         return (
             <div className="max-w-4xl mx-auto px-4 animate-in fade-in zoom-in-95 duration-700">
                 <div className="bg-white dark:bg-[#1b1b27] rounded-[3rem] shadow-2xl border border-slate-100 dark:border-slate-800 p-12 text-center">
-                    <div className="w-24 h-24 bg-orange-100 dark:bg-orange-500/10 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-8">
+                    <div className="w-24 h-24 bg-orange-100 dark:bg-[#1a5c2a]/10 text-[#144823] rounded-full flex items-center justify-center mx-auto mb-8">
                         <span className="material-symbols-outlined text-5xl font-black">emoji_events</span>
                     </div>
                     <h2 className="text-4xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">Knowledge Secured</h2>
                     <p className="text-slate-500 dark:text-slate-400 text-lg mb-10 font-bold">You've successfully completed the assessment with {correctCount} points.</p>
-                    <button onClick={onRestart} className="h-16 px-10 bg-[#ea580c] text-white font-black rounded-2xl hover:bg-orange-600 shadow-xl shadow-orange-500/20 flex items-center justify-center gap-4 mx-auto group">
+                    <button onClick={onRestart} className="h-16 px-10 bg-[#1a5c2a] text-white font-black rounded-2xl hover:bg-[#144823] shadow-xl shadow-orange-500/20 flex items-center justify-center gap-4 mx-auto group">
                         <span className="material-symbols-outlined group-hover:rotate-180 transition-transform duration-700">restart_alt</span>
                         NEW STUDY SESSION
                     </button>
@@ -131,14 +131,14 @@ const QuizView: React.FC<QuizViewProps> = ({ quiz, sourceText, onRestart }) => {
                     <span className="material-symbols-outlined">close</span>
                 </button>
                 <div className="text-center">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-orange-500 mb-1">Knowledge Check</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1a5c2a] mb-1">Knowledge Check</p>
                     <h2 className="text-xl font-black text-slate-900 dark:text-white">{currentIdx + 1} / {questions.length}</h2>
                 </div>
                 <div className="w-12"></div>
             </div>
 
             <div className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full mb-12 overflow-hidden">
-                <div className="h-full bg-orange-500 rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(234,88,12,0.5)]" style={{ width: `${progress}%` }} />
+                <div className="h-full bg-[#1a5c2a] rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(234,88,12,0.5)]" style={{ width: `${progress}%` }} />
             </div>
 
             <div className="bg-white dark:bg-[#1b1b27] rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-800/50 overflow-hidden flex flex-col relative group">
@@ -163,11 +163,11 @@ const QuizView: React.FC<QuizViewProps> = ({ quiz, sourceText, onRestart }) => {
                                         else if (isSelected) btnClass += "border-rose-500 bg-rose-500/5 text-rose-900 dark:text-rose-400";
                                         else btnClass += "border-slate-100 dark:border-slate-800 opacity-40";
                                     } else {
-                                        btnClass += isSelected ? "border-orange-500 bg-orange-500/5 dark:text-white" : "border-slate-100 dark:border-slate-800 hover:border-orange-500/30 hover:bg-slate-50 dark:hover:bg-slate-800/50";
+                                        btnClass += isSelected ? "border-[#1a5c2a] bg-[#1a5c2a]/5 dark:text-white" : "border-slate-100 dark:border-slate-800 hover:border-[#1a5c2a]/30 hover:bg-slate-50 dark:hover:bg-slate-800/50";
                                     }
                                     return (
                                         <button key={idx} onClick={() => !showExplanation && handleMCQSelect(idx)} disabled={showExplanation} className={btnClass}>
-                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center mr-5 font-black transition-colors ${showExplanation && isCorrect ? 'bg-emerald-500 text-white' : isSelected ? 'bg-orange-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
+                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center mr-5 font-black transition-colors ${showExplanation && isCorrect ? 'bg-emerald-500 text-white' : isSelected ? 'bg-[#1a5c2a] text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>
                                                 {String.fromCharCode(65 + idx)}
                                             </div>
                                             <span className="font-bold text-lg">{option}</span>
@@ -181,8 +181,8 @@ const QuizView: React.FC<QuizViewProps> = ({ quiz, sourceText, onRestart }) => {
 
                         {!quiz.title.toLowerCase().includes('mcq') && !gradingResult && !isGrading && theoryInputMode === 'none' && (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
-                                <button onClick={() => setIsCameraOpen(true)} className="flex flex-col items-center gap-6 p-10 bg-slate-50 dark:bg-slate-800/30 border-2 border-slate-100 dark:border-slate-800 rounded-[2.5rem] hover:border-orange-500 transition-all group active:scale-95">
-                                    <div className="w-20 h-20 bg-white dark:bg-slate-800 text-orange-600 rounded-3xl flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-transform">
+                                <button onClick={() => setIsCameraOpen(true)} className="flex flex-col items-center gap-6 p-10 bg-slate-50 dark:bg-slate-800/30 border-2 border-slate-100 dark:border-slate-800 rounded-[2.5rem] hover:border-[#1a5c2a] transition-all group active:scale-95">
+                                    <div className="w-20 h-20 bg-white dark:bg-slate-800 text-[#144823] rounded-3xl flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-transform">
                                         <span className="material-symbols-outlined text-4xl font-black">photo_camera</span>
                                     </div>
                                     <div className="text-center">
@@ -190,8 +190,8 @@ const QuizView: React.FC<QuizViewProps> = ({ quiz, sourceText, onRestart }) => {
                                         <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Snap a photo</p>
                                     </div>
                                 </button>
-                                <button onClick={() => setTheoryInputMode('typing')} className="flex flex-col items-center gap-6 p-10 bg-slate-50 dark:bg-slate-800/30 border-2 border-slate-100 dark:border-slate-800 rounded-[2.5rem] hover:border-orange-500 transition-all group active:scale-95">
-                                    <div className="w-20 h-20 bg-white dark:bg-slate-800 text-orange-600 rounded-3xl flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:-rotate-6 transition-transform">
+                                <button onClick={() => setTheoryInputMode('typing')} className="flex flex-col items-center gap-6 p-10 bg-slate-50 dark:bg-slate-800/30 border-2 border-slate-100 dark:border-slate-800 rounded-[2.5rem] hover:border-[#1a5c2a] transition-all group active:scale-95">
+                                    <div className="w-20 h-20 bg-white dark:bg-slate-800 text-[#144823] rounded-3xl flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:-rotate-6 transition-transform">
                                         <span className="material-symbols-outlined text-4xl font-black">keyboard</span>
                                     </div>
                                     <div className="text-center">
@@ -208,11 +208,11 @@ const QuizView: React.FC<QuizViewProps> = ({ quiz, sourceText, onRestart }) => {
                                     value={typedAnswer}
                                     onChange={e => setTypedAnswer(e.target.value)}
                                     placeholder="The mitochondria is the..."
-                                    className="w-full h-56 p-8 rounded-[2rem] bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-slate-800 focus:border-orange-500 focus:ring-8 focus:ring-orange-500/5 outline-none text-slate-700 dark:text-slate-300 font-bold leading-relaxed resize-none shadow-inner"
+                                    className="w-full h-56 p-8 rounded-[2rem] bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-100 dark:border-slate-800 focus:border-[#1a5c2a] focus:ring-8 focus:ring-orange-500/5 outline-none text-slate-700 dark:text-slate-300 font-bold leading-relaxed resize-none shadow-inner"
                                 />
                                 <div className="flex gap-4">
-                                    <button onClick={() => setTheoryInputMode('none')} className="px-8 h-16 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-800 font-black text-slate-400 text-xs uppercase tracking-widest hover:text-orange-500 transition-colors">BACK</button>
-                                    <button onClick={handleTypedTheorySubmit} disabled={!typedAnswer.trim()} className="flex-1 h-16 bg-[#ea580c] text-white font-black rounded-2xl shadow-xl shadow-orange-500/20 hover:bg-orange-600 transition-all active:scale-[0.98]">SUBMIT FOR GRADING</button>
+                                    <button onClick={() => setTheoryInputMode('none')} className="px-8 h-16 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-800 font-black text-slate-400 text-xs uppercase tracking-widest hover:text-[#1a5c2a] transition-colors">BACK</button>
+                                    <button onClick={handleTypedTheorySubmit} disabled={!typedAnswer.trim()} className="flex-1 h-16 bg-[#1a5c2a] text-white font-black rounded-2xl shadow-xl shadow-orange-500/20 hover:bg-[#144823] transition-all active:scale-[0.98]">SUBMIT FOR GRADING</button>
                                 </div>
                             </div>
                         )}
@@ -220,8 +220,8 @@ const QuizView: React.FC<QuizViewProps> = ({ quiz, sourceText, onRestart }) => {
                         {isGrading && (
                             <div className="flex flex-col items-center py-20 text-center animate-in fade-in duration-500">
                                 <div className="relative w-28 h-28 mb-10">
-                                    <div className="absolute inset-0 border-[6px] border-orange-100 dark:border-orange-500/10 rounded-full"></div>
-                                    <div className="absolute inset-0 border-[6px] border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                                    <div className="absolute inset-0 border-[6px] border-orange-100 dark:border-[#1a5c2a]/10 rounded-full"></div>
+                                    <div className="absolute inset-0 border-[6px] border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
                                 </div>
                                 <p className="text-2xl font-black text-slate-800 dark:text-white mb-2">{GRADING_MESSAGES[gradingStep]}</p>
                                 <p className="text-sm font-bold text-slate-400 uppercase tracking-[0.3em]">Gemini AI is Reviewing</p>
@@ -231,12 +231,12 @@ const QuizView: React.FC<QuizViewProps> = ({ quiz, sourceText, onRestart }) => {
 
                     {(showExplanation || gradingResult) && (
                         <div className="mt-12 space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                            <div className="p-10 md:p-12 bg-orange-50 dark:bg-orange-500/5 rounded-[3rem] border border-orange-100 dark:border-orange-500/20 relative">
+                            <div className="p-10 md:p-12 bg-orange-50 dark:bg-[#1a5c2a]/5 rounded-[3rem] border border-orange-100 dark:border-[#1a5c2a]/20 relative">
                                 <div className="absolute top-8 right-8">
                                     <VoiceButton text={gradingResult ? gradingResult.feedback : (question?.explanation || "")} />
                                 </div>
 
-                                <div className="flex items-center gap-3 text-orange-600 font-black uppercase text-xs tracking-[0.2em] mb-6">
+                                <div className="flex items-center gap-3 text-[#144823] font-black uppercase text-xs tracking-[0.2em] mb-6">
                                     <span className="material-symbols-outlined">auto_awesome</span>
                                     TUTOR FEEDBACK
                                 </div>
@@ -246,8 +246,8 @@ const QuizView: React.FC<QuizViewProps> = ({ quiz, sourceText, onRestart }) => {
                                 </p>
 
                                 {gradingResult && (
-                                    <div className="mt-10 flex flex-col md:flex-row items-center gap-6 p-6 bg-white dark:bg-slate-900/50 rounded-3xl border border-orange-100 dark:border-orange-500/10">
-                                        <div className="w-20 h-20 rounded-2xl bg-orange-500 text-white flex items-center justify-center font-black text-3xl shadow-lg shadow-orange-500/20">
+                                    <div className="mt-10 flex flex-col md:flex-row items-center gap-6 p-6 bg-white dark:bg-slate-900/50 rounded-3xl border border-orange-100 dark:border-[#1a5c2a]/10">
+                                        <div className="w-20 h-20 rounded-2xl bg-[#1a5c2a] text-white flex items-center justify-center font-black text-3xl shadow-lg shadow-orange-500/20">
                                             {gradingResult.score}
                                         </div>
                                         <div className="text-center md:text-left">
@@ -275,7 +275,7 @@ const QuizView: React.FC<QuizViewProps> = ({ quiz, sourceText, onRestart }) => {
                     <button
                         onClick={nextQuestion}
                         disabled={!isCurrentAnswered()}
-                        className="h-16 px-12 bg-[#ea580c] text-white font-black rounded-2xl disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-400 transition-all flex items-center shadow-2xl shadow-orange-500/20 hover:bg-orange-600 active:scale-95 group"
+                        className="h-16 px-12 bg-[#1a5c2a] text-white font-black rounded-2xl disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-400 transition-all flex items-center shadow-2xl shadow-orange-500/20 hover:bg-[#144823] active:scale-95 group"
                     >
                         {isLast ? 'COMPLETE SESSION' : 'CONTINUE'}
                         <span className="material-symbols-outlined ml-4 group-hover:translate-x-2 transition-transform font-black">arrow_forward</span>

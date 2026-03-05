@@ -104,7 +104,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onCancel }) =>
                         className="w-20 h-20 rounded-full bg-white p-1 shadow-2xl shadow-white/20 hover:scale-110 active:scale-90 transition-all"
                     >
                         <div className="w-full h-full rounded-full border-4 border-slate-900 flex items-center justify-center">
-                            <div className="w-4 h-4 rounded-full bg-orange-500"></div>
+                            <div className="w-4 h-4 rounded-full bg-[#1a5c2a]"></div>
                         </div>
                     </button>
 

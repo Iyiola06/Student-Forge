@@ -124,7 +124,7 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <div className="main-bg font-display min-h-screen flex items-center justify-center">
-        <div className="size-10 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
+        <div className="size-10 border-4 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -149,7 +149,7 @@ export default function DashboardPage() {
     );
   } else if (cardsDue > 0) {
     smartCTA = (
-      <Link href="/flashcards" className={`block rounded-2xl p-6 text-white shadow-xl mb-8 transition-transform hover:-translate-y-1 ${overdue24h ? 'bg-gradient-to-r from-red-600 to-rose-500 shadow-red-500/30 ring-4 ring-red-500/50 blink-shadow' : 'bg-gradient-to-r from-[#ea580c] to-orange-500 shadow-orange-500/30'}`}>
+      <Link href="/flashcards" className={`block rounded-2xl p-6 text-white shadow-xl mb-8 transition-transform hover:-translate-y-1 ${overdue24h ? 'bg-gradient-to-r from-red-600 to-rose-500 shadow-red-500/30 ring-4 ring-red-500/50 blink-shadow' : 'bg-gradient-to-r from-[#1a5c2a] to-orange-500 shadow-orange-500/30'}`}>
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
@@ -176,7 +176,7 @@ export default function DashboardPage() {
             You're on a {profile.streak_days}-day streak. Complete a quick study session to protect it.
           </p>
         </div>
-        <Link href={recentResource ? `/resources` : `/generator`} className="shrink-0 px-8 py-3.5 bg-white text-orange-600 font-bold rounded-xl hover:bg-slate-50 transition-colors shadow-lg shadow-black/10">
+        <Link href={recentResource ? `/resources` : `/generator`} className="shrink-0 px-8 py-3.5 bg-white text-[#144823] font-bold rounded-xl hover:bg-slate-50 transition-colors shadow-lg shadow-black/10">
           Start Session
         </Link>
       </div>
@@ -184,7 +184,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="main-bg flex flex-col md:flex-row antialiased selection:bg-[#ea580c] selection:text-white">
+    <div className="main-bg flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a] selection:text-white">
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen">
         <main className="flex flex-1 flex-col px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full md:overflow-y-auto">
@@ -210,11 +210,11 @@ export default function DashboardPage() {
                   Exam Readiness
                 </h3>
                 <div className="relative cursor-help">
-                  <span className="material-symbols-outlined text-[#ea580c] bg-[#ea580c]/10 p-1.5 rounded-lg">
+                  <span className="material-symbols-outlined text-[#1a5c2a] bg-[#1a5c2a]/10 p-1.5 rounded-lg">
                     info
                   </span>
                   <div className="absolute right-0 top-10 w-64 p-4 bg-slate-900 text-white text-xs rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 pointer-events-none">
-                    <div className="font-bold text-sm mb-2 text-[#ea580c]">Score Calculation</div>
+                    <div className="font-bold text-sm mb-2 text-[#1a5c2a]">Score Calculation</div>
                     <div className="space-y-2 opacity-90">
                       <div className="flex justify-between"><span>Cards Mastered:</span> <span>40%</span></div>
                       <div className="flex justify-between"><span>Quiz Accuracy:</span> <span>40%</span></div>
@@ -236,7 +236,7 @@ export default function DashboardPage() {
                     strokeWidth="12"
                   ></circle>
                   <circle
-                    className="text-[#ea580c] transition-all duration-1000 ease-out"
+                    className="text-[#1a5c2a] transition-all duration-1000 ease-out"
                     cx="64"
                     cy="64"
                     fill="transparent"
@@ -288,7 +288,7 @@ export default function DashboardPage() {
                 <h3 className="text-slate-500 dark:text-[#9c9cba] text-sm font-medium leading-tight">
                   Days Streak
                 </h3>
-                <span className="material-symbols-outlined text-orange-500 bg-orange-500/10 p-1.5 rounded-lg">
+                <span className="material-symbols-outlined text-[#1a5c2a] bg-[#1a5c2a]/10 p-1.5 rounded-lg">
                   local_fire_department
                 </span>
               </div>
@@ -301,7 +301,7 @@ export default function DashboardPage() {
                 {[...Array(7)].map((_, i) => (
                   <div
                     key={i}
-                    className={`h-2 flex-1 rounded-full transition-colors ${i < (profile?.streak_days || 0) % 7 ? 'bg-orange-500' : 'bg-slate-200 dark:bg-[#2d2d3f]'}`}
+                    className={`h-2 flex-1 rounded-full transition-colors ${i < (profile?.streak_days || 0) % 7 ? 'bg-[#1a5c2a]' : 'bg-slate-200 dark:bg-[#2d2d3f]'}`}
                   ></div>
                 ))}
               </div>
@@ -342,8 +342,8 @@ export default function DashboardPage() {
               <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Continue Learning</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {recentResource ? (
-                  <Link href={`/resources`} className="flex items-center gap-4 p-5 bg-white dark:bg-[#1b1b27] border border-[#ea580c]/30 rounded-2xl hover:border-[#ea580c] transition-all group overflow-hidden shadow-sm">
-                    <div className="bg-[#ea580c]/10 shrink-0 p-4 rounded-xl text-[#ea580c] group-hover:scale-110 transition-transform">
+                  <Link href={`/resources`} className="flex items-center gap-4 p-5 bg-white dark:bg-[#1b1b27] border border-[#1a5c2a]/30 rounded-2xl hover:border-[#1a5c2a] transition-all group overflow-hidden shadow-sm">
+                    <div className="bg-[#1a5c2a]/10 shrink-0 p-4 rounded-xl text-[#1a5c2a] group-hover:scale-110 transition-transform">
                       <span className="material-symbols-outlined text-3xl">play_arrow</span>
                     </div>
                     <div className="text-left w-full min-w-0">

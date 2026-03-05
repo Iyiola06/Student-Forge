@@ -5,9 +5,15 @@
 @theme {
   --font-display: var(--font-lexend), sans-serif;
 
-  /* Primary Theme Colors */
-  --color-brand-primary: #ea580c;
-  --color-brand-primary-hover: #c2410c;
+  /* Primary: deep forest green from the Vui Studify logo */
+  --color-brand-primary: #1a5c2a;
+  --color-brand-primary-light: #22762f;
+  --color-brand-primary-hover: #144823;
+
+  /* Secondary: warm gold from the logo flame/wheat */
+  --color-brand-secondary: #b8963e;
+  --color-brand-secondary-light: #d4ac48;
+  --color-brand-secondary-hover: #96791e;
 
   /* Backgrounds */
   --color-bg-light: #f8fafc;
@@ -104,7 +110,7 @@
   }
 
   .premium-gradient {
-    background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+    background: linear-gradient(135deg, #1a5c2a 0%, #b8963e 100%);
   }
 
   .smooth-transition {

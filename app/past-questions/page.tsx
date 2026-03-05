@@ -297,7 +297,7 @@ function PastQuestionsContent() {
               {q.is_anonymous ? 'Anonymous Student' : (q.profiles?.full_name || 'Student')}
             </p>
             {q.user_id === profile?.id && q.is_anonymous && (
-              <span className="material-symbols-outlined text-[10px] text-[#ea580c] shrink-0" title="This is your anonymous post">visibility_off</span>
+              <span className="material-symbols-outlined text-[10px] text-[#1a5c2a] shrink-0" title="This is your anonymous post">visibility_off</span>
             )}
           </div>
           <p className="text-[10px] text-slate-500 truncate">{new Date(q.created_at).toLocaleDateString()}</p>
@@ -315,7 +315,7 @@ function PastQuestionsContent() {
 
       <div className="bg-slate-50 dark:bg-[#13131a] p-3 rounded-lg mb-4 flex-1 border border-slate-100 dark:border-[#252535]">
         <div className="flex justify-between items-start mb-1 gap-2">
-          <h4 className="font-bold text-[#ea580c] dark:text-[#ea580c] text-sm line-clamp-1 flex-1">{q.subject} {q.course_code && <span className="opacity-70 font-normal">({q.course_code})</span>}</h4>
+          <h4 className="font-bold text-[#1a5c2a] dark:text-[#1a5c2a] text-sm line-clamp-1 flex-1">{q.subject} {q.course_code && <span className="opacity-70 font-normal">({q.course_code})</span>}</h4>
           <span className="text-xs font-bold text-slate-500 bg-slate-200 dark:bg-[#252535] px-1.5 py-0.5 rounded shrink-0">{q.year}</span>
         </div>
         {q.semester && <p className="text-xs text-slate-500 mb-2">{q.semester}</p>}
@@ -338,7 +338,7 @@ function PastQuestionsContent() {
 
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400">{q.file_type} • {q.file_size}</span>
-          <button onClick={() => handleDownload(q.id, q.file_url)} className="bg-[#ea580c] text-white hover:bg-[#d04e0a] p-1.5 rounded-lg transition-colors">
+          <button onClick={() => handleDownload(q.id, q.file_url)} className="bg-[#1a5c2a] text-white hover:bg-[#d04e0a] p-1.5 rounded-lg transition-colors">
             <span className="material-symbols-outlined text-[18px]">file_download</span>
           </button>
         </div>
@@ -347,7 +347,7 @@ function PastQuestionsContent() {
   );
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden relative w-full max-w-[100vw]">
 
@@ -382,7 +382,7 @@ function PastQuestionsContent() {
                   </div>
                 </div>
                 <div className="bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] px-5 py-3 rounded-xl flex items-center gap-4 min-w-[160px]">
-                  <div className="bg-orange-500/10 text-orange-400 p-2 rounded-lg">
+                  <div className="bg-[#1a5c2a]/10 text-orange-400 p-2 rounded-lg">
                     <span className="material-symbols-outlined">account_balance</span>
                   </div>
                   <div>
@@ -419,24 +419,24 @@ function PastQuestionsContent() {
 
             {/* Filters */}
             <div className="flex flex-wrap gap-3 mb-8 bg-white dark:bg-[#1a1a24] p-2 rounded-xl border border-slate-200 dark:border-[#2d2d3f] sticky top-0 z-10 shadow-sm">
-              <select value={filterInstitution} onChange={e => setFilterInstitution(e.target.value)} className="h-9 px-3 rounded-lg bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none min-w-[140px]">
+              <select value={filterInstitution} onChange={e => setFilterInstitution(e.target.value)} className="h-9 px-3 rounded-lg bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none min-w-[140px]">
                 <option value="All">All Institutions</option>
                 {INSTITUTION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
-              <select value={filterSchool} onChange={e => setFilterSchool(e.target.value)} className="h-9 px-3 rounded-lg bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none min-w-[160px] max-w-[250px] truncate">
+              <select value={filterSchool} onChange={e => setFilterSchool(e.target.value)} className="h-9 px-3 rounded-lg bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none min-w-[160px] max-w-[250px] truncate">
                 <option value="All">All Schools</option>
                 {schoolsList.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
-              <select value={filterSubject} onChange={e => setFilterSubject(e.target.value)} className="h-9 px-3 rounded-lg bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none min-w-[140px] max-w-[200px] truncate">
+              <select value={filterSubject} onChange={e => setFilterSubject(e.target.value)} className="h-9 px-3 rounded-lg bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none min-w-[140px] max-w-[200px] truncate">
                 <option value="All">All Subjects</option>
                 {subjectsList.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
-              <select value={filterYear} onChange={e => setFilterYear(e.target.value)} className="h-9 px-3 rounded-lg bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none min-w-[100px]">
+              <select value={filterYear} onChange={e => setFilterYear(e.target.value)} className="h-9 px-3 rounded-lg bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none min-w-[100px]">
                 <option value="All">All Years</option>
                 {yearsList.map(y => <option key={y} value={y.toString()}>{y}</option>)}
               </select>
               <div className="w-[1px] bg-[#2d2d3f] mx-1"></div>
-              <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="h-9 px-3 rounded-lg bg-transparent border-none text-sm font-bold text-[#ea580c] outline-none ml-auto cursor-pointer">
+              <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="h-9 px-3 rounded-lg bg-transparent border-none text-sm font-bold text-[#1a5c2a] outline-none ml-auto cursor-pointer">
                 <option value="Most Recent">Most Recent</option>
                 <option value="Most Downloaded">Most Downloaded</option>
                 <option value="Most Upvoted">Most Upvoted</option>
@@ -503,7 +503,7 @@ function PastQuestionsContent() {
             <div className="bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] w-full max-w-xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-200">
               <div className="p-6 border-b border-slate-200 dark:border-[#2d2d3f] flex justify-between items-center bg-white dark:bg-[#1a1a24]">
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white">Submit a Past Question</h2>
-                <button onClick={() => setIsModalOpen(false)} className="text-slate-500 dark:text-slate-400 hover:text-[#ea580c] transition-colors">
+                <button onClick={() => setIsModalOpen(false)} className="text-slate-500 dark:text-slate-400 hover:text-[#1a5c2a] transition-colors">
                   <span className="material-symbols-outlined">close</span>
                 </button>
               </div>
@@ -512,19 +512,19 @@ function PastQuestionsContent() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Institution Type *</label>
-                    <select required value={formInstitutionType} onChange={(e) => setFormInstitutionType(e.target.value)} className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none">
+                    <select required value={formInstitutionType} onChange={(e) => setFormInstitutionType(e.target.value)} className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none">
                       {INSTITUTION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                     </select>
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Year *</label>
-                    <input required type="number" min="1990" max="2030" value={formYear} onChange={(e) => setFormYear(parseInt(e.target.value))} className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none" />
+                    <input required type="number" min="1990" max="2030" value={formYear} onChange={(e) => setFormYear(parseInt(e.target.value))} className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none" />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">School Name *</label>
-                  <input required list="school-list" value={formSchoolName} onChange={(e) => setFormSchoolName(e.target.value)} placeholder="e.g. University of Lagos" className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none" />
+                  <input required list="school-list" value={formSchoolName} onChange={(e) => setFormSchoolName(e.target.value)} placeholder="e.g. University of Lagos" className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none" />
                   <datalist id="school-list">
                     {schoolsList.map(s => <option key={s} value={s} />)}
                   </datalist>
@@ -533,19 +533,19 @@ function PastQuestionsContent() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Subject *</label>
-                    <input required value={formSubject} onChange={(e) => setFormSubject(e.target.value)} placeholder="e.g. Mathematics" className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none" />
+                    <input required value={formSubject} onChange={(e) => setFormSubject(e.target.value)} placeholder="e.g. Mathematics" className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none" />
                   </div>
                   {(formInstitutionType === 'University' || formInstitutionType === 'Polytechnic') && (
                     <div>
                       <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Course Code</label>
-                      <input value={formCourseCode} onChange={(e) => setFormCourseCode(e.target.value)} placeholder="e.g. MTH 101" className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none" />
+                      <input value={formCourseCode} onChange={(e) => setFormCourseCode(e.target.value)} placeholder="e.g. MTH 101" className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none" />
                     </div>
                   )}
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Semester</label>
-                  <select value={formSemester} onChange={(e) => setFormSemester(e.target.value)} className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none">
+                  <select value={formSemester} onChange={(e) => setFormSemester(e.target.value)} className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none">
                     <option value="">None / Not Applicable</option>
                     <option value="First Semester">First Semester</option>
                     <option value="Second Semester">Second Semester</option>
@@ -555,10 +555,10 @@ function PastQuestionsContent() {
 
                 <div>
                   <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Description / Context</label>
-                  <textarea value={formDescription} onChange={(e) => setFormDescription(e.target.value)} placeholder="Any context about this paper? e.g. which department, lecturer, or exam type" className="w-full h-20 p-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#ea580c] outline-none resize-none" />
+                  <textarea value={formDescription} onChange={(e) => setFormDescription(e.target.value)} placeholder="Any context about this paper? e.g. which department, lecturer, or exam type" className="w-full h-20 p-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none resize-none" />
                 </div>
 
-                <div className="border-2 border-dashed border-slate-200 dark:border-[#2d2d3f] hover:border-[#ea580c] transition-colors rounded-xl p-6 relative flex flex-col items-center justify-center text-center bg-[#f5f5f8] dark:bg-[#13131a]/50">
+                <div className="border-2 border-dashed border-slate-200 dark:border-[#2d2d3f] hover:border-[#1a5c2a] transition-colors rounded-xl p-6 relative flex flex-col items-center justify-center text-center bg-[#f5f5f8] dark:bg-[#13131a]/50">
                   <input required onChange={handleFileUpload} accept=".pdf,image/png,image/jpeg,image/webp" type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
 
                   {formFile ? (
@@ -579,7 +579,7 @@ function PastQuestionsContent() {
                 </div>
 
                 <div className="flex items-center gap-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] p-4 rounded-xl cursor-pointer" onClick={() => setFormIsAnonymous(!formIsAnonymous)}>
-                  <input type="checkbox" id="anonUpload" checked={formIsAnonymous} readOnly className="w-5 h-5 rounded border-slate-300 text-[#ea580c] focus:ring-[#ea580c] cursor-pointer" />
+                  <input type="checkbox" id="anonUpload" checked={formIsAnonymous} readOnly className="w-5 h-5 rounded border-slate-300 text-[#1a5c2a] focus:ring-[#1a5c2a] cursor-pointer" />
                   <label htmlFor="anonUpload" className="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">
                     Post Anonymously
                     <span className="block text-xs font-normal text-slate-500 mt-0.5">Your name and profile image will be hidden from everyone else. You still earn XP!</span>
@@ -602,7 +602,7 @@ function PastQuestionsContent() {
 
 export default function PastQuestionsPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#101022] flex items-center justify-center"><div className="size-10 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#101022] flex items-center justify-center"><div className="size-10 border-4 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div></div>}>
       <PastQuestionsContent />
     </Suspense>
   );

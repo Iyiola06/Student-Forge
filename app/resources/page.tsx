@@ -169,12 +169,12 @@ export default function ResourcesPage() {
   const getIconForType = (type: string) => {
     if (type.includes('pdf')) return { icon: 'picture_as_pdf', colorClass: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/20' };
     if (type.includes('doc') || type.includes('word')) return { icon: 'description', colorClass: 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/20' };
-    if (type.includes('presentation') || type.includes('ppt')) return { icon: 'slideshow', colorClass: 'text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/20' };
+    if (type.includes('presentation') || type.includes('ppt')) return { icon: 'slideshow', colorClass: 'text-[#144823] dark:text-orange-400 bg-orange-100 dark:bg-orange-900/20' };
     return { icon: 'insert_drive_file', colorClass: 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-900/20' };
   };
 
   return (
-    <div className="main-bg flex flex-col md:flex-row antialiased selection:bg-[#ea580c] selection:text-white">
+    <div className="main-bg flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a] selection:text-white">
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen">
 
@@ -188,7 +188,7 @@ export default function ResourcesPage() {
             <div className="relative overflow-hidden inline-block w-full md:w-auto">
               <button
                 disabled={isUploading}
-                className="w-full md:w-auto flex items-center justify-center gap-2 bg-[#ea580c] hover:bg-[#ea580c]/90 disabled:opacity-70 disabled:cursor-not-allowed text-white px-6 py-3 rounded-xl font-bold transition-all shadow-[0_4px_20px_rgba(234,88,12,0.3)]"
+                className="w-full md:w-auto flex items-center justify-center gap-2 bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 disabled:opacity-70 disabled:cursor-not-allowed text-white px-6 py-3 rounded-xl font-bold transition-all shadow-[0_4px_20px_rgba(234,88,12,0.3)]"
               >
                 {isUploading ? (
                   <div className="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -222,11 +222,11 @@ export default function ResourcesPage() {
                       </span>
                     </span>
                     <input
-                      className="w-full h-12 md:h-14 pl-12 pr-4 rounded-xl bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] text-sm md:text-base text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c] outline-none shadow-sm"
+                      className="w-full h-12 md:h-14 pl-12 pr-4 rounded-xl bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] text-sm md:text-base text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#1a5c2a] outline-none shadow-sm"
                       placeholder="Search topics, books, past papers..."
                       type="text"
                     />
-                    <button className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-[#ea580c] transition-colors">
+                    <button className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-[#1a5c2a] transition-colors">
                       <span className="material-symbols-outlined text-[20px]">tune</span>
                     </button>
                   </div>
@@ -240,14 +240,14 @@ export default function ResourcesPage() {
                     <input
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full h-12 md:h-14 pl-12 pr-28 rounded-xl bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] text-sm md:text-base text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c] outline-none shadow-sm"
+                      className="w-full h-12 md:h-14 pl-12 pr-28 rounded-xl bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] text-sm md:text-base text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#1a5c2a] outline-none shadow-sm"
                       placeholder="Search Google Books (e.g., Biology)..."
                       type="text"
                     />
                     <button
                       type="submit"
                       disabled={isLoadingBooks}
-                      className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[#ea580c] hover:bg-[#ea580c]/90 text-white rounded-lg text-xs md:text-sm font-bold transition-colors disabled:opacity-50"
+                      className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 text-white rounded-lg text-xs md:text-sm font-bold transition-colors disabled:opacity-50"
                     >
                       {isLoadingBooks ? 'Searching' : 'Search'}
                     </button>
@@ -280,7 +280,7 @@ export default function ResourcesPage() {
                           <button
                             key={folder}
                             onClick={() => setSelectedFolder(folder)}
-                            className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${selectedFolder === folder ? 'bg-[#ea580c] text-white shadow-lg shadow-[#ea580c]/20 scale-105' : 'bg-white dark:bg-[#1a1a24] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#2d2d3f] hover:border-[#ea580c]'}`}
+                            className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${selectedFolder === folder ? 'bg-[#1a5c2a] text-white shadow-lg shadow-[#1a5c2a]/20 scale-105' : 'bg-white dark:bg-[#1a1a24] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#2d2d3f] hover:border-[#1a5c2a]'}`}
                           >
                             {folder}
                           </button>
@@ -300,7 +300,7 @@ export default function ResourcesPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
                     {isLoadingLibrary ? (
                       <div className="col-span-full py-24 flex flex-col items-center justify-center text-slate-500">
-                        <div className="size-10 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin mb-4"></div>
+                        <div className="size-10 border-4 border-[#1a5c2a] border-t-transparent rounded-full animate-spin mb-4"></div>
                         <p className="font-bold text-lg animate-pulse tracking-tight">Syncing your secure vault...</p>
                       </div>
                     ) : resources.length === 0 ? (
@@ -313,7 +313,7 @@ export default function ResourcesPage() {
                       </div>
                     ) : (
                       filteredResources.map((resource) => (
-                        <div key={resource.id} className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-5 hover:border-[#ea580c]/50 transition-all group flex flex-col relative hover:shadow-xl hover:shadow-[#ea580c]/5 hover:-translate-y-1">
+                        <div key={resource.id} className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-5 hover:border-[#1a5c2a]/50 transition-all group flex flex-col relative hover:shadow-xl hover:shadow-[#1a5c2a]/5 hover:-translate-y-1">
                           <div className="absolute top-4 right-4 z-10 flex gap-1.5 items-center">
                             <button
                               onClick={(e) => {
@@ -323,7 +323,7 @@ export default function ResourcesPage() {
                                 setEditSubject(resource.subject || '');
                                 setIsEditModalOpen(true);
                               }}
-                              className="size-8 rounded-lg bg-[#f5f5f8] dark:bg-[#252535] text-slate-500 hover:text-[#ea580c] transition-all flex items-center justify-center shadow-sm"
+                              className="size-8 rounded-lg bg-[#f5f5f8] dark:bg-[#252535] text-slate-500 hover:text-[#1a5c2a] transition-all flex items-center justify-center shadow-sm"
                               title="Edit Title/Folder"
                             >
                               <span className="material-symbols-outlined text-[18px]">edit</span>
@@ -338,7 +338,7 @@ export default function ResourcesPage() {
                                   else newSet.delete(resource.id);
                                   setSelectedIds(newSet);
                                 }}
-                                className="size-5 rounded border-slate-300 dark:border-slate-600 text-[#ea580c] focus:ring-[#ea580c] cursor-pointer bg-transparent"
+                                className="size-5 rounded border-slate-300 dark:border-slate-600 text-[#1a5c2a] focus:ring-[#1a5c2a] cursor-pointer bg-transparent"
                               />
                             </div>
                           </div>
@@ -359,7 +359,7 @@ export default function ResourcesPage() {
                                 <span className="text-[10px] text-slate-400 font-bold">•</span>
                                 <span className="text-[10px] text-slate-400 font-black tracking-wider uppercase">{formatSize(resource.file_size_bytes)}</span>
                               </div>
-                              <h3 className="font-black text-[15px] text-slate-900 dark:text-white leading-tight line-clamp-2 break-words group-hover:text-[#ea580c] transition-colors" title={resource.title}>
+                              <h3 className="font-black text-[15px] text-slate-900 dark:text-white leading-tight line-clamp-2 break-words group-hover:text-[#1a5c2a] transition-colors" title={resource.title}>
                                 {resource.title}
                               </h3>
                             </div>
@@ -382,12 +382,12 @@ export default function ResourcesPage() {
                                 resource.file_type.includes('presentationml') ||
                                 resource.title.endsWith('.docx') ||
                                 resource.title.endsWith('.pptx') ? (
-                                <button onClick={() => setSelectedResource(resource)} className="flex-1 min-w-0 bg-[#f5f5f8] dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-700 dark:text-slate-200 font-black py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow-sm">
+                                <button onClick={() => setSelectedResource(resource)} className="flex-1 min-w-0 bg-[#f5f5f8] dark:bg-[#252535] hover:bg-[#1a5c2a] hover:text-white text-slate-700 dark:text-slate-200 font-black py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow-sm">
                                   <span className="material-symbols-outlined text-[18px]">visibility</span>
                                   <span className="truncate">View File</span>
                                 </button>
                               ) : (
-                                <a href={resource.file_url} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-0 bg-[#f5f5f8] dark:bg-[#252535] hover:bg-[#ea580c] hover:text-white text-slate-700 dark:text-slate-200 font-black py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow-sm">
+                                <a href={resource.file_url} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-0 bg-[#f5f5f8] dark:bg-[#252535] hover:bg-[#1a5c2a] hover:text-white text-slate-700 dark:text-slate-200 font-black py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow-sm">
                                   <span className="material-symbols-outlined text-[18px]">download</span>
                                   <span className="truncate">Download</span>
                                 </a>
@@ -399,7 +399,7 @@ export default function ResourcesPage() {
                             </div>
 
                             {(resource.file_type.includes('pdf') || resource.content) && (
-                              <Link href={`/gamifier?id=${resource.id}`} className="w-full bg-[#ea580c] hover:bg-[#d04e0a] text-white font-black py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow-lg shadow-[#ea580c]/20">
+                              <Link href={`/gamifier?id=${resource.id}`} className="w-full bg-[#1a5c2a] hover:bg-[#d04e0a] text-white font-black py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow-lg shadow-[#1a5c2a]/20">
                                 <span className="material-symbols-outlined text-[18px]">rocket_launch</span>
                                 <span>Gamified Study Session</span>
                               </Link>
@@ -417,7 +417,7 @@ export default function ResourcesPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {isLoadingBooks ? (
                     <div className="col-span-full py-20 flex flex-col items-center justify-center text-slate-500">
-                      <div className="size-8 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin mb-4"></div>
+                      <div className="size-8 border-4 border-[#1a5c2a] border-t-transparent rounded-full animate-spin mb-4"></div>
                       <p className="font-medium">Searching world libraries...</p>
                     </div>
                   ) : booksError ? (
@@ -436,7 +436,7 @@ export default function ResourcesPage() {
                     </div>
                   ) : (
                     bookResults.map((book) => (
-                      <div key={book.id} className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] overflow-hidden hover:border-[#ea580c]/50 hover:-translate-y-1 transition-all flex flex-col group shadow-sm">
+                      <div key={book.id} className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] overflow-hidden hover:border-[#1a5c2a]/50 hover:-translate-y-1 transition-all flex flex-col group shadow-sm">
                         <div className="relative h-48 bg-[#f5f5f8] dark:bg-[#13131a] flex justify-center items-center overflow-hidden shrink-0 border-b border-slate-200 dark:border-[#2d2d3f]">
                           {book.thumbnail ? (
                             <>
@@ -488,7 +488,7 @@ export default function ResourcesPage() {
                                 href={book.pdfLink}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="block w-full text-center bg-[#ea580c] text-white py-3 rounded-xl text-xs font-black transition-colors shadow-lg shadow-[#ea580c]/20"
+                                className="block w-full text-center bg-[#1a5c2a] text-white py-3 rounded-xl text-xs font-black transition-colors shadow-lg shadow-[#1a5c2a]/20"
                               >
                                 Download PDF
                               </a>
@@ -497,7 +497,7 @@ export default function ResourcesPage() {
                                 href={book.webReaderLink || book.previewLink}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="block w-full text-center bg-slate-100 dark:bg-[#252535] group-hover:bg-[#ea580c] text-slate-600 dark:text-slate-300 group-hover:text-white py-3 rounded-xl text-xs font-bold transition-colors truncate px-2"
+                                className="block w-full text-center bg-slate-100 dark:bg-[#252535] group-hover:bg-[#1a5c2a] text-slate-600 dark:text-slate-300 group-hover:text-white py-3 rounded-xl text-xs font-bold transition-colors truncate px-2"
                               >
                                 Read Online
                               </a>
@@ -526,11 +526,11 @@ export default function ResourcesPage() {
                   {resources.slice(0, 3).map((item) => (
                     <div key={item.id} className="flex items-center justify-between p-3 hover:bg-slate-100 dark:bg-[#252535] rounded-xl cursor-pointer transition-colors group">
                       <div className="flex items-center gap-3 overflow-hidden">
-                        <span className="material-symbols-outlined text-slate-500 group-hover:text-[#ea580c] transition-colors text-[20px]">
+                        <span className="material-symbols-outlined text-slate-500 group-hover:text-[#1a5c2a] transition-colors text-[20px]">
                           {getIconForType(item.file_type || '').icon}
                         </span>
                         <div className="truncate">
-                          <div className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-[#ea580c] transition-colors truncate">{item.title}</div>
+                          <div className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-[#1a5c2a] transition-colors truncate">{item.title}</div>
                           <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{formatDate(item.created_at)}</div>
                         </div>
                       </div>
@@ -550,8 +550,8 @@ export default function ResourcesPage() {
                       key={folder}
                       onClick={() => setSelectedFolder(folder)}
                       className={`text-xs font-bold px-4 py-2 rounded-xl transition-all border ${selectedFolder === folder
-                        ? 'bg-[#ea580c] text-white border-[#ea580c] shadow-sm shadow-[#ea580c]/20'
-                        : 'bg-slate-50 dark:bg-[#13131a] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[#2d2d3f] hover:border-[#ea580c]/30'
+                        ? 'bg-[#1a5c2a] text-white border-[#1a5c2a] shadow-sm shadow-[#1a5c2a]/20'
+                        : 'bg-slate-50 dark:bg-[#13131a] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-[#2d2d3f] hover:border-[#1a5c2a]/30'
                         }`}
                     >
                       {folder === 'All' ? 'All Subjects' : folder}
@@ -570,7 +570,7 @@ export default function ResourcesPage() {
           <header className="flex items-center justify-between p-4 bg-white dark:bg-[#1b1b27] border-b border-slate-200 dark:border-[#2d2d3f] shrink-0">
             <h2 className="text-slate-900 dark:text-white font-bold text-lg truncate pr-4">{selectedResource.title}</h2>
             <div className="flex gap-4 items-center">
-              <a href={selectedResource.file_url} target="_blank" rel="noreferrer" className="text-slate-500 hover:text-[#ea580c] transition-colors flex items-center gap-2 font-bold text-sm bg-slate-100 dark:bg-[#252535] px-4 py-2 rounded-full hidden md:flex">
+              <a href={selectedResource.file_url} target="_blank" rel="noreferrer" className="text-slate-500 hover:text-[#1a5c2a] transition-colors flex items-center gap-2 font-bold text-sm bg-slate-100 dark:bg-[#252535] px-4 py-2 rounded-full hidden md:flex">
                 <span className="material-symbols-outlined text-[18px]">open_in_new</span>
                 Open Full
               </a>
@@ -632,7 +632,7 @@ export default function ResourcesPage() {
                   <div className="text-sm text-slate-400 font-medium">
                     Content extracted via AI analysis for study generation.
                   </div>
-                  <a href={selectedResource.file_url} target="_blank" rel="noreferrer" className="bg-[#ea580c] hover:bg-[#d04e0a] text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-[#ea580c]/20">
+                  <a href={selectedResource.file_url} target="_blank" rel="noreferrer" className="bg-[#1a5c2a] hover:bg-[#d04e0a] text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-[#1a5c2a]/20">
                     <span className="material-symbols-outlined">download</span>
                     Download Original File
                   </a>
@@ -646,7 +646,7 @@ export default function ResourcesPage() {
                   You can download it to view locally.
                 </p>
                 <div className="mt-8 flex justify-center">
-                  <a href={selectedResource.file_url} target="_blank" rel="noreferrer" className="bg-[#ea580c] text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2">
+                  <a href={selectedResource.file_url} target="_blank" rel="noreferrer" className="bg-[#1a5c2a] text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2">
                     <span className="material-symbols-outlined">download</span>
                     Download File
                   </a>
@@ -661,7 +661,7 @@ export default function ResourcesPage() {
         <div className="fixed inset-0 z-[100] bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white dark:bg-[#1a1a24] rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-200 dark:border-[#2d2d3f]">
             <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-              <span className="material-symbols-outlined text-[#ea580c]">edit_document</span>
+              <span className="material-symbols-outlined text-[#1a5c2a]">edit_document</span>
               Edit Resource
             </h3>
             <div className="space-y-4 mb-6">
@@ -671,7 +671,7 @@ export default function ResourcesPage() {
                   type="text"
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-[#ea580c] focus:ring-1 focus:ring-[#ea580c] transition-colors"
+                  className="w-full bg-slate-50 dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-[#1a5c2a] focus:ring-1 focus:ring-[#1a5c2a] transition-colors"
                   placeholder="Enter resource title..."
                 />
               </div>
@@ -681,7 +681,7 @@ export default function ResourcesPage() {
                   type="text"
                   value={editSubject}
                   onChange={(e) => setEditSubject(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-[#ea580c] focus:ring-1 focus:ring-[#ea580c] transition-colors"
+                  className="w-full bg-slate-50 dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:border-[#1a5c2a] focus:ring-1 focus:ring-[#1a5c2a] transition-colors"
                   placeholder="e.g., Biology, Math, Uncategorized"
                 />
               </div>
@@ -695,7 +695,7 @@ export default function ResourcesPage() {
               </button>
               <button
                 onClick={saveEdit}
-                className="px-5 py-2.5 rounded-xl font-bold bg-[#ea580c] hover:bg-[#ea580c]/90 text-white shadow-sm transition-colors"
+                className="px-5 py-2.5 rounded-xl font-bold bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 text-white shadow-sm transition-colors"
               >
                 Save Changes
               </button>

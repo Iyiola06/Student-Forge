@@ -80,18 +80,23 @@ function GamifierOrchestrator() {
   };
 
   const handleBossWin = async (xp: number) => {
-    // Update DB
-    if (profile?.id) {
-      await supabase.rpc('increment_xp', { user_id: profile.id, xp_amount: xp });
-      await supabase.from('profiles').update({
-        boss_wins: (profile.boss_wins || 0) + 1
-      }).eq('id', profile.id);
-    }
-
-    // Return to reader
+    // Always return to reader immediately — DB updates are best-effort
     setViewState('reader');
     setCurrentMilestone(null);
-    mutateProfile();
+
+    if (profile?.id) {
+      try {
+        // Increment XP and boss_wins directly — no RPC needed
+        await supabase.from('profiles').update({
+          xp: (profile.xp || 0) + xp,
+          boss_wins: (profile.boss_wins || 0) + 1,
+        }).eq('id', profile.id);
+      } catch (err) {
+        // DB error doesn't matter — user already won, just log it
+        console.error('[BossWin] Failed to save XP:', err);
+      }
+      mutateProfile();
+    }
   };
 
   const handleBossLose = (retry: boolean) => {

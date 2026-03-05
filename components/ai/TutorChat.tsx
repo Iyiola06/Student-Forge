@@ -13,7 +13,7 @@ interface Message {
 const SUGGESTED_PROMPTS = [
     { icon: 'science', text: 'Explain photosynthesis in simple terms', color: 'text-green-500' },
     { icon: 'calculate', text: 'Help me solve quadratic equations', color: 'text-blue-500' },
-    { icon: 'history_edu', text: 'Summarize the causes of World War II', color: 'text-orange-500' },
+    { icon: 'history_edu', text: 'Summarize the causes of World War II', color: 'text-[#1a5c2a]' },
     { icon: 'biotech', text: 'What is DNA replication?', color: 'text-purple-500' },
     { icon: 'economics', text: 'Explain supply and demand', color: 'text-cyan-500' },
     { icon: 'menu_book', text: 'Help me understand Shakespeare\'s themes', color: 'text-pink-500' },
@@ -103,7 +103,7 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
         return content
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/`(.*?)`/g, '<code class="bg-[#252535] px-1.5 py-0.5 rounded text-[#ea580c] text-sm">$1</code>')
+            .replace(/`(.*?)`/g, '<code class="bg-[#252535] px-1.5 py-0.5 rounded text-[#1a5c2a] text-sm">$1</code>')
             .replace(/\n/g, '<br/>');
     };
 
@@ -112,7 +112,7 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
             {/* Chat Header */}
             <div className="shrink-0 px-6 py-4 border-b border-slate-200 dark:border-[#2d2d3f] bg-white dark:bg-[#1a1a24]">
                 <div className="flex items-center gap-3">
-                    <div className="size-10 rounded-xl bg-gradient-to-br from-[#ea580c] to-orange-600 flex items-center justify-center shadow-lg shadow-[#ea580c]/20">
+                    <div className="size-10 rounded-xl bg-gradient-to-br from-[#1a5c2a] to-orange-600 flex items-center justify-center shadow-lg shadow-[#1a5c2a]/20">
                         <span className="material-symbols-outlined text-white text-xl">psychology</span>
                     </div>
                     <div>
@@ -123,9 +123,9 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                         </p>
                     </div>
                     {resourceTitle && (
-                        <div className="ml-auto px-3 py-1.5 bg-[#ea580c]/10 border border-[#ea580c]/20 rounded-lg flex items-center gap-2">
-                            <span className="material-symbols-outlined text-[#ea580c] text-sm">description</span>
-                            <span className="text-xs font-bold text-[#ea580c] truncate max-w-[200px]">{resourceTitle}</span>
+                        <div className="ml-auto px-3 py-1.5 bg-[#1a5c2a]/10 border border-[#1a5c2a]/20 rounded-lg flex items-center gap-2">
+                            <span className="material-symbols-outlined text-[#1a5c2a] text-sm">description</span>
+                            <span className="text-xs font-bold text-[#1a5c2a] truncate max-w-[200px]">{resourceTitle}</span>
                         </div>
                     )}
                 </div>
@@ -136,8 +136,8 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                 {messages.length === 0 ? (
                     /* Empty State with Suggested Prompts */
                     <div className="flex flex-col items-center justify-center h-full text-center px-4">
-                        <div className="size-20 rounded-full bg-gradient-to-br from-[#ea580c]/20 to-orange-500/10 border border-[#ea580c]/20 flex items-center justify-center mb-6">
-                            <span className="material-symbols-outlined text-[#ea580c] text-4xl">auto_awesome</span>
+                        <div className="size-20 rounded-full bg-gradient-to-br from-[#1a5c2a]/20 to-orange-500/10 border border-[#1a5c2a]/20 flex items-center justify-center mb-6">
+                            <span className="material-symbols-outlined text-[#1a5c2a] text-4xl">auto_awesome</span>
                         </div>
                         <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-2">
                             What do you want to learn?
@@ -150,7 +150,7 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                                 <button
                                     key={i}
                                     onClick={() => sendMessage(prompt.text)}
-                                    className="flex items-center gap-3 px-4 py-3.5 bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] rounded-xl hover:border-[#ea580c]/50 hover:shadow-lg hover:shadow-[#ea580c]/5 transition-all text-left group"
+                                    className="flex items-center gap-3 px-4 py-3.5 bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] rounded-xl hover:border-[#1a5c2a]/50 hover:shadow-lg hover:shadow-[#1a5c2a]/5 transition-all text-left group"
                                 >
                                     <span className={`material-symbols-outlined ${prompt.color} text-xl group-hover:scale-110 transition-transform`}>
                                         {prompt.icon}
@@ -167,13 +167,13 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                     messages.map((msg) => (
                         <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                             <div className={`max-w-[85%] md:max-w-[70%] ${msg.role === 'user'
-                                ? 'bg-[#ea580c] text-white rounded-2xl rounded-br-md px-5 py-3.5 shadow-lg shadow-[#ea580c]/20'
+                                ? 'bg-[#1a5c2a] text-white rounded-2xl rounded-br-md px-5 py-3.5 shadow-lg shadow-[#1a5c2a]/20'
                                 : 'bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] text-slate-800 dark:text-slate-200 rounded-2xl rounded-bl-md px-5 py-3.5 shadow-sm'
                                 }`}>
                                 {msg.role === 'assistant' && (
                                     <div className="flex items-center gap-2 mb-2 pb-2 border-b border-slate-100 dark:border-[#2d2d3f]">
-                                        <span className="material-symbols-outlined text-[#ea580c] text-sm">psychology</span>
-                                        <span className="text-[10px] font-black text-[#ea580c] uppercase tracking-widest">AI Tutor</span>
+                                        <span className="material-symbols-outlined text-[#1a5c2a] text-sm">psychology</span>
+                                        <span className="text-[10px] font-black text-[#1a5c2a] uppercase tracking-widest">AI Tutor</span>
                                     </div>
                                 )}
                                 <div
@@ -193,13 +193,13 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                     <div className="flex justify-start">
                         <div className="bg-white dark:bg-[#1a1a24] border border-slate-200 dark:border-[#2d2d3f] rounded-2xl rounded-bl-md px-5 py-4 shadow-sm">
                             <div className="flex items-center gap-2 mb-2">
-                                <span className="material-symbols-outlined text-[#ea580c] text-sm">psychology</span>
-                                <span className="text-[10px] font-black text-[#ea580c] uppercase tracking-widest">AI Tutor</span>
+                                <span className="material-symbols-outlined text-[#1a5c2a] text-sm">psychology</span>
+                                <span className="text-[10px] font-black text-[#1a5c2a] uppercase tracking-widest">AI Tutor</span>
                             </div>
                             <div className="flex items-center gap-1.5">
-                                <div className="size-2 bg-[#ea580c] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                                <div className="size-2 bg-[#ea580c] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                                <div className="size-2 bg-[#ea580c] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                                <div className="size-2 bg-[#1a5c2a] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                                <div className="size-2 bg-[#1a5c2a] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                                <div className="size-2 bg-[#1a5c2a] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                             </div>
                         </div>
                     </div>
@@ -219,7 +219,7 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                             onKeyDown={handleKeyDown}
                             placeholder="Ask me anything..."
                             rows={1}
-                            className="w-full resize-none rounded-xl border border-slate-200 dark:border-[#2d2d3f] bg-[#f5f5f8] dark:bg-[#13131a] px-4 py-3 pr-12 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#ea580c] focus:border-transparent outline-none transition-all"
+                            className="w-full resize-none rounded-xl border border-slate-200 dark:border-[#2d2d3f] bg-[#f5f5f8] dark:bg-[#13131a] px-4 py-3 pr-12 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#1a5c2a] focus:border-transparent outline-none transition-all"
                             style={{ minHeight: '48px', maxHeight: '120px' }}
                             disabled={isLoading}
                         />
@@ -227,7 +227,7 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                     <button
                         onClick={() => sendMessage()}
                         disabled={!input.trim() || isLoading}
-                        className="size-12 rounded-xl bg-[#ea580c] hover:bg-[#d04e0a] disabled:opacity-40 disabled:cursor-not-allowed text-white flex items-center justify-center transition-all shadow-lg shadow-[#ea580c]/20 hover:shadow-[#ea580c]/30 active:scale-95 shrink-0"
+                        className="size-12 rounded-xl bg-[#1a5c2a] hover:bg-[#d04e0a] disabled:opacity-40 disabled:cursor-not-allowed text-white flex items-center justify-center transition-all shadow-lg shadow-[#1a5c2a]/20 hover:shadow-[#1a5c2a]/30 active:scale-95 shrink-0"
                     >
                         <span className="material-symbols-outlined">send</span>
                     </button>

@@ -56,20 +56,20 @@ function Section({ children, className = '', delay = 0 }: { children: React.Reac
    ────────────────────────────────────────────────── */
 export default function AboutPage() {
     return (
-        <div className="bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c] text-white">
+        <div className="bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a] text-white">
 
             {/* ─── STICKY HEADER ─── */}
             <header className="flex items-center justify-between whitespace-nowrap border-b border-[#2d2d3f] px-4 sm:px-10 py-4 bg-[#101022]/80 backdrop-blur-md sticky top-0 z-50">
                 <Link href="/" className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[#ea580c] text-3xl">school</span>
+                    <span className="material-symbols-outlined text-[#1a5c2a] text-3xl">school</span>
                     <h2 className="text-white text-xl font-bold tracking-tight">Vui Studify</h2>
                 </Link>
                 <div className="flex items-center gap-4">
-                    <Link href="/login" className="text-slate-300 hover:text-[#ea580c] transition-colors text-sm font-medium hidden sm:block">
+                    <Link href="/login" className="text-slate-300 hover:text-[#1a5c2a] transition-colors text-sm font-medium hidden sm:block">
                         Log In
                     </Link>
                     <Link href="/signup">
-                        <button className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-6 bg-[#ea580c] hover:bg-[#ea580c]/90 transition-colors text-white text-sm font-bold shadow-lg shadow-[#ea580c]/20">
+                        <button className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-6 bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 transition-colors text-white text-sm font-bold shadow-lg shadow-[#1a5c2a]/20">
                             Get Started
                         </button>
                     </Link>
@@ -89,12 +89,12 @@ export default function AboutPage() {
                 <FloatingIcon icon="terminal" className="top-[40%] left-[5%]" />
 
                 {/* Gradient blurs */}
-                <div className="absolute top-[-15%] left-[-10%] w-[50vw] h-[50vw] bg-[#ea580c]/8 rounded-full blur-[140px] pointer-events-none" />
+                <div className="absolute top-[-15%] left-[-10%] w-[50vw] h-[50vw] bg-[#1a5c2a]/8 rounded-full blur-[140px] pointer-events-none" />
                 <div className="absolute bottom-[-15%] right-[-10%] w-[40vw] h-[40vw] bg-blue-600/8 rounded-full blur-[140px] pointer-events-none" />
 
                 <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="relative z-10 max-w-3xl">
                     <div className="mx-auto mb-8">
-                        <span className="material-symbols-outlined text-[#ea580c] text-6xl">school</span>
+                        <span className="material-symbols-outlined text-[#1a5c2a] text-6xl">school</span>
                     </div>
                     <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.1] mb-6">
                         Built by Students.{' '}
@@ -116,9 +116,9 @@ export default function AboutPage() {
                     {/* Illustration side */}
                     <div className="flex items-center justify-center">
                         <div className="relative w-full max-w-md aspect-square rounded-3xl bg-gradient-to-br from-[#1b1b27] to-[#252535] border border-[#2d2d3f] flex items-center justify-center overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-[#ea580c]/5 to-blue-600/5" />
+                            <div className="absolute inset-0 bg-gradient-to-br from-[#1a5c2a]/5 to-blue-600/5" />
                             <div className="relative flex flex-col items-center gap-4 p-8 text-center">
-                                <span className="material-symbols-outlined text-8xl text-[#ea580c]/60">auto_stories</span>
+                                <span className="material-symbols-outlined text-8xl text-[#1a5c2a]/60">auto_stories</span>
                                 <span className="material-symbols-outlined text-6xl text-blue-500/40 absolute top-8 right-8">psychology</span>
                                 <span className="material-symbols-outlined text-5xl text-purple-500/30 absolute bottom-12 left-8">code</span>
                                 <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mt-4">From Classroom to Platform</p>
@@ -133,7 +133,7 @@ export default function AboutPage() {
                                 Vui Studify is the product of real student experience. It was conceived and built entirely by students of the <span className="text-white font-semibold">Programming Entrepreneurship class at Venite University</span> — a group of young developers who understood firsthand the pressure of exams, the struggle of staying organized, and the need for smarter study tools.
                             </p>
                             <p>
-                                What started as a classroom project quickly became something much bigger: a fully functional platform designed to transform the way students read, study, and prepare for exams. Every feature in Vui Studify — from the gamified PDF reader to the AI question generator — was designed with one person in mind: <span className="text-[#ea580c] font-semibold">the student sitting up late the night before an exam.</span>
+                                What started as a classroom project quickly became something much bigger: a fully functional platform designed to transform the way students read, study, and prepare for exams. Every feature in Vui Studify — from the gamified PDF reader to the AI question generator — was designed with one person in mind: <span className="text-[#1a5c2a] font-semibold">the student sitting up late the night before an exam.</span>
                             </p>
                         </div>
                     </div>
@@ -147,14 +147,14 @@ export default function AboutPage() {
                 <div className="max-w-3xl mx-auto">
                     <div className="bg-[#1b1b27] rounded-3xl border border-[#2d2d3f] p-8 md:p-12 relative overflow-hidden">
                         {/* Decorative glow */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-[#ea580c]/5 rounded-full blur-[100px] pointer-events-none" />
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-[#1a5c2a]/5 rounded-full blur-[100px] pointer-events-none" />
 
                         <h2 className="text-2xl md:text-3xl font-black text-center mb-10 tracking-tight">Meet the Facilitator</h2>
 
                         <div className="flex flex-col items-center text-center relative z-10">
                             {/* FACILITATOR PHOTO - Replace the src below with the actual image path e.g. src="/images/iyiola.jpg" - recommended size: 300x300px, square crop */}
                             <div className="relative mb-6">
-                                <div className="size-36 md:size-44 rounded-full ring-4 ring-[#ea580c]/30 p-1 bg-[#252535]">
+                                <div className="size-36 md:size-44 rounded-full ring-4 ring-[#1a5c2a]/30 p-1 bg-[#252535]">
                                     <Image
                                         src="/images/placeholder-avatar.png"
                                         alt="Iyiola Ogunjobi"
@@ -169,7 +169,7 @@ export default function AboutPage() {
                             </div>
 
                             <h3 className="text-2xl font-black mt-2">Iyiola Ogunjobi</h3>
-                            <p className="text-[#ea580c] font-bold text-sm mt-1">Entrepreneurship Facilitator &amp; Student, Venite University</p>
+                            <p className="text-[#1a5c2a] font-bold text-sm mt-1">Entrepreneurship Facilitator &amp; Student, Venite University</p>
 
                             <p className="text-slate-400 leading-relaxed mt-6 max-w-lg text-[15px]">
                                 Iyiola Ogunjobi is both a student and the entrepreneurship facilitator who guided the Programming Entrepreneurship class at Venite University in bringing Vui Studify to life. His vision was simple — give students a tool worthy of their ambitions.
@@ -177,7 +177,7 @@ export default function AboutPage() {
 
                             {/* Stat pills */}
                             <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
-                                <span className="px-4 py-2 bg-[#ea580c]/10 border border-[#ea580c]/20 rounded-full text-sm font-bold text-[#ea580c]">
+                                <span className="px-4 py-2 bg-[#1a5c2a]/10 border border-[#1a5c2a]/20 rounded-full text-sm font-bold text-[#1a5c2a]">
                                     1 Vision
                                 </span>
                                 <span className="px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-sm font-bold text-blue-400">
@@ -266,7 +266,7 @@ export default function AboutPage() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: i * 0.12 }}
-                                className="bg-[#1b1b27] rounded-2xl border border-[#2d2d3f] p-8 text-center hover:border-[#ea580c]/30 transition-colors"
+                                className="bg-[#1b1b27] rounded-2xl border border-[#2d2d3f] p-8 text-center hover:border-[#1a5c2a]/30 transition-colors"
                             >
                                 <div className="text-5xl mb-5">{pillar.emoji}</div>
                                 <h3 className="text-lg font-bold mb-3">{pillar.title}</h3>
@@ -282,7 +282,7 @@ export default function AboutPage() {
           ═══════════════════════════════════════════ */}
             <Section className="px-6 py-20 md:py-24 text-center">
                 <div className="max-w-2xl mx-auto">
-                    <span className="material-symbols-outlined text-5xl text-[#ea580c]/40 mb-4 block">account_balance</span>
+                    <span className="material-symbols-outlined text-5xl text-[#1a5c2a]/40 mb-4 block">account_balance</span>
                     <div className="flex items-center justify-center gap-4 mb-6">
                         <div className="h-px w-12 bg-gradient-to-r from-transparent to-[#3b3b54]" />
                         <span className="text-xs font-black uppercase tracking-[0.25em] text-slate-500">Official Product</span>
@@ -296,7 +296,7 @@ export default function AboutPage() {
                     </p>
                     <div className="mt-8 flex items-center justify-center gap-4">
                         <div className="h-px flex-1 max-w-24 bg-[#2d2d3f]" />
-                        <span className="material-symbols-outlined text-[#ea580c]/20 text-3xl">verified</span>
+                        <span className="material-symbols-outlined text-[#1a5c2a]/20 text-3xl">verified</span>
                         <div className="h-px flex-1 max-w-24 bg-[#2d2d3f]" />
                     </div>
                 </div>
@@ -306,7 +306,7 @@ export default function AboutPage() {
           7. CALL TO ACTION
           ═══════════════════════════════════════════ */}
             <Section className="mt-auto">
-                <div className="bg-gradient-to-r from-[#ea580c] to-blue-600 py-20 md:py-28 px-6 text-center relative overflow-hidden">
+                <div className="bg-gradient-to-r from-[#1a5c2a] to-blue-600 py-20 md:py-28 px-6 text-center relative overflow-hidden">
                     <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+PC9zdmc+')] pointer-events-none" />
 
                     <div className="relative z-10 max-w-2xl mx-auto">
@@ -318,7 +318,7 @@ export default function AboutPage() {
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <Link href="/signup">
-                                <button className="h-14 px-10 rounded-xl bg-white text-[#ea580c] font-black text-lg shadow-xl hover:scale-105 transition-all flex items-center gap-2">
+                                <button className="h-14 px-10 rounded-xl bg-white text-[#1a5c2a] font-black text-lg shadow-xl hover:scale-105 transition-all flex items-center gap-2">
                                     Get Started Free
                                     <span className="material-symbols-outlined text-xl">arrow_forward</span>
                                 </button>

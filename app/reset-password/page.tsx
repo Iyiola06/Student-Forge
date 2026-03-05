@@ -15,7 +15,7 @@ function getPasswordStrength(password: string) {
   if (/[^A-Za-z0-9]/.test(password)) score++;
   const clamped = Math.min(score, 4);
   const labels = ['Too weak', 'Weak', 'Medium', 'Strong', 'Very strong'];
-  const colors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-green-500', 'bg-emerald-500'];
+  const colors = ['bg-red-500', 'bg-[#1a5c2a]', 'bg-yellow-500', 'bg-green-500', 'bg-emerald-500'];
   return { score: clamped, label: labels[clamped], color: colors[clamped] };
 }
 
@@ -66,7 +66,7 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="main-bg font-display min-h-screen flex flex-col antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+    <div className="main-bg font-display min-h-screen flex flex-col antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
       <div className="layout-container flex h-full grow flex-col">
         {/* Header */}
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#3b3b54] px-4 sm:px-10 py-3 bg-white dark:bg-[#101022]/80 backdrop-blur-md sticky top-0 z-50">
@@ -88,14 +88,14 @@ export default function ResetPasswordPage() {
           <div className="hidden sm:flex flex-1 justify-end gap-8">
             <div className="flex items-center gap-9">
               <Link
-                className="text-slate-600 dark:text-slate-200 hover:text-[#ea580c] dark:hover:text-[#ea580c] transition-colors text-sm font-medium leading-normal"
+                className="text-slate-600 dark:text-slate-200 hover:text-[#1a5c2a] dark:hover:text-[#1a5c2a] transition-colors text-sm font-medium leading-normal"
                 href="/login"
               >
                 Log In
               </Link>
             </div>
             <Link href="/signup">
-              <button className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-[#ea580c] hover:bg-blue-700 text-white text-sm font-bold leading-normal tracking-[0.015em] transition-all shadow-lg shadow-[#ea580c]/20">
+              <button className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-[#1a5c2a] hover:bg-blue-700 text-white text-sm font-bold leading-normal tracking-[0.015em] transition-all shadow-lg shadow-[#1a5c2a]/20">
                 <span className="truncate">Sign Up</span>
               </button>
             </Link>
@@ -138,7 +138,7 @@ export default function ResetPasswordPage() {
                         </span>
                       </div>
                       <input
-                        className="block w-full rounded-lg border-0 py-3 pl-10 text-slate-900 dark:text-white ring-1 ring-inset ring-slate-300 dark:ring-[#3b3b54] placeholder:text-slate-400 dark:placeholder:text-[#9c9cba] focus:ring-2 focus:ring-inset focus:ring-[#ea580c] sm:text-sm sm:leading-6 bg-transparent dark:bg-[#101022]/50 disabled:opacity-50"
+                        className="block w-full rounded-lg border-0 py-3 pl-10 text-slate-900 dark:text-white ring-1 ring-inset ring-slate-300 dark:ring-[#3b3b54] placeholder:text-slate-400 dark:placeholder:text-[#9c9cba] focus:ring-2 focus:ring-inset focus:ring-[#1a5c2a] sm:text-sm sm:leading-6 bg-transparent dark:bg-[#101022]/50 disabled:opacity-50"
                         id="new-password"
                         name="new-password"
                         placeholder="Enter new password"
@@ -161,7 +161,7 @@ export default function ResetPasswordPage() {
                         </span>
                       </div>
                       <input
-                        className="block w-full rounded-lg border-0 py-3 pl-10 text-slate-900 dark:text-white ring-1 ring-inset ring-slate-300 dark:ring-[#3b3b54] placeholder:text-slate-400 dark:placeholder:text-[#9c9cba] focus:ring-2 focus:ring-inset focus:ring-[#ea580c] sm:text-sm sm:leading-6 bg-transparent dark:bg-[#101022]/50 disabled:opacity-50"
+                        className="block w-full rounded-lg border-0 py-3 pl-10 text-slate-900 dark:text-white ring-1 ring-inset ring-slate-300 dark:ring-[#3b3b54] placeholder:text-slate-400 dark:placeholder:text-[#9c9cba] focus:ring-2 focus:ring-inset focus:ring-[#1a5c2a] sm:text-sm sm:leading-6 bg-transparent dark:bg-[#101022]/50 disabled:opacity-50"
                         id="confirm-password"
                         name="confirm-password"
                         placeholder="Confirm new password"
@@ -189,7 +189,7 @@ export default function ResetPasswordPage() {
                 </div>
                 <div>
                   <button
-                    className="flex w-full justify-center rounded-lg bg-[#ea580c] px-3 py-3.5 text-sm font-bold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ea580c] transition-all duration-200 disabled:opacity-70"
+                    className="flex w-full justify-center rounded-lg bg-[#1a5c2a] px-3 py-3.5 text-sm font-bold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a5c2a] transition-all duration-200 disabled:opacity-70"
                     type="submit"
                     disabled={isLoading}
                   >

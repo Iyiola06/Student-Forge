@@ -44,7 +44,7 @@ function VerifyEmailContent() {
   };
 
   return (
-    <div className="main-bg font-display min-h-screen flex flex-col antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+    <div className="main-bg font-display min-h-screen flex flex-col antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
       <div className="layout-container flex h-full grow flex-col">
         {/* Header */}
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#3b3b54] px-4 sm:px-10 py-3 bg-white dark:bg-[#101022]/80 backdrop-blur-md sticky top-0 z-50">
@@ -68,8 +68,8 @@ function VerifyEmailContent() {
         <main className="flex flex-1 flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
           <div className="w-full max-w-md space-y-8 premium-card glass-card p-8 text-center">
             {/* Icon */}
-            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-[#ea580c]/10 dark:bg-[#ea580c]/20 mb-6 animate-bounce">
-              <span className="material-symbols-outlined text-[#ea580c] text-5xl">
+            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-[#1a5c2a]/10 dark:bg-[#1a5c2a]/20 mb-6 animate-bounce">
+              <span className="material-symbols-outlined text-[#1a5c2a] text-5xl">
                 mark_email_unread
               </span>
             </div>
@@ -94,7 +94,7 @@ function VerifyEmailContent() {
               <button
                 onClick={handleResend}
                 disabled={timeLeft > 0 || isResending}
-                className={`w-full rounded-lg border px-4 py-3 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-[#ea580c] focus:ring-offset-2 transition-all ${timeLeft > 0 || isResending
+                className={`w-full rounded-lg border px-4 py-3 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1a5c2a] focus:ring-offset-2 transition-all ${timeLeft > 0 || isResending
                   ? 'border-slate-200 bg-slate-50 text-slate-400 dark:border-[#2d2d3f] dark:bg-[#111118] dark:text-[#6b6b8a] cursor-not-allowed'
                   : 'border-slate-300 dark:border-[#3b3b54] bg-white dark:bg-[#252535] text-slate-700 dark:text-white hover:bg-slate-50 dark:hover:bg-[#2d2d3f]'
                   }`}
@@ -106,7 +106,7 @@ function VerifyEmailContent() {
             {/* Back to Login */}
             <div className="pt-2">
               <Link
-                className="text-sm font-medium text-[#ea580c] hover:text-[#ea580c]/80 transition-colors flex items-center justify-center gap-2"
+                className="text-sm font-medium text-[#1a5c2a] hover:text-[#1a5c2a]/80 transition-colors flex items-center justify-center gap-2"
                 href="/login"
               >
                 <span className="material-symbols-outlined text-lg">

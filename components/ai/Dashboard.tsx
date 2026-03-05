@@ -50,7 +50,7 @@ const Dashboard: React.FC = () => {
         <div className="min-h-screen bg-slate-50 dark:bg-[#0c0c16] text-slate-900 dark:text-white pb-20 pt-10 px-4 md:px-8">
             {/* Background decoration */}
             <div className="fixed inset-0 pointer-events-none opacity-20 dark:opacity-40 overflow-hidden">
-                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-orange-500/10 rounded-full blur-[120px]"></div>
+                <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-[#1a5c2a]/10 rounded-full blur-[120px]"></div>
             </div>
 
             <div className="max-w-7xl mx-auto relative z-10">
@@ -59,10 +59,10 @@ const Dashboard: React.FC = () => {
                 {isLoading && (
                     <div className="fixed inset-0 z-[100] bg-white/80 dark:bg-[#0c0c16]/90 backdrop-blur-xl flex flex-col items-center justify-center animate-in fade-in duration-500">
                         <div className="relative w-32 h-32 mb-10">
-                            <div className="absolute inset-0 border-[8px] border-orange-100 dark:border-orange-500/10 rounded-full"></div>
-                            <div className="absolute inset-0 border-[8px] border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                            <div className="absolute inset-0 border-[8px] border-orange-100 dark:border-[#1a5c2a]/10 rounded-full"></div>
+                            <div className="absolute inset-0 border-[8px] border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
                             <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="material-symbols-outlined text-4xl text-orange-500 animate-pulse font-black">bolt</span>
+                                <span className="material-symbols-outlined text-4xl text-[#1a5c2a] animate-pulse font-black">bolt</span>
                             </div>
                         </div>
                         <h2 className="text-3xl font-black tracking-tighter mb-2">{loadingState}</h2>
@@ -73,9 +73,9 @@ const Dashboard: React.FC = () => {
                 {/* Dynamic Header */}
                 {view !== 'quiz' && (
                     <header className="mb-16 text-center animate-in fade-in slide-in-from-top-6 duration-700">
-                        <div className="inline-flex items-center gap-3 px-6 py-2 bg-orange-500/10 rounded-full mb-6 border border-orange-500/20">
-                            <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></span>
-                            <span className="text-orange-600 dark:text-orange-400 text-[10px] font-black uppercase tracking-[0.3em]">Neural Study Hub</span>
+                        <div className="inline-flex items-center gap-3 px-6 py-2 bg-[#1a5c2a]/10 rounded-full mb-6 border border-[#1a5c2a]/20">
+                            <span className="w-2 h-2 bg-[#1a5c2a] rounded-full animate-pulse"></span>
+                            <span className="text-[#144823] dark:text-orange-400 text-[10px] font-black uppercase tracking-[0.3em]">Neural Study Hub</span>
                         </div>
                         <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-4">
                             {view === 'ingestion' ? 'Master Any Subject.' : 'Targeted Roadmap.'}

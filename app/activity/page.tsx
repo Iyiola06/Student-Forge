@@ -37,7 +37,7 @@ export default function ActivityPage() {
     if (isProfileLoading) {
         return (
             <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex items-center justify-center">
-                <div className="size-10 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
+                <div className="size-10 border-4 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
     }
@@ -58,7 +58,7 @@ export default function ActivityPage() {
     };
 
     return (
-        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
             <Sidebar />
             <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
 
@@ -66,7 +66,7 @@ export default function ActivityPage() {
                 <main className="flex flex-1 flex-col px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full overflow-y-auto">
                     {/* Profile Header */}
                     <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] overflow-hidden mb-8 flex-shrink-0">
-                        <div className="h-32 bg-gradient-to-r from-[#ea580c] to-purple-600"></div>
+                        <div className="h-32 bg-gradient-to-r from-[#1a5c2a] to-purple-600"></div>
                         <div className="px-8 pb-8">
                             <div className="relative flex justify-between items-end -mt-12 mb-6">
                                 <div className="flex items-end gap-6">
@@ -112,7 +112,7 @@ export default function ActivityPage() {
                                     </span>
                                 </div>
                                 <div className="text-center">
-                                    <span className="block text-2xl font-bold text-[#ea580c]">
+                                    <span className="block text-2xl font-bold text-[#1a5c2a]">
                                         {profile?.exam_readiness_score || 0}%
                                     </span>
                                     <span className="text-sm text-slate-500 dark:text-[#9c9cba]">
@@ -132,7 +132,7 @@ export default function ActivityPage() {
                                 Badges & Achievements
                             </Link>
                             <Link
-                                className="border-b-2 border-[#ea580c] pb-4 px-1 text-sm font-bold text-[#ea580c]"
+                                className="border-b-2 border-[#1a5c2a] pb-4 px-1 text-sm font-bold text-[#1a5c2a]"
                                 href="/activity"
                             >
                                 Activity
@@ -163,7 +163,7 @@ export default function ActivityPage() {
                         <div className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm max-w-2xl">
                             {isLoading ? (
                                 <div className="flex justify-center items-center py-10">
-                                    <div className="size-6 border-2 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
+                                    <div className="size-6 border-2 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
                                 </div>
                             ) : activities.length === 0 ? (
                                 <div className="text-center py-10">
@@ -177,7 +177,7 @@ export default function ActivityPage() {
                                     {activities.map((activity, idx) => (
                                         <div key={idx} className="flex gap-4">
                                             <div className="flex-shrink-0 mt-1">
-                                                <div className="size-10 rounded-full bg-[#ea580c]/10 dark:bg-[#ea580c]/20 flex items-center justify-center text-[#ea580c]">
+                                                <div className="size-10 rounded-full bg-[#1a5c2a]/10 dark:bg-[#1a5c2a]/20 flex items-center justify-center text-[#1a5c2a]">
                                                     <span className="material-symbols-outlined text-[20px]">
                                                         {activity.action_type.includes('upload') ? 'upload_file' : activity.action_type.includes('quiz') ? 'psychology' : 'history_toggle_off'}
                                                     </span>

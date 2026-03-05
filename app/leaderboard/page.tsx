@@ -61,12 +61,12 @@ export default function LeaderboardPage() {
               <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter">
                 GALACTIC RANKS
               </h1>
-              <p className="text-[9px] md:text-[10px] font-black text-[#ea580c] uppercase tracking-[0.3em] md:tracking-[0.5em] mt-1">Season 1: The Nebula Dawn</p>
+              <p className="text-[9px] md:text-[10px] font-black text-[#1a5c2a] uppercase tracking-[0.3em] md:tracking-[0.5em] mt-1">Season 1: The Nebula Dawn</p>
             </div>
 
             <div className="hidden md:flex items-center gap-4">
               <div className="flex items-center gap-3 bg-[#101022]/60 backdrop-blur-xl px-5 py-2.5 rounded-2xl border border-[#2d2d3f] shadow-2xl">
-                <span className="material-symbols-outlined text-[#ea580c]">military_tech</span>
+                <span className="material-symbols-outlined text-[#1a5c2a]">military_tech</span>
                 <span className="text-sm font-black text-white">Lvl {profile?.level || 1}</span>
                 <div className="w-px h-6 bg-[#2d2d3f]"></div>
                 <span className="text-sm font-black text-[#38bdf8]">{(profile?.xp || 0).toLocaleString()} <span className="text-[10px] text-slate-500">FUEL</span></span>
@@ -79,7 +79,7 @@ export default function LeaderboardPage() {
             <div className="max-w-4xl mx-auto space-y-8">
               {isLoading ? (
                 <div className="py-20 flex justify-center items-center gap-3 text-slate-500 dark:text-[#9c9cba]">
-                  <div className="size-6 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
+                  <div className="size-6 border-4 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
                   Fetching real-time rankings...
                 </div>
               ) : (
@@ -140,7 +140,7 @@ export default function LeaderboardPage() {
                             <p className="text-xl md:text-2xl font-black text-white tracking-tighter">{getName(top3[0].id, top3[0].full_name)}</p>
                             <div className="flex items-center justify-center gap-2 mt-1">
                               <span className="px-2 py-0.5 bg-yellow-500/10 border border-yellow-500/30 rounded text-[9px] font-black text-yellow-500 uppercase">Grand Marshal</span>
-                              <p className="text-sm text-[#ea580c] font-black">{top3[0].xp?.toLocaleString()} <span className="text-[10px]">FUEL</span></p>
+                              <p className="text-sm text-[#1a5c2a] font-black">{top3[0].xp?.toLocaleString()} <span className="text-[10px]">FUEL</span></p>
                             </div>
                           </div>
                           <div className="h-20 md:h-52 w-28 md:w-36 bg-gradient-to-b from-yellow-500/30 via-yellow-500/5 to-transparent border-t-4 border-yellow-500 rounded-t-[3rem] mt-6 shadow-[0_-20px_40px_rgba(234,179,8,0.1)]"></div>
@@ -160,7 +160,7 @@ export default function LeaderboardPage() {
                                 unoptimized
                               />
                             </div>
-                            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-orange-600 text-white text-[10px] font-black px-4 py-1 rounded-full shadow-xl">
+                            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-[#144823] text-white text-[10px] font-black px-4 py-1 rounded-full shadow-xl">
                               RANK 03
                             </div>
                           </div>
@@ -180,8 +180,8 @@ export default function LeaderboardPage() {
                   <div className="bg-[#101022]/40 backdrop-blur-xl rounded-2xl md:rounded-[2rem] border border-[#2d2d3f] overflow-hidden shadow-2xl">
                     <div className="p-4 md:p-8 border-b border-[#2d2d3f] flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
                       <div className="flex items-center gap-3">
-                        <div className="size-10 rounded-full bg-[#ea580c]/10 border border-[#ea580c]/30 flex items-center justify-center">
-                          <span className="material-symbols-outlined text-[#ea580c]">rocket_launch</span>
+                        <div className="size-10 rounded-full bg-[#1a5c2a]/10 border border-[#1a5c2a]/30 flex items-center justify-center">
+                          <span className="material-symbols-outlined text-[#1a5c2a]">rocket_launch</span>
                         </div>
                         <div>
                           <h3 className="font-black text-white text-xl tracking-tight uppercase">Galaxy Core</h3>
@@ -192,7 +192,7 @@ export default function LeaderboardPage() {
                       <div className="flex bg-[#0c0c16] p-1.5 rounded-2xl border border-[#2d2d3f]">
                         <button
                           onClick={() => setTimeframe('all')}
-                          className={`px-8 py-2.5 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest ${timeframe === 'all' ? 'bg-[#ea580c] text-white shadow-lg shadow-[#ea580c]/20' : 'text-slate-500 hover:text-slate-300'}`}
+                          className={`px-8 py-2.5 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest ${timeframe === 'all' ? 'bg-[#1a5c2a] text-white shadow-lg shadow-[#1a5c2a]/20' : 'text-slate-500 hover:text-slate-300'}`}
                         >
                           Eternity
                         </button>
@@ -210,10 +210,10 @@ export default function LeaderboardPage() {
                         const rank = index + 4;
                         const isMe = user.id === profile?.id;
                         return (
-                          <div key={user.id} className={`flex items-center gap-3 md:gap-6 p-4 md:p-6 transition-all group ${isMe ? 'bg-[#ea580c]/10 relative' : 'hover:bg-white/5'}`}>
-                            {isMe && <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#ea580c]"></div>}
+                          <div key={user.id} className={`flex items-center gap-3 md:gap-6 p-4 md:p-6 transition-all group ${isMe ? 'bg-[#1a5c2a]/10 relative' : 'hover:bg-white/5'}`}>
+                            {isMe && <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#1a5c2a]"></div>}
 
-                            <span className={`w-6 md:w-8 text-center font-black text-base md:text-xl tabular-nums ${isMe ? 'text-[#ea580c]' : (rank < 10 ? 'text-slate-500' : 'text-slate-700')}`}>{rank}</span>
+                            <span className={`w-6 md:w-8 text-center font-black text-base md:text-xl tabular-nums ${isMe ? 'text-[#1a5c2a]' : (rank < 10 ? 'text-slate-500' : 'text-slate-700')}`}>{rank}</span>
 
                             <div className="size-10 md:size-14 rounded-xl md:rounded-2xl bg-[#0c0c16] overflow-hidden relative border border-[#2d2d3f] group-hover:border-[#38bdf8] transition-colors shrink-0">
                               <Image
@@ -231,14 +231,14 @@ export default function LeaderboardPage() {
                                 {rank < 10 && <span className="material-symbols-outlined text-[#38bdf8] text-xs md:text-sm shrink-0">verified</span>}
                               </div>
                               <div className="flex items-center gap-2 flex-wrap">
-                                <span className="text-[9px] md:text-[10px] font-black text-[#ea580c] uppercase">Lvl {user.level || 1}</span>
+                                <span className="text-[9px] md:text-[10px] font-black text-[#1a5c2a] uppercase">Lvl {user.level || 1}</span>
                                 <span className="text-[9px] md:text-[10px] text-slate-600 font-bold hidden xs:inline">•</span>
                                 <span className="text-[9px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest truncate">{rank < 20 ? 'Elite Pilot' : 'Cadet'}</span>
                               </div>
                             </div>
 
                             <div className="text-right shrink-0">
-                              <span className={`text-base md:text-xl font-black tabular-nums transition-colors ${isMe ? 'text-[#ea580c]' : 'text-white'}`}>
+                              <span className={`text-base md:text-xl font-black tabular-nums transition-colors ${isMe ? 'text-[#1a5c2a]' : 'text-white'}`}>
                                 {user.xp?.toLocaleString()}
                               </span>
                               <div className="text-[8px] md:text-[9px] font-black text-slate-500 uppercase tracking-widest mt-0.5">FUEL</div>

@@ -189,13 +189,13 @@ export default function FlashcardsPage() {
     };
 
     return (
-        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
             <Sidebar />
             <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden min-w-0">
                 <div className="px-6 pt-10 pb-6 md:px-8 border-b border-slate-200 dark:border-[#2d2d3f] bg-white dark:bg-[#1a1a24] shrink-0">
                     <div className="max-w-[1440px] mx-auto w-full">
                         <h1 className="text-3xl font-black text-slate-900 dark:text-white flex items-center gap-3">
-                            <span className="material-symbols-outlined text-[#ea580c] bg-[#ea580c]/10 p-2 rounded-xl">style</span>
+                            <span className="material-symbols-outlined text-[#1a5c2a] bg-[#1a5c2a]/10 p-2 rounded-xl">style</span>
                             Smart Flashcards
                         </h1>
                         <p className="text-slate-500 dark:text-slate-400 text-sm mt-3 font-medium">Generate high-fidelity flashcards from any resource using AI synthesis.</p>
@@ -207,9 +207,9 @@ export default function FlashcardsPage() {
                     {/* Left Panel: Configuration */}
                     {!isDrilling && (
                         <div className="w-full xl:w-[400px] shrink-0">
-                            <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-xl shadow-slate-200/50 dark:shadow-none sticky top-0 transition-all hover:border-[#ea580c]/30">
+                            <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-xl shadow-slate-200/50 dark:shadow-none sticky top-0 transition-all hover:border-[#1a5c2a]/30">
                                 <h2 className="text-xl font-black text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-[#ea580c]">
+                                    <span className="material-symbols-outlined text-[#1a5c2a]">
                                         rocket_launch
                                     </span>
                                     Deck Architect
@@ -233,7 +233,7 @@ export default function FlashcardsPage() {
                                                 setSelectedResource(e.target.value);
                                                 if (e.target.value) setPastedText('');
                                             }}
-                                            className="w-full rounded-xl border border-slate-200 dark:border-[#2d2d3f] bg-[#f8fafc] dark:bg-[#13131a] p-3 text-sm font-bold focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white transition-all hover:bg-white dark:hover:bg-[#1b1b27]"
+                                            className="w-full rounded-xl border border-slate-200 dark:border-[#2d2d3f] bg-[#f8fafc] dark:bg-[#13131a] p-3 text-sm font-bold focus:ring-2 focus:ring-[#1a5c2a] focus:outline-none dark:text-white transition-all hover:bg-white dark:hover:bg-[#1b1b27]"
                                         >
                                             <option value="">-- Choose from vault --</option>
                                             {resources.map(r => (
@@ -261,7 +261,7 @@ export default function FlashcardsPage() {
                                                 setPastedText(e.target.value);
                                                 if (e.target.value) setSelectedResource('');
                                             }}
-                                            className="w-full h-40 rounded-xl border border-slate-200 dark:border-[#2d2d3f] bg-[#f8fafc] dark:bg-[#13131a] p-4 text-sm font-medium focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white transition-all hover:bg-white dark:hover:bg-[#1b1b27] resize-none"
+                                            className="w-full h-40 rounded-xl border border-slate-200 dark:border-[#2d2d3f] bg-[#f8fafc] dark:bg-[#13131a] p-4 text-sm font-medium focus:ring-2 focus:ring-[#1a5c2a] focus:outline-none dark:text-white transition-all hover:bg-white dark:hover:bg-[#1b1b27] resize-none"
                                             placeholder="Engineered to extract facts from unstructured data..."
                                         ></textarea>
                                     </div>
@@ -269,7 +269,7 @@ export default function FlashcardsPage() {
                                     <button
                                         onClick={handleGenerate}
                                         disabled={isGenerating}
-                                        className="w-full mt-4 bg-[#ea580c] hover:bg-[#d04e0a] disabled:opacity-70 text-white font-black py-4 rounded-xl shadow-xl shadow-[#ea580c]/20 transition-all active:scale-95 flex items-center justify-center gap-3 group"
+                                        className="w-full mt-4 bg-[#1a5c2a] hover:bg-[#d04e0a] disabled:opacity-70 text-white font-black py-4 rounded-xl shadow-xl shadow-[#1a5c2a]/20 transition-all active:scale-95 flex items-center justify-center gap-3 group"
                                     >
                                         {isGenerating ? (
                                             <div className="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -288,9 +288,9 @@ export default function FlashcardsPage() {
                         {isGenerating ? (
                             <div className="h-full flex flex-col items-center justify-center text-center py-20 bg-white dark:bg-[#1a1a24] rounded-3xl border border-slate-200 dark:border-[#2d2d3f] shadow-inner">
                                 <div className="relative mb-8">
-                                    <div className="size-24 border-b-4 border-l-4 border-[#ea580c] rounded-full animate-spin"></div>
+                                    <div className="size-24 border-b-4 border-l-4 border-[#1a5c2a] rounded-full animate-spin"></div>
                                     <div className="absolute inset-0 flex items-center justify-center">
-                                        <span className="material-symbols-outlined text-4xl text-[#ea580c] animate-pulse">neurology</span>
+                                        <span className="material-symbols-outlined text-4xl text-[#1a5c2a] animate-pulse">neurology</span>
                                     </div>
                                 </div>
                                 <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">AI Neural Synthesis</h3>
@@ -307,15 +307,15 @@ export default function FlashcardsPage() {
                                         <div className="flex items-center gap-3 md:gap-6 w-full sm:w-auto">
                                             <div className="relative group flex-1 sm:flex-none">
                                                 <div className="h-3 w-full sm:w-64 bg-slate-100 dark:bg-[#13131a] rounded-full overflow-hidden border border-slate-200 dark:border-[#2d2d3f] shadow-inner">
-                                                    <div className="h-full bg-gradient-to-r from-[#ea580c] to-[#f97316] transition-all duration-700 ease-out relative" style={{ width: `${((currentIndex + 1) / flashcards.length) * 100}%` }}>
+                                                    <div className="h-full bg-gradient-to-r from-[#1a5c2a] to-[#b8963e] transition-all duration-700 ease-out relative" style={{ width: `${((currentIndex + 1) / flashcards.length) * 100}%` }}>
                                                         <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
                                                     </div>
                                                 </div>
-                                                <div className="absolute -top-1 -right-1 size-3 bg-[#ea580c] rounded-full animate-ping opacity-50"></div>
+                                                <div className="absolute -top-1 -right-1 size-3 bg-[#1a5c2a] rounded-full animate-ping opacity-50"></div>
                                             </div>
                                             <div className="flex flex-col shrink-0">
                                                 <span className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Progress</span>
-                                                <span className="text-xs md:text-sm font-black text-[#ea580c]">{currentIndex + 1} <span className="text-slate-400 opacity-50">/</span> {flashcards.length}</span>
+                                                <span className="text-xs md:text-sm font-black text-[#1a5c2a]">{currentIndex + 1} <span className="text-slate-400 opacity-50">/</span> {flashcards.length}</span>
                                             </div>
                                         </div>
                                         <button
@@ -334,9 +334,9 @@ export default function FlashcardsPage() {
                                     >
                                         <div className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}>
                                             {/* Front */}
-                                            <div className="absolute top-0 left-0 w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-white dark:bg-[#1a1a24] border-2 border-slate-200 dark:border-[#2d2d3f] rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] p-8 md:p-14 flex flex-col items-center justify-center text-center transition-all group-hover:border-[#ea580c]/50 ">
-                                                <div className="absolute top-10 left-1/2 -translate-x-1/2 bg-[#ea580c]/10 text-[#ea580c] px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-[#ea580c]/20 flex items-center gap-2">
-                                                    <span className="size-1.5 rounded-full bg-[#ea580c] animate-pulse"></span>
+                                            <div className="absolute top-0 left-0 w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-white dark:bg-[#1a1a24] border-2 border-slate-200 dark:border-[#2d2d3f] rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] p-8 md:p-14 flex flex-col items-center justify-center text-center transition-all group-hover:border-[#1a5c2a]/50 ">
+                                                <div className="absolute top-10 left-1/2 -translate-x-1/2 bg-[#1a5c2a]/10 text-[#1a5c2a] px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-[#1a5c2a]/20 flex items-center gap-2">
+                                                    <span className="size-1.5 rounded-full bg-[#1a5c2a] animate-pulse"></span>
                                                     Insight Prompt
                                                 </div>
                                                 <div className="w-full max-h-full overflow-y-auto custom-scrollbar px-4">
@@ -344,14 +344,14 @@ export default function FlashcardsPage() {
                                                         {flashcards[currentIndex].front}
                                                     </p>
                                                 </div>
-                                                <div className="absolute bottom-12 flex flex-col items-center gap-2 text-[#ea580c]/60 dark:text-[#ea580c]/40 text-[10px] font-black uppercase tracking-widest animate-bounce">
+                                                <div className="absolute bottom-12 flex flex-col items-center gap-2 text-[#1a5c2a]/60 dark:text-[#1a5c2a]/40 text-[10px] font-black uppercase tracking-widest animate-bounce">
                                                     <span className="material-symbols-outlined text-lg">expand_circle_down</span>
                                                     FLIP TO RESOLVE
                                                 </div>
                                             </div>
 
                                             {/* Back */}
-                                            <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-white dark:bg-[#11111a] border-2 border-[#ea580c] rounded-[2.5rem] shadow-[0_0_80px_rgba(234,88,12,0.15)] p-8 md:p-14 flex flex-col items-center justify-center text-center [transform:rotateY(180deg)] holographic-sheen">
+                                            <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-white dark:bg-[#11111a] border-2 border-[#1a5c2a] rounded-[2.5rem] shadow-[0_0_80px_rgba(234,88,12,0.15)] p-8 md:p-14 flex flex-col items-center justify-center text-center [transform:rotateY(180deg)] holographic-sheen">
                                                 <div className="absolute top-10 left-1/2 -translate-x-1/2 bg-green-500/10 text-green-400 px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-green-500/20 flex items-center gap-2">
                                                     <span className="size-1.5 rounded-full bg-green-500 animate-pulse"></span>
                                                     Neural Resolution
@@ -371,7 +371,7 @@ export default function FlashcardsPage() {
                                     {/* Controls (visible when flipped) */}
                                     <div className={`mt-6 md:mt-12 flex flex-col sm:flex-row gap-3 md:gap-6 transition-all duration-700 transform relative z-10 w-full max-w-2xl ${isFlipped ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}>
                                         <button onClick={nextCard} className="flex-1 px-6 md:px-10 py-4 md:py-5 rounded-2xl md:rounded-3xl bg-white dark:bg-[#1a1a24] text-slate-700 dark:text-white font-black text-xs uppercase tracking-[0.2em] hover:bg-slate-50 dark:hover:bg-[#2d2d3f] transition-all flex items-center justify-center gap-2 md:gap-3 border-2 border-slate-200 dark:border-[#2d2d3f] shadow-xl hover:shadow-2xl hover:-translate-y-1">
-                                            <span className="material-symbols-outlined text-orange-500">retry</span>
+                                            <span className="material-symbols-outlined text-[#1a5c2a]">retry</span>
                                             Review Again
                                         </button>
                                         <button onClick={nextCard} className="flex-1 px-6 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl bg-green-500 hover:bg-green-400 text-[#0a0a0f] font-black text-xs uppercase tracking-[0.2em] shadow-[0_20px_40px_-10px_rgba(34,197,94,0.4)] transition-all flex items-center justify-center gap-2 md:gap-3 hover:-translate-y-1 active:scale-95 group">
@@ -387,7 +387,7 @@ export default function FlashcardsPage() {
                                         <div>
                                             <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">AI Generated Deck</h2>
                                             <div className="flex items-center gap-2 mt-1">
-                                                <span className="bg-[#ea580c] text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">{flashcards.length} Integrated Cards</span>
+                                                <span className="bg-[#1a5c2a] text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">{flashcards.length} Integrated Cards</span>
                                                 <span className="text-slate-400 font-medium text-xs">Ready for neural formatting</span>
                                             </div>
                                         </div>
@@ -398,7 +398,7 @@ export default function FlashcardsPage() {
                                                         navigator.clipboard.writeText(`${window.location.origin}/shared/flashcard/${savedDeckId}`);
                                                         alert('Link copied to clipboard!');
                                                     }}
-                                                    className="bg-[#ea580c] text-white hover:bg-[#d04e0a] px-6 py-3 rounded-xl text-xs font-black transition-all flex items-center gap-2 shadow-lg shadow-[#ea580c]/20"
+                                                    className="bg-[#1a5c2a] text-white hover:bg-[#d04e0a] px-6 py-3 rounded-xl text-xs font-black transition-all flex items-center gap-2 shadow-lg shadow-[#1a5c2a]/20"
                                                 >
                                                     <span className="material-symbols-outlined text-[18px]">share</span>
                                                     Share Deck
@@ -415,7 +415,7 @@ export default function FlashcardsPage() {
                                             )}
                                             <button
                                                 onClick={startDrill}
-                                                className="bg-[#ea580c]/10 text-[#ea580c] hover:bg-[#ea580c] hover:text-white px-8 py-3 rounded-xl text-xs font-black transition-all flex items-center gap-2 border border-[#ea580c]/20"
+                                                className="bg-[#1a5c2a]/10 text-[#1a5c2a] hover:bg-[#1a5c2a] hover:text-white px-8 py-3 rounded-xl text-xs font-black transition-all flex items-center gap-2 border border-[#1a5c2a]/20"
                                             >
                                                 <span className="material-symbols-outlined text-[20px]">play_circle</span>
                                                 Start Drill Session
@@ -425,10 +425,10 @@ export default function FlashcardsPage() {
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5">
                                         {flashcards.map((card, i) => (
-                                            <div key={i} className="flex flex-col p-6 rounded-2xl border border-slate-100 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#13131a]/50 hover:border-[#ea580c]/30 hover:bg-white dark:hover:bg-[#1a1a24] transition-all group relative overflow-hidden shadow-sm hover:shadow-lg">
-                                                <div className="absolute top-0 left-0 w-1 h-full bg-[#ea580c]/20 group-hover:bg-[#ea580c] transition-all"></div>
+                                            <div key={i} className="flex flex-col p-6 rounded-2xl border border-slate-100 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#13131a]/50 hover:border-[#1a5c2a]/30 hover:bg-white dark:hover:bg-[#1a1a24] transition-all group relative overflow-hidden shadow-sm hover:shadow-lg">
+                                                <div className="absolute top-0 left-0 w-1 h-full bg-[#1a5c2a]/20 group-hover:bg-[#1a5c2a] transition-all"></div>
                                                 <div className="flex justify-between items-start mb-4">
-                                                    <span className="text-[10px] font-black text-[#ea580c] uppercase tracking-wider bg-[#ea580c]/10 px-2 py-0.5 rounded">Prompt</span>
+                                                    <span className="text-[10px] font-black text-[#1a5c2a] uppercase tracking-wider bg-[#1a5c2a]/10 px-2 py-0.5 rounded">Prompt</span>
                                                     <span className="text-[9px] font-bold text-slate-400 bg-slate-100 dark:bg-[#1b1b27] px-2 py-0.5 rounded border border-slate-200 dark:border-[#2d2d3f]">#{i + 1}</span>
                                                 </div>
                                                 <p className="font-black text-sm text-slate-900 dark:text-white mb-4 leading-snug">
@@ -447,11 +447,11 @@ export default function FlashcardsPage() {
                         ) : (
                             // Premium Empty State
                             <div className="bg-white dark:bg-[#1a1a24] rounded-3xl border border-slate-200 dark:border-[#2d2d3f] p-6 md:p-12 flex flex-col items-center justify-center text-center h-full min-h-[300px] md:min-h-[500px] shadow-sm relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 w-64 h-64 bg-[#ea580c]/5 blur-[100px] -mr-32 -mt-32 rounded-full"></div>
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-[#1a5c2a]/5 blur-[100px] -mr-32 -mt-32 rounded-full"></div>
                                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#3b3bfa]/5 blur-[100px] -ml-32 -mb-32 rounded-full"></div>
 
                                 <div className="bg-[#f8fafc] dark:bg-[#13131a] p-8 rounded-[2.5rem] mb-8 border border-slate-100 dark:border-[#2d2d3f] shadow-inner relative z-10">
-                                    <span className="material-symbols-outlined text-7xl text-[#ea580c] drop-shadow-[0_0_15px_rgba(234,88,12,0.3)]">
+                                    <span className="material-symbols-outlined text-7xl text-[#1a5c2a] drop-shadow-[0_0_15px_rgba(234,88,12,0.3)]">
                                         biotech
                                     </span>
                                 </div>
@@ -462,7 +462,7 @@ export default function FlashcardsPage() {
                                 <div className="flex gap-4 relative z-10">
                                     <div className="flex flex-col items-center gap-2">
                                         <div className="size-12 rounded-2xl bg-slate-50 dark:bg-[#13131a] flex items-center justify-center border border-slate-200 dark:border-[#2d2d3f]">
-                                            <span className="material-symbols-outlined text-[#ea580c]">inventory_2</span>
+                                            <span className="material-symbols-outlined text-[#1a5c2a]">inventory_2</span>
                                         </div>
                                         <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Step 1: Feed Input</span>
                                     </div>
@@ -471,7 +471,7 @@ export default function FlashcardsPage() {
                                     </div>
                                     <div className="flex flex-col items-center gap-2">
                                         <div className="size-12 rounded-2xl bg-slate-50 dark:bg-[#13131a] flex items-center justify-center border border-slate-200 dark:border-[#2d2d3f]">
-                                            <span className="material-symbols-outlined text-[#ea580c]">psychology</span>
+                                            <span className="material-symbols-outlined text-[#1a5c2a]">psychology</span>
                                         </div>
                                         <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Step 2: AI Synthesis</span>
                                     </div>
@@ -480,7 +480,7 @@ export default function FlashcardsPage() {
                                     </div>
                                     <div className="flex flex-col items-center gap-2">
                                         <div className="size-12 rounded-2xl bg-slate-50 dark:bg-[#13131a] flex items-center justify-center border border-slate-200 dark:border-[#2d2d3f]">
-                                            <span className="material-symbols-outlined text-[#ea580c]">bolt</span>
+                                            <span className="material-symbols-outlined text-[#1a5c2a]">bolt</span>
                                         </div>
                                         <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Step 3: Drill Mode</span>
                                     </div>
@@ -504,7 +504,7 @@ export default function FlashcardsPage() {
                     background: radial-gradient(circle, #3b82f6, transparent 70%);
                 }
                 .aura-highlight {
-                    background: radial-gradient(circle, #ea580c, transparent 70%);
+                    background: radial-gradient(circle, #1a5c2a, transparent 70%);
                     opacity: 0.25;
                 }
                 .dark .aura-highlight {

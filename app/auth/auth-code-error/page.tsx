@@ -32,7 +32,7 @@ function AuthErrorContent() {
                 </p>
                 <Link
                     href="/login"
-                    className="inline-flex items-center justify-center h-12 px-6 bg-[#ea580c] hover:bg-[#ea580c]/90 text-white font-medium rounded-lg transition-colors shadow-lg shadow-[#ea580c]/25"
+                    className="inline-flex items-center justify-center h-12 px-6 bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 text-white font-medium rounded-lg transition-colors shadow-lg shadow-[#1a5c2a]/25"
                 >
                     Back to Login
                 </Link>

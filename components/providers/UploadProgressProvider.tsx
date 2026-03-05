@@ -292,7 +292,7 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
                                 {fileName}
                             </span>
                             <span className="text-xs text-slate-500 dark:text-slate-400 mt-1 capitalize flex items-center gap-2">
-                                {uploadState === 'compressing' && <><span className="size-3 border-2 border-[#ea580c] border-t-transparent rounded-full animate-spin"></span> Optimizing file...</>}
+                                {uploadState === 'compressing' && <><span className="size-3 border-2 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></span> Optimizing file...</>}
                                 {uploadState === 'uploading' && 'Uploading direct to cloud...'}
                                 {uploadState === 'processing' && <><span className="size-3 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"></span> Analyzing content...</>}
                                 {uploadState === 'ready' && <span className="text-green-500 font-bold">Upload Complete!</span>}
@@ -309,7 +309,7 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
                     {(uploadState === 'uploading' || uploadState === 'compressing' || uploadState === 'processing') && (
                         <div className="h-1.5 w-full bg-slate-100 dark:bg-[#0c0c16]">
                             <div
-                                className={`h-full transition-all duration-300 ${uploadState === 'processing' ? 'bg-purple-500 animate-pulse w-full' : 'bg-[#ea580c]'}`}
+                                className={`h-full transition-all duration-300 ${uploadState === 'processing' ? 'bg-purple-500 animate-pulse w-full' : 'bg-[#1a5c2a]'}`}
                                 style={{ width: uploadState === 'processing' ? '100%' : `${Math.max(10, progress)}%` }}
                             />
                         </div>

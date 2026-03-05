@@ -31,12 +31,12 @@ export default function SharedFlashcardClient({ deck, flashcards }: SharedFlashc
     };
 
     return (
-        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
             <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
                 {/* Header */}
                 <div className="px-6 pt-10 pb-6 md:px-8 flex items-center justify-between border-b border-slate-200 dark:border-[#2d2d3f]">
                     <Link href="/" className="flex items-center gap-2 group">
-                        <div className="size-10 bg-[#ea580c]/10 text-[#ea580c] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div className="size-10 bg-[#1a5c2a]/10 text-[#1a5c2a] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                             <span className="material-symbols-outlined text-2xl">school</span>
                         </div>
                         <h2 className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
@@ -48,8 +48,8 @@ export default function SharedFlashcardClient({ deck, flashcards }: SharedFlashc
                 <main className="flex-1 overflow-y-auto p-6 md:p-8 flex items-center justify-center">
                     {!isDrilling ? (
                         <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-10 text-center shadow-lg w-full max-w-2xl">
-                            <div className="inline-flex size-24 bg-orange-500/10 rounded-full items-center justify-center mb-6">
-                                <span className="material-symbols-outlined text-5xl text-[#ea580c]">style</span>
+                            <div className="inline-flex size-24 bg-[#1a5c2a]/10 rounded-full items-center justify-center mb-6">
+                                <span className="material-symbols-outlined text-5xl text-[#1a5c2a]">style</span>
                             </div>
                             <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{deck.title}</h1>
                             <p className="text-slate-500 dark:text-[#9c9cba] mb-8 text-lg">
@@ -59,7 +59,7 @@ export default function SharedFlashcardClient({ deck, flashcards }: SharedFlashc
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <button
                                     onClick={startDrill}
-                                    className="bg-[#ea580c] hover:bg-[#ea580c]/90 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-[#ea580c]/25 transition-all w-full sm:w-auto flex items-center justify-center gap-2"
+                                    className="bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-[#1a5c2a]/25 transition-all w-full sm:w-auto flex items-center justify-center gap-2"
                                 >
                                     <span className="material-symbols-outlined">play_arrow</span>
                                     Start Flashcards Drill
@@ -77,7 +77,7 @@ export default function SharedFlashcardClient({ deck, flashcards }: SharedFlashc
                             {/* Header */}
                             <div className="w-full max-w-2xl mb-8 flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <span className="bg-[#ea580c] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm shadow-[#ea580c]/30">
+                                    <span className="bg-[#1a5c2a] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm shadow-[#1a5c2a]/30">
                                         Card {currentIndex + 1} of {flashcards.length}
                                     </span>
                                 </div>
@@ -97,7 +97,7 @@ export default function SharedFlashcardClient({ deck, flashcards }: SharedFlashc
                             >
                                 <div className={`relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}>
                                     {/* Front */}
-                                    <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-white dark:bg-[#1b1b27] border-2 border-slate-200 dark:border-[#2d2d3f] rounded-2xl shadow-xl p-10 flex flex-col items-center justify-center text-center hover:border-[#ea580c] transition-colors">
+                                    <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-white dark:bg-[#1b1b27] border-2 border-slate-200 dark:border-[#2d2d3f] rounded-2xl shadow-xl p-10 flex flex-col items-center justify-center text-center hover:border-[#1a5c2a] transition-colors">
                                         <p className="text-2xl font-bold text-slate-900 dark:text-white">
                                             {flashcards[currentIndex].front}
                                         </p>
@@ -108,7 +108,7 @@ export default function SharedFlashcardClient({ deck, flashcards }: SharedFlashc
                                     </div>
 
                                     {/* Back */}
-                                    <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-slate-900 border-2 border-[#ea580c] rounded-2xl shadow-xl p-10 flex flex-col items-center justify-center text-center [transform:rotateY(180deg)]">
+                                    <div className="absolute w-full h-full [backface-visibility:hidden] [-webkit-backface-visibility:hidden] bg-slate-900 border-2 border-[#1a5c2a] rounded-2xl shadow-xl p-10 flex flex-col items-center justify-center text-center [transform:rotateY(180deg)]">
                                         <p className="text-xl text-white leading-relaxed">
                                             {flashcards[currentIndex].back}
                                         </p>

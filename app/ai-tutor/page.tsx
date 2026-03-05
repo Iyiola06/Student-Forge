@@ -37,7 +37,7 @@ function AITutorContent() {
     }, [resourceId]);
 
     return (
-        <div className="main-bg font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+        <div className="main-bg font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
             <Sidebar />
             <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
                 <TutorChat
@@ -53,7 +53,7 @@ export default function AITutorPage() {
     return (
         <Suspense fallback={
             <div className="main-bg font-display min-h-screen flex items-center justify-center">
-                <div className="size-10 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
+                <div className="size-10 border-4 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
             </div>
         }>
             <AITutorContent />

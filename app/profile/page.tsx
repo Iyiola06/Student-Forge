@@ -44,20 +44,20 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex items-center justify-center">
-        <div className="size-10 border-4 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
+        <div className="size-10 border-4 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen">
         {/* Main Content */}
         <main className="flex flex-1 flex-col px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full">
           {/* Profile Header */}
           <div className="bg-white dark:bg-[#101022]/60 backdrop-blur-xl rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] overflow-hidden mb-8 shadow-xl dark:shadow-2xl relative">
-            <div className="h-48 bg-gradient-to-r from-[#ea580c] via-purple-900 to-[#0c0c16] relative overflow-hidden">
+            <div className="h-48 bg-gradient-to-r from-[#1a5c2a] via-purple-900 to-[#0c0c16] relative overflow-hidden">
               <div className="absolute inset-0 opacity-30" style={{ background: 'radial-gradient(circle at top right, #38bdf8 0%, transparent 70%)' }}></div>
               <div className="absolute inset-0 stars-container opacity-20"></div>
             </div>
@@ -77,7 +77,7 @@ export default function ProfilePage() {
                     <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tighter flex flex-col md:flex-row items-center gap-2 md:gap-3">
                       {profile?.full_name || 'Student'}
                       {profile?.active_title && (
-                        <span className="text-[10px] bg-[#ea580c]/20 text-[#ea580c] border border-[#ea580c]/40 px-3 py-1 rounded-full uppercase tracking-widest font-black">
+                        <span className="text-[10px] bg-[#1a5c2a]/20 text-[#1a5c2a] border border-[#1a5c2a]/40 px-3 py-1 rounded-full uppercase tracking-widest font-black">
                           {profile.active_title}
                         </span>
                       )}
@@ -117,8 +117,8 @@ export default function ProfilePage() {
                   <span className="text-[9px] md:text-[10px] text-center font-black text-slate-500 uppercase tracking-widest mt-1 px-2">Data Scans</span>
                 </div>
                 <div className="flex flex-col items-center">
-                  <span className="material-symbols-outlined text-[#ea580c] mb-2">diamond</span>
-                  <span className="text-2xl md:text-3xl font-black text-[#ea580c]">
+                  <span className="material-symbols-outlined text-[#1a5c2a] mb-2">diamond</span>
+                  <span className="text-2xl md:text-3xl font-black text-[#1a5c2a]">
                     {(profile?.xp || 0).toLocaleString()}
                   </span>
                   <span className="text-[9px] md:text-[10px] text-center font-black text-slate-500 uppercase tracking-widest mt-1 px-2">Total Fuel</span>
@@ -142,9 +142,9 @@ export default function ProfilePage() {
                     return (
                       <div
                         key={badge.id}
-                        className={`bg-slate-50 dark:bg-[#0c0c16]/50 rounded-2xl border transition-all p-4 flex flex-col items-center text-center group ${isUnlocked ? 'border-[#ea580c]/30 hover:border-[#ea580c] shadow-lg shadow-[#ea580c]/5' : 'border-slate-100 dark:border-[#2d2d3f] grayscale opacity-40'}`}
+                        className={`bg-slate-50 dark:bg-[#0c0c16]/50 rounded-2xl border transition-all p-4 flex flex-col items-center text-center group ${isUnlocked ? 'border-[#1a5c2a]/30 hover:border-[#1a5c2a] shadow-lg shadow-[#1a5c2a]/5' : 'border-slate-100 dark:border-[#2d2d3f] grayscale opacity-40'}`}
                       >
-                        <div className={`size-14 rounded-full flex items-center justify-center border-2 mb-3 transition-transform ${isUnlocked ? 'bg-[#ea580c]/10 text-[#ea580c] border-[#ea580c]/20 group-hover:scale-110' : 'bg-white dark:bg-[#101022] text-slate-300 dark:text-slate-700 border-slate-100 dark:border-[#2d2d3f]'}`}>
+                        <div className={`size-14 rounded-full flex items-center justify-center border-2 mb-3 transition-transform ${isUnlocked ? 'bg-[#1a5c2a]/10 text-[#1a5c2a] border-[#1a5c2a]/20 group-hover:scale-110' : 'bg-white dark:bg-[#101022] text-slate-300 dark:text-slate-700 border-slate-100 dark:border-[#2d2d3f]'}`}>
                           <span className="material-symbols-outlined text-2xl">
                             {isUnlocked ? badge.icon : 'lock'}
                           </span>
@@ -174,7 +174,7 @@ export default function ProfilePage() {
                       <span className="text-[10px] font-black text-[#38bdf8] uppercase tracking-widest">{(profile?.unlocked_titles?.length || 0)} Found</span>
                     </div>
                     <select
-                      className="w-full bg-slate-50 dark:bg-[#0c0c16] border border-slate-200 dark:border-[#2d2d3f] text-slate-900 dark:text-white rounded-xl px-4 py-3 font-bold text-xs focus:ring-2 focus:ring-[#ea580c] outline-none"
+                      className="w-full bg-slate-50 dark:bg-[#0c0c16] border border-slate-200 dark:border-[#2d2d3f] text-slate-900 dark:text-white rounded-xl px-4 py-3 font-bold text-xs focus:ring-2 focus:ring-[#1a5c2a] outline-none"
                       value={profile?.active_title || ''}
                       onChange={(e) => handleTitleChange(e.target.value)}
                     >
@@ -194,7 +194,7 @@ export default function ProfilePage() {
                         <button
                           key={t}
                           onClick={() => handleThemeChange(t)}
-                          className={`py-6 rounded-xl border-2 flex flex-col items-center justify-center gap-2 group transition-all ${profile?.active_theme === t ? 'border-[#ea580c] bg-[#ea580c]/5' : 'border-slate-100 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#0c0c16] hover:border-slate-300 dark:hover:border-slate-600'}`}
+                          className={`py-6 rounded-xl border-2 flex flex-col items-center justify-center gap-2 group transition-all ${profile?.active_theme === t ? 'border-[#1a5c2a] bg-[#1a5c2a]/5' : 'border-slate-100 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#0c0c16] hover:border-slate-300 dark:hover:border-slate-600'}`}
                         >
                           <div className={`size-4 rounded-full ${t === 'Standard' ? 'bg-slate-400' :
                             t === 'Nebula' ? 'bg-purple-500 shadow-[0_0_10px_purple]' :
@@ -211,9 +211,9 @@ export default function ProfilePage() {
 
               {/* Ship Stats Section */}
               <section className="bg-gradient-to-br from-[#1e1b4b] to-[#0c0c16] border border-[#2d2d3f] rounded-[2rem] p-8 shadow-2xl overflow-hidden relative">
-                <div className="absolute top-0 right-0 size-32 bg-[#ea580c]/5 rounded-full blur-3xl" />
+                <div className="absolute top-0 right-0 size-32 bg-[#1a5c2a]/5 rounded-full blur-3xl" />
                 <h2 className="text-xl font-black text-white tracking-widest uppercase mb-6 flex items-center gap-3">
-                  <span className="material-symbols-outlined text-[#ea580c]">rocket</span>
+                  <span className="material-symbols-outlined text-[#1a5c2a]">rocket</span>
                   Vessel Status
                 </h2>
                 <div className="space-y-4">

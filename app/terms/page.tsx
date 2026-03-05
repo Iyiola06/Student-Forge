@@ -6,7 +6,7 @@ import { motion } from 'motion/react';
 
 export default function TermsOfServicePage() {
     return (
-        <div className="main-bg font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col selection:bg-[#ea580c] selection:text-white">
+        <div className="main-bg font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col selection:bg-[#1a5c2a] selection:text-white">
             {/* Header */}
             <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#2d2d45] px-10 py-4 bg-white dark:bg-[#1b1b2e]/50 backdrop-blur-md sticky top-0 z-50">
                 <Link href="/" className="flex items-center gap-4 group">
@@ -26,7 +26,7 @@ export default function TermsOfServicePage() {
                 </Link>
                 <div className="flex items-center gap-4">
                     <Link href="/signup">
-                        <button className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-[#ea580c] hover:bg-[#ea580c]/90 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-[#ea580c]/20">
+                        <button className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-[#1a5c2a]/20">
                             Get Started
                         </button>
                     </Link>
@@ -47,21 +47,21 @@ export default function TermsOfServicePage() {
 
                     <div className="prose prose-slate dark:prose-invert max-w-none space-y-6">
                         <section className="space-y-4">
-                            <h2 className="text-2xl font-bold text-[#ea580c]">1. Acceptance of Terms</h2>
+                            <h2 className="text-2xl font-bold text-[#1a5c2a]">1. Acceptance of Terms</h2>
                             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                                 By accessing and using Vui Studify, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.
                             </p>
                         </section>
 
                         <section className="space-y-4">
-                            <h2 className="text-2xl font-bold text-[#ea580c]">2. Description of Service</h2>
+                            <h2 className="text-2xl font-bold text-[#1a5c2a]">2. Description of Service</h2>
                             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                                 Vui Studify provides an AI-powered study platform including quiz generation, flashcards, and gamified learning tools. We reserve the right to modify or discontinue any part of the service at any time.
                             </p>
                         </section>
 
                         <section className="space-y-4">
-                            <h2 className="text-2xl font-bold text-[#ea580c]">3. User Responsibilities</h2>
+                            <h2 className="text-2xl font-bold text-[#1a5c2a]">3. User Responsibilities</h2>
                             <ul className="list-disc pl-6 text-slate-600 dark:text-slate-300 space-y-2">
                                 <li>You must be at least 13 years old to use this service.</li>
                                 <li>You are responsible for maintaining the security of your account and password.</li>
@@ -71,21 +71,21 @@ export default function TermsOfServicePage() {
                         </section>
 
                         <section className="space-y-4">
-                            <h2 className="text-2xl font-bold text-[#ea580c]">4. Intellectual Property</h2>
+                            <h2 className="text-2xl font-bold text-[#1a5c2a]">4. Intellectual Property</h2>
                             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                                 The Vui Studify name, logo, and all related content and technology are the exclusive property of Vui Studify Inc. You retain ownership of any content you upload, but grant us a license to use it to provide our services.
                             </p>
                         </section>
 
                         <section className="space-y-4">
-                            <h2 className="text-2xl font-bold text-[#ea580c]">5. Limitation of Liability</h2>
+                            <h2 className="text-2xl font-bold text-[#1a5c2a]">5. Limitation of Liability</h2>
                             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                                 Vui Studify is provided "as is" without any warranties. We shall not be liable for any direct, indirect, incidental, or consequential damages resulting from the use or inability to use our services.
                             </p>
                         </section>
 
                         <section className="space-y-4">
-                            <h2 className="text-2xl font-bold text-[#ea580c]">6. Governing Law</h2>
+                            <h2 className="text-2xl font-bold text-[#1a5c2a]">6. Governing Law</h2>
                             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                                 These terms shall be governed by and construed in accordance with the laws of the jurisdiction in which Vui Studify Inc. operates.
                             </p>
@@ -94,7 +94,7 @@ export default function TermsOfServicePage() {
 
                     <div className="pt-8 border-t border-slate-200 dark:border-[#2d2d45] flex flex-col md:flex-row justify-between items-center gap-4">
                         <p className="text-sm text-slate-500 dark:text-[#9c9cba]">Questions about our terms? Contact us.</p>
-                        <Link href="/login" className="text-[#ea580c] font-bold hover:underline">Back to Login</Link>
+                        <Link href="/login" className="text-[#1a5c2a] font-bold hover:underline">Back to Login</Link>
                     </div>
                 </motion.div>
             </main>

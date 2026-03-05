@@ -235,7 +235,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="main-bg font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#ea580c] selection:text-white">
+    <div className="main-bg font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a] selection:text-white">
       <Sidebar />
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
@@ -256,7 +256,7 @@ export default function SettingsPage() {
                       First Name
                     </label>
                     <input
-                      className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-2.5 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white"
+                      className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-2.5 text-sm focus:ring-2 focus:ring-[#1a5c2a] focus:outline-none dark:text-white"
                       value={formData.firstName}
                       onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                       type="text"
@@ -267,7 +267,7 @@ export default function SettingsPage() {
                       Last Name
                     </label>
                     <input
-                      className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-2.5 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white"
+                      className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-2.5 text-sm focus:ring-2 focus:ring-[#1a5c2a] focus:outline-none dark:text-white"
                       value={formData.lastName}
                       onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                       type="text"
@@ -279,7 +279,7 @@ export default function SettingsPage() {
                     Examination Date
                   </label>
                   <input
-                    className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-2.5 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none dark:text-white"
+                    className="w-full rounded-lg border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-2.5 text-sm focus:ring-2 focus:ring-[#1a5c2a] focus:outline-none dark:text-white"
                     value={formData.examDate}
                     onChange={(e) => setFormData({ ...formData, examDate: e.target.value })}
                     type="date"
@@ -315,16 +315,16 @@ export default function SettingsPage() {
                       <button
                         key={i}
                         onClick={() => setFormData({ ...formData, avatarUrl: url })}
-                        className={`size-14 rounded-full border-4 overflow-hidden shadow-sm transition-all hover:scale-105 ${formData.avatarUrl === url ? 'border-[#ea580c] scale-110' : 'border-transparent'}`}
+                        className={`size-14 rounded-full border-4 overflow-hidden shadow-sm transition-all hover:scale-105 ${formData.avatarUrl === url ? 'border-[#1a5c2a] scale-110' : 'border-transparent'}`}
                       >
                         <img src={url} alt={`Avatar option ${i + 1}`} className="w-full h-full object-cover" />
                       </button>
                     ))}
                     <div className="relative size-14 rounded-full border-2 border-dashed border-slate-300 dark:border-[#3b3b54] bg-slate-50 dark:bg-[#1a1a24] hover:bg-slate-100 dark:hover:bg-[#252535] transition-colors flex items-center justify-center cursor-pointer overflow-hidden group">
                       {isUploadingAvatar ? (
-                        <div className="size-5 border-2 border-[#ea580c] border-t-transparent rounded-full animate-spin"></div>
+                        <div className="size-5 border-2 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
                       ) : (
-                        <span className="material-symbols-outlined text-slate-400 group-hover:text-[#ea580c]">add_a_photo</span>
+                        <span className="material-symbols-outlined text-slate-400 group-hover:text-[#1a5c2a]">add_a_photo</span>
                       )}
                       <input
                         type="file"
@@ -339,7 +339,7 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="pt-4">
-                  <button onClick={handleSave} disabled={isSaving || isLoading} className="px-4 py-2 bg-[#ea580c] text-white font-bold rounded-lg hover:bg-[#ea580c]/90 transition-colors disabled:opacity-50">
+                  <button onClick={handleSave} disabled={isSaving || isLoading} className="px-4 py-2 bg-[#1a5c2a] text-white font-bold rounded-lg hover:bg-[#1a5c2a]/90 transition-colors disabled:opacity-50">
                     {isSaving ? 'Saving...' : 'Save Changes'}
                   </button>
                 </div>
@@ -362,7 +362,7 @@ export default function SettingsPage() {
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input className="sr-only peer" type="checkbox" checked={isDarkMode} onChange={toggleTheme} />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#ea580c]"></div>
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#1a5c2a]"></div>
                   </label>
                 </div>
                 <div className="flex items-center justify-between">
@@ -381,7 +381,7 @@ export default function SettingsPage() {
                       onChange={toggleNotifications}
                       type="checkbox"
                     />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#ea580c]"></div>
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#1a5c2a]"></div>
                   </label>
                 </div>
                 <div className="flex items-center justify-between">
@@ -401,7 +401,7 @@ export default function SettingsPage() {
                       disabled={isSaving}
                       type="checkbox"
                     />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#ea580c]"></div>
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#1a5c2a]"></div>
                   </label>
                 </div>
                 {pushNotifications && (
@@ -420,7 +420,7 @@ export default function SettingsPage() {
                           toast.error('Failed to reach notification server');
                         }
                       }}
-                      className="px-4 py-2 bg-[#ea580c]/10 text-[#ea580c] font-bold rounded-lg hover:bg-[#ea580c]/20 transition-colors text-sm flex items-center gap-2"
+                      className="px-4 py-2 bg-[#1a5c2a]/10 text-[#1a5c2a] font-bold rounded-lg hover:bg-[#1a5c2a]/20 transition-colors text-sm flex items-center gap-2"
                     >
                       <span className="material-symbols-outlined text-[18px]">notifications_active</span>
                       Send Test Notification

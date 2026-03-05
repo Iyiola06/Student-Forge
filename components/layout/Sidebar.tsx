@@ -36,7 +36,7 @@ export default function Sidebar() {
             text: 'Are you sure you want to log out?',
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#ea580c',
+            confirmButtonColor: '#1a5c2a',
             cancelButtonColor: '#64748b',
             confirmButtonText: 'Yes, log out',
             cancelButtonText: 'Stay',
@@ -76,12 +76,12 @@ export default function Sidebar() {
                     key={link.name}
                     href={link.href}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors group ${isActive
-                        ? 'bg-[#ea580c]/10 text-[#ea580c] font-medium'
-                        : 'text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#ea580c] dark:hover:text-white'
+                        ? 'bg-[#1a5c2a]/10 text-[#1a5c2a] font-medium'
+                        : 'text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] hover:text-[#1a5c2a] dark:hover:text-white'
                         }`}
                 >
                     <span
-                        className={`material-symbols-outlined ${isActive ? '' : 'group-hover:text-[#ea580c]'
+                        className={`material-symbols-outlined ${isActive ? '' : 'group-hover:text-[#1a5c2a]'
                             }`}
                     >
                         {link.icon}

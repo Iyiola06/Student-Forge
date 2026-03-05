@@ -369,15 +369,15 @@ export default function GeneratorPage() {
         <div className="w-full mb-8">
           <div className="flex justify-between items-center mb-2">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Question {currentQuestionIndex + 1} of {generatedData.length}</span>
-            <span className="text-xs font-bold text-[#ea580c]">{Math.round(progress)}% Complete</span>
+            <span className="text-xs font-bold text-[#1a5c2a]">{Math.round(progress)}% Complete</span>
           </div>
           <div className="h-1.5 w-full bg-slate-200 dark:bg-[#1a1a24] rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-[#ea580c] to-amber-500 transition-all duration-500" style={{ width: `${progress}%` }}></div>
+            <div className="h-full bg-gradient-to-r from-[#1a5c2a] to-amber-500 transition-all duration-500" style={{ width: `${progress}%` }}></div>
           </div>
         </div>
 
         <div className="bg-white dark:bg-[#1a1a24] rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] p-8 md:p-12 shadow-2xl w-full relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-2 h-full bg-[#ea580c]"></div>
+          <div className="absolute top-0 left-0 w-2 h-full bg-[#1a5c2a]"></div>
 
           <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-10 leading-tight">
             {q.question || q.sentence}
@@ -389,12 +389,12 @@ export default function GeneratorPage() {
               const isSelected = selectedOption === opt;
               const isCorrect = opt === q.answer;
 
-              let bgClass = "bg-[#f5f5f8] dark:bg-[#13131a] border-slate-200 dark:border-[#2d2d3f] hover:border-[#ea580c]/50";
+              let bgClass = "bg-[#f5f5f8] dark:bg-[#13131a] border-slate-200 dark:border-[#2d2d3f] hover:border-[#1a5c2a]/50";
               if (showExplanation) {
                 if (isCorrect) bgClass = "bg-green-500/10 border-green-500 text-green-600 dark:text-green-400";
                 else if (isSelected) bgClass = "bg-red-500/10 border-red-500 text-red-600 dark:text-red-400";
               } else if (isSelected) {
-                bgClass = "bg-[#ea580c]/10 border-[#ea580c] ring-2 ring-[#ea580c]/20";
+                bgClass = "bg-[#1a5c2a]/10 border-[#1a5c2a] ring-2 ring-[#1a5c2a]/20";
               }
 
               return (
@@ -404,7 +404,7 @@ export default function GeneratorPage() {
                   onClick={() => handleOptionSelect(opt)}
                   className={`flex items-center gap-6 p-6 rounded-2xl border-2 transition-all text-left group ${bgClass}`}
                 >
-                  <div className={`size-10 rounded-xl flex items-center justify-center font-black text-lg transition-colors ${isSelected ? 'bg-[#ea580c] text-white' : 'bg-white dark:bg-[#1b1b27] text-slate-400 group-hover:text-[#ea580c]'}`}>
+                  <div className={`size-10 rounded-xl flex items-center justify-center font-black text-lg transition-colors ${isSelected ? 'bg-[#1a5c2a] text-white' : 'bg-white dark:bg-[#1b1b27] text-slate-400 group-hover:text-[#1a5c2a]'}`}>
                     {letter}
                   </div>
                   <span className="text-lg font-bold flex-1">{opt}</span>
@@ -420,7 +420,7 @@ export default function GeneratorPage() {
                   value={selectedOption || ''}
                   onChange={(e) => setSelectedOption(e.target.value)}
                   placeholder="Type your answer here..."
-                  className="w-full p-6 rounded-2xl bg-[#f5f5f8] dark:bg-[#13131a] border-2 border-slate-200 dark:border-[#2d2d3f] focus:border-[#ea580c] outline-none text-xl font-bold"
+                  className="w-full p-6 rounded-2xl bg-[#f5f5f8] dark:bg-[#13131a] border-2 border-slate-200 dark:border-[#2d2d3f] focus:border-[#1a5c2a] outline-none text-xl font-bold"
                 />
               </div>
             )}
@@ -442,7 +442,7 @@ export default function GeneratorPage() {
             {showExplanation ? (
               <button
                 onClick={handleNextQuestion}
-                className="flex-1 h-16 bg-[#ea580c] text-white font-black rounded-2xl hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20 flex items-center justify-center gap-3"
+                className="flex-1 h-16 bg-[#1a5c2a] text-white font-black rounded-2xl hover:bg-[#144823] transition-all shadow-xl shadow-orange-500/20 flex items-center justify-center gap-3"
               >
                 <span>{currentQuestionIndex + 1 === generatedData.length ? 'SEE RESULTS' : 'NEXT QUESTION'}</span>
                 <span className="material-symbols-outlined">arrow_forward</span>
@@ -477,8 +477,8 @@ export default function GeneratorPage() {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-6 max-w-4xl mx-auto w-full animate-in fade-in zoom-in duration-700">
         <div className="text-center mb-10">
-          <div className="inline-flex size-24 bg-orange-500/20 rounded-full items-center justify-center mb-6 border-4 border-orange-500/30">
-            <span className="material-symbols-outlined text-5xl text-[#ea580c] animate-bounce">emoji_events</span>
+          <div className="inline-flex size-24 bg-[#1a5c2a]/20 rounded-full items-center justify-center mb-6 border-4 border-[#1a5c2a]/30">
+            <span className="material-symbols-outlined text-5xl text-[#1a5c2a] animate-bounce">emoji_events</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-4">Quiz Completed!</h1>
           <p className="text-slate-500 dark:text-slate-400 text-lg font-medium">Excellent work. You&apos;ve mastered these concepts.</p>
@@ -490,9 +490,9 @@ export default function GeneratorPage() {
             <p className="text-4xl font-black text-[#5b5bfa]">{percentage}%</p>
             <p className="text-xs font-bold text-slate-500 mt-1">{score}/{generatedData.length} Correct</p>
           </div>
-          <div className="bg-white dark:bg-[#1a1a24] p-8 rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] text-center border-orange-500/30 ring-4 ring-orange-500/5">
+          <div className="bg-white dark:bg-[#1a1a24] p-8 rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] text-center border-[#1a5c2a]/30 ring-4 ring-orange-500/5">
             <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">XP Earned</p>
-            <p className="text-4xl font-black text-[#ea580c]">+{xpEarned}</p>
+            <p className="text-4xl font-black text-[#1a5c2a]">+{xpEarned}</p>
             <div className="flex items-center justify-center gap-1 mt-1">
               <span className="material-symbols-outlined text-sm text-yellow-500 fill-current">star</span>
               <span className="text-xs font-bold text-slate-500">Generation Bonus included</span>
@@ -514,7 +514,7 @@ export default function GeneratorPage() {
                 navigator.clipboard.writeText(`${window.location.origin}/shared/quiz/${savedQuizId}`);
                 alert('Link copied to clipboard!');
               }}
-              className="w-full h-16 bg-[#ea580c]/10 text-[#ea580c] font-black rounded-2xl hover:bg-[#ea580c]/20 transition-all shadow-xl shadow-orange-500/10 flex items-center justify-center gap-3 border-2 border-[#ea580c]/30"
+              className="w-full h-16 bg-[#1a5c2a]/10 text-[#1a5c2a] font-black rounded-2xl hover:bg-[#1a5c2a]/20 transition-all shadow-xl shadow-orange-500/10 flex items-center justify-center gap-3 border-2 border-[#1a5c2a]/30"
             >
               <span className="material-symbols-outlined">link</span>
               COPY SHARE LINK
@@ -523,7 +523,7 @@ export default function GeneratorPage() {
             <button
               onClick={saveQuiz}
               disabled={isSaving}
-              className="w-full h-16 bg-[#ea580c] text-white font-black rounded-2xl hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20 flex items-center justify-center gap-3 disabled:opacity-50"
+              className="w-full h-16 bg-[#1a5c2a] text-white font-black rounded-2xl hover:bg-[#144823] transition-all shadow-xl shadow-orange-500/20 flex items-center justify-center gap-3 disabled:opacity-50"
             >
               <span className="material-symbols-outlined">save</span>
               {isSaving ? 'SAVING...' : 'SAVE & SHARE QUIZ'}
@@ -555,7 +555,7 @@ export default function GeneratorPage() {
     );
   };
   return (
-    <div className="main-bg flex flex-col md:flex-row antialiased selection:bg-[#ea580c]/30 selection:text-[#ea580c]">
+    <div className="main-bg flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
       <Sidebar />
 
       {/* Main Content Area */}
@@ -582,7 +582,7 @@ export default function GeneratorPage() {
                 {/* Upload Card */}
                 <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm">
                   <div className="border border-dashed border-slate-300 dark:border-[#3b3b54] rounded-2xl p-10 flex flex-col items-center justify-center text-center">
-                    <div className="bg-[#ea580c]/20 p-4 rounded-full mb-4">
+                    <div className="bg-[#1a5c2a]/20 p-4 rounded-full mb-4">
                       <span className="material-symbols-outlined text-3xl text-[#5b5bfa]">cloud_upload</span>
                     </div>
                     <h3 className="text-xl font-bold text-white mb-2">Upload Study Material</h3>
@@ -598,7 +598,7 @@ export default function GeneratorPage() {
                       <button
                         onClick={() => fileInputRef.current?.click()}
                         disabled={isUploading}
-                        className="bg-[#ea580c] hover:bg-[#ea580c]/90 disabled:opacity-70 text-white font-bold py-2.5 px-6 rounded-lg shadow-md hover:shadow-lg transition-all w-48"
+                        className="bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 disabled:opacity-70 text-white font-bold py-2.5 px-6 rounded-lg shadow-md hover:shadow-lg transition-all w-48"
                       >
                         {isUploading ? 'Uploading...' : 'Browse Files'}
                       </button>
@@ -608,7 +608,7 @@ export default function GeneratorPage() {
                           setSelectedResource(e.target.value);
                           if (e.target.value) setPastedText('');
                         }}
-                        className="w-full rounded-lg border border-slate-200 dark:border-[#2d2d3f] bg-[#f5f5f8] dark:bg-[#13131a] p-2.5 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none text-slate-900 dark:text-white mt-4"
+                        className="w-full rounded-lg border border-slate-200 dark:border-[#2d2d3f] bg-[#f5f5f8] dark:bg-[#13131a] p-2.5 text-sm focus:ring-2 focus:ring-[#1a5c2a] focus:outline-none text-slate-900 dark:text-white mt-4"
                       >
                         <option value="">-- Or select an existing library resource --</option>
                         {resources.map(r => (
@@ -623,7 +623,7 @@ export default function GeneratorPage() {
                           setPastedText(e.target.value);
                           if (e.target.value) setSelectedResource('');
                         }}
-                        className="w-full h-20 rounded-lg border border-slate-200 dark:border-[#2d2d3f] bg-[#f5f5f8] dark:bg-[#13131a] p-3 text-sm focus:ring-2 focus:ring-[#ea580c] focus:outline-none text-slate-900 dark:text-white"
+                        className="w-full h-20 rounded-lg border border-slate-200 dark:border-[#2d2d3f] bg-[#f5f5f8] dark:bg-[#13131a] p-3 text-sm focus:ring-2 focus:ring-[#1a5c2a] focus:outline-none text-slate-900 dark:text-white"
                         placeholder="Or paste an excerpt here directly..."
                       ></textarea>
                     </div>
@@ -651,14 +651,14 @@ export default function GeneratorPage() {
                       <div className="flex flex-wrap md:flex-nowrap gap-3">
                         <button
                           onClick={() => setType('mcq')}
-                          className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all whitespace-nowrap ${type === 'mcq' ? 'bg-[#ea580c] text-white' : 'bg-slate-100 dark:bg-[#252535] text-[#9c9cba] hover:bg-[#2d2d3f]'}`}
+                          className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all whitespace-nowrap ${type === 'mcq' ? 'bg-[#1a5c2a] text-white' : 'bg-slate-100 dark:bg-[#252535] text-[#9c9cba] hover:bg-[#2d2d3f]'}`}
                         >
                           {type === 'mcq' && <span className="material-symbols-outlined text-[18px]">check_circle</span>}
                           Multiple Choice
                         </button>
                         <button
                           onClick={() => setType('fill_in_gap')}
-                          className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all whitespace-nowrap ${type === 'fill_in_gap' ? 'bg-[#ea580c] text-white' : 'bg-slate-100 dark:bg-[#252535] text-[#9c9cba] hover:bg-[#2d2d3f]'}`}
+                          className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all whitespace-nowrap ${type === 'fill_in_gap' ? 'bg-[#1a5c2a] text-white' : 'bg-slate-100 dark:bg-[#252535] text-[#9c9cba] hover:bg-[#2d2d3f]'}`}
                         >
                           {type === 'fill_in_gap' && <span className="material-symbols-outlined text-[18px]">check_circle</span>}
                           {!type.includes('fill') && <span className="material-symbols-outlined text-[18px] mr-1">edit</span>}
@@ -666,7 +666,7 @@ export default function GeneratorPage() {
                         </button>
                         <button
                           onClick={() => setType('theory')}
-                          className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all whitespace-nowrap ${type === 'theory' ? 'bg-[#ea580c] text-white' : 'bg-slate-100 dark:bg-[#252535] text-[#9c9cba] hover:bg-[#2d2d3f]'}`}
+                          className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all whitespace-nowrap ${type === 'theory' ? 'bg-[#1a5c2a] text-white' : 'bg-slate-100 dark:bg-[#252535] text-[#9c9cba] hover:bg-[#2d2d3f]'}`}
                         >
                           {type === 'theory' && <span className="material-symbols-outlined text-[18px]">check_circle</span>}
                           {type !== 'theory' && <span className="material-symbols-outlined text-[18px] mr-1">menu_book</span>}
@@ -684,19 +684,19 @@ export default function GeneratorPage() {
                         <div className="flex bg-slate-100 dark:bg-[#252535] rounded-xl p-1 gap-1">
                           <button
                             onClick={() => setDifficulty('easy')}
-                            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${difficulty === 'easy' ? 'bg-[#ea580c] text-white' : 'text-[#9c9cba] hover:text-white'}`}
+                            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${difficulty === 'easy' ? 'bg-[#1a5c2a] text-white' : 'text-[#9c9cba] hover:text-white'}`}
                           >
                             Easy
                           </button>
                           <button
                             onClick={() => setDifficulty('medium')}
-                            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${difficulty === 'medium' ? 'bg-[#ea580c] text-white' : 'text-[#9c9cba] hover:text-white'}`}
+                            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${difficulty === 'medium' ? 'bg-[#1a5c2a] text-white' : 'text-[#9c9cba] hover:text-white'}`}
                           >
                             Medium
                           </button>
                           <button
                             onClick={() => setDifficulty('hard')}
-                            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${difficulty === 'hard' ? 'bg-[#ea580c] text-white' : 'text-[#9c9cba] hover:text-white'}`}
+                            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${difficulty === 'hard' ? 'bg-[#1a5c2a] text-white' : 'text-[#9c9cba] hover:text-white'}`}
                           >
                             Hard
                           </button>
@@ -709,7 +709,7 @@ export default function GeneratorPage() {
                           Count
                         </label>
                         <div className="flex items-center gap-4 py-2 h-full">
-                          <input type="range" min="1" max="50" value={count} onChange={(e) => setCount(parseInt(e.target.value))} className="flex-1 accent-[#ea580c]" />
+                          <input type="range" min="1" max="50" value={count} onChange={(e) => setCount(parseInt(e.target.value))} className="flex-1 accent-[#1a5c2a]" />
                           <span className="bg-slate-100 dark:bg-[#252535] px-3 py-1 rounded-lg text-sm font-bold text-slate-900 dark:text-white w-12 text-center shadow-sm">
                             {count}
                           </span>
@@ -728,7 +728,7 @@ export default function GeneratorPage() {
                           placeholder="e.g. IB, AP, GCSE..."
                           value={curriculum}
                           onChange={(e) => setCurriculum(e.target.value)}
-                          className="w-full bg-slate-100 dark:bg-[#252535] border border-transparent focus:border-[#ea580c] rounded-xl px-4 py-3 text-sm focus:outline-none dark:text-white transition-colors"
+                          className="w-full bg-slate-100 dark:bg-[#252535] border border-transparent focus:border-[#1a5c2a] rounded-xl px-4 py-3 text-sm focus:outline-none dark:text-white transition-colors"
                         />
                       </div>
                       <div className="flex-1">
@@ -740,7 +740,7 @@ export default function GeneratorPage() {
                           placeholder="e.g. Mitochondria, World War 2..."
                           value={topic}
                           onChange={(e) => setTopic(e.target.value)}
-                          className="w-full bg-slate-100 dark:bg-[#252535] border border-transparent focus:border-[#ea580c] rounded-xl px-4 py-3 text-sm focus:outline-none dark:text-white transition-colors"
+                          className="w-full bg-slate-100 dark:bg-[#252535] border border-transparent focus:border-[#1a5c2a] rounded-xl px-4 py-3 text-sm focus:outline-none dark:text-white transition-colors"
                         />
                       </div>
                     </div>
@@ -769,7 +769,7 @@ export default function GeneratorPage() {
               <div className="w-full xl:w-[480px] flex flex-col gap-6 shrink-0">
                 {generatedData && (
                   <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm overflow-hidden relative">
-                    <div className="absolute top-0 w-full h-1 bg-gradient-to-r from-green-400 via-blue-500 to-[#ea580c]"></div>
+                    <div className="absolute top-0 w-full h-1 bg-gradient-to-r from-green-400 via-blue-500 to-[#1a5c2a]"></div>
                     <div className="p-6 pt-7">
                       <div className="flex items-start justify-between mb-4">
                         <div>
