@@ -146,26 +146,11 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
     };
 
     // ─── Client-side text extraction ────────────────────────────────────────
+    // PDFs are handled server-side (pdfjs worker is unreliable in browser upload context).
+    // DOCX, PPTX, and TXT extract locally — no workers needed, instant results.
     const extractTextClientSide = async (file: File): Promise<string | null> => {
         const type = file.type;
         const name = file.name.toLowerCase();
-
-        if (type === 'application/pdf') {
-            const pdfjsLib = await import('pdfjs-dist');
-            // Use the CDN worker — avoids Next.js bundle issues with worker files
-            pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
-            const arrayBuffer = await file.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
-            let text = '';
-            for (let i = 1; i <= pdf.numPages; i++) {
-                const page = await pdf.getPage(i);
-                const content = await page.getTextContent();
-                text += content.items.map((item: any) => item.str).join(' ') + '\n';
-            }
-            const cleaned = text.trim();
-            if (cleaned.length < 50) return null;
-            return cleaned;
-        }
 
         if (type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || name.endsWith('.docx')) {
             const mammoth = await import('mammoth');
@@ -198,7 +183,7 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
             return await file.text();
         }
 
-        // Images — must be handled server-side via Gemini OCR
+        // PDF and images — handled server-side
         return null;
     };
 
