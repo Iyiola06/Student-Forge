@@ -190,7 +190,12 @@ export default function SpaceReader({
                     completion_percentage: newProgress
                 }, { onConflict: 'user_id, resource_id' }).then();
 
-                supabase.rpc('increment_xp', { user_id: profile.id, xp_amount: earned }).then();
+                // Award XP directly — no RPC needed
+                supabase.from('profiles').select('xp').eq('id', profile.id).single().then(({ data }) => {
+                    if (data) {
+                        supabase.from('profiles').update({ xp: (data.xp || 0) + earned }).eq('id', profile.id).then();
+                    }
+                });
             }
 
             if (pct >= 1.0) {

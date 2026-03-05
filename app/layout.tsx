@@ -13,7 +13,7 @@ const lexend = Lexend({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://student-forge.vercel.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://student.sulvatech.com'),
   title: {
     default: 'Vui Studify — AI-Powered Study Platform',
     template: '%s | Vui Studify',
