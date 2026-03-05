@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
-import { after } from 'next/server';
 // @ts-ignore
 declare module 'pdfjs-dist/legacy/build/pdf.worker.mjs';
 
@@ -165,19 +164,40 @@ export async function POST(request: Request) {
         }
 
         const user = session.user;
-
-        const { filePath, fileName, fileType, fileSize } = await request.json();
+        const { filePath, fileName, fileType, fileSize, extractedText } = await request.json();
 
         if (!filePath) {
             return NextResponse.json({ error: 'filePath is required' }, { status: 400 });
         }
 
-        // Get the public URL
         const { data: { publicUrl } } = supabase.storage
             .from('resources')
             .getPublicUrl(filePath);
 
-        // Insert the resource record immediately with processing_status = 'processing'
+        if (extractedText) {
+            // ── Fast path: text was already extracted client-side ──────────
+            // Just insert the record with the pre-extracted content. No file download needed.
+            const { error: dbError } = await supabase
+                .from('resources')
+                .insert({
+                    user_id: user.id,
+                    title: fileName,
+                    subject: 'General',
+                    file_url: publicUrl,
+                    file_type: fileType,
+                    file_size_bytes: fileSize,
+                    content: extractedText,
+                    processing_status: 'ready',
+                    processing_error: null,
+                });
+
+            if (dbError) return NextResponse.json({ error: 'Failed to save document' }, { status: 500 });
+
+            return NextResponse.json({ success: true, status: 'ready' }, { status: 200 });
+        }
+
+        // ── Slow path: image OCR via Gemini (server-side only) ────────────
+        // Insert record first with processing status
         const { data: resourceData, error: dbError } = await supabase
             .from('resources')
             .insert({
@@ -197,15 +217,13 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Failed to create resource record' }, { status: 500 });
         }
 
-        // Schedule the background processing after the response is sent
-        after(async () => {
-            await processResource(filePath, fileName, fileType, fileSize, resourceData.id, session.access_token);
-        });
+        // Process the file synchronously — no fire-and-forget, result is reliable
+        await processResource(filePath, fileName, fileType, fileSize, resourceData.id, session.access_token);
 
-        // Return immediately with 202 Accepted
+        // Return the final status directly from this same request
         return NextResponse.json(
-            { success: true, status: 'processing', resourceId: resourceData.id },
-            { status: 202 }
+            { success: true, status: 'processed', resourceId: resourceData.id },
+            { status: 200 }
         );
     } catch (error: any) {
         console.error('Process route error:', error);

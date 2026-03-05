@@ -2,8 +2,8 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: 'StudyForge \u2014 AI-Powered Study Platform',
-        short_name: 'StudyForge',
+        name: 'Vui Studify \u2014 AI-Powered Study Platform',
+        short_name: 'Vui Studify',
         description: 'Master any subject with AI-generated quizzes, flashcards, essay grading, and gamified study sessions.',
         start_url: '/',
         display: 'standalone',
@@ -11,7 +11,7 @@ export default function manifest(): MetadataRoute.Manifest {
         theme_color: '#ea580c',
         icons: [
             {
-                src: '/images/logo.png',
+                src: '/logo-favicon.png',
                 sizes: '192x192 512x512',
                 type: 'image/png',
             },

@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey || '');
 
-const TUTOR_SYSTEM_INSTRUCTION = `You are StudyForge AI Tutor — a brilliant, patient, and encouraging study companion for students. 
+const TUTOR_SYSTEM_INSTRUCTION = `You are Vui Studify AI Tutor — a brilliant, patient, and encouraging study companion for students. 
 
 Your core behaviors:
 - Explain concepts clearly using analogies and examples

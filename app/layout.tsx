@@ -15,30 +15,30 @@ const lexend = Lexend({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://student-forge.vercel.app'),
   title: {
-    default: 'StudyForge — AI-Powered Study Platform',
-    template: '%s | StudyForge',
+    default: 'Vui Studify — AI-Powered Study Platform',
+    template: '%s | Vui Studify',
   },
   description: 'Master any subject with AI-generated quizzes, flashcards, essay grading, and gamified study sessions. Built for students preparing for WAEC, JAMB, and university exams.',
-  keywords: ['study', 'AI tutor', 'flashcards', 'quiz generator', 'essay grading', 'WAEC', 'JAMB', 'exam prep', 'Nigeria education', 'StudyForge'],
-  authors: [{ name: 'StudyForge Team' }],
+  keywords: ['study', 'AI tutor', 'flashcards', 'quiz generator', 'essay grading', 'WAEC', 'JAMB', 'exam prep', 'Nigeria education', 'Vui Studify'],
+  authors: [{ name: 'Vui Studify Team' }],
   openGraph: {
-    title: 'StudyForge — AI-Powered Study Platform',
+    title: 'Vui Studify — AI-Powered Study Platform',
     description: 'Master any subject with AI-generated quizzes, flashcards, essay grading, and gamified study sessions.',
     url: '/',
-    siteName: 'StudyForge',
+    siteName: 'Vui Studify',
     locale: 'en_US',
     type: 'website',
-    images: [{ url: '/images/logo.png', width: 512, height: 512, alt: 'StudyForge Logo' }],
+    images: [{ url: '/logo-dark.png', width: 512, height: 512, alt: 'Vui Studify Logo' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'StudyForge — AI-Powered Study Platform',
+    title: 'Vui Studify — AI-Powered Study Platform',
     description: 'Master any subject with AI-generated quizzes, flashcards, and gamified study sessions.',
-    images: ['/images/logo.png'],
+    images: ['/logo-dark.png'],
   },
   icons: {
-    icon: '/images/logo.png',
-    apple: '/images/logo.png',
+    icon: '/logo-favicon.png',
+    apple: '/logo-favicon.png',
   },
 };
 

@@ -1,9 +1,9 @@
-StudyForge - Application Overview & Progress Summary
+Vui Studify - Application Overview & Progress Summary
 ==================================================
 
 Application Overview
 --------------------
-StudyForge is a comprehensive, modern EdTech web application designed to help students optimize their learning experience. Built with Next.js (App Router), React, and Tailwind CSS, it offers a suite of tools centered around document processing, active recall, and gamified learning. 
+Vui Studify is a comprehensive, modern EdTech web application designed to help students optimize their learning experience. Built with Next.js (App Router), React, and Tailwind CSS, it offers a suite of tools centered around document processing, active recall, and gamified learning. 
 
 Core Features:
 1. Dashboard: A central personalized hub displaying exam readiness, recent activity, and study streaks.
@@ -22,7 +22,7 @@ Technical Stack:
 
 Progress & Accomplishments So Far
 ---------------------------------
-We have comprehensively refactored the StudyForge application from a static frontend template into a dynamic, data-driven application connected to a live backend.
+We have comprehensively refactored the Vui Studify application from a static frontend template into a dynamic, data-driven application connected to a live backend.
 
 1. Database & Schema Architecture
    - Designed and implemented a robust PostgreSQL schema in Supabase.

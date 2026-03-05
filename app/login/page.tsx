@@ -68,8 +68,8 @@ export default function LoginPage() {
           {/* Logo Placeholder */}
           <div className="relative size-16 flex items-center justify-center mb-4">
             <Image
-              src="/images/logo.png"
-              alt="StudyForge Logo"
+              src="/logo-favicon.png"
+              alt="Vui Studify Logo"
               width={64}
               height={64}
               className="object-contain"

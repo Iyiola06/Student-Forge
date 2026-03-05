@@ -113,8 +113,8 @@ export default function SignupPage() {
         <div className="flex items-center gap-4">
           <div className="relative size-10 flex items-center justify-center">
             <Image
-              src="/images/logo.png"
-              alt="StudyForge Logo"
+              src="/logo-favicon.png"
+              alt="Vui Studify Logo"
               width={40}
               height={40}
               className="object-contain"
@@ -122,7 +122,7 @@ export default function SignupPage() {
             />
           </div>
           <h2 className="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">
-            StudyForge
+            Vui Studify
           </h2>
         </div>
         <div className="flex flex-1 justify-end gap-8 items-center">
@@ -163,13 +163,13 @@ export default function SignupPage() {
       <main className="flex-grow flex items-center justify-center py-12 px-4 relative">
         {/* Decorative Background Elements */}
         <div className="absolute top-20 left-10 opacity-10 animate-pulse hidden lg:block">
-          <Image src="/images/logo.png" alt="" width={120} height={120} className="grayscale" />
+          <Image src="/logo-favicon.png" alt="" width={120} height={120} className="grayscale" />
         </div>
         <div className="absolute bottom-20 right-10 text-[#ea580c]/10 animate-pulse hidden lg:block">
           <span className="material-symbols-outlined text-9xl">menu_book</span>
         </div>
         <div className="absolute top-1/2 left-20 opacity-5 hidden lg:block rotate-12">
-          <Image src="/images/logo.png" alt="" width={80} height={80} className="grayscale" />
+          <Image src="/logo-favicon.png" alt="" width={80} height={80} className="grayscale" />
         </div>
         {/* Form Container */}
         <div className="w-full max-w-[640px] premium-card glass-card p-8 md:p-12 z-10">
@@ -570,7 +570,7 @@ export default function SignupPage() {
       </main>
       {/* Footer Simple */}
       <footer className="py-6 text-center text-sm text-slate-500 dark:text-slate-600">
-        <p>© {new Date().getFullYear()} StudyForge Inc. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Vui Studify Inc. All rights reserved.</p>
       </footer>
     </div>
   );

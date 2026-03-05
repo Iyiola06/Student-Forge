@@ -12,8 +12,8 @@ export default function TermsOfServicePage() {
                 <Link href="/" className="flex items-center gap-4 group">
                     <div className="relative size-10 flex items-center justify-center transition-transform group-hover:scale-110">
                         <Image
-                            src="/images/logo.png"
-                            alt="StudyForge Logo"
+                            src="/logo-favicon.png"
+                            alt="Vui Studify Logo"
                             width={40}
                             height={40}
                             className="object-contain"
@@ -21,7 +21,7 @@ export default function TermsOfServicePage() {
                         />
                     </div>
                     <h2 className="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">
-                        StudyForge
+                        Vui Studify
                     </h2>
                 </Link>
                 <div className="flex items-center gap-4">
@@ -49,14 +49,14 @@ export default function TermsOfServicePage() {
                         <section className="space-y-4">
                             <h2 className="text-2xl font-bold text-[#ea580c]">1. Acceptance of Terms</h2>
                             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                                By accessing and using StudyForge, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.
+                                By accessing and using Vui Studify, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.
                             </p>
                         </section>
 
                         <section className="space-y-4">
                             <h2 className="text-2xl font-bold text-[#ea580c]">2. Description of Service</h2>
                             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                                StudyForge provides an AI-powered study platform including quiz generation, flashcards, and gamified learning tools. We reserve the right to modify or discontinue any part of the service at any time.
+                                Vui Studify provides an AI-powered study platform including quiz generation, flashcards, and gamified learning tools. We reserve the right to modify or discontinue any part of the service at any time.
                             </p>
                         </section>
 
@@ -73,21 +73,21 @@ export default function TermsOfServicePage() {
                         <section className="space-y-4">
                             <h2 className="text-2xl font-bold text-[#ea580c]">4. Intellectual Property</h2>
                             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                                The StudyForge name, logo, and all related content and technology are the exclusive property of StudyForge Inc. You retain ownership of any content you upload, but grant us a license to use it to provide our services.
+                                The Vui Studify name, logo, and all related content and technology are the exclusive property of Vui Studify Inc. You retain ownership of any content you upload, but grant us a license to use it to provide our services.
                             </p>
                         </section>
 
                         <section className="space-y-4">
                             <h2 className="text-2xl font-bold text-[#ea580c]">5. Limitation of Liability</h2>
                             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                                StudyForge is provided "as is" without any warranties. We shall not be liable for any direct, indirect, incidental, or consequential damages resulting from the use or inability to use our services.
+                                Vui Studify is provided "as is" without any warranties. We shall not be liable for any direct, indirect, incidental, or consequential damages resulting from the use or inability to use our services.
                             </p>
                         </section>
 
                         <section className="space-y-4">
                             <h2 className="text-2xl font-bold text-[#ea580c]">6. Governing Law</h2>
                             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                                These terms shall be governed by and construed in accordance with the laws of the jurisdiction in which StudyForge Inc. operates.
+                                These terms shall be governed by and construed in accordance with the laws of the jurisdiction in which Vui Studify Inc. operates.
                             </p>
                         </section>
                     </div>
@@ -101,7 +101,7 @@ export default function TermsOfServicePage() {
 
             {/* Footer */}
             <footer className="py-10 text-center text-slate-500 dark:text-slate-600 border-t border-slate-200 dark:border-[#2d2d45]">
-                <p>© {new Date().getFullYear()} StudyForge Inc. All rights reserved.</p>
+                <p>© {new Date().getFullYear()} Vui Studify Inc. All rights reserved.</p>
             </footer>
         </div>
     );

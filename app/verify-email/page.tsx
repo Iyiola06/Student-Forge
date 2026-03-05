@@ -51,8 +51,8 @@ function VerifyEmailContent() {
           <div className="flex items-center gap-4 text-slate-900 dark:text-white">
             <div className="relative size-8 flex items-center justify-center">
               <Image
-                src="/images/logo.png"
-                alt="StudyForge Logo"
+                src="/logo-favicon.png"
+                alt="Vui Studify Logo"
                 width={32}
                 height={32}
                 className="object-contain"
@@ -60,7 +60,7 @@ function VerifyEmailContent() {
               />
             </div>
             <h2 className="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">
-              StudyForge
+              Vui Studify
             </h2>
           </div>
         </header>

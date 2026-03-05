@@ -265,116 +265,142 @@ export default function SpaceReader({
                 ))}
 
                 {/* Left 68%: PDF Canvas or Text View */}
-                <main className="flex-1 lg:w-[68%] h-full bg-[#050510] relative flex items-center justify-center border-r border-[#2d2d3f] p-2 md:p-8">
+                <main className="flex-1 lg:w-[68%] h-full bg-[#050510] relative flex flex-col border-r border-[#2d2d3f]">
                     {!isPdf && textPages.length === 0 && (
-                        <div className="flex flex-col items-center text-slate-500">
+                        <div className="flex-1 flex flex-col items-center justify-center text-slate-500">
                             <div className="size-16 rounded-full border border-dashed border-[#ea580c] animate-spin border-t-transparent mx-auto mb-4" />
                             <div className="text-xs uppercase tracking-widest font-bold text-[#ea580c]">Entering Orbit...</div>
                         </div>
                     )}
 
-                    <div className="relative shadow-[0_0_30px_rgba(14,116,144,0.15)] rounded-md w-full max-w-4xl h-full flex items-center justify-center overflow-auto scrollbar-hide">
-                        {isPdf ? (
-                            <canvas ref={canvasRef} className="bg-white max-w-full h-auto object-contain rounded-md" />
-                        ) : isPptx ? (
-                            <div className="bg-slate-900 border-4 border-slate-700/50 p-6 md:p-12 w-full max-w-5xl aspect-video overflow-y-auto text-slate-100 shadow-2xl flex flex-col items-center justify-center text-center rounded-xl relative">
-                                <span className="absolute top-4 left-4 material-symbols-outlined text-orange-500 opacity-50 text-4xl">slideshow</span>
-                                <div className="prose prose-invert max-w-none text-xl md:text-3xl leading-relaxed font-black">
-                                    {textPages[currentPage - 1]?.split('\n').filter(l => l.trim()).map((line, i) => (
-                                        <p key={i} className="mb-6">{line}</p>
-                                    ))}
+                    {/* Scrollable Document Content */}
+                    <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide p-3 md:p-6 flex items-start justify-center">
+                        <div className="w-full max-w-4xl">
+                            {isPdf ? (
+                                <canvas ref={canvasRef} className="bg-white max-w-full h-auto object-contain rounded-md shadow-xl mx-auto" />
+                            ) : isPptx ? (() => {
+                                const lines = textPages[currentPage - 1]?.split('\n').filter(l => l.trim()) ?? [];
+                                const [title, ...bodyLines] = lines;
+                                return (
+                                    <div className="w-full flex flex-col rounded-2xl overflow-hidden shadow-2xl">
+                                        {/* Slide Header */}
+                                        <div className="shrink-0 bg-gradient-to-r from-[#1e1b4b] to-[#0c0c16] border-b-4 border-[#7c3aed] px-6 md:px-10 py-4 md:py-6">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <span className="material-symbols-outlined text-[#7c3aed] text-base">slideshow</span>
+                                                <span className="text-[10px] font-bold uppercase tracking-widest text-[#7c3aed]">Slide {currentPage} / {numPages}</span>
+                                            </div>
+                                            <h2 className="text-white font-bold text-lg md:text-2xl leading-snug">
+                                                {title || `Slide ${currentPage}`}
+                                            </h2>
+                                        </div>
+                                        {/* Slide Body */}
+                                        <div className="bg-[#101022]/90 border border-t-0 border-[#2d2d3f] px-6 md:px-10 py-6">
+                                            {bodyLines.length > 0 ? (
+                                                <ul className="space-y-3">
+                                                    {bodyLines.map((line, i) => (
+                                                        <li key={i} className="flex items-start gap-3 text-sm md:text-base text-slate-200 leading-relaxed">
+                                                            <span className="mt-1.5 shrink-0 size-1.5 rounded-full bg-[#7c3aed]" />
+                                                            <span>{line}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            ) : (
+                                                <p className="text-slate-500 italic text-sm">No additional content on this slide.</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })() : isDocx ? (
+                                <div className="bg-white w-full rounded-lg shadow-2xl overflow-hidden">
+                                    <div className="bg-slate-100 border-b border-slate-200 px-6 md:px-10 py-2 flex items-center gap-2 text-xs text-slate-400 font-medium">
+                                        <span className="material-symbols-outlined text-base text-slate-400">description</span>
+                                        Page {currentPage} of {numPages}
+                                    </div>
+                                    <div className="px-8 md:px-14 py-8 md:py-10 text-slate-800">
+                                        {textPages[currentPage - 1]?.split('\n').filter(l => l.trim()).map((line, i) => (
+                                            <p key={i} className="text-sm md:text-base leading-7 mb-4 text-slate-700">{line}</p>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        ) : isDocx ? (
-                            <div className="bg-white border text-slate-900 border-slate-200 p-8 md:p-14 w-full max-w-3xl aspect-[1/1.4] overflow-y-auto shadow-2xl rounded-sm">
-                                <div className="prose prose-slate max-w-none text-lg leading-relaxed pt-4">
-                                    {textPages[currentPage - 1]?.split('\n').filter(l => l.trim()).map((line, i) => (
-                                        <p key={i} className="mb-4">{line}</p>
-                                    ))}
+                            ) : (
+                                <div className="bg-[#101022]/80 backdrop-blur-xl border border-[#2d2d3f] rounded-2xl w-full shadow-2xl overflow-hidden">
+                                    <div className="bg-[#0c0c16]/90 border-b border-[#2d2d3f] px-6 py-3 flex items-center gap-2">
+                                        <span className="material-symbols-outlined text-[#38bdf8] text-base">article</span>
+                                        <span className="text-[10px] font-black text-[#38bdf8] uppercase tracking-[0.3em] opacity-70">Sector {currentPage} / {numPages}</span>
+                                    </div>
+                                    <div className="px-6 md:px-10 py-6">
+                                        {textPages[currentPage - 1]?.split('\n').filter(l => l.trim()).map((line, i) => (
+                                            <p key={i} className="text-sm md:text-base leading-7 mb-4 text-slate-300">{line}</p>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        ) : (
-                            <div className="bg-[#101022]/80 backdrop-blur-xl border border-[#2d2d3f] p-6 md:p-12 rounded-3xl w-full max-h-full overflow-y-auto text-slate-200 shadow-2xl">
-                                <div className="text-xs font-black text-[#38bdf8] uppercase tracking-[0.3em] mb-6 opacity-60">Sector Data Transmission</div>
-                                <div className="prose prose-invert max-w-none text-lg md:text-xl leading-relaxed font-medium">
-                                    {textPages[currentPage - 1]?.split('\n').map((line, i) => (
-                                        <p key={i} className="mb-4">{line}</p>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Space Thruster Buttons */}
-                        {numPages > 0 && (
-                            <>
-                                <button onClick={() => handleTurn(-1)} disabled={currentPage <= 1} className="absolute top-1/2 left-1 md:-left-20 -translate-y-1/2 size-10 md:size-12 rounded-full border border-[#2d2d3f] bg-[#101022]/80 backdrop-blur hover:bg-[#1b1b2f] hover:border-[#38bdf8] flex items-center justify-center transition-all disabled:opacity-20 group z-50">
-                                    <span className="material-symbols-outlined text-slate-400 group-hover:text-[#38bdf8]">chevron_left</span>
-                                </button>
-                                <button onClick={() => handleTurn(1)} disabled={currentPage >= numPages} className="absolute top-1/2 right-1 md:-right-20 -translate-y-1/2 size-10 md:size-12 rounded-full border border-[#2d2d3f] bg-[#101022]/80 backdrop-blur hover:bg-[#1b1b2f] hover:border-[#ea580c] flex items-center justify-center transition-all disabled:opacity-20 group shadow-[0_0_15px_rgba(234,88,12,0.1)] hover:shadow-[0_0_20px_rgba(234,88,12,0.4)] z-50">
-                                    <span className="material-symbols-outlined text-slate-400 group-hover:text-[#ea580c]">chevron_right</span>
-                                </button>
-                            </>
-                        )}
-
-                        <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-widest font-bold text-slate-500">
-                            Sector {currentPage} / {numPages || '-'}
+                            )}
                         </div>
                     </div>
+
+                    {/* Pinned Navigation Bar — always visible, never scrolls */}
+                    {numPages > 0 && (
+                        <div className="shrink-0 border-t border-[#2d2d3f] bg-[#0c0c16]/90 backdrop-blur px-4 md:px-8 py-3 flex items-center justify-between gap-4 z-30">
+                            <button
+                                onClick={() => handleTurn(-1)}
+                                disabled={currentPage <= 1}
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#2d2d3f] bg-[#101022] hover:bg-[#1b1b2f] hover:border-[#38bdf8] text-slate-400 hover:text-[#38bdf8] transition-all disabled:opacity-20 disabled:cursor-not-allowed group text-sm font-bold"
+                            >
+                                <span className="material-symbols-outlined text-[20px]">chevron_left</span>
+                                <span className="hidden sm:inline">Previous</span>
+                            </button>
+
+                            <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                <span className="text-white font-black">{currentPage}</span>
+                                <span>/</span>
+                                <span>{numPages}</span>
+                            </div>
+
+                            <button
+                                onClick={() => handleTurn(1)}
+                                disabled={currentPage >= numPages}
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#2d2d3f] bg-[#101022] hover:bg-[#1b1b2f] hover:border-[#ea580c] text-slate-400 hover:text-[#ea580c] transition-all disabled:opacity-20 disabled:cursor-not-allowed group text-sm font-bold shadow-[0_0_15px_rgba(234,88,12,0.05)] hover:shadow-[0_0_20px_rgba(234,88,12,0.3)]"
+                            >
+                                <span className="hidden sm:inline">Next</span>
+                                <span className="material-symbols-outlined text-[20px]">chevron_right</span>
+                            </button>
+                        </div>
+                    )}
                 </main>
 
+
                 {/* Right 32%: Mission Control (Desktop only) */}
-                <aside className="hidden lg:flex w-[32%] h-full bg-[radial-gradient(ellipse_at_top,#141423,#050510)] p-8 flex-col relative z-10 overflow-hidden shrink-0">
+                <aside className="hidden lg:flex w-[32%] h-full bg-[radial-gradient(ellipse_at_top,#141423,#050510)] p-8 flex-col relative z-10 overflow-y-auto shrink-0 [scrollbar-width:thin] [scrollbar-color:#2d2d3f_transparent]">
                     <h3 className="text-xs font-bold uppercase tracking-widest text-[#38bdf8] mb-8 flex items-center gap-2">
                         <span className="material-symbols-outlined text-[14px]">display_settings</span>
                         Mission Control
                     </h3>
 
-                    {/* Ship Track Tracker */}
                     <div className="flex-1 relative flex">
-                        {/* The Track */}
                         <div className="absolute left-6 top-6 bottom-6 w-1 bg-[#1a1a2e] rounded-full">
                             <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-blue-600 via-[#38bdf8] to-[#ea580c] transition-all duration-700 shadow-[0_0_10px_#38bdf8] rounded-full"
                                 style={{ height: shipBottom }} />
-
-                            {/* Target Planet Top */}
-                            <div className="absolute -top-4 -left-[14px] size-8 rounded-full bg-[#1b1b2f] border-2 border-[#ea580c] shadow-[0_0_15px_rgba(234,88,12,0.5)] flex items-center justify-center text-xs">
-                                🪐
-                            </div>
-
-                            {/* Waypoints */}
+                            <div className="absolute -top-4 -left-[14px] size-8 rounded-full bg-[#1b1b2f] border-2 border-[#ea580c] shadow-[0_0_15px_rgba(234,88,12,0.5)] flex items-center justify-center text-xs">🪐</div>
                             {[25, 50, 75].map(pct => (
-                                <div key={pct} className="absolute w-[18px] h-[4px] bg-[#38bdf8] -left-[8px] rounded-full shadow-[0_0_5px_#38bdf8]"
-                                    style={{ bottom: `${pct}%` }} />
+                                <div key={pct} className="absolute w-[18px] h-[4px] bg-[#38bdf8] -left-[8px] rounded-full shadow-[0_0_5px_#38bdf8]" style={{ bottom: `${pct}%` }} />
                             ))}
-
-                            {/* The Ship */}
-                            <div className="absolute -left-[18px] transition-all duration-700 ease-out z-20"
-                                style={{ bottom: shipBottom, transform: 'translateY(50%)' }}>
+                            <div className="absolute -left-[18px] transition-all duration-700 ease-out z-20" style={{ bottom: shipBottom, transform: 'translateY(50%)' }}>
                                 <div className="bg-[#101022] border border-[#38bdf8] rounded-full p-2 shadow-[0_0_15px_rgba(56,189,248,0.5)] relative">
                                     <span className="material-symbols-outlined text-[#38bdf8] text-sm -rotate-90">rocket_launch</span>
-                                    {/* Engine Trail */}
                                     <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-2 h-8 bg-gradient-to-t from-transparent to-[#ea580c] blur-sm opacity-60" />
                                 </div>
                             </div>
                         </div>
 
-                        {/* Dashboard Stats (right of track) */}
                         <div className="ml-24 pt-12 flex flex-col gap-8 w-full">
                             <div>
                                 <div className="text-[10px] uppercase font-bold text-slate-500 mb-1">Session Timer</div>
-                                <div className="font-mono text-2xl font-black text-slate-200 tracking-wider">
-                                    {formatTime(sessionSeconds)}
-                                </div>
+                                <div className="font-mono text-2xl font-black text-slate-200 tracking-wider">{formatTime(sessionSeconds)}</div>
                             </div>
-
                             <div>
                                 <div className="text-[10px] uppercase font-bold text-slate-500 mb-1">Target Trajectory</div>
-                                <div className="text-3xl font-black text-[#38bdf8] drop-shadow-[0_0_8px_rgba(56,189,248,0.4)]">
-                                    {Math.round(progressPct)}%
-                                </div>
+                                <div className="text-3xl font-black text-[#38bdf8] drop-shadow-[0_0_8px_rgba(56,189,248,0.4)]">{Math.round(progressPct)}%</div>
                             </div>
-
-                            {/* Final Boss CTA (appears near end or fixed) */}
                             <div className="mt-12 bg-gradient-to-br from-[#1e1b4b] to-[#0c0c16] border border-[#ea580c]/30 p-6 rounded-2xl shadow-xl shadow-[#ea580c]/10 relative group overflow-hidden">
                                 <h4 className="text-[#ea580c] font-black text-xs uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
                                     <span className="material-symbols-outlined text-[14px]">warning</span>
@@ -384,24 +410,15 @@ export default function SpaceReader({
                                     A high-density knowledge rift has stabilized. Defeat the Nebula Beast to secure your data and earn bonus XP.
                                 </p>
                                 {resource.processing_status === 'ready' ? (
-                                    <button
-                                        onClick={() => onBossEncounter('Final Arena')}
-                                        className="w-full py-3 bg-[#ea580c] hover:bg-[#f97316] text-[#0c0c16] font-black text-[10px] uppercase tracking-widest rounded-xl transition-all shadow-[0_10px_20px_-5px_rgba(234,88,12,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(234,88,12,0.6)] active:scale-95 group/btn"
-                                    >
-                                        <span className="flex items-center justify-center gap-2 group-hover/btn:translate-x-1 transition-transform">
-                                            Engage Target
-                                            <span className="material-symbols-outlined text-[16px]">rocket_launch</span>
-                                        </span>
+                                    <button onClick={() => onBossEncounter('Final Arena')} className="w-full py-3 bg-[#ea580c] hover:bg-[#f97316] text-[#0c0c16] font-black text-[10px] uppercase tracking-widest rounded-xl transition-all active:scale-95">
+                                        <span className="flex items-center justify-center gap-2">Engage Target <span className="material-symbols-outlined text-[16px]">rocket_launch</span></span>
                                     </button>
                                 ) : resource.processing_status === 'error' ? (
                                     <div className="space-y-3">
                                         <div className="w-full py-3 bg-red-500/10 text-red-400 font-black text-[10px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 border border-red-500/30">
-                                            <span className="material-symbols-outlined text-[16px]">error</span>
-                                            Data Scan Failed
+                                            <span className="material-symbols-outlined text-[16px]">error</span>Data Scan Failed
                                         </div>
-                                        <p className="text-[9px] text-red-500/70 font-bold text-center leading-tight">
-                                            The AI could not extract enough data from this sector. Try re-uploading a clearer version.
-                                        </p>
+                                        <p className="text-[9px] text-red-500/70 font-bold text-center leading-tight">The AI could not extract enough data from this sector. Try re-uploading a clearer version.</p>
                                     </div>
                                 ) : (
                                     <div className="w-full py-3 bg-slate-800/50 text-slate-500 font-black text-[10px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 border border-slate-700/50 cursor-not-allowed">
@@ -411,20 +428,19 @@ export default function SpaceReader({
                                 )}
                             </div>
                             <div className="bg-[#101022]/60 border border-[#2d2d3f] rounded-xl p-4 mt-auto mb-10 w-full relative overflow-hidden group">
-                                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#ea580c]/5 to-[#ea580c]/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 <div className="text-[10px] uppercase font-bold text-slate-500 flex items-center gap-1 mb-2">
                                     <span className="material-symbols-outlined text-[12px] text-red-500">warning</span>
                                     Next Waypoint
                                 </div>
                                 <div className="text-sm text-slate-300 font-medium">
-                                    Boss Battle detected at <span className="text-white font-bold">{Math.ceil(currentPage / (numPages / 4)) * 25}%</span> scan mark.
+                                    Boss Battle at <span className="text-white font-bold">{Math.ceil(currentPage / (numPages / 4)) * 25}%</span> mark.
                                 </div>
                             </div>
                         </div>
                     </div>
                 </aside>
 
-                {/* Mobile Bottom HUD (Mobile only) */}
+                {/* Mobile Bottom HUD */}
                 <div className="lg:hidden absolute bottom-4 left-1/2 -translate-x-1/2 w-[90%] bg-[#101022]/90 backdrop-blur-md border border-[#2d2d3f] rounded-2xl p-4 flex items-center justify-between shadow-2xl shadow-black/50 z-40">
                     <div className="flex items-center gap-3">
                         <span className="material-symbols-outlined text-[#38bdf8] text-2xl">rocket_launch</span>
@@ -439,7 +455,7 @@ export default function SpaceReader({
                         <div className="text-lg font-black text-[#ea580c]">+{xpEarned}</div>
                     </div>
                 </div>
-            </div >
+            </div>
 
             <style jsx global>{`
                 @keyframes floatUp {
@@ -449,6 +465,6 @@ export default function SpaceReader({
                     100% { transform: translateY(-80px) scale(0.9); opacity: 0; }
                 }
             `}</style>
-        </div >
+        </div>
     );
 }

@@ -123,7 +123,7 @@ export default function ExamReadyPage() {
 
         doc.setFontSize(18);
         doc.setTextColor(37, 37, 244);
-        doc.text(`StudyForge Exam Snapshot`, 20, y);
+        doc.text(`Vui Studify Exam Snapshot`, 20, y);
         y += 15;
 
         // Abbreviations

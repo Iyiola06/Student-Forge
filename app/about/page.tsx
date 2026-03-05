@@ -62,7 +62,7 @@ export default function AboutPage() {
             <header className="flex items-center justify-between whitespace-nowrap border-b border-[#2d2d3f] px-4 sm:px-10 py-4 bg-[#101022]/80 backdrop-blur-md sticky top-0 z-50">
                 <Link href="/" className="flex items-center gap-2">
                     <span className="material-symbols-outlined text-[#ea580c] text-3xl">school</span>
-                    <h2 className="text-white text-xl font-bold tracking-tight">StudyForge</h2>
+                    <h2 className="text-white text-xl font-bold tracking-tight">Vui Studify</h2>
                 </Link>
                 <div className="flex items-center gap-4">
                     <Link href="/login" className="text-slate-300 hover:text-[#ea580c] transition-colors text-sm font-medium hidden sm:block">
@@ -103,7 +103,7 @@ export default function AboutPage() {
                         </span>
                     </h1>
                     <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                        StudyForge was born out of a simple frustration — studying is hard, and the tools available to students weren&apos;t good enough. So we built our own.
+                        Vui Studify was born out of a simple frustration — studying is hard, and the tools available to students weren&apos;t good enough. So we built our own.
                     </p>
                 </motion.div>
             </section>
@@ -130,10 +130,10 @@ export default function AboutPage() {
                         <h2 className="text-3xl md:text-4xl font-black mb-6 tracking-tight">Our Story</h2>
                         <div className="space-y-5 text-slate-400 leading-relaxed text-[15px]">
                             <p>
-                                StudyForge is the product of real student experience. It was conceived and built entirely by students of the <span className="text-white font-semibold">Programming Entrepreneurship class at Venite University</span> — a group of young developers who understood firsthand the pressure of exams, the struggle of staying organized, and the need for smarter study tools.
+                                Vui Studify is the product of real student experience. It was conceived and built entirely by students of the <span className="text-white font-semibold">Programming Entrepreneurship class at Venite University</span> — a group of young developers who understood firsthand the pressure of exams, the struggle of staying organized, and the need for smarter study tools.
                             </p>
                             <p>
-                                What started as a classroom project quickly became something much bigger: a fully functional platform designed to transform the way students read, study, and prepare for exams. Every feature in StudyForge — from the gamified PDF reader to the AI question generator — was designed with one person in mind: <span className="text-[#ea580c] font-semibold">the student sitting up late the night before an exam.</span>
+                                What started as a classroom project quickly became something much bigger: a fully functional platform designed to transform the way students read, study, and prepare for exams. Every feature in Vui Studify — from the gamified PDF reader to the AI question generator — was designed with one person in mind: <span className="text-[#ea580c] font-semibold">the student sitting up late the night before an exam.</span>
                             </p>
                         </div>
                     </div>
@@ -172,7 +172,7 @@ export default function AboutPage() {
                             <p className="text-[#ea580c] font-bold text-sm mt-1">Entrepreneurship Facilitator &amp; Student, Venite University</p>
 
                             <p className="text-slate-400 leading-relaxed mt-6 max-w-lg text-[15px]">
-                                Iyiola Ogunjobi is both a student and the entrepreneurship facilitator who guided the Programming Entrepreneurship class at Venite University in bringing StudyForge to life. His vision was simple — give students a tool worthy of their ambitions.
+                                Iyiola Ogunjobi is both a student and the entrepreneurship facilitator who guided the Programming Entrepreneurship class at Venite University in bringing Vui Studify to life. His vision was simple — give students a tool worthy of their ambitions.
                             </p>
 
                             {/* Stat pills */}
@@ -199,7 +199,7 @@ export default function AboutPage() {
                 <div className="text-center mb-14">
                     <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">The Builders</h2>
                     <p className="text-slate-400 max-w-xl mx-auto text-[15px]">
-                        The Programming Entrepreneurship students of Venite University who designed, coded, and shipped StudyForge.
+                        The Programming Entrepreneurship students of Venite University who designed, coded, and shipped Vui Studify.
                     </p>
                 </div>
 
@@ -314,7 +314,7 @@ export default function AboutPage() {
                             Ready to Study Smarter?
                         </h2>
                         <p className="text-white/80 text-lg mb-10">
-                            Join thousands of students already using StudyForge to ace their exams.
+                            Join thousands of students already using Vui Studify to ace their exams.
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <Link href="/signup">
@@ -337,7 +337,7 @@ export default function AboutPage() {
             {/* ─── FOOTER ─── */}
             <footer className="bg-[#0c0c1a] border-t border-[#2d2d3f] py-8 px-6 text-center">
                 <p className="text-sm text-slate-500">
-                    © {new Date().getFullYear()} StudyForge · Built with ❤️ at Venite University
+                    © {new Date().getFullYear()} Vui Studify · Built with ❤️ at Venite University
                 </p>
             </footer>
         </div>

@@ -1,4 +1,4 @@
-﻿node.exe :  ΓÜá Warning: 
+node.exe :  G�� Warning: 
 Next.js inferred your 
 workspace root, but it 
 may not be correct.
@@ -11,7 +11,7 @@ $NPX_CLI_JS $args
 ~~~~~~~
     + CategoryInfo        
       : NotSpeci    fied: 
-( ΓÜá Warni    ng: 
+( G�� Warni    ng: 
 N...not be co    
 rrect.:String) []    , 
 RemoteException
@@ -41,11 +41,11 @@ lockfiles:
    * C:\server\forge\packa
 ge-lock.json
 
-   Γû▓ Next.js 15.5.12
+   G�� Next.js 15.5.12
    - Environments: .env
 
    Creating an optimized production build ...
- Γ£ô Compiled successfully in 11.2s
+ G�� Compiled successfully in 11.2s
    Skipping linting
    Checking validity of types ...
 Failed to compile.

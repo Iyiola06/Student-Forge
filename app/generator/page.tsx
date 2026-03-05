@@ -302,7 +302,7 @@ export default function GeneratorPage() {
     let y = 20;
 
     doc.setFontSize(16);
-    doc.text(`StudyForge Generated ${type.toUpperCase()}`, 20, y);
+    doc.text(`Vui Studify Generated ${type.toUpperCase()}`, 20, y);
     y += 10;
 
     doc.setFontSize(12);
@@ -356,7 +356,7 @@ export default function GeneratorPage() {
       });
     }
 
-    doc.save(`studyforge_${type}_${Date.now()}.pdf`);
+    doc.save(`Vui Studify_${type}_${Date.now()}.pdf`);
   };
 
   const renderQuiz = () => {

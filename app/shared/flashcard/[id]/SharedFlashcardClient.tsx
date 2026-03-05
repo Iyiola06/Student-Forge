@@ -40,7 +40,7 @@ export default function SharedFlashcardClient({ deck, flashcards }: SharedFlashc
                             <span className="material-symbols-outlined text-2xl">school</span>
                         </div>
                         <h2 className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
-                            StudyForge Shared Deck
+                            Vui Studify Shared Deck
                         </h2>
                     </Link>
                 </div>

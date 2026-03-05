@@ -62,6 +62,18 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
         };
     }, [supabase, uploadState]);
 
+    // Safety valve: if 'processing' state lasts more than 3 minutes with no server response,
+    // auto-dismiss so the UI doesn't lock the user out indefinitely.
+    useEffect(() => {
+        if (uploadState !== 'processing') return;
+        const PROCESSING_TIMEOUT_MS = 3 * 60 * 1000; // 3 minutes
+        const timer = setTimeout(() => {
+            toast.info('Analysis is taking longer than expected. Your file will appear in your library once ready — you can keep using the app.');
+            dismiss();
+        }, PROCESSING_TIMEOUT_MS);
+        return () => clearTimeout(timer);
+    }, [uploadState]);
+
     const compressPdf = async (file: File): Promise<File> => {
         try {
             const arrayBuffer = await file.arrayBuffer();
@@ -133,6 +145,63 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
         });
     };
 
+    // ─── Client-side text extraction ────────────────────────────────────────
+    const extractTextClientSide = async (file: File): Promise<string | null> => {
+        const type = file.type;
+        const name = file.name.toLowerCase();
+
+        if (type === 'application/pdf') {
+            const pdfjsLib = await import('pdfjs-dist');
+            // Use the CDN worker — avoids Next.js bundle issues with worker files
+            pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+            let text = '';
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const content = await page.getTextContent();
+                text += content.items.map((item: any) => item.str).join(' ') + '\n';
+            }
+            const cleaned = text.trim();
+            if (cleaned.length < 50) return null;
+            return cleaned;
+        }
+
+        if (type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || name.endsWith('.docx')) {
+            const mammoth = await import('mammoth');
+            const arrayBuffer = await file.arrayBuffer();
+            const result = await mammoth.extractRawText({ arrayBuffer });
+            const cleaned = result.value.trim();
+            if (cleaned.length < 50) return null;
+            return cleaned;
+        }
+
+        if (type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation' || name.endsWith('.pptx')) {
+            const JSZip = (await import('jszip')).default;
+            const arrayBuffer = await file.arrayBuffer();
+            const zip = await JSZip.loadAsync(arrayBuffer);
+            const slideFiles = Object.keys(zip.files)
+                .filter(n => n.startsWith('ppt/slides/slide') && n.endsWith('.xml'))
+                .sort();
+            let text = '';
+            for (const slidePath of slideFiles) {
+                const xml = await zip.files[slidePath].async('text');
+                const matches = xml.match(/<a:t>([^<]*)<\/a:t>/g);
+                if (matches) text += matches.map((m: string) => m.replace(/<\/?a:t>/g, '')).join(' ') + '\n';
+            }
+            const cleaned = text.trim();
+            if (cleaned.length < 50) return null;
+            return cleaned;
+        }
+
+        if (type === 'text/plain' || type === 'application/json') {
+            return await file.text();
+        }
+
+        // Images — must be handled server-side via Gemini OCR
+        return null;
+    };
+
     const uploadFile = async (file: File) => {
         try {
             setUploadState('compressing');
@@ -153,8 +222,8 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
                 throw new Error(`File size (${(finalFile.size / (1024 * 1024)).toFixed(1)}MB) exceeds the 25MB limit.`);
             }
 
+            // ── Phase 1: Upload file to Supabase Storage ──────────────────
             setUploadState('uploading');
-
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error('Not authenticated');
 
@@ -162,39 +231,41 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
             const storageFileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
             const filePath = `${user.id}/${storageFileName}`;
 
-            // We use standard upload, simulating progress as XHR can be complex with Supabase JS client
-            // A full XHR implementation with signed URLs is possible, but standard upload is fast for <25MB files
-            setProgress(50);
-
-            const { data: storageData, error: storageError } = await supabase.storage
+            setProgress(40);
+            const { error: storageError } = await supabase.storage
                 .from('resources')
                 .upload(filePath, finalFile);
 
-            if (storageError) {
-                throw new Error(storageError.message || 'Failed to upload to storage');
-            }
+            if (storageError) throw new Error(storageError.message || 'Failed to upload to storage');
+            setProgress(75);
 
-            setProgress(100);
+            // ── Phase 2: Extract text locally (no server needed) ───────────
             setUploadState('processing');
+            const extractedText = await extractTextClientSide(finalFile);
+            setProgress(90);
 
-            // Trigger background processing
+            // ── Phase 3: Save to DB via server ────────────────────────────
+            // If we extracted locally, server only does a DB write (milliseconds).
+            // If extractedText is null (e.g. image), server does Gemini OCR.
             const response = await fetch('/api/resources/process', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     filePath,
                     fileName: finalFile.name,
                     fileType: finalFile.type,
                     fileSize: finalFile.size,
+                    extractedText, // null = let server handle (images)
                 }),
             });
 
-            if (!response.ok) {
-                const result = await response.json();
-                throw new Error(result.error || 'Failed to start background processing');
-            }
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || 'Failed to save document');
+
+            setProgress(100);
+            toast.success(`${finalFile.name} is ready!`);
+            setUploadState('ready');
+            setTimeout(() => dismiss(), 4000);
 
         } catch (err: any) {
             setUploadState('error');

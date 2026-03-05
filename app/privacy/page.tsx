@@ -12,8 +12,8 @@ export default function PrivacyPolicyPage() {
                 <Link href="/" className="flex items-center gap-4 group">
                     <div className="relative size-10 flex items-center justify-center transition-transform group-hover:scale-110">
                         <Image
-                            src="/images/logo.png"
-                            alt="StudyForge Logo"
+                            src="/logo-favicon.png"
+                            alt="Vui Studify Logo"
                             width={40}
                             height={40}
                             className="object-contain"
@@ -21,7 +21,7 @@ export default function PrivacyPolicyPage() {
                         />
                     </div>
                     <h2 className="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">
-                        StudyForge
+                        Vui Studify
                     </h2>
                 </Link>
                 <div className="flex items-center gap-4">
@@ -98,7 +98,7 @@ export default function PrivacyPolicyPage() {
 
             {/* Footer */}
             <footer className="py-10 text-center text-slate-500 dark:text-slate-600 border-t border-slate-200 dark:border-[#2d2d45]">
-                <p>© {new Date().getFullYear()} StudyForge Inc. All rights reserved.</p>
+                <p>© {new Date().getFullYear()} Vui Studify Inc. All rights reserved.</p>
             </footer>
         </div>
     );
