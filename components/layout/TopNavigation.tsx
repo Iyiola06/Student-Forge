@@ -33,8 +33,8 @@ export default function TopNavigation({ children }: { children?: React.ReactNode
             <div className="flex items-center gap-4 text-slate-900 dark:text-white">
                 <Link href="/dashboard" className="flex items-center gap-2">
                     <div className="relative size-8 flex items-center justify-center">
-                        <Image src="/logo-light.png" alt="Vui Studify" width={32} height={32} className="object-contain dark:hidden" priority />
-                        <Image src="/logo-dark.png" alt="Vui Studify" width={32} height={32} className="object-contain hidden dark:block" priority />
+                        <Image src="/logo-light.png" alt="Vui Studify" width={32} height={32} className="object-contain dark:hidden rounded-full" priority />
+                        <Image src="/logo-dark.png" alt="Vui Studify" width={32} height={32} className="object-contain hidden dark:block rounded-full" priority />
                     </div>
                     <h2 className="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">
                         Vui Studify

@@ -110,58 +110,63 @@ export default function BossBattle({
         return () => clearInterval(timer);
     }, [battleState, selectedOption, timeLeft]);
 
-    const handleAnswerTimeout = () => {
-        if (selectedOption || battleState !== 'fighting') return;
-
-        setSelectedOption('TIMEOUT'); // Dummy value
-        setIsCorrect(false);
-        setTaunt("Too slow! The void claims your shields!");
-        takeDamage();
-    };
-
-    const takeDamage = () => {
-        setPlayerShields(s => Math.max(0, s - 34));
-        setTimeout(() => checkEncounterEnd(false), 2000);
-    };
-
     const handleAnswer = (option: string) => {
         if (selectedOption || battleState !== 'fighting') return;
 
         setSelectedOption(option);
-        const correct = option === questions[currentIdx].answer;
+        const currentQuestion = questions[currentIdx];
+        if (!currentQuestion) return; // safety guard
+
+        const correct = option === currentQuestion.answer;
         setIsCorrect(correct);
 
+        let newBossHealth = bossHealth;
+        let newPlayerShields = playerShields;
+
         if (correct) {
-            setBossHealth(h => Math.max(0, h - 34));
+            newBossHealth = Math.max(0, bossHealth - 34);
+            setBossHealth(newBossHealth);
             setHitEffect(true);
             setTaunt(HIT_TAUNTS[Math.floor(Math.random() * HIT_TAUNTS.length)]);
             setTimeout(() => setHitEffect(false), 500);
         } else {
+            newPlayerShields = Math.max(0, playerShields - 34);
+            setPlayerShields(newPlayerShields);
             setTaunt(MISS_TAUNTS[Math.floor(Math.random() * MISS_TAUNTS.length)]);
-            setPlayerShields(s => Math.max(0, s - 34));
         }
 
-        setTimeout(() => checkEncounterEnd(correct), 2000);
+        setTimeout(() => checkEncounterEnd(correct, newBossHealth, newPlayerShields), 2000);
     };
 
-    const checkEncounterEnd = (wasCorrect: boolean) => {
-        setBossHealth(bh => {
-            setPlayerShields(ps => {
-                if (wasCorrect && bh <= 0) {
-                    setBattleState('won');
-                } else if (!wasCorrect && ps <= 0) {
-                    setBattleState('lost');
-                } else {
-                    setCurrentIdx(i => i + 1);
-                    setSelectedOption(null);
-                    setIsCorrect(null);
-                    setTimeLeft(20);
-                }
-                return ps;
-            });
-            return bh;
-        });
+    const handleAnswerTimeout = () => {
+        if (selectedOption || battleState !== 'fighting') return;
+        const newShields = Math.max(0, playerShields - 34);
+        setSelectedOption('TIMEOUT');
+        setIsCorrect(false);
+        setPlayerShields(newShields);
+        setTaunt("Too slow! The void claims your shields!");
+        setTimeout(() => checkEncounterEnd(false, bossHealth, newShields), 2000);
     };
+
+    const checkEncounterEnd = (wasCorrect: boolean, newBossHealth: number, newPlayerShields: number) => {
+        if (wasCorrect && newBossHealth <= 0) {
+            setBattleState('won');
+        } else if (!wasCorrect && newPlayerShields <= 0) {
+            setBattleState('lost');
+        } else {
+            const nextIdx = currentIdx + 1;
+            if (nextIdx >= questions.length) {
+                // Ran out of questions without either side dying — boss is defeated
+                setBattleState('won');
+            } else {
+                setCurrentIdx(nextIdx);
+                setSelectedOption(null);
+                setIsCorrect(null);
+                setTimeLeft(20);
+            }
+        }
+    };
+
 
     const startFight = () => {
         setBattleState('fighting');

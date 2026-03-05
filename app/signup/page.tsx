@@ -117,7 +117,7 @@ export default function SignupPage() {
               alt="Vui Studify Logo"
               width={40}
               height={40}
-              className="object-contain"
+              className="object-contain rounded-full"
               priority
             />
           </div>
@@ -163,13 +163,13 @@ export default function SignupPage() {
       <main className="flex-grow flex items-center justify-center py-12 px-4 relative">
         {/* Decorative Background Elements */}
         <div className="absolute top-20 left-10 opacity-10 animate-pulse hidden lg:block">
-          <Image src="/logo-favicon.png" alt="" width={120} height={120} className="grayscale" />
+          <Image src="/logo-favicon.png" alt="" width={120} height={120} className="grayscale rounded-full" />
         </div>
         <div className="absolute bottom-20 right-10 text-[#1a5c2a]/10 animate-pulse hidden lg:block">
           <span className="material-symbols-outlined text-9xl">menu_book</span>
         </div>
         <div className="absolute top-1/2 left-20 opacity-5 hidden lg:block rotate-12">
-          <Image src="/logo-favicon.png" alt="" width={80} height={80} className="grayscale" />
+          <Image src="/logo-favicon.png" alt="" width={80} height={80} className="grayscale rounded-full" />
         </div>
         {/* Form Container */}
         <div className="w-full max-w-[640px] premium-card glass-card p-8 md:p-12 z-10">

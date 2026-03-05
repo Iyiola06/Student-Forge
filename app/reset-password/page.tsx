@@ -77,7 +77,7 @@ export default function ResetPasswordPage() {
                 alt="Vui Studify Logo"
                 width={32}
                 height={32}
-                className="object-contain"
+                className="object-contain rounded-full"
                 priority
               />
             </div>

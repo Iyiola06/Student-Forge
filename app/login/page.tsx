@@ -72,7 +72,7 @@ export default function LoginPage() {
               alt="Vui Studify Logo"
               width={64}
               height={64}
-              className="object-contain"
+              className="object-contain rounded-full"
               priority
             />
           </div>

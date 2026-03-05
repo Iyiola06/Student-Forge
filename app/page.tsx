@@ -16,7 +16,7 @@ export default function LandingPage() {
               alt="Vui Studify Logo"
               width={40}
               height={40}
-              className="object-contain"
+              className="object-contain rounded-full"
               priority
             />
           </div>
@@ -159,7 +159,7 @@ export default function LandingPage() {
                     alt="Vui Studify Logo"
                     width={32}
                     height={32}
-                    className="object-contain"
+                    className="object-contain rounded-full"
                   />
                 </div>
                 <span className="font-bold text-lg">Vui Studify</span>

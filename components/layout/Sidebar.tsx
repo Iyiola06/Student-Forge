@@ -98,8 +98,8 @@ export default function Sidebar() {
             <div className="md:hidden sticky top-0 left-0 w-full h-16 bg-white dark:bg-[#1b1b27] border-b border-slate-200 dark:border-[#2d2d3f] px-6 flex items-center justify-between z-[45]">
                 <Link href="/dashboard" className="flex items-center gap-2">
                     <div className="relative size-10 flex items-center justify-center">
-                        <Image src="/logo-light.png" alt="Vui Studify Logo" width={40} height={40} className="object-contain dark:hidden" priority />
-                        <Image src="/logo-dark.png" alt="Vui Studify Logo" width={40} height={40} className="object-contain hidden dark:block" priority />
+                        <Image src="/logo-light.png" alt="Vui Studify Logo" width={40} height={40} className="object-contain dark:hidden rounded-full" priority />
+                        <Image src="/logo-dark.png" alt="Vui Studify Logo" width={40} height={40} className="object-contain hidden dark:block rounded-full" priority />
                     </div>
                     <h2 className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
                         Vui Studify
@@ -136,8 +136,8 @@ export default function Sidebar() {
                 <div className="p-6 pt-5 flex items-center gap-3">
                     <Link href="/dashboard" className="flex items-center gap-2">
                         <div className="relative size-10 flex items-center justify-center">
-                            <Image src="/logo-light.png" alt="Vui Studify Logo" width={40} height={40} className="object-contain dark:hidden" priority />
-                            <Image src="/logo-dark.png" alt="Vui Studify Logo" width={40} height={40} className="object-contain hidden dark:block" priority />
+                            <Image src="/logo-light.png" alt="Vui Studify Logo" width={40} height={40} className="object-contain dark:hidden rounded-full" priority />
+                            <Image src="/logo-dark.png" alt="Vui Studify Logo" width={40} height={40} className="object-contain hidden dark:block rounded-full" priority />
                         </div>
                         <h2 className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
                             Vui Studify

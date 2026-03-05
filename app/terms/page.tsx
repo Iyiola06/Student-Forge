@@ -16,7 +16,7 @@ export default function TermsOfServicePage() {
                             alt="Vui Studify Logo"
                             width={40}
                             height={40}
-                            className="object-contain"
+                            className="object-contain rounded-full"
                             priority
                         />
                     </div>

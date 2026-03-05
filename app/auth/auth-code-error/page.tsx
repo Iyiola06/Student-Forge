@@ -18,7 +18,7 @@ function AuthErrorContent() {
                         alt="Vui Studify Logo"
                         width={64}
                         height={64}
-                        className="object-contain"
+                        className="object-contain rounded-full"
                     />
                 </div>
                 <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
