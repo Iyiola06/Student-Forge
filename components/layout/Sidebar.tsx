@@ -61,6 +61,7 @@ export default function Sidebar() {
         { name: 'Question Generator', href: '/generator', icon: 'psychology' },
         { name: 'Document Simplifier', href: '/simplifier', icon: 'auto_stories' },
         { name: 'Essay Grader', href: '/essay-grader', icon: 'grading' },
+        { name: 'Flashcards', href: '/flashcards', icon: 'style' },
     ];
 
     const personalLinks = [
