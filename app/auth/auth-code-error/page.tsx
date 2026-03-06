@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Suspense } from 'react';
 import Link from 'next/link';
@@ -15,7 +15,7 @@ function AuthErrorContent() {
                 <div className="relative size-16 flex items-center justify-center mx-auto mb-6">
                     <Image
                         src="/logo-favicon.png"
-                        alt="Vui Studify Logo"
+                        alt="VUI Studify Logo"
                         width={64}
                         height={64}
                         className="object-contain rounded-full"

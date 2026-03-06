@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -47,7 +47,7 @@ export default function ForgotPasswordPage() {
             <div className="relative size-8 flex items-center justify-center">
               <Image
                 src="/logo-favicon.png"
-                alt="Vui Studify Logo"
+                alt="VUI Studify Logo"
                 width={32}
                 height={32}
                 className="object-contain rounded-full"
@@ -55,7 +55,7 @@ export default function ForgotPasswordPage() {
               />
             </div>
             <h2 className="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">
-              Vui Studify
+              VUI Studify
             </h2>
           </div>
           <div className="hidden sm:flex flex-1 justify-end gap-8">

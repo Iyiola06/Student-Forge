@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { motion } from 'motion/react';
@@ -13,7 +13,7 @@ export default function LandingPage() {
           <div className="relative size-10 flex items-center justify-center">
             <Image
               src="/logo-favicon.png"
-              alt="Vui Studify Logo"
+              alt="VUI Studify Logo"
               width={40}
               height={40}
               className="object-contain rounded-full"
@@ -21,7 +21,7 @@ export default function LandingPage() {
             />
           </div>
           <h2 className="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">
-            Vui Studify
+            VUI Studify
           </h2>
         </div>
         <div className="flex items-center gap-4">
@@ -156,16 +156,16 @@ export default function LandingPage() {
                 <div className="relative size-8 flex items-center justify-center">
                   <Image
                     src="/logo-favicon.png"
-                    alt="Vui Studify Logo"
+                    alt="VUI Studify Logo"
                     width={32}
                     height={32}
                     className="object-contain rounded-full"
                   />
                 </div>
-                <span className="font-bold text-lg">Vui Studify</span>
+                <span className="font-bold text-lg">VUI Studify</span>
               </div>
               <p className="text-sm text-slate-500 dark:text-[#9c9cba]">
-                © {new Date().getFullYear()} Vui Studify Inc. All rights reserved.
+                Â© {new Date().getFullYear()} VUI Studify Inc. All rights reserved.
               </p>
             </div>
 

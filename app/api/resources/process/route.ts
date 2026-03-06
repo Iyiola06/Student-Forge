@@ -44,48 +44,17 @@ async function processResource(
         let extractedText = '';
 
         if (fileType === 'application/pdf') {
-            const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
-            try {
-                // @ts-ignore
-                const pdfWorker = await import('pdfjs-dist/legacy/build/pdf.worker.mjs');
-                pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
-            } catch { /* ignore worker load error */ }
-
+            if (!process.env.GEMINI_API_KEY) throw new Error('AI extraction not configured');
+            const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
             const arrayBuffer = await fileData.arrayBuffer();
-            const uint8Array = new Uint8Array(arrayBuffer);
-            const loadingTask = pdfjsLib.getDocument({
-                data: uint8Array,
-                useWorkerFetch: false,
-                isEvalSupported: false,
-                useSystemFonts: true,
-                disableFontFace: true,
-            });
-
-            const pdfDocument = await loadingTask.promise;
-            let fullText = '';
-            for (let i = 1; i <= pdfDocument.numPages; i++) {
-                const page = await pdfDocument.getPage(i);
-                const textContent = await page.getTextContent();
-                const pageText = textContent.items
-                    .map((item: any) => item.str)
-                    .filter((str: string) => str.trim().length > 0)
-                    .join(' ');
-                fullText += pageText + '\n';
-            }
-            extractedText = fullText.trim();
-
+            const base64Data = Buffer.from(arrayBuffer).toString('base64');
+            const result = await model.generateContent([
+                'Extract and transcribe all readable text from this PDF document. Preserve structure. Only output the text content, no commentary.',
+                { inlineData: { data: base64Data, mimeType: 'application/pdf' } }
+            ]);
+            extractedText = result.response.text().trim();
             if (extractedText.length < 50) {
-                throw new Error('Insufficient text extracted. The document may be scanned (OCR required), encrypted, or empty.');
-            }
-
-            const BLOCKED_PHRASES = [
-                'text extraction is currently only supported',
-                'failed to parse', 'could not extract',
-                'not currently supported for text extraction'
-            ];
-            const lowerContent = extractedText.toLowerCase();
-            if (BLOCKED_PHRASES.some(p => lowerContent.includes(p))) {
-                throw new Error('The document contains unsupported content or triggered a parsing error.');
+                throw new Error('Insufficient text extracted. The document may be empty or encrypted.');
             }
         } else if (fileType.startsWith('image/')) {
             if (!process.env.GEMINI_API_KEY) throw new Error('OCR not configured');

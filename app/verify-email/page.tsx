@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -52,7 +52,7 @@ function VerifyEmailContent() {
             <div className="relative size-8 flex items-center justify-center">
               <Image
                 src="/logo-favicon.png"
-                alt="Vui Studify Logo"
+                alt="VUI Studify Logo"
                 width={32}
                 height={32}
                 className="object-contain rounded-full"
@@ -60,7 +60,7 @@ function VerifyEmailContent() {
               />
             </div>
             <h2 className="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">
-              Vui Studify
+              VUI Studify
             </h2>
           </div>
         </header>

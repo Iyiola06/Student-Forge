@@ -158,6 +158,19 @@ ${trimmedContent}`;
             // Because we set responseMimeType to application/json, 
             // the responseText should be raw, parseable JSON.
             const parsedData = JSON.parse(responseText);
+
+            // Shuffle MCQ options to ensure random distribution
+            if (type === 'mcq' && Array.isArray(parsedData)) {
+                parsedData.forEach((q: any) => {
+                    if (Array.isArray(q.options)) {
+                        for (let i = q.options.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [q.options[i], q.options[j]] = [q.options[j], q.options[i]];
+                        }
+                    }
+                });
+            }
+
             return NextResponse.json({ success: true, data: parsedData });
         } catch (parseError) {
             console.error('Failed to parse Gemini JSON response:', responseText);

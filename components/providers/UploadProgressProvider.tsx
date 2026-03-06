@@ -196,9 +196,7 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
 
             let finalFile = file;
 
-            if (file.type === 'application/pdf') {
-                finalFile = await compressPdf(file);
-            } else if (file.type.startsWith('image/')) {
+            if (file.type.startsWith('image/')) {
                 finalFile = await compressImage(file);
             }
 

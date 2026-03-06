@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { createClient } from '@/lib/supabase/server';
 
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey || '');
 
-const TUTOR_SYSTEM_INSTRUCTION = `You are Vui Studify AI Tutor — a brilliant, patient, and encouraging study companion for students. 
+const TUTOR_SYSTEM_INSTRUCTION = `You are VUI Studify AI Tutor â€” a brilliant, patient, and encouraging study companion for students. 
 
 Your core behaviors:
 - Explain concepts clearly using analogies and examples

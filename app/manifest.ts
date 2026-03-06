@@ -1,9 +1,9 @@
-import { MetadataRoute } from 'next';
+﻿import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: 'Vui Studify \u2014 AI-Powered Study Platform',
-        short_name: 'Vui Studify',
+        name: 'VUI Studify \u2014 AI-Powered Study Platform',
+        short_name: 'VUI Studify',
         description: 'Master any subject with AI-generated quizzes, flashcards, essay grading, and gamified study sessions.',
         start_url: '/',
         display: 'standalone',

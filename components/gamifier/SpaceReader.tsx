@@ -15,13 +15,14 @@ export default function SpaceReader({
     profile: any;
     onAbort: () => void;
     onComplete: (stats: any) => void;
-    onBossEncounter: (milestone: string) => void;
+    onBossEncounter: (milestone: string, readContent?: string) => void;
 }) {
     const supabase = createClient();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [pdfDoc, setPdfDoc] = useState<any>(null);
     const [numPages, setNumPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
+    const [maxPageReached, setMaxPageReached] = useState(1);
     const [isRendering, setIsRendering] = useState(false);
     const [textPages, setTextPages] = useState<string[]>([]);
     const [isPdf, setIsPdf] = useState(false);
@@ -74,8 +75,8 @@ export default function SpaceReader({
                             .maybeSingle();
 
                         if (prog && prog.last_page > 1 && prog.last_page <= pdf.numPages) {
-                            const resume = window.confirm(`Commander, resume mission from page ${prog.last_page}?`);
-                            if (resume) setCurrentPage(prog.last_page);
+                            setCurrentPage(prog.last_page);
+                            setMaxPageReached(prog.last_page);
                         }
                     }
                 } catch (err) {
@@ -103,8 +104,8 @@ export default function SpaceReader({
                         .maybeSingle();
 
                     if (prog && prog.last_page > 1 && prog.last_page <= finalPages.length) {
-                        const resume = window.confirm(`Commander, resume mission from sector ${prog.last_page}?`);
-                        if (resume) setCurrentPage(prog.last_page);
+                        setCurrentPage(prog.last_page);
+                        setMaxPageReached(prog.last_page);
                     }
                 }
             }
@@ -164,7 +165,8 @@ export default function SpaceReader({
         if (next < 1 || next > numPages) return;
         setCurrentPage(next);
 
-        if (dir === 1) {
+        if (dir === 1 && next > maxPageReached) {
+            setMaxPageReached(next);
             setPagesRead(p => p + 1);
             let earned = XP_PER_PAGE;
 
@@ -172,9 +174,22 @@ export default function SpaceReader({
             const prevPct = currentPage / numPages;
             let mt = '';
 
-            if (pct >= 0.25 && prevPct < 0.25) { earned += XP_MILESTONE_25; mt = 'Waypoint Reached! 25%'; onBossEncounter('25%'); }
-            if (pct >= 0.50 && prevPct < 0.50) { earned += XP_MILESTONE_50; mt = 'Halfway Through The Galaxy! 50%'; onBossEncounter('50%'); }
-            if (pct >= 0.75 && prevPct < 0.75) { earned += XP_MILESTONE_75; mt = 'Almost There, Commander! 75%'; onBossEncounter('75%'); }
+            const triggerBoss = (milestoneName: string) => {
+                let readContent = '';
+                if (isPdf) {
+                    const proportion = next / numPages;
+                    const fullText = resource.content || '';
+                    readContent = fullText.substring(0, Math.floor(fullText.length * proportion));
+                } else {
+                    readContent = textPages.slice(0, next).join('\n');
+                }
+                if (readContent.length < 300) readContent = resource.content || '';
+                onBossEncounter(milestoneName, readContent);
+            };
+
+            if (pct >= 0.25 && prevPct < 0.25) { earned += XP_MILESTONE_25; mt = 'Waypoint Reached! 25%'; triggerBoss('25%'); }
+            if (pct >= 0.50 && prevPct < 0.50) { earned += XP_MILESTONE_50; mt = 'Halfway Through The Galaxy! 50%'; triggerBoss('50%'); }
+            if (pct >= 0.75 && prevPct < 0.75) { earned += XP_MILESTONE_75; mt = 'Almost There, Commander! 75%'; triggerBoss('75%'); }
             if (pct >= 1.0 && prevPct < 1.0) { earned += XP_COMPLETE; mt = 'Mission Complete!'; }
 
             setXpEarned(x => x + earned);
@@ -415,7 +430,18 @@ export default function SpaceReader({
                                     A high-density knowledge rift has stabilized. Defeat the Nebula Beast to secure your data and earn bonus XP.
                                 </p>
                                 {resource.processing_status === 'ready' ? (
-                                    <button onClick={() => onBossEncounter('Final Arena')} className="w-full py-3 bg-[#ea580c] hover:bg-[#f97316] text-[#0c0c16] font-black text-[10px] uppercase tracking-widest rounded-xl transition-all active:scale-95">
+                                    <button onClick={() => {
+                                        let readContent = '';
+                                        if (isPdf) {
+                                            const proportion = currentPage / numPages;
+                                            const fullText = resource.content || '';
+                                            readContent = fullText.substring(0, Math.floor(fullText.length * proportion));
+                                        } else {
+                                            readContent = textPages.slice(0, currentPage).join('\n');
+                                        }
+                                        if (readContent.length < 300) readContent = resource.content || '';
+                                        onBossEncounter('Final Arena', readContent);
+                                    }} className="w-full py-3 bg-[#ea580c] hover:bg-[#f97316] text-[#0c0c16] font-black text-[10px] uppercase tracking-widest rounded-xl transition-all active:scale-95">
                                         <span className="flex items-center justify-center gap-2">Engage Target <span className="material-symbols-outlined text-[16px]">rocket_launch</span></span>
                                     </button>
                                 ) : resource.processing_status === 'error' ? (

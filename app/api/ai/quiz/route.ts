@@ -48,7 +48,20 @@ export async function POST(request: Request) {
         `;
 
     const result = await model.generateContent(prompt);
-    return NextResponse.json(JSON.parse(result.response.text()));
+    const parsedData = JSON.parse(result.response.text());
+
+    if ((mode || 'mcq') === 'mcq' && parsedData.questions && Array.isArray(parsedData.questions)) {
+      parsedData.questions.forEach((q: any) => {
+        if (Array.isArray(q.options)) {
+          for (let i = q.options.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [q.options[i], q.options[j]] = [q.options[j], q.options[i]];
+          }
+        }
+      });
+    }
+
+    return NextResponse.json(parsedData);
 
   } catch (error: any) {
     console.error('Quiz Route Error:', error);

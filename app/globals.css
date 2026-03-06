@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
@@ -6,7 +6,7 @@
 @theme {
   --font-display: var(--font-lexend), sans-serif;
 
-  /* Primary: deep forest green from the Vui Studify logo */
+  /* Primary: deep forest green from the VUI Studify logo */
   --color-brand-primary: #1a5c2a;
   --color-brand-primary-light: #22762f;
   --color-brand-primary-hover: #144823;

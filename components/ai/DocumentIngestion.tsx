@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
 import { StudyMaterial } from '@/types/ai';
@@ -7,7 +7,7 @@ interface DocumentIngestionProps {
     onProcessed: (text: string) => void;
 }
 
-const STORAGE_KEY = 'Vui Studify_saved_materials';
+const STORAGE_KEY = 'VUI Studify_saved_materials';
 const MAX_SAVED_ITEMS = 10;
 
 const DocumentIngestion: React.FC<DocumentIngestionProps> = ({ onProcessed }) => {

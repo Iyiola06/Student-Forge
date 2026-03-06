@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
@@ -302,7 +302,7 @@ export default function GeneratorPage() {
     let y = 20;
 
     doc.setFontSize(16);
-    doc.text(`Vui Studify Generated ${type.toUpperCase()}`, 20, y);
+    doc.text(`VUI Studify Generated ${type.toUpperCase()}`, 20, y);
     y += 10;
 
     doc.setFontSize(12);
@@ -356,7 +356,7 @@ export default function GeneratorPage() {
       });
     }
 
-    doc.save(`Vui Studify_${type}_${Date.now()}.pdf`);
+    doc.save(`VUI Studify_${type}_${Date.now()}.pdf`);
   };
 
   const renderQuiz = () => {
@@ -790,7 +790,7 @@ export default function GeneratorPage() {
                       <div className="flex items-start justify-between mb-4">
                         <div>
                           <h3 className="text-xl font-bold text-slate-900 dark:text-white">{selectedResource ? resources.find(r => r.id === selectedResource)?.title || 'Generated Quiz' : 'Generated Quiz'}</h3>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Generated just now • {generatedData.length} Questions</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Generated just now â€¢ {generatedData.length} Questions</p>
                         </div>
                         <span className="bg-[#1a3826] border border-green-500/20 text-[#4ade80] text-xs font-bold px-3 py-1 rounded">Ready</span>
                       </div>

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import { Lexend } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,24 +15,24 @@ const lexend = Lexend({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://student.sulvatech.com'),
   title: {
-    default: 'Vui Studify — AI-Powered Study Platform',
-    template: '%s | Vui Studify',
+    default: 'VUI Studify â€” AI-Powered Study Platform',
+    template: '%s | VUI Studify',
   },
   description: 'Master any subject with AI-generated quizzes, flashcards, essay grading, and gamified study sessions. Built for students preparing for WAEC, JAMB, and university exams.',
-  keywords: ['study', 'AI tutor', 'flashcards', 'quiz generator', 'essay grading', 'WAEC', 'JAMB', 'exam prep', 'Nigeria education', 'Vui Studify'],
-  authors: [{ name: 'Vui Studify Team' }],
+  keywords: ['study', 'AI tutor', 'flashcards', 'quiz generator', 'essay grading', 'WAEC', 'JAMB', 'exam prep', 'Nigeria education', 'VUI Studify'],
+  authors: [{ name: 'VUI Studify Team' }],
   openGraph: {
-    title: 'Vui Studify — AI-Powered Study Platform',
+    title: 'VUI Studify â€” AI-Powered Study Platform',
     description: 'Master any subject with AI-generated quizzes, flashcards, essay grading, and gamified study sessions.',
     url: '/',
-    siteName: 'Vui Studify',
+    siteName: 'VUI Studify',
     locale: 'en_US',
     type: 'website',
-    images: [{ url: '/logo-dark.png', width: 512, height: 512, alt: 'Vui Studify Logo' }],
+    images: [{ url: '/logo-dark.png', width: 512, height: 512, alt: 'VUI Studify Logo' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Vui Studify — AI-Powered Study Platform',
+    title: 'VUI Studify â€” AI-Powered Study Platform',
     description: 'Master any subject with AI-generated quizzes, flashcards, and gamified study sessions.',
     images: ['/logo-dark.png'],
   },

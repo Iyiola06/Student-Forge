@@ -24,6 +24,7 @@ function GamifierOrchestrator() {
   const [selectedResource, setSelectedResource] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [currentMilestone, setCurrentMilestone] = useState<string | null>(null);
+  const [bossContent, setBossContent] = useState<string | null>(null);
   const [missionStats, setMissionStats] = useState<any>(null);
 
   // Load initial data
@@ -70,12 +71,14 @@ function GamifierOrchestrator() {
     setSelectedResource(null);
     setViewState('galaxy');
     setCurrentMilestone(null);
+    setBossContent(null);
     mutateProfile(); // Refresh xp/level stats
   };
 
-  const handleBossEncounter = (milestone: string) => {
+  const handleBossEncounter = (milestone: string, readContent?: string) => {
     // Prepare boss battle
     setCurrentMilestone(milestone);
+    if (readContent) setBossContent(readContent);
     setViewState('boss');
   };
 
@@ -101,8 +104,11 @@ function GamifierOrchestrator() {
 
   const handleBossLose = (retry: boolean) => {
     if (retry) {
-      // Keep in boss view, it will reset internally or we could force a re-mount
-      // For now, let's just let the user retry
+      // Force BossBattle remount by toggling state
+      setViewState('warp');
+      setTimeout(() => {
+        setViewState('boss');
+      }, 50);
     } else {
       // Abort
       handleAbortMission();
@@ -181,7 +187,7 @@ function GamifierOrchestrator() {
       {/* 4. Boss Battle */}
       {viewState === 'boss' && selectedResource && (
         <BossBattle
-          content={selectedResource.content || ''}
+          content={bossContent || selectedResource.content || ''}
           milestone={currentMilestone || ''}
           onWin={handleBossWin}
           onLose={handleBossLose}

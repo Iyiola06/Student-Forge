@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -114,7 +114,7 @@ export default function SignupPage() {
           <div className="relative size-10 flex items-center justify-center">
             <Image
               src="/logo-favicon.png"
-              alt="Vui Studify Logo"
+              alt="VUI Studify Logo"
               width={40}
               height={40}
               className="object-contain rounded-full"
@@ -122,7 +122,7 @@ export default function SignupPage() {
             />
           </div>
           <h2 className="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">
-            Vui Studify
+            VUI Studify
           </h2>
         </div>
         <div className="flex flex-1 justify-end gap-8 items-center">
@@ -570,7 +570,7 @@ export default function SignupPage() {
       </main>
       {/* Footer Simple */}
       <footer className="py-6 text-center text-sm text-slate-500 dark:text-slate-600">
-        <p>© {new Date().getFullYear()} Vui Studify Inc. All rights reserved.</p>
+        <p>Â© {new Date().getFullYear()} VUI Studify Inc. All rights reserved.</p>
       </footer>
     </div>
   );

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -69,7 +69,7 @@ export default function LoginPage() {
           <div className="relative size-16 flex items-center justify-center mb-4">
             <Image
               src="/logo-favicon.png"
-              alt="Vui Studify Logo"
+              alt="VUI Studify Logo"
               width={64}
               height={64}
               className="object-contain rounded-full"

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import Sidebar from '@/components/layout/Sidebar';
@@ -123,7 +123,7 @@ export default function ExamReadyPage() {
 
         doc.setFontSize(18);
         doc.setTextColor(37, 37, 244);
-        doc.text(`Vui Studify Exam Snapshot`, 20, y);
+        doc.text(`VUI Studify Exam Snapshot`, 20, y);
         y += 15;
 
         // Abbreviations
@@ -155,7 +155,7 @@ export default function ExamReadyPage() {
             doc.setFontSize(11);
             doc.setFont('helvetica', 'normal');
             snapshotData.key_points.forEach(kp => {
-                const lines = doc.splitTextToSize(`• [${kp.tag}] ${kp.point}`, 170);
+                const lines = doc.splitTextToSize(`â€¢ [${kp.tag}] ${kp.point}`, 170);
                 doc.text(lines, 20, y);
                 y += (lines.length * 6) + 2;
                 if (y > 270) { doc.addPage(); y = 20; }

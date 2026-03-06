@@ -124,13 +124,13 @@ export default function BossBattle({
         let newPlayerShields = playerShields;
 
         if (correct) {
-            newBossHealth = Math.max(0, bossHealth - 34);
+            newBossHealth = Math.max(0, bossHealth - 35);
             setBossHealth(newBossHealth);
             setHitEffect(true);
             setTaunt(HIT_TAUNTS[Math.floor(Math.random() * HIT_TAUNTS.length)]);
             setTimeout(() => setHitEffect(false), 500);
         } else {
-            newPlayerShields = Math.max(0, playerShields - 34);
+            newPlayerShields = Math.max(0, playerShields - 35);
             setPlayerShields(newPlayerShields);
             setTaunt(MISS_TAUNTS[Math.floor(Math.random() * MISS_TAUNTS.length)]);
         }
@@ -140,7 +140,7 @@ export default function BossBattle({
 
     const handleAnswerTimeout = () => {
         if (selectedOption || battleState !== 'fighting') return;
-        const newShields = Math.max(0, playerShields - 34);
+        const newShields = Math.max(0, playerShields - 35);
         setSelectedOption('TIMEOUT');
         setIsCorrect(false);
         setPlayerShields(newShields);
@@ -254,27 +254,29 @@ export default function BossBattle({
                     </button>
                 </div>
             ) : battleState === 'fighting' ? (
-                <div className="flex flex-col items-center w-full max-w-4xl relative mt-12 md:mt-0 h-full justify-center">
+                <div className="flex flex-col items-center w-full max-w-4xl pt-20 md:pt-32 pb-4 md:pb-8 h-full">
 
                     {/* Timer */}
-                    <div className={`absolute -top-10 md:-top-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center ${timeLeft <= 5 && !selectedOption ? 'animate-bounce text-red-500' : 'text-slate-300'}`}>
+                    <div className={`shrink-0 z-20 flex flex-col items-center mb-2 md:mb-4 ${timeLeft <= 5 && !selectedOption ? 'animate-bounce text-red-500' : 'text-slate-300'}`}>
                         <div className="text-[8px] md:text-[10px] uppercase font-black tracking-widest mb-1 opacity-70">Time Remaining</div>
                         <div className="text-3xl md:text-5xl font-black drop-shadow-md">
                             0:{timeLeft.toString().padStart(2, '0')}
                         </div>
                     </div>
 
-                    <div className="mb-2 md:mb-6 scale-50 md:scale-75 mt-0 md:mt-8 relative hidden sm:block">
+                    <div className="shrink-0 mb-4 md:mb-8 flex items-center justify-center relative hidden sm:flex h-20 md:h-32">
                         {/* Boss Trash Talk Bubble */}
-                        <div className="absolute -right-32 -top-10 bg-[#1e1b4b] border-2 border-[#7c3aed] p-4 rounded-2xl rounded-bl-none max-w-xs shadow-[0_0_20px_rgba(124,58,237,0.3)] z-20 transition-all transform origin-bottom-left animate-[bounce_3s_ease-in-out_infinite] hidden md:block">
-                            <p className="text-white font-bold text-sm leading-tight italic">
+                        <div className="absolute left-[calc(50%+60px)] -top-4 bg-[#1e1b4b] border-2 border-[#7c3aed] p-3 rounded-2xl rounded-bl-none max-w-[200px] shadow-[0_0_20px_rgba(124,58,237,0.3)] z-20 transition-all transform origin-bottom-left animate-[bounce_3s_ease-in-out_infinite] hidden lg:block">
+                            <p className="text-white font-bold text-xs leading-tight italic">
                                 "{taunt}"
                             </p>
                         </div>
-                        <BossSVG type="beast" isHit={hitEffect} />
+                        <div className="scale-50 md:scale-75 origin-center">
+                            <BossSVG type="beast" isHit={hitEffect} />
+                        </div>
                     </div>
 
-                    <div className="w-full bg-[#101022]/80 backdrop-blur-md border border-[#2d2d3f] p-4 md:p-8 rounded-3xl relative overflow-y-auto max-h-[75vh] md:max-h-none scrollbar-hide">
+                    <div className="w-full bg-[#101022]/80 backdrop-blur-md border border-[#2d2d3f] p-4 md:p-8 rounded-3xl relative overflow-y-auto flex-1 min-h-0 scrollbar-hide">
                         {/* Question Badge */}
                         <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#7c3aed] px-3 md:px-4 py-1 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest whitespace-nowrap z-10">
                             Inquiry {currentIdx + 1} / 3

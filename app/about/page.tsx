@@ -1,13 +1,13 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'motion/react';
 
-/* ──────────────────────────────────────────────────
-   TEAM DATA — Replace names, roles, quotes, and photo
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   TEAM DATA â€” Replace names, roles, quotes, and photo
    src attributes with real values when ready.
-   ────────────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const teamMembers = [
     { name: 'Team Member 1', role: 'Frontend Developer', quote: 'Code is my superpower.' },
     { name: 'Team Member 2', role: 'Backend Developer', quote: 'Databases never lie.' },
@@ -19,9 +19,9 @@ const teamMembers = [
     { name: 'Team Member 8', role: 'Full Stack Developer', quote: 'Ctrl+S saves lives.' },
 ];
 
-/* ──────────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    FLOATING ICON COMPONENT for hero background
-   ────────────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function FloatingIcon({ icon, className }: { icon: string; className: string }) {
     return (
         <motion.span
@@ -34,9 +34,9 @@ function FloatingIcon({ icon, className }: { icon: string; className: string }) 
     );
 }
 
-/* ──────────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    SECTION WRAPPER with scroll-triggered fade-in
-   ────────────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function Section({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
     return (
         <motion.section
@@ -51,18 +51,18 @@ function Section({ children, className = '', delay = 0 }: { children: React.Reac
     );
 }
 
-/* ──────────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    ABOUT PAGE
-   ────────────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 export default function AboutPage() {
     return (
         <div className="bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a] text-white">
 
-            {/* ─── STICKY HEADER ─── */}
+            {/* â”€â”€â”€ STICKY HEADER â”€â”€â”€ */}
             <header className="flex items-center justify-between whitespace-nowrap border-b border-[#2d2d3f] px-4 sm:px-10 py-4 bg-[#101022]/80 backdrop-blur-md sticky top-0 z-50">
                 <Link href="/" className="flex items-center gap-2">
                     <span className="material-symbols-outlined text-[#1a5c2a] text-3xl">school</span>
-                    <h2 className="text-white text-xl font-bold tracking-tight">Vui Studify</h2>
+                    <h2 className="text-white text-xl font-bold tracking-tight">VUI Studify</h2>
                 </Link>
                 <div className="flex items-center gap-4">
                     <Link href="/login" className="text-slate-300 hover:text-[#1a5c2a] transition-colors text-sm font-medium hidden sm:block">
@@ -76,9 +76,9 @@ export default function AboutPage() {
                 </div>
             </header>
 
-            {/* ═══════════════════════════════════════════
+            {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
           1. HERO SECTION
-          ═══════════════════════════════════════════ */}
+          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
             <section className="relative overflow-hidden flex flex-col items-center justify-center text-center px-6 py-28 md:py-40">
                 {/* Animated floating background icons */}
                 <FloatingIcon icon="menu_book" className="top-[10%] left-[8%]" />
@@ -103,14 +103,14 @@ export default function AboutPage() {
                         </span>
                     </h1>
                     <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                        Vui Studify was born out of a simple frustration — studying is hard, and the tools available to students weren&apos;t good enough. So we built our own.
+                        VUI Studify was born out of a simple frustration â€” studying is hard, and the tools available to students weren&apos;t good enough. So we built our own.
                     </p>
                 </motion.div>
             </section>
 
-            {/* ═══════════════════════════════════════════
+            {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
           2. OUR STORY
-          ═══════════════════════════════════════════ */}
+          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
             <Section className="px-6 py-20 md:py-28 max-w-6xl mx-auto w-full">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
                     {/* Illustration side */}
@@ -130,19 +130,19 @@ export default function AboutPage() {
                         <h2 className="text-3xl md:text-4xl font-black mb-6 tracking-tight">Our Story</h2>
                         <div className="space-y-5 text-slate-400 leading-relaxed text-[15px]">
                             <p>
-                                Vui Studify is the product of real student experience. It was conceived and built entirely by students of the <span className="text-white font-semibold">Programming Entrepreneurship class at Venite University</span> — a group of young developers who understood firsthand the pressure of exams, the struggle of staying organized, and the need for smarter study tools.
+                                VUI Studify is the product of real student experience. It was conceived and built entirely by students of the <span className="text-white font-semibold">Programming Entrepreneurship class at Venite University</span> â€” a group of young developers who understood firsthand the pressure of exams, the struggle of staying organized, and the need for smarter study tools.
                             </p>
                             <p>
-                                What started as a classroom project quickly became something much bigger: a fully functional platform designed to transform the way students read, study, and prepare for exams. Every feature in Vui Studify — from the gamified PDF reader to the AI question generator — was designed with one person in mind: <span className="text-[#1a5c2a] font-semibold">the student sitting up late the night before an exam.</span>
+                                What started as a classroom project quickly became something much bigger: a fully functional platform designed to transform the way students read, study, and prepare for exams. Every feature in VUI Studify â€” from the gamified PDF reader to the AI question generator â€” was designed with one person in mind: <span className="text-[#1a5c2a] font-semibold">the student sitting up late the night before an exam.</span>
                             </p>
                         </div>
                     </div>
                 </div>
             </Section>
 
-            {/* ═══════════════════════════════════════════
+            {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
           3. MEET THE FACILITATOR
-          ═══════════════════════════════════════════ */}
+          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
             <Section className="px-6 py-20 md:py-28">
                 <div className="max-w-3xl mx-auto">
                     <div className="bg-[#1b1b27] rounded-3xl border border-[#2d2d3f] p-8 md:p-12 relative overflow-hidden">
@@ -172,7 +172,7 @@ export default function AboutPage() {
                             <p className="text-[#1a5c2a] font-bold text-sm mt-1">Entrepreneurship Facilitator &amp; Student, Venite University</p>
 
                             <p className="text-slate-400 leading-relaxed mt-6 max-w-lg text-[15px]">
-                                Iyiola Ogunjobi is both a student and the entrepreneurship facilitator who guided the Programming Entrepreneurship class at Venite University in bringing Vui Studify to life. His vision was simple — give students a tool worthy of their ambitions.
+                                Iyiola Ogunjobi is both a student and the entrepreneurship facilitator who guided the Programming Entrepreneurship class at Venite University in bringing VUI Studify to life. His vision was simple â€” give students a tool worthy of their ambitions.
                             </p>
 
                             {/* Stat pills */}
@@ -192,14 +192,14 @@ export default function AboutPage() {
                 </div>
             </Section>
 
-            {/* ═══════════════════════════════════════════
-          4. MEET THE TEAM — "The Builders"
-          ═══════════════════════════════════════════ */}
+            {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          4. MEET THE TEAM â€” "The Builders"
+          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
             <Section className="px-6 py-20 md:py-28 max-w-7xl mx-auto w-full">
                 <div className="text-center mb-14">
                     <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">The Builders</h2>
                     <p className="text-slate-400 max-w-xl mx-auto text-[15px]">
-                        The Programming Entrepreneurship students of Venite University who designed, coded, and shipped Vui Studify.
+                        The Programming Entrepreneurship students of Venite University who designed, coded, and shipped VUI Studify.
                     </p>
                 </div>
 
@@ -235,9 +235,9 @@ export default function AboutPage() {
                 </div>
             </Section>
 
-            {/* ═══════════════════════════════════════════
+            {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
           5. OUR MISSION
-          ═══════════════════════════════════════════ */}
+          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
             <Section className="px-6 py-20 md:py-28">
                 <div className="max-w-6xl mx-auto">
                     <h2 className="text-3xl md:text-4xl font-black tracking-tight text-center mb-14">Our Mission</h2>
@@ -245,17 +245,17 @@ export default function AboutPage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {[
                             {
-                                emoji: '🎯',
+                                emoji: 'ðŸŽ¯',
                                 title: 'Make Studying Engaging',
                                 desc: 'We gamify learning so students actually want to open their books.',
                             },
                             {
-                                emoji: '🤖',
+                                emoji: 'ðŸ¤–',
                                 title: 'Harness AI for Every Student',
                                 desc: 'Powerful AI tools that were once only available to the privileged, now free for every student.',
                             },
                             {
-                                emoji: '🤝',
+                                emoji: 'ðŸ¤',
                                 title: 'Build a Student Community',
                                 desc: 'A shared knowledge base where students help each other succeed.',
                             },
@@ -277,9 +277,9 @@ export default function AboutPage() {
                 </div>
             </Section>
 
-            {/* ═══════════════════════════════════════════
+            {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
           6. UNIVERSITY BADGE
-          ═══════════════════════════════════════════ */}
+          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
             <Section className="px-6 py-20 md:py-24 text-center">
                 <div className="max-w-2xl mx-auto">
                     <span className="material-symbols-outlined text-5xl text-[#1a5c2a]/40 mb-4 block">account_balance</span>
@@ -302,9 +302,9 @@ export default function AboutPage() {
                 </div>
             </Section>
 
-            {/* ═══════════════════════════════════════════
+            {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
           7. CALL TO ACTION
-          ═══════════════════════════════════════════ */}
+          â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
             <Section className="mt-auto">
                 <div className="bg-gradient-to-r from-[#1a5c2a] to-blue-600 py-20 md:py-28 px-6 text-center relative overflow-hidden">
                     <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+PC9zdmc+')] pointer-events-none" />
@@ -314,7 +314,7 @@ export default function AboutPage() {
                             Ready to Study Smarter?
                         </h2>
                         <p className="text-white/80 text-lg mb-10">
-                            Join thousands of students already using Vui Studify to ace their exams.
+                            Join thousands of students already using VUI Studify to ace their exams.
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <Link href="/signup">
@@ -334,10 +334,10 @@ export default function AboutPage() {
                 </div>
             </Section>
 
-            {/* ─── FOOTER ─── */}
+            {/* â”€â”€â”€ FOOTER â”€â”€â”€ */}
             <footer className="bg-[#0c0c1a] border-t border-[#2d2d3f] py-8 px-6 text-center">
                 <p className="text-sm text-slate-500">
-                    © {new Date().getFullYear()} Vui Studify · Built with ❤️ at Venite University
+                    Â© {new Date().getFullYear()} VUI Studify Â· Built with â¤ï¸ at Venite University
                 </p>
             </footer>
         </div>

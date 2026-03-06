@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Quiz, QuizMode, GradingResult } from '@/types/ai';
@@ -16,7 +16,7 @@ const GRADING_MESSAGES = [
     "Analyzing ink contrast...",
     "Transcribing handwriting...",
     "Consulting source material...",
-    "Applying Vui Studify rubric...",
+    "Applying VUI Studify rubric...",
     "Synthesizing tutor feedback..."
 ];
 
