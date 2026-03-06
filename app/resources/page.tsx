@@ -89,6 +89,7 @@ export default function ResourcesPage() {
     event.target.value = ''; // reset immediately so user can re-select same file
     setActiveTab('library');
     await uploadFile(file);
+    await fetchResources();
   };
 
 
