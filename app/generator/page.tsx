@@ -46,6 +46,7 @@ export default function GeneratorPage() {
   const [quizStartTime, setQuizStartTime] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [savedQuizId, setSavedQuizId] = useState<string | null>(null);
+  const [savedQuizzes, setSavedQuizzes] = useState<any[]>([]);
 
   useEffect(() => {
     async function fetchResources() {
@@ -53,13 +54,21 @@ export default function GeneratorPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data } = await supabase
+      const { data: resData } = await supabase
         .from('resources')
         .select('id, title, content, processing_status')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (data) setResources(data);
+      if (resData) setResources(resData);
+
+      const { data: quizzesData } = await supabase
+        .from('quizzes')
+        .select('*, quiz_questions(count)')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (quizzesData) setSavedQuizzes(quizzesData);
     }
     fetchResources();
   }, []);
@@ -290,6 +299,46 @@ export default function GeneratorPage() {
       alert(`Error saving quiz: ${err.message}`);
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const loadSavedQuiz = async (quizId: string) => {
+    setIsGenerating(true);
+    setLoadingStep(0);
+    setError(null);
+    setGeneratedData(null);
+    setSavedQuizId(quizId);
+
+    try {
+      const supabase = createClient();
+
+      const { data: quiz } = await supabase.from('quizzes').select('*').eq('id', quizId).single();
+      if (quiz) {
+        setType(quiz.question_type || 'mcq');
+        setDifficulty(quiz.difficulty || 'medium');
+      }
+
+      const { data, error: qError } = await supabase
+        .from('quiz_questions')
+        .select('*')
+        .eq('quiz_id', quizId);
+
+      if (qError) throw qError;
+
+      const formatted = data.map((q: any) => ({
+        question: q.question_text,
+        sentence: q.question_text,
+        options: q.options || [],
+        answer: q.correct_answer,
+        model_answer: q.correct_answer,
+        explanation: q.explanation
+      }));
+
+      setGeneratedData(formatted);
+    } catch (err: any) {
+      setError("Failed to load quiz: " + err.message);
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -783,7 +832,7 @@ export default function GeneratorPage() {
 
               {/* Right Column */}
               <div className="w-full xl:w-[480px] flex flex-col gap-6 shrink-0">
-                {generatedData && (
+                {generatedData ? (
                   <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm overflow-hidden relative">
                     <div className="absolute top-0 w-full h-1 bg-gradient-to-r from-green-400 via-blue-500 to-[#1a5c2a]"></div>
                     <div className="p-6 pt-7">
@@ -809,22 +858,48 @@ export default function GeneratorPage() {
                         )}
                       </div>
 
-                      <button
-                        onClick={startQuiz}
-                        className="w-full mt-6 bg-[#5b5bfa] hover:bg-[#5b5bfa]/90 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2"
-                      >
-                        Take Quiz <span className="material-symbols-outlined text-[18px]">sports_esports</span>
-                      </button>
-                      <button
-                        onClick={downloadPDF}
-                        className="w-full mt-3 bg-slate-100 dark:bg-[#252535] hover:bg-slate-200 dark:hover:bg-[#2d2d3f] text-slate-600 dark:text-slate-300 font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2"
-                      >
-                        Download PDF <span className="material-symbols-outlined text-[18px]">download</span>
-                      </button>
+                      <div className="flex gap-3 mt-6">
+                        <button
+                          onClick={downloadPDF}
+                          className="flex-1 min-w-[120px] bg-slate-100 dark:bg-[#252535] hover:bg-slate-200 dark:hover:bg-[#2d2d3f] text-slate-600 dark:text-slate-300 font-bold py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2"
+                        >
+                          Download PDF <span className="material-symbols-outlined text-[18px]">download</span>
+                        </button>
+                        <button onClick={startQuiz} className="flex-1 min-w-[120px] bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold py-3.5 px-4 rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5" >
+                          <span className="material-symbols-outlined text-[18px]">play_arrow</span>
+                          Start Quiz
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : savedQuizzes.length > 0 && (
+                  <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm flex-1">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                      <span className="material-symbols-outlined text-blue-500">assignment</span>
+                      Saved Quizzes
+                    </h3>
+                    <div className="flex flex-col gap-4">
+                      {savedQuizzes.map(quiz => (
+                        <div key={quiz.id} onClick={() => loadSavedQuiz(quiz.id)} className="cursor-pointer group bg-slate-50 dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-2xl p-5 hover:border-blue-500/50 hover:bg-white dark:hover:bg-[#1a1a24] transition-all flex flex-col justify-between items-start shadow-sm hover:shadow-md">
+                          <div className="w-full">
+                            <div className="flex justify-between items-start mb-2">
+                              <h4 className="font-bold text-slate-900 dark:text-white truncate pr-2 group-hover:text-blue-500 transition-colors">{quiz.title}</h4>
+                              <span className="bg-blue-500/10 text-blue-500 text-[10px] font-black px-2 py-0.5 rounded uppercase">{quiz.quiz_questions?.[0]?.count || 0} Qs</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-slate-500 dark:text-slate-400 truncate">{quiz.subject}</span>
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-200 dark:bg-[#2d2d3f] text-slate-600 dark:text-slate-300 uppercase">{quiz.difficulty}</span>
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center w-full mt-4 pt-4 border-t border-slate-200 dark:border-[#2d2d3f]">
+                            <span className="text-[10px] font-medium text-slate-400">{new Date(quiz.created_at).toLocaleDateString()}</span>
+                            <span className="text-blue-500 text-xs font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">Retake <span className="material-symbols-outlined text-[14px]">arrow_forward</span></span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
-
                 {/* Recent Generations List */}
                 <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm flex-1">
                   <div className="p-6 border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between">

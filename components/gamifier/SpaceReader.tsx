@@ -59,7 +59,7 @@ export default function SpaceReader({
             if (isActuallyPdf) {
                 try {
                     const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
-                    pdfjsLib.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
                     const loadingTask = pdfjsLib.getDocument(resource.file_url);
                     const pdf = await loadingTask.promise;
                     setPdfDoc(pdf);
@@ -183,6 +183,7 @@ export default function SpaceReader({
                 } else {
                     readContent = textPages.slice(0, next).join('\n');
                 }
+                if (readContent.length > 15000) readContent = readContent.slice(-15000);
                 if (readContent.length < 300) readContent = resource.content || '';
                 onBossEncounter(milestoneName, readContent);
             };
