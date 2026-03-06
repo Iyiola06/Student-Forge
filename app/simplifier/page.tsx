@@ -156,7 +156,7 @@ export default function SimplifierPage() {
                 </div>
                 <div>
                   <h2 className="text-2xl font-black text-slate-900 dark:text-white">Simplified Document</h2>
-                  <p className="text-sm text-slate-500">Level: {level} • Format: {format}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Level: {level} • Format: {format}</p>
                 </div>
               </div>
               <div className="prose dark:prose-invert prose-emerald max-w-none">
@@ -190,7 +190,7 @@ export default function SimplifierPage() {
                     <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
                       {isUploading ? 'Processing Document...' : 'Upload Study Material'}
                     </h3>
-                    <p className="text-sm font-medium text-slate-500 mb-6">PDF, Word, PPT, or Image inputs</p>
+                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-6">PDF, Word, PPT, or Image inputs</p>
                     <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.png,.txt" />
                     <button onClick={() => fileInputRef.current?.click()} disabled={isUploading} className="px-8 py-3 bg-[#1a5c2a] text-white font-bold rounded-xl hover:bg-[#144823] transition-all disabled:opacity-50 active:scale-95 shadow-lg shadow-[#1a5c2a]/20">
                       BROWSE FILES
@@ -207,7 +207,7 @@ export default function SimplifierPage() {
                 <div className="bg-white dark:bg-[#161621] rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm">
                   <div className="mb-4">
                     <label className="text-sm font-bold text-slate-900 dark:text-white mb-1 block">Paste Text</label>
-                    <p className="text-xs font-medium text-slate-500 mb-2">Directly paste an article, chapter, or notes.</p>
+                    <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Directly paste an article, chapter, or notes.</p>
                   </div>
                   <textarea
                     value={pastedText}
@@ -232,8 +232,8 @@ export default function SimplifierPage() {
                             setPastedText('');
                           }}
                           className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left group ${selectedResource === res.id
-                              ? 'border-[#1a5c2a] bg-[#1a5c2a]/5 ring-2 ring-[#1a5c2a]/20'
-                              : 'border-slate-100 dark:border-[#2d2d3f] hover:border-[#1a5c2a]/30'
+                            ? 'border-[#1a5c2a] bg-[#1a5c2a]/5 ring-2 ring-[#1a5c2a]/20'
+                            : 'border-slate-100 dark:border-[#2d2d3f] hover:border-[#1a5c2a]/30'
                             }`}
                         >
                           <span className={`material-symbols-outlined ${selectedResource === res.id ? 'text-[#1a5c2a]' : 'text-slate-400 group-hover:text-[#1a5c2a]'}`}>
