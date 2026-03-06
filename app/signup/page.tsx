@@ -79,7 +79,8 @@ export default function SignupPage() {
         throw new Error(data.error || 'Failed to sign up');
       }
 
-      router.push('/verify-email?email=' + encodeURIComponent(email));
+      router.push('/dashboard');
+      router.refresh();
     } catch (err: any) {
       setError(err.message);
     } finally {
