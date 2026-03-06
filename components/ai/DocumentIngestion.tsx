@@ -175,7 +175,7 @@ const DocumentIngestion: React.FC<DocumentIngestionProps> = ({ onProcessed }) =>
                                 : 'border-slate-200 dark:border-slate-800 hover:border-[#1a5c2a] hover:bg-[#1a5c2a]/5 dark:hover:bg-[#1a5c2a]/5'
                             }`}
                     >
-                        <input type="file" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && processFile(e.target.files[0])} className="hidden" accept=".pdf,.docx,.pptx,.txt" />
+                        <input type="file" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && processFile(e.target.files[0])} className="hidden" accept=".pdf,.docx,.ppt,.pptx,.txt" />
 
                         <div className="flex flex-col items-center">
                             <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 shadow-xl ${isDragging ? 'bg-[#1a5c2a] text-white scale-110 rotate-12' :

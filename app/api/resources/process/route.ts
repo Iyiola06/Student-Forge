@@ -127,6 +127,22 @@ async function processResource(
             }
             extractedText = fullText.trim();
             if (extractedText.length < 50) throw new Error('The PPTX file appears to have insufficient text content.');
+        } else if (
+            fileType === 'application/vnd.ms-powerpoint' ||
+            fileName.endsWith('.ppt')
+        ) {
+            // .ppt is the legacy binary OLE format — JSZip can't parse it.
+            // Send to Gemini with the correct MIME type for text extraction.
+            if (!process.env.GEMINI_API_KEY) throw new Error('AI extraction not configured');
+            const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+            const arrayBuffer = await fileData.arrayBuffer();
+            const base64Data = Buffer.from(arrayBuffer).toString('base64');
+            const result = await model.generateContent([
+                'Extract and transcribe all readable text from this PowerPoint presentation file. Go slide by slide. Format each slide as a numbered section. Only output the text content, no commentary.',
+                { inlineData: { data: base64Data, mimeType: 'application/vnd.ms-powerpoint' } },
+            ]);
+            extractedText = result.response.text().trim();
+            if (extractedText.length < 50) throw new Error('Could not extract meaningful text from this .ppt file.');
         } else if (fileType === 'text/plain' || fileType === 'application/json') {
             extractedText = await fileData.text();
             if (extractedText.trim().length < 10) throw new Error('The text file is empty or too short.');

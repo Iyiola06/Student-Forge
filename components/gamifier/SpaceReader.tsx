@@ -49,7 +49,7 @@ export default function SpaceReader({
             const fileType = resource.file_type || '';
             const isActuallyPdf = fileType.includes('pdf');
             const isActuallyDocx = fileType.includes('wordprocessingml') || resource.title.endsWith('.docx');
-            const isActuallyPptx = fileType.includes('presentationml') || resource.title.endsWith('.pptx');
+            const isActuallyPptx = fileType.includes('presentationml') || fileType.includes('vnd.ms-powerpoint') || resource.title.endsWith('.pptx') || resource.title.endsWith('.ppt');
 
             setIsPdf(isActuallyPdf);
             setIsDocx(isActuallyDocx);

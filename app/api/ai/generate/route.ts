@@ -94,7 +94,8 @@ You must return a JSON array of objects adhering exactly to this structure:
 [{
   "sentence": "A factual sentence with a key term replaced by '___'. Example: The ___ is the powerhouse of the cell.",
   "answer": "The exact missing word(s)",
-  "hint": "A short contextual hint to help the student"
+  "hint": "A short contextual hint to help the student",
+  "explanation": "A pedagogical explanation of the concept being tested"
 }]`;
                 break;
 
@@ -107,7 +108,8 @@ You must return a JSON array of objects adhering exactly to this structure:
 [{
   "question": "The open-ended question prompt",
   "model_answer": "A comprehensive ideal answer paragraph",
-  "key_points": ["Key concept 1 that should be mentioned", "Key concept 2 that should be mentioned"]
+  "key_points": ["Key concept 1 that should be mentioned", "Key concept 2 that should be mentioned"],
+  "explanation": "A breakdown of why the model answer is correct and what makes a good response"
 }]`;
                 break;
 

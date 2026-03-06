@@ -420,8 +420,24 @@ export default function GeneratorPage() {
                   value={selectedOption || ''}
                   onChange={(e) => setSelectedOption(e.target.value)}
                   placeholder="Type your answer here..."
-                  className="w-full p-6 rounded-2xl bg-[#f5f5f8] dark:bg-[#13131a] border-2 border-slate-200 dark:border-[#2d2d3f] focus:border-[#1a5c2a] outline-none text-xl font-bold"
+                  className={`w-full p-6 rounded-2xl bg-[#f5f5f8] dark:bg-[#13131a] border-2 outline-none text-xl font-bold ${showExplanation
+                    ? (selectedOption?.toLowerCase().trim() === (q.answer || q.model_answer || '').toLowerCase().trim()
+                      ? 'border-green-500 text-green-600 dark:text-green-400'
+                      : 'border-red-500 text-red-600 dark:text-red-400')
+                    : 'border-slate-200 dark:border-[#2d2d3f] focus:border-[#1a5c2a]'
+                    }`}
                 />
+
+                {showExplanation && (q.answer || q.model_answer) && (
+                  <div className="p-4 rounded-xl border border-green-500/20 bg-green-500/5 mt-4">
+                    <p className="text-xs font-black text-green-600 dark:text-green-500 uppercase tracking-widest mb-1">
+                      {q.model_answer ? 'Model Answer' : 'Correct Answer'}
+                    </p>
+                    <p className="text-lg font-bold text-slate-800 dark:text-white">
+                      {q.answer || q.model_answer}
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -432,7 +448,7 @@ export default function GeneratorPage() {
                 <span className="material-symbols-outlined">info</span>
                 <span className="text-xs font-black uppercase tracking-widest">Explanation</span>
               </div>
-              <p className="text-slate-600 dark:text-slate-300 font-bold leading-relaxed">
+              <p className="text-slate-600 dark:text-slate-300 font-bold leading-relaxed whitespace-pre-wrap">
                 {q.explanation || "No explanation provided for this question."}
               </p>
             </div>
@@ -593,7 +609,7 @@ export default function GeneratorPage() {
                         ref={fileInputRef}
                         onChange={handleFileUpload}
                         className="hidden"
-                        accept="application/pdf,image/*,.doc,.docx,.pptx,.txt"
+                        accept="application/pdf,image/*,.doc,.docx,.ppt,.pptx,.txt"
                       />
                       <button
                         onClick={() => fileInputRef.current?.click()}
