@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
         const supabase = await createClient();
 
@@ -50,6 +50,13 @@ export async function GET() {
             return NextResponse.json({ error: profileError.message }, { status: 500 });
         }
 
+        // Pagination
+        const { searchParams } = new URL(request.url);
+        const page = parseInt(searchParams.get('page') || '1', 10);
+        const limit = parseInt(searchParams.get('limit') || '50', 10);
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+
         // 4. Combine and Sort
         const leaderboard = userIds.map(id => {
             const p = profiles.find(profile => profile.id === id);
@@ -61,10 +68,15 @@ export async function GET() {
                 xp: userXpMap[id]
             };
         })
-            .sort((a, b) => b.xp - a.xp)
-            .slice(0, 50); // Limit to top 50
+            .sort((a, b) => b.xp - a.xp);
 
-        return NextResponse.json(leaderboard);
+        const paginatedLeaderboard = leaderboard.slice(startIndex, endIndex);
+
+        return NextResponse.json({
+            data: paginatedLeaderboard,
+            hasMore: endIndex < leaderboard.length,
+            total: leaderboard.length
+        });
 
     } catch (error: any) {
         console.error('Weekly leaderboard error:', error);

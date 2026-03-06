@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -17,6 +17,19 @@ export default function SignupPage() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // FIX for: 494 REQUEST_HEADER_TOO_LARGE
+  // Sweep away any stale Supabase auth code-verifier cookies to prevent header bloat
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.cookie.split(';').forEach(cookie => {
+        const [name] = cookie.split('=');
+        if (name.trim().includes('-code-verifier')) {
+          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+        }
+      });
+    }
+  }, []);
 
   const calculatePasswordStrength = (pass: string) => {
     let score = 0;

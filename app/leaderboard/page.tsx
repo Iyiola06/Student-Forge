@@ -12,29 +12,56 @@ export default function LeaderboardPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [timeframe, setTimeframe] = useState<'all' | 'weekly'>('all');
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const ITEMS_PER_PAGE = 50;
+
+  useEffect(() => {
+    // Reset when timeframe changes
+    setUsers([]);
+    setPage(1);
+    setHasMore(true);
+  }, [timeframe]);
 
   useEffect(() => {
     async function fetchLeaderboard() {
-      setIsLoading(true);
+      if (page === 1) setIsLoading(true);
+      else setIsLoadingMore(true);
+
       const supabase = createClient();
+      const from = (page - 1) * ITEMS_PER_PAGE;
+      const to = from + ITEMS_PER_PAGE - 1;
 
-      if (timeframe === 'all') {
-        const { data } = await supabase
-          .from('profiles')
-          .select('id, full_name, avatar_url, level, xp')
-          .order('xp', { ascending: false })
-          .limit(50);
-        if (data) setUsers(data);
-      } else {
-        const res = await fetch('/api/leaderboard/weekly');
-        const data = await res.json();
-        if (Array.isArray(data)) setUsers(data);
+      try {
+        if (timeframe === 'all') {
+          const { data, count } = await supabase
+            .from('profiles')
+            .select('id, full_name, avatar_url, level, xp', { count: 'exact' })
+            .order('xp', { ascending: false })
+            .range(from, to);
+
+          if (data) {
+            setUsers(prev => page === 1 ? data : [...prev, ...data]);
+            setHasMore(count !== null && from + data.length < count);
+          }
+        } else {
+          const res = await fetch(`/api/leaderboard/weekly?page=${page}&limit=${ITEMS_PER_PAGE}`);
+          const json = await res.json();
+          if (json.data && Array.isArray(json.data)) {
+            setUsers(prev => page === 1 ? json.data : [...prev, ...json.data]);
+            setHasMore(json.hasMore);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch leaderboard", error);
+      } finally {
+        setIsLoading(false);
+        setIsLoadingMore(false);
       }
-
-      setIsLoading(false);
     }
     fetchLeaderboard();
-  }, [timeframe]);
+  }, [timeframe, page]);
 
   const top3 = users.slice(0, 3);
   const others = users.slice(3);
@@ -252,6 +279,29 @@ export default function LeaderboardPage() {
                         </div>
                       )}
                     </div>
+
+                    {/* Pagination Controls */}
+                    {hasMore && others.length > 0 && (
+                      <div className="p-6 border-t border-[#2d2d3f] flex justify-center bg-black/20">
+                        <button
+                          onClick={() => setPage(p => p + 1)}
+                          disabled={isLoadingMore}
+                          className="px-8 py-3 bg-[#1a5c2a]/20 hover:bg-[#1a5c2a]/40 text-[#1a5c2a] border border-[#1a5c2a]/50 rounded-xl font-black uppercase tracking-widest text-xs transition-all flex items-center gap-3 disabled:opacity-50"
+                        >
+                          {isLoadingMore ? (
+                            <>
+                              <div className="size-4 border-2 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
+                              Scanning Cosmos...
+                            </>
+                          ) : (
+                            <>
+                              <span className="material-symbols-outlined text-lg">public</span>
+                              Load More Pilots
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </>
               )}
