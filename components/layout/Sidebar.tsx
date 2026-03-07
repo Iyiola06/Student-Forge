@@ -147,7 +147,7 @@ export default function Sidebar() {
                     </Link>
                 </div>
 
-                <nav className="flex-1 px-4 space-y-2 overflow-y-auto">
+                <nav className="flex-1 px-4 space-y-2 overflow-y-auto custom-scrollbar">
                     <div className="text-xs font-semibold text-slate-400 dark:text-[#6b6b8a] uppercase tracking-wider mb-2 mt-2 px-2">
                         Menu
                     </div>

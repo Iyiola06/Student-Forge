@@ -21,7 +21,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://student.sulvatech.com'),
   title: {
-    default: 'VUI Studify â€” AI-Powered Study Platform',
+    default: 'VUI Studify',
     template: '%s | VUI Studify',
   },
   description: 'Master any subject with AI-generated quizzes, flashcards, essay grading, and gamified study sessions. Built for students preparing for WAEC, JAMB, and university exams.',
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     title: 'VUI Studify',
   },
   openGraph: {
-    title: 'VUI Studify â€” AI-Powered Study Platform',
+    title: 'VUI Studify',
     description: 'Master any subject with AI-generated quizzes, flashcards, essay grading, and gamified study sessions.',
     url: '/',
     siteName: 'VUI Studify',
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'VUI Studify â€” AI-Powered Study Platform',
+    title: 'VUI Studify',
     description: 'Master any subject with AI-generated quizzes, flashcards, and gamified study sessions.',
     images: ['/logo-dark.png'],
   },

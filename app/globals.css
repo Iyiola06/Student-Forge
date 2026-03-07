@@ -128,3 +128,41 @@
     -webkit-overflow-scrolling: touch;
   }
 }
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  /* slate-300 */
+  border-radius: 10px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+  /* slate-700 */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand-primary-light);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand-primary);
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.dark html {
+  scrollbar-color: #334155 transparent;
+}
