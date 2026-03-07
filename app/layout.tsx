@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+﻿import type { Metadata, Viewport } from 'next';
 import { Lexend } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,6 +13,10 @@ const lexend = Lexend({
   variable: '--font-lexend',
   display: 'swap',
 });
+
+export const viewport: Viewport = {
+  themeColor: '#1a5c2a',
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://student.sulvatech.com'),
