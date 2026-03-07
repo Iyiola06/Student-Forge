@@ -5,6 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import './globals.css'; // Global styles
 import PushNotificationProvider from '@/components/PushNotificationProvider';
 import { UploadProgressProvider } from '@/components/providers/UploadProgressProvider';
+import PwaRegistration from '@/components/PwaRegistration';
+import PwaInstallPrompt from '@/components/PwaInstallPrompt';
 
 const lexend = Lexend({
   subsets: ['latin'],
@@ -21,6 +23,11 @@ export const metadata: Metadata = {
   description: 'Master any subject with AI-generated quizzes, flashcards, essay grading, and gamified study sessions. Built for students preparing for WAEC, JAMB, and university exams.',
   keywords: ['study', 'AI tutor', 'flashcards', 'quiz generator', 'essay grading', 'WAEC', 'JAMB', 'exam prep', 'Nigeria education', 'VUI Studify'],
   authors: [{ name: 'VUI Studify Team' }],
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'VUI Studify',
+  },
   openGraph: {
     title: 'VUI Studify â€” AI-Powered Study Platform',
     description: 'Master any subject with AI-generated quizzes, flashcards, essay grading, and gamified study sessions.',
@@ -69,6 +76,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body suppressHydrationWarning className="font-display antialiased main-bg">
+        <PwaRegistration />
+        <PwaInstallPrompt />
         <PushNotificationProvider />
         <UploadProgressProvider>
           {children}

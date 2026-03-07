@@ -26,6 +26,7 @@ export default function SimplifierPage() {
 
   const [isSimplifying, setIsSimplifying] = useState(false);
   const [simplifiedOutput, setSimplifiedOutput] = useState<string | null>(null);
+  const [youtubeTopics, setYoutubeTopics] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const [isUploading, setIsUploading] = useState(false);
@@ -108,6 +109,7 @@ export default function SimplifierPage() {
     setIsSimplifying(true);
     setError(null);
     setSimplifiedOutput(null);
+    setYoutubeTopics([]);
 
     try {
       const res = await fetch('/api/ai/simplify', {
@@ -127,6 +129,9 @@ export default function SimplifierPage() {
       }
 
       setSimplifiedOutput(data.result);
+      if (Array.isArray(data.youtube_topics)) {
+        setYoutubeTopics(data.youtube_topics);
+      }
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -162,6 +167,34 @@ export default function SimplifierPage() {
               <div className="prose dark:prose-invert prose-emerald max-w-none">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{simplifiedOutput}</ReactMarkdown>
               </div>
+
+              {/* YouTube Recommendations Overlay */}
+              {youtubeTopics.length > 0 && (
+                <div className="mt-12 pt-8 border-t border-slate-200 dark:border-[#2d2d3f]">
+                  <h3 className="text-lg font-black text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-red-600">smart_display</span>
+                    Watch Concept on YouTube
+                  </h3>
+                  <div className="flex flex-wrap gap-3">
+                    {youtubeTopics.map((topic, i) => (
+                      <a
+                        key={i}
+                        href={`https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-500/20 rounded-xl font-bold text-sm hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors"
+                      >
+                        <svg className="w-5 h-5 text-red-600 dark:text-red-500 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
+                        </svg>
+                        {topic}
+                        <span className="material-symbols-outlined text-[16px] opacity-50 ml-1">open_in_new</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
             </div>
           </div>
         ) : (

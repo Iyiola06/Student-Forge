@@ -61,7 +61,14 @@ ${levelInstruction}
 ${formatInstruction}
 ${focusInstruction}
 
-Please output ONLY the explanation in markdown format. Do not include any meta-commentary like "Here is the simplified text:".
+Please output your response as valid JSON using this EXACT structure:
+{
+  "result": "The markdown string of your explanation here.",
+  "youtube_topics": ["Specific search query 1", "Specific search query 2", "Specific search query 3"]
+}
+
+The "youtube_topics" should be 2 to 3 very specific search queries that a user could type into YouTube to find a video explaining the core concepts you just summarized. Keep the queries concise (under 5 words).
+Do NOT wrap the JSON in markdown code blocks (\`\`\`json). Return exactly the raw stringified JSON object.
 
 Text to simplify:
 """
@@ -71,7 +78,19 @@ ${trimmedContent}
         const result = await model.generateContent(systemInstruction);
         const responseText = result.response.text().trim();
 
-        return NextResponse.json({ result: responseText });
+        let parsedOutput;
+        try {
+            parsedOutput = JSON.parse(responseText.replace(/^```json\s*/i, '').replace(/\s*```$/i, ''));
+        } catch (e) {
+            // Fallback in case the model failed to output valid JSON
+            console.error('Failed to parse Gemini output as JSON', responseText);
+            parsedOutput = {
+                result: responseText,
+                youtube_topics: []
+            };
+        }
+
+        return NextResponse.json(parsedOutput);
 
     } catch (error: any) {
         console.error('Simplify Route Error:', error);
