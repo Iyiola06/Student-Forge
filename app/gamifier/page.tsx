@@ -137,7 +137,7 @@ function GamifierOrchestrator() {
   // Rendering views
   if (isLoading || !profile) {
     return (
-      <div className="w-full h-screen bg-[#050510] flex flex-col items-center justify-center font-display text-[#ea580c]">
+      <div className="w-full h-[100dvh] bg-[#050510] flex flex-col items-center justify-center font-display text-[#ea580c]">
         <div className="size-16 rounded-full border border-dashed border-[#ea580c] animate-spin border-t-transparent mx-auto mb-4" />
         <div className="text-xs uppercase tracking-widest font-bold">Initializing Galaxy Map...</div>
       </div>
@@ -145,7 +145,7 @@ function GamifierOrchestrator() {
   }
 
   return (
-    <div className="w-full min-h-screen md:h-screen bg-[#050510] md:overflow-hidden text-white font-display">
+    <div className="w-full min-h-[100dvh] md:h-[100dvh] bg-[#050510] md:overflow-hidden text-white font-display">
 
       {/* 1. Galaxy Map */}
       {viewState === 'galaxy' && (
@@ -234,7 +234,7 @@ function GamifierOrchestrator() {
 export default function GamifierPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#050510] flex flex-col items-center justify-center text-[#ea580c] font-display">
+      <div className="min-h-[100dvh] bg-[#050510] flex flex-col items-center justify-center text-[#ea580c] font-display">
         <div className="size-16 rounded-full border border-dashed border-[#ea580c] animate-[spin_3s_linear_infinite] border-t-transparent mb-4" />
         <div className="text-xs uppercase tracking-widest font-bold">Scanning Sector...</div>
       </div>

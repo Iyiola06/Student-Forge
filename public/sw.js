@@ -48,10 +48,15 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
+    // Ignore auth callbacks to prevent Service Worker from breaking OAuth redirects
+    if (request.url.includes('/auth/')) {
+        return;
+    }
+
     // Use a Network-First strategy for HTML document navigations (e.g. loading a new page).
     if (request.mode === 'navigate') {
         event.respondWith(
-            fetch(request.url)
+            fetch(request)
                 .then((response) => {
                     // If network works, put a copy in the cache and return the response.
                     return caches.open(CACHE_NAME).then((cache) => {
@@ -66,7 +71,15 @@ self.addEventListener('fetch', (event) => {
                             return cachedResponse;
                         }
                         // If the requested page isn't in cache, return the offline fallback.
-                        return caches.match('/offline.html');
+                        return caches.match('/offline.html').then((fallback) => {
+                            if (fallback) return fallback;
+                            // Critical: Return a basic offline response if offline.html is missing to prevent ERR_FAILED
+                            return new Response('You are offline and no cached version is available.', {
+                                status: 503,
+                                statusText: 'Service Unavailable',
+                                headers: new Headers({ 'Content-Type': 'text/plain' })
+                            });
+                        });
                     });
                 })
         );

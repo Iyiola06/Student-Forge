@@ -229,7 +229,7 @@ export default function SpaceReader({
     const shipBottom = `${progressPct}%`;
 
     return (
-        <div className="flex flex-col h-screen w-full bg-[#050510] text-white font-display overflow-hidden selection:bg-[#ea580c]/30">
+        <div className="flex flex-col h-[100dvh] w-full bg-[#050510] text-white font-display overflow-hidden selection:bg-[#ea580c]/30">
             {/* Top Bar */}
             <header className="h-14 border-b border-[#2d2d3f] bg-[#0c0c16]/90 backdrop-blur flex items-center justify-between px-3 md:px-6 shrink-0 z-40 relative shadow-md shadow-black/50">
                 <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -361,7 +361,7 @@ export default function SpaceReader({
 
                     {/* Pinned Navigation Bar — always visible, never scrolls */}
                     {numPages > 0 && (
-                        <div className="shrink-0 border-t border-[#2d2d3f] bg-[#0c0c16]/90 backdrop-blur px-4 md:px-8 py-3 flex items-center justify-between gap-4 z-30">
+                        <div className="shrink-0 border-t border-[#2d2d3f] bg-[#0c0c16]/90 backdrop-blur px-4 md:px-8 pb-24 pt-3 lg:py-3 flex items-center justify-between gap-4 z-30">
                             <button
                                 onClick={() => handleTurn(-1)}
                                 disabled={currentPage <= 1}
