@@ -64,9 +64,9 @@ export default function EssayGraderPage() {
     };
 
     return (
-        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
+        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
             <Sidebar />
-            <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
+            <div className="flex-1 flex flex-col min-h-screen">
                 <div className="px-6 pt-8 pb-4 md:px-10">
                     <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
                         <span className="material-symbols-outlined text-[#1a5c2a] text-3xl">grading</span>

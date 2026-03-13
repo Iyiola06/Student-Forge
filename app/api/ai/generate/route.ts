@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
-import { google } from '@ai-sdk/google';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateObject, streamObject } from 'ai';
 import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
+
+const google = createGoogleGenerativeAI({
+    apiKey: process.env.GEMINI_API_KEY || '',
+});
 
 export const runtime = 'edge';
 export const maxDuration = 60;

@@ -2,18 +2,8 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize a Supabase client with the Service Role key to bypass RLS
-// This allows the server to securely update XP and Level without trusting the client.
-const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    {
-        auth: {
-            autoRefreshToken: false,
-            persistSession: false,
-        },
-    }
-);
+// We will initialize this inside the function to prevent top-level crashes 
+// if the environment variable is missing on the deployed server.
 
 /**
  * Securely awards XP to a user and recalculates their level.
@@ -23,6 +13,14 @@ export async function awardXp(userId: string, xpToAdd: number, source: string) {
     if (!userId || xpToAdd <= 0) {
         return { success: false, error: 'Invalid parameters' };
     }
+
+    const supabaseAdmin = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        {
+            auth: { autoRefreshToken: false, persistSession: false },
+        }
+    );
 
     try {
         // Fetch current profile
