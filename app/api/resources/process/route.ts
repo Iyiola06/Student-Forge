@@ -44,17 +44,42 @@ async function processResource(
         let extractedText = '';
 
         if (fileType === 'application/pdf') {
-            if (!process.env.GEMINI_API_KEY) throw new Error('AI extraction not configured');
-            const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
             const arrayBuffer = await fileData.arrayBuffer();
-            const base64Data = Buffer.from(arrayBuffer).toString('base64');
-            const result = await model.generateContent([
-                'Extract and transcribe all readable text from this PDF document. Preserve structure. Only output the text content, no commentary.',
-                { inlineData: { data: base64Data, mimeType: 'application/pdf' } }
-            ]);
-            extractedText = result.response.text().trim();
+            let nativeText = '';
+            
+            try {
+                // Try to extract native text using pdfjs-dist server-side
+                const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
+                const loadingTask = pdfjs.getDocument({ data: new Uint8Array(arrayBuffer), useSystemFonts: true });
+                const pdfDoc = await loadingTask.promise;
+                
+                for (let i = 1; i <= Math.min(pdfDoc.numPages, 100); i++) {
+                    const page = await pdfDoc.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map((item: any) => item.str).join(" ");
+                    nativeText += pageText + "\n";
+                }
+            } catch (pdfErr) {
+                console.warn("pdfjs extraction failed, falling back to OCR", pdfErr);
+            }
+
+            extractedText = nativeText.trim();
+            
+            // If the PDF is mostly images (scanned) or extraction failed, fallback to Gemini OCR
             if (extractedText.length < 50) {
-                throw new Error('Insufficient text extracted. The document may be empty or encrypted.');
+                if (!process.env.GEMINI_API_KEY) throw new Error('AI extraction not configured');
+                // Use the ultra fast model for OCR
+                const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
+                const base64Data = Buffer.from(arrayBuffer).toString('base64');
+                const result = await model.generateContent([
+                    'Extract and transcribe all readable text from this PDF document. Preserve structure. Only output the text content, no commentary.',
+                    { inlineData: { data: base64Data, mimeType: 'application/pdf' } }
+                ]);
+                extractedText = result.response.text().trim();
+            }
+            
+            if (extractedText.length < 50) {
+                throw new Error('Insufficient text extracted. The document may be empty, image-heavy, or encrypted.');
             }
         } else if (fileType.startsWith('image/')) {
             if (!process.env.GEMINI_API_KEY) throw new Error('OCR not configured');

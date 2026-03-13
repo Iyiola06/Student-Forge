@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
@@ -171,6 +171,23 @@ export default function GeneratorPage() {
         } else if (payload.new.processing_status === 'error') {
           setIsUploading(false);
           supabase.removeChannel(ch);
+        }
+      })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'resources' }, async (payload) => {
+        if (payload.new.processing_status === 'ready') {
+          setSelectedResource(payload.new.id);
+          setIsUploading(false);
+          supabase.removeChannel(ch);
+          // Refresh resource list inline
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            const { data } = await supabase
+              .from('resources')
+              .select('id, title, content, processing_status')
+              .eq('user_id', user.id)
+              .order('created_at', { ascending: false });
+            if (data) setResources(data);
+          }
         }
       })
       .subscribe();

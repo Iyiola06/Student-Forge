@@ -1,4 +1,4 @@
-﻿import type { Metadata, Viewport } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Lexend } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -53,6 +53,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { Analytics } from '@vercel/analytics/react';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${lexend.variable}`}>
@@ -85,6 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PushNotificationProvider />
         <UploadProgressProvider>
           {children}
+          <Analytics />
           <ToastContainer
             position="bottom-right"
             autoClose={5000}

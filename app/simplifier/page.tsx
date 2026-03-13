@@ -81,6 +81,22 @@ export default function SimplifierPage() {
           supabase.removeChannel(ch);
         }
       })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'resources' }, async (payload) => {
+        if (payload.new.processing_status === 'ready') {
+          setSelectedResource(payload.new.id);
+          setIsUploading(false);
+          supabase.removeChannel(ch);
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            const { data } = await supabase
+              .from('resources')
+              .select('id, title, content, processing_status')
+              .eq('user_id', user.id)
+              .order('created_at', { ascending: false });
+            if (data) setResources(data);
+          }
+        }
+      })
       .subscribe();
 
     await uploadFile(file);
