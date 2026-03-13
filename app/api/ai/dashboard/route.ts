@@ -7,7 +7,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 export async function POST(req: NextRequest) {
     try {
         const { action, acronym, context, sourceText } = await req.json();
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
 
         if (action === 'decode') {
             const prompt = `Expand the following abbreviation or acronym: "${acronym}". 

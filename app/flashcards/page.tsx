@@ -4,6 +4,9 @@ import Link from 'next/link';
 import Sidebar from '@/components/layout/Sidebar';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { awardXp } from '@/app/actions/gamifier';
+import { experimental_useObject as useObject } from '@ai-sdk/react';
+import { z } from 'zod';
 
 interface Resource {
     id: string;
@@ -21,9 +24,30 @@ export default function FlashcardsPage() {
     const [selectedResource, setSelectedResource] = useState<string>('');
     const [pastedText, setPastedText] = useState('');
 
-    const [isGenerating, setIsGenerating] = useState(false);
+    const [isGeneratingDeck, setIsGeneratingDeck] = useState(false);
     const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
     const [error, setError] = useState<string | null>(null);
+
+    const { object, submit, isLoading: isStreaming, error: aiError } = useObject({
+        api: '/api/ai/generate',
+        schema: z.array(z.object({
+            front: z.string(),
+            back: z.string()
+        })),
+        onFinish: ({ object }) => {
+            if (object) {
+                setFlashcards(object as Flashcard[]);
+                awardGenerationXP();
+            }
+        }
+    });
+
+    useEffect(() => {
+        if (aiError) setError(aiError.message);
+    }, [aiError]);
+
+    const isGenerating = isStreaming || isGeneratingDeck;
+    const displayCards = (isStreaming ? (object as Flashcard[]) : flashcards) || [];
     const [isSaving, setIsSaving] = useState(false);
     const [savedDeckId, setSavedDeckId] = useState<string | null>(null);
     const [savedDecks, setSavedDecks] = useState<any[]>([]);
@@ -75,36 +99,20 @@ export default function FlashcardsPage() {
             return;
         }
 
-        setIsGenerating(true);
         setError(null);
         setFlashcards([]);
         setIsDrilling(false);
         setSavedDeckId(null);
 
         try {
-            const response = await fetch('/api/ai/generate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    content: contentToUse,
-                    type: 'flashcards',
-                    count: 10
-                })
+            submit({
+                content: contentToUse,
+                type: 'flashcards',
+                count: 10,
+                stream: true
             });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.error || 'Failed to generate content');
-            }
-
-            setFlashcards(result.data);
-            awardGenerationXP();
-
         } catch (err: any) {
             setError(err.message);
-        } finally {
-            setIsGenerating(false);
         }
     };
 
@@ -113,24 +121,10 @@ export default function FlashcardsPage() {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        const { data: profile } = await supabase
-            .from('profiles')
-            .select('xp, level')
-            .eq('id', user.id)
-            .single();
+        const { success, newLevel } = await awardXp(user.id, 30, 'flashcards_generation');
 
-        if (profile) {
-            const newXp = (profile.xp || 0) + 30; // 30 XP for flashcards
-            const newLevel = Math.floor(Math.sqrt(newXp / 100)) + 1;
-
-            await supabase
-                .from('profiles')
-                .update({ xp: newXp, level: newLevel > (profile.level || 0) ? newLevel : profile.level })
-                .eq('id', user.id);
-
-            if (newLevel > (profile.level || 0)) {
-                alert(`Level Up! You are now level ${newLevel}!`);
-            }
+        if (success && newLevel) {
+            // We successfully awarded XP.
         }
     };
 
@@ -200,7 +194,7 @@ export default function FlashcardsPage() {
     };
 
     const loadSavedDeck = async (deckId: string) => {
-        setIsGenerating(true);
+        setIsGeneratingDeck(true);
         setError(null);
         setFlashcards([]);
         setIsDrilling(false);
@@ -219,7 +213,7 @@ export default function FlashcardsPage() {
         } catch (err: any) {
             setError("Failed to load deck: " + err.message);
         } finally {
-            setIsGenerating(false);
+            setIsGeneratingDeck(false);
         }
     };
 
@@ -339,7 +333,7 @@ export default function FlashcardsPage() {
 
                     {/* Right Panel: Display / Drill Mode */}
                     <div className="flex-1 min-w-0">
-                        {isGenerating ? (
+                        {isGenerating && (!displayCards || displayCards.length === 0) ? (
                             <div className="h-full flex flex-col items-center justify-center text-center py-20 bg-white dark:bg-[#1a1a24] rounded-3xl border border-slate-200 dark:border-[#2d2d3f] shadow-inner">
                                 <div className="relative mb-8">
                                     <div className="size-24 border-b-4 border-l-4 border-[#1a5c2a] rounded-full animate-spin"></div>
@@ -350,7 +344,7 @@ export default function FlashcardsPage() {
                                 <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">AI Neural Synthesis</h3>
                                 <p className="text-slate-500 dark:text-slate-400 font-medium max-w-sm">Distilling your material into the most potent cognitive anchors...</p>
                             </div>
-                        ) : flashcards.length > 0 ? (
+                        ) : displayCards && displayCards.length > 0 ? (
                             isDrilling ? (
                                 // Interactive Drill Mode
                                 <div className="flex-1 flex flex-col items-center justify-start py-4 w-full h-full max-w-5xl mx-auto relative">
@@ -455,7 +449,7 @@ export default function FlashcardsPage() {
                                         <div>
                                             <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">AI Generated Deck</h2>
                                             <div className="flex items-center gap-2 mt-1">
-                                                <span className="bg-[#1a5c2a] text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">{flashcards.length} Integrated Cards</span>
+                                                <span className="bg-[#1a5c2a] text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">{displayCards.length} Integrated Cards</span>
                                                 <span className="text-slate-400 font-medium text-xs">Ready for neural formatting</span>
                                             </div>
                                         </div>
@@ -492,7 +486,7 @@ export default function FlashcardsPage() {
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5">
-                                        {flashcards.map((card, i) => (
+                                        {displayCards.map((card, i) => (
                                             <div key={i} className="flex flex-col p-6 rounded-2xl border border-slate-100 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#13131a]/50 hover:border-[#1a5c2a]/30 hover:bg-white dark:hover:bg-[#1a1a24] transition-all group relative overflow-hidden shadow-sm hover:shadow-lg">
                                                 <div className="absolute top-0 left-0 w-1 h-full bg-[#1a5c2a]/20 group-hover:bg-[#1a5c2a] transition-all"></div>
                                                 <div className="flex justify-between items-start mb-4">
@@ -500,11 +494,11 @@ export default function FlashcardsPage() {
                                                     <span className="text-[9px] font-bold text-slate-400 bg-slate-100 dark:bg-[#1b1b27] px-2 py-0.5 rounded border border-slate-200 dark:border-[#2d2d3f]">#{i + 1}</span>
                                                 </div>
                                                 <p className="font-black text-sm text-slate-900 dark:text-white mb-4 leading-snug">
-                                                    {card.front}
+                                                    {card?.front || <span className="animate-pulse bg-slate-200 dark:bg-slate-700 h-4 w-3/4 inline-block rounded"></span>}
                                                 </p>
                                                 <div className="mt-auto pt-4 border-t border-slate-200/50 dark:border-[#2d2d3f]/50">
-                                                    <p className="text-xs font-bold text-slate-500 dark:text-slate-400 leading-relaxed italic">
-                                                        {card.back}
+                                                    <p className="text-xs font-bold text-slate-500 dark:text-slate-400 leading-relaxed italic block relative">
+                                                        {card?.back || <span className="animate-pulse bg-slate-200 dark:bg-slate-700 h-4 w-full inline-block rounded"></span>}
                                                     </p>
                                                 </div>
                                             </div>

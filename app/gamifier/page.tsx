@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import { awardXp } from '@/app/actions/gamifier';
 import { useProfile } from '@/hooks/useProfile';
 import GalaxyMap from '@/components/gamifier/GalaxyMap';
 import SpaceReader from '@/components/gamifier/SpaceReader';
@@ -89,11 +90,11 @@ function GamifierOrchestrator() {
 
     if (profile?.id) {
       try {
-        // Increment XP and boss_wins directly — no RPC needed
-        await supabase.from('profiles').update({
-          xp: (profile.xp || 0) + xp,
-          boss_wins: (profile.boss_wins || 0) + 1,
-        }).eq('id', profile.id);
+        await awardXp(profile.id, xp, 'boss_encounter_win');
+        // increment boss_wins
+        await supabase.rpc('increment_boss_wins', { user_id: profile.id }).then(res => {
+          if (res.error) console.error('Error incrementing boss wins:', res.error);
+        });
       } catch (err) {
         // DB error doesn't matter — user already won, just log it
         console.error('[BossWin] Failed to save XP:', err);

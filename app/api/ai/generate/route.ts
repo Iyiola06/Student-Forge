@@ -1,20 +1,16 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { google } from '@ai-sdk/google';
+import { generateObject, streamObject } from 'ai';
+import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
 
-const apiKey = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey || '');
-const MAX_CHARS = 25000; // Rough safety limit to prevent token overflows
+export const runtime = 'edge';
+export const maxDuration = 60;
+
+const MAX_CHARS = 25000;
 
 export async function POST(request: Request) {
     try {
-        if (!apiKey) {
-            return NextResponse.json(
-                { error: 'Gemini API key is not configured' },
-                { status: 500 }
-            );
-        }
-
         const supabase = await createClient();
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
@@ -23,13 +19,13 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json();
-        const { content, type, difficulty, count, curriculum, topic } = body;
+        const { content, type, difficulty, count, curriculum, topic, stream } = body;
 
         if (!content) {
             return NextResponse.json({ error: 'Content is required' }, { status: 400 });
         }
 
-        // Validate content is real study material, not an error message
+        // Validate content is real study material
         const BLOCKED_PHRASES = [
             'text extraction is currently only supported',
             'failed to parse', 'could not extract',
@@ -53,115 +49,98 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Generation type is required' }, { status: 400 });
         }
 
-        // Trim content if it's too long
         const trimmedContent = content.length > MAX_CHARS
             ? content.substring(0, MAX_CHARS) + '\n\n[CONTENT TRUNCATED FOR LENGTH LIMITS]'
             : content;
 
-        // Initialize the model with JSON enforcement
-        // We use gemini-2.5-flash as the new standard to prevent 404 errors from deprecated 1.5 endpoints.
-        const model = genAI.getGenerativeModel({
-            model: "gemini-2.5-flash",
-            generationConfig: {
-                responseMimeType: "application/json",
-            }
-        });
-
         let systemInstruction = "";
+        let schema: any;
 
-        // Select the appropriate prompt template based on the requested type
         switch (type) {
             case 'mcq':
                 systemInstruction = `You are an expert educator. Generate exactly ${count || 5} multiple-choice questions from the provided text. The difficulty should be ${difficulty || 'medium'}.
 ${curriculum ? `Align the questions to the ${curriculum} curriculum standards.` : ''}
-${topic ? `Focus the questions heavily on the topic of: ${topic}.` : ''}
-        
-You must return a JSON array of objects adhering exactly to this structure:
-[{
-  "question": "The question stem",
-  "options": ["Option A", "Option B", "Option C", "Option D"],
-  "answer": "The exact string from options that is correct",
-  "explanation": "Why this answer is correct"
-}]`;
+${topic ? `Focus the questions heavily on the topic of: ${topic}.` : ''}`;
+                schema = z.array(z.object({
+                    question: z.string(),
+                    options: z.array(z.string()).describe("Provide exactly 4 distinct options including the correct answer."),
+                    answer: z.string().describe("The exact string from options that is correct"),
+                    explanation: z.string()
+                }));
                 break;
 
             case 'fill_in_gap':
                 systemInstruction = `You are an expert educator. Generate exactly ${count || 5} fill-in-the-gap questions from the provided text. The difficulty should be ${difficulty || 'medium'}.
 ${curriculum ? `Align the questions to the ${curriculum} curriculum standards.` : ''}
-${topic ? `Focus the questions heavily on the topic of: ${topic}.` : ''}
-
-You must return a JSON array of objects adhering exactly to this structure:
-[{
-  "sentence": "A factual sentence with a key term replaced by '___'. Example: The ___ is the powerhouse of the cell.",
-  "answer": "The exact missing word(s)",
-  "hint": "A short contextual hint to help the student",
-  "explanation": "A pedagogical explanation of the concept being tested"
-}]`;
+${topic ? `Focus the questions heavily on the topic of: ${topic}.` : ''}`;
+                schema = z.array(z.object({
+                    sentence: z.string().describe("A factual sentence with a key term replaced by '___'. Example: The ___ is the powerhouse of the cell."),
+                    answer: z.string().describe("The exact missing word(s)"),
+                    hint: z.string().describe("A short contextual hint to help the student"),
+                    explanation: z.string().describe("A pedagogical explanation of the concept being tested")
+                }));
                 break;
 
             case 'theory':
                 systemInstruction = `You are an expert educator. Generate exactly ${count || 3} theoretical or open-ended questions from the provided text. The difficulty should be ${difficulty || 'medium'}.
 ${curriculum ? `Align the questions to the ${curriculum} curriculum standards.` : ''}
-${topic ? `Focus the topic specifically on: ${topic}.` : ''}
-
-You must return a JSON array of objects adhering exactly to this structure:
-[{
-  "question": "The open-ended question prompt",
-  "model_answer": "A comprehensive ideal answer paragraph",
-  "key_points": ["Key concept 1 that should be mentioned", "Key concept 2 that should be mentioned"],
-  "explanation": "A breakdown of why the model answer is correct and what makes a good response"
-}]`;
+${topic ? `Focus the topic specifically on: ${topic}.` : ''}`;
+                schema = z.array(z.object({
+                    question: z.string().describe("The open-ended question prompt"),
+                    model_answer: z.string().describe("A comprehensive ideal answer paragraph"),
+                    key_points: z.array(z.string()).describe("Key concepts that should be mentioned"),
+                    explanation: z.string().describe("A breakdown of why the model answer is correct and what makes a good response")
+                }));
                 break;
 
             case 'flashcards':
-                systemInstruction = `You are an expert educator. Generate exactly ${count || 10} study flashcards from the most important concepts in the provided text.
-        
-You must return a JSON array of objects adhering exactly to this structure:
-[{
-  "front": "The term, concept name, or question to display on the front",
-  "back": "The concise definition or answer to display on the back"
-}]`;
+                systemInstruction = `You are an expert educator. Generate exactly ${count || 10} study flashcards from the most important concepts in the provided text.`;
+                schema = z.array(z.object({
+                    front: z.string().describe("The term, concept name, or question to display on the front"),
+                    back: z.string().describe("The concise definition or answer to display on the back")
+                }));
                 break;
 
             case 'exam_snapshot':
-                systemInstruction = `You are an expert examiner preparing a student for a final test on the provided text. Extract the most critical information into an Exam Snapshot cheat sheet.
-        
-You must return a single JSON object adhering exactly to this structure:
-{
-  "abbreviations": [
-    { "short": "Abbreviation/Acronym", "full": "Full terminology" }
-  ],
-  "key_points": [
-    { "point": "A concise critical fact", "tag": "Definition|Formula|Date|Concept|Person", "color": "blue|green|red|purple|orange" }
-  ],
-  "hot_list": [
-    { "question": "A likely exam question", "difficulty": "Easy|Medium|Hard", "rationale": "Why examiners love this topic" }
-  ]
-}`;
+                systemInstruction = `You are an expert examiner preparing a student for a final test on the provided text. Extract the most critical information into an Exam Snapshot cheat sheet.`;
+                schema = z.object({
+                    abbreviations: z.array(z.object({ short: z.string(), full: z.string() })),
+                    key_points: z.array(z.object({ point: z.string(), tag: z.string(), color: z.string() })),
+                    hot_list: z.array(z.object({ question: z.string(), difficulty: z.string(), rationale: z.string() }))
+                });
                 break;
 
             default:
                 return NextResponse.json({ error: 'Invalid generation type' }, { status: 400 });
         }
 
-        const prompt = `System Instructions:
-${systemInstruction}
+        const prompt = `Target Source Text:\n${trimmedContent}`;
 
-Target Source Text:
-${trimmedContent}`;
+        // Create the google model instance specifying our fastest model variant
+        const model = google('gemini-3-flash-preview');
 
-        // Generate content using Gemini
-        const result = await model.generateContent(prompt);
-        const responseText = result.response.text();
+        if (stream) {
+            // Using streaming response
+            const streamResult = await streamObject({
+                model,
+                schema,
+                system: systemInstruction,
+                prompt,
+            });
+            return streamResult.toTextStreamResponse();
+        } else {
+            // Blocking response, keeping JSON contract intact
+            const { object } = await generateObject({
+                model,
+                schema,
+                system: systemInstruction,
+                prompt,
+            });
 
-        try {
-            // Because we set responseMimeType to application/json, 
-            // the responseText should be raw, parseable JSON.
-            const parsedData = JSON.parse(responseText);
-
-            // Shuffle MCQ options to ensure random distribution
-            if (type === 'mcq' && Array.isArray(parsedData)) {
-                parsedData.forEach((q: any) => {
+            // If it's MCQ, let's optionally shuffle the options here or leave it to client. 
+            // Better to shuffle options
+            if (type === 'mcq' && Array.isArray(object)) {
+                object.forEach((q: any) => {
                     if (Array.isArray(q.options)) {
                         for (let i = q.options.length - 1; i > 0; i--) {
                             const j = Math.floor(Math.random() * (i + 1));
@@ -171,25 +150,13 @@ ${trimmedContent}`;
                 });
             }
 
-            return NextResponse.json({ success: true, data: parsedData });
-        } catch (parseError) {
-            console.error('Failed to parse Gemini JSON response:', responseText);
-            return NextResponse.json(
-                { error: 'AI returned malformed data', rawResult: responseText },
-                { status: 500 }
-            );
+            return NextResponse.json({ success: true, data: object });
         }
 
     } catch (error: any) {
         console.error('Gemini API Error:', error);
-
-        // Handle specific quotas / auth errors if possible
         const errorMessage = error?.message || 'Failed to generate content';
         const status = errorMessage.includes('429') || errorMessage.includes('quota') ? 429 : 500;
-
-        return NextResponse.json(
-            { error: errorMessage },
-            { status }
-        );
+        return NextResponse.json({ error: errorMessage }, { status });
     }
 }

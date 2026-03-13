@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useUpload } from '@/components/providers/UploadProgressProvider';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { awardXp } from '@/app/actions/gamifier';
 
 interface Resource {
   id: string;
@@ -132,11 +133,20 @@ export default function SimplifierPage() {
       if (Array.isArray(data.youtube_topics)) {
         setYoutubeTopics(data.youtube_topics);
       }
+      awardGenerationXP();
     } catch (err: any) {
       setError(err.message);
     } finally {
       setIsSimplifying(false);
     }
+  };
+
+  const awardGenerationXP = async () => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    await awardXp(user.id, 20, 'simplifier_generation');
   };
 
   return (

@@ -3,6 +3,7 @@
 import Sidebar from '@/components/layout/Sidebar';
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { awardXp } from '@/app/actions/gamifier';
 
 export const dynamic = 'force-dynamic';
 
@@ -59,21 +60,7 @@ export default function EssayGraderPage() {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        const { data: profile } = await supabase
-            .from('profiles')
-            .select('xp, level')
-            .eq('id', user.id)
-            .single();
-
-        if (profile) {
-            const newXp = profile.xp + 50; // 50 XP for grading
-            const newLevel = Math.floor(Math.sqrt(newXp / 100)) + 1;
-
-            await supabase
-                .from('profiles')
-                .update({ xp: newXp, level: newLevel > profile.level ? newLevel : profile.level })
-                .eq('id', user.id);
-        }
+        await awardXp(user.id, 50, 'essay_grading');
     };
 
     return (

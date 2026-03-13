@@ -42,7 +42,7 @@ export async function POST(request: Request) {
             : content;
 
         const model = genAI.getGenerativeModel({
-            model: "gemini-2.5-flash",
+            model: "gemini-3-flash-preview",
         });
 
         const levelInstruction = level === 'child' ? "Explain this like I am 5 years old, using very simple words and analogies."

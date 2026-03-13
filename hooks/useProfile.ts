@@ -1,5 +1,6 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import useSWR from 'swr';
 import { User } from '@supabase/supabase-js';
 
 export interface Profile {
@@ -26,101 +27,84 @@ export interface Profile {
     active_theme?: string;
 }
 
-export function useProfile() {
-    const [user, setUser] = useState<User | null>(null);
-    const [profile, setProfile] = useState<Profile | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+const fetcher = async () => {
+    const supabase = createClient();
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError) throw userError;
+    if (!user) return null;
 
-    const fetchProfile = useCallback(async () => {
-        try {
-            const supabase = createClient();
+    let { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
 
-            // Get the current user session
-            const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (profileError && profileError.code === 'PGRST116') {
+        const { data: upsertedProfile, error: upsertError } = await supabase
+            .from('profiles')
+            .upsert({
+                id: user.id,
+                full_name: user.user_metadata.full_name || user.user_metadata.name || 'Student',
+                avatar_url: user.user_metadata.avatar_url || user.user_metadata.picture || null
+            }, { onConflict: 'id' })
+            .select()
+            .single();
 
-            if (userError) throw userError;
+        if (upsertError) throw upsertError;
+        profileData = upsertedProfile;
+    } else if (profileError) {
+        throw profileError;
+    }
 
-            if (user) {
-                setUser(user);
+    let currentProfile = profileData as Profile;
+    const todayDate = new Date();
+    const todayStr = new Date(todayDate.getTime() - (todayDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
 
-                // Fetch the profile data
-                let { data: profileData, error: profileError } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', user.id)
-                    .single();
+    if (currentProfile.last_active_date !== todayStr) {
+        const yesterdayDate = new Date(todayDate);
+        yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+        const yesterdayStr = new Date(yesterdayDate.getTime() - (yesterdayDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
 
-                // If no profile found (PGRST116), it means the trigger likely failed or hasn't run yet
-                if (profileError && profileError.code === 'PGRST116') {
-                    const { data: upsertedProfile, error: upsertError } = await supabase
-                        .from('profiles')
-                        .upsert({
-                            id: user.id,
-                            full_name: user.user_metadata.full_name || user.user_metadata.name || 'Student',
-                            avatar_url: user.user_metadata.avatar_url || user.user_metadata.picture || null
-                        }, { onConflict: 'id' })
-                        .select()
-                        .single();
-
-                    if (upsertError) throw upsertError;
-                    profileData = upsertedProfile;
-                } else if (profileError) {
-                    throw profileError;
-                }
-
-                let currentProfile = profileData as Profile;
-
-                // --- STREAK CALCULATION LOGIC ---
-                const todayDate = new Date();
-                // Get local date string YYYY-MM-DD
-                const todayStr = new Date(todayDate.getTime() - (todayDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
-
-                if (currentProfile.last_active_date !== todayStr) {
-                    const yesterdayDate = new Date(todayDate);
-                    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-                    const yesterdayStr = new Date(yesterdayDate.getTime() - (yesterdayDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
-
-                    let newStreak = currentProfile.streak_days || 0;
-
-                    if (currentProfile.last_active_date === yesterdayStr) {
-                        // Logged in yesterday! Increment streak.
-                        newStreak += 1;
-                    } else {
-                        // Missed a day or first time. Reset streak to 1.
-                        newStreak = 1;
-                    }
-
-                    // Update local profile state
-                    currentProfile = {
-                        ...currentProfile,
-                        streak_days: newStreak,
-                        last_active_date: todayStr
-                    };
-
-                    // Persist the updated streak silently in the background
-                    supabase.from('profiles').update({
-                        streak_days: newStreak,
-                        last_active_date: todayStr
-                    }).eq('id', user.id).then(({ error }) => {
-                        if (error) console.error("Failed to update streak:", error);
-                    });
-                }
-                // --- END STREAK CALCULATION LOGIC ---
-
-                setProfile(currentProfile);
-            }
-        } catch (err: any) {
-            console.error('Error fetching profile:', err.message);
-            setError(err.message);
-        } finally {
-            setIsLoading(false);
+        let newStreak = currentProfile.streak_days || 0;
+        if (currentProfile.last_active_date === yesterdayStr) {
+            newStreak += 1;
+        } else {
+            newStreak = 1;
         }
-    }, []);
 
-    useEffect(() => {
-        fetchProfile();
-    }, [fetchProfile]);
+        currentProfile = {
+            ...currentProfile,
+            streak_days: newStreak,
+            last_active_date: todayStr
+        };
 
-    return { user, profile, isLoading, error, mutate: fetchProfile };
+        await supabase.from('profiles').update({
+            streak_days: newStreak,
+            last_active_date: todayStr
+        }).eq('id', user.id);
+    }
+
+    return { user, profile: currentProfile };
+};
+
+export function useProfile(initialData?: { user: User | null; profile: Profile | null }) {
+    // Convert initialData to match SWR's expected type (fetcher returns null when no user)
+    const fallback = initialData?.user && initialData?.profile
+        ? { user: initialData.user, profile: initialData.profile }
+        : undefined;
+
+    const { data, error, isLoading, mutate } = useSWR('user-profile', fetcher, {
+        fallbackData: fallback,
+        revalidateOnFocus: false,
+        revalidateIfStale: false,
+        dedupingInterval: 60000, // 1 minute
+    });
+
+    return {
+        user: data?.user || null,
+        profile: data?.profile || null,
+        isLoading,
+        error: error?.message || null,
+        mutate
+    };
 }

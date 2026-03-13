@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { awardXp } from '@/app/actions/gamifier';
 import { formatTime, XP_PER_PAGE, XP_MILESTONE_25, XP_MILESTONE_50, XP_MILESTONE_75, XP_COMPLETE } from '@/lib/constants/spaceConstants';
 
 export default function SpaceReader({
@@ -59,7 +60,7 @@ export default function SpaceReader({
             if (isActuallyPdf) {
                 try {
                     const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
-                    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
                     const loadingTask = pdfjsLib.getDocument(resource.file_url);
                     const pdf = await loadingTask.promise;
                     setPdfDoc(pdf);
@@ -206,12 +207,8 @@ export default function SpaceReader({
                     completion_percentage: newProgress
                 }, { onConflict: 'user_id, resource_id' }).then();
 
-                // Award XP directly — no RPC needed
-                supabase.from('profiles').select('xp').eq('id', profile.id).single().then(({ data }) => {
-                    if (data) {
-                        supabase.from('profiles').update({ xp: (data.xp || 0) + earned }).eq('id', profile.id).then();
-                    }
-                });
+                // Award XP properly via server action
+                awardXp(profile.id, earned, 'reading_progress').then();
             }
 
             if (pct >= 1.0) {

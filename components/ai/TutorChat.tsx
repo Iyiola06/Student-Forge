@@ -2,6 +2,10 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { createClient } from '@/lib/supabase/client';
+import { awardXp } from '@/app/actions/gamifier';
 
 interface Message {
     id: string;
@@ -28,6 +32,7 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [xpAwarded, setXpAwarded] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -81,6 +86,16 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
             };
 
             setMessages(prev => [...prev, aiMessage]);
+
+            // Award XP for the first interaction in this session
+            if (!xpAwarded) {
+                const supabase = createClient();
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                    await awardXp(user.id, 15, 'ai_tutor_chat');
+                    setXpAwarded(true);
+                }
+            }
         } catch (err: any) {
             toast.error(err.message || 'Failed to get AI response');
             // Remove the pending user message on error
@@ -98,14 +113,7 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
         }
     };
 
-    const formatContent = (content: string) => {
-        // Simple markdown-like formatting
-        return content
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/`(.*?)`/g, '<code class="bg-[#252535] px-1.5 py-0.5 rounded text-[#1a5c2a] text-sm">$1</code>')
-            .replace(/\n/g, '<br/>');
-    };
+
 
     return (
         <div className="flex flex-col h-full">
@@ -176,10 +184,23 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                                         <span className="text-[10px] font-black text-[#1a5c2a] uppercase tracking-widest">AI Tutor</span>
                                     </div>
                                 )}
-                                <div
-                                    className="text-sm leading-relaxed prose-sm"
-                                    dangerouslySetInnerHTML={{ __html: formatContent(msg.content) }}
-                                />
+                                <div className="text-sm leading-relaxed prose-sm dark:prose-invert max-w-none break-words">
+                                    <ReactMarkdown
+                                        remarkPlugins={[remarkGfm]}
+                                        components={{
+                                            code(props: any) {
+                                                const { children, className, node, ...rest } = props;
+                                                return (
+                                                    <code className="bg-slate-100 dark:bg-[#252535] px-1.5 py-0.5 rounded text-[#1a5c2a] dark:text-green-500 text-sm" {...rest}>
+                                                        {children}
+                                                    </code>
+                                                );
+                                            }
+                                        }}
+                                    >
+                                        {msg.content}
+                                    </ReactMarkdown>
+                                </div>
                                 <div className={`text-[10px] mt-2 ${msg.role === 'user' ? 'text-white/60' : 'text-slate-400'}`}>
                                     {msg.timestamp.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
                                 </div>

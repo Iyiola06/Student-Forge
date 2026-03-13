@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Sidebar from '@/components/layout/Sidebar';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { awardXp } from '@/app/actions/gamifier';
 import { jsPDF } from 'jspdf';
 
 interface Resource {
@@ -94,25 +95,7 @@ export default function ExamReadyPage() {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        const { data: profile } = await supabase
-            .from('profiles')
-            .select('xp, level')
-            .eq('id', user.id)
-            .single();
-
-        if (profile) {
-            const newXp = profile.xp + 50; // High XP for exam prep
-            const newLevel = Math.floor(Math.sqrt(newXp / 100)) + 1;
-
-            await supabase
-                .from('profiles')
-                .update({ xp: newXp, level: newLevel > profile.level ? newLevel : profile.level })
-                .eq('id', user.id);
-
-            if (newLevel > profile.level) {
-                alert(`Level Up! You are now level ${newLevel}!`);
-            }
-        }
+        await awardXp(user.id, 50, 'exam_readiness_snapshot');
     };
 
     const downloadPDF = () => {

@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
         const { userQuestion, title, content, fullText, history } = await request.json();
 
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
 
         const chat = model.startChat({
             history: history || [],

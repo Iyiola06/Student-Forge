@@ -5,8 +5,38 @@ import Image from 'next/image';
 import Sidebar from '@/components/layout/Sidebar';
 import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { awardXp } from '@/app/actions/gamifier';
 import { jsPDF } from 'jspdf';
 import { useUpload } from '@/components/providers/UploadProgressProvider';
+import { experimental_useObject as useObject } from '@ai-sdk/react';
+import { z } from 'zod';
+
+const mcqSchema = z.array(z.object({
+  question: z.string(),
+  options: z.array(z.string()),
+  answer: z.string(),
+  explanation: z.string()
+}));
+
+const fillInGapSchema = z.array(z.object({
+  sentence: z.string(),
+  answer: z.string(),
+  hint: z.string(),
+  explanation: z.string()
+}));
+
+const theorySchema = z.array(z.object({
+  question: z.string(),
+  model_answer: z.string(),
+  key_points: z.array(z.string()),
+  explanation: z.string()
+}));
+
+const examSnapshotSchema = z.object({
+  abbreviations: z.array(z.object({ short: z.string(), full: z.string() })),
+  key_points: z.array(z.object({ point: z.string(), tag: z.string(), color: z.string() })),
+  hot_list: z.array(z.object({ question: z.string(), difficulty: z.string(), rationale: z.string() }))
+});
 
 interface Resource {
   id: string;
@@ -26,10 +56,40 @@ export default function GeneratorPage() {
   const [curriculum, setCurriculum] = useState<string>('');
   const [topic, setTopic] = useState<string>('');
 
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingQuiz, setIsGeneratingQuiz] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
   const [generatedData, setGeneratedData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const [currentSchema, setCurrentSchema] = useState<any>(mcqSchema);
+
+  useEffect(() => {
+    switch (type) {
+      case 'mcq': setCurrentSchema(mcqSchema); break;
+      case 'fill_in_gap': setCurrentSchema(fillInGapSchema); break;
+      case 'theory': setCurrentSchema(theorySchema); break;
+      case 'exam_snapshot': setCurrentSchema(examSnapshotSchema); break;
+      default: setCurrentSchema(mcqSchema);
+    }
+  }, [type]);
+
+  const { object, submit, isLoading: isStreaming, error: aiError } = useObject({
+    api: '/api/ai/generate',
+    schema: currentSchema,
+    onFinish: ({ object }) => {
+      if (object) {
+        setGeneratedData(object);
+        awardGenerationXP();
+      }
+    }
+  });
+
+  useEffect(() => {
+    if (aiError) setError(aiError.message);
+  }, [aiError]);
+
+  const isGenerating = isStreaming || isGeneratingQuiz;
+  const displayData = isStreaming ? object : generatedData;
 
   const [isUploading, setIsUploading] = useState(false);
   const { uploadFile, uploadState } = useUpload();
@@ -47,6 +107,14 @@ export default function GeneratorPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [savedQuizId, setSavedQuizId] = useState<string | null>(null);
   const [savedQuizzes, setSavedQuizzes] = useState<any[]>([]);
+
+  const awardGenerationXP = async () => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    await awardXp(user.id, 30, 'generator_quiz_generation');
+  };
 
   useEffect(() => {
     async function fetchResources() {
@@ -145,7 +213,7 @@ export default function GeneratorPage() {
       return;
     }
 
-    setIsGenerating(true);
+    // submit will trigger isStreaming
     setLoadingStep(0);
     setError(null);
     setGeneratedData(null);
@@ -156,40 +224,24 @@ export default function GeneratorPage() {
     }, 2500);
 
     try {
-      const response = await fetch('/api/ai/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: contentToUse,
-          type,
-          difficulty,
-          count,
-          curriculum: curriculum.trim() || undefined,
-          topic: topic.trim() || undefined
-        })
+      submit({
+        content: contentToUse,
+        type,
+        difficulty,
+        count,
+        curriculum: curriculum.trim() || undefined,
+        topic: topic.trim() || undefined,
+        stream: true
       });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to generate content');
-      }
-
-      setGeneratedData(result.data);
-
-      // Awarding XP is now handled at the end of the interactive quiz
-      // Awarding XP for generation - optional: could add a small bonus here
-
     } catch (err: any) {
       setError(err.message);
     } finally {
       clearInterval(loadingInterval);
-      setIsGenerating(false);
     }
   };
 
   const startQuiz = () => {
-    if (!generatedData || generatedData.length === 0) return;
+    if (!displayData || displayData.length === 0) return;
     setIsQuizActive(true);
     setCurrentQuestionIndex(0);
     setScore(0);
@@ -205,9 +257,9 @@ export default function GeneratorPage() {
   };
 
   const handleCheckAnswer = () => {
-    if (!selectedOption || !generatedData) return;
+    if (!selectedOption || !displayData) return;
 
-    const currentQ = generatedData[currentQuestionIndex];
+    const currentQ = displayData[currentQuestionIndex];
     const isCorrect = selectedOption === currentQ.answer;
 
     if (isCorrect) setScore(s => s + 1);
@@ -224,7 +276,7 @@ export default function GeneratorPage() {
   };
 
   const handleNextQuestion = () => {
-    if (currentQuestionIndex + 1 < generatedData.length) {
+    if (currentQuestionIndex + 1 < displayData.length) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedOption(null);
       setShowExplanation(false);
@@ -236,32 +288,20 @@ export default function GeneratorPage() {
   const finishQuiz = async () => {
     setIsQuizActive(false);
     // Award XP based on performance
-    const finalScore = score + (selectedOption === generatedData[currentQuestionIndex].answer ? 1 : 0);
+    const finalScore = score + (selectedOption === displayData[currentQuestionIndex].answer ? 1 : 0);
     const xpEarned = finalScore * 5; // 5 XP per correct answer
 
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('xp, level')
-      .eq('id', user.id)
-      .single();
-
-    if (profile) {
-      const newXp = profile.xp + xpEarned;
-      const newLevel = Math.floor(Math.sqrt(newXp / 100)) + 1;
-
-      await supabase
-        .from('profiles')
-        .update({ xp: newXp, level: newLevel > profile.level ? newLevel : profile.level })
-        .eq('id', user.id);
+    if (xpEarned > 0) {
+      await awardXp(user.id, xpEarned, 'generator_quiz');
     }
   };
 
   const saveQuiz = async () => {
-    if (!generatedData) return;
+    if (!displayData) return;
     setIsSaving(true);
     try {
       const supabase = createClient();
@@ -282,7 +322,7 @@ export default function GeneratorPage() {
 
       if (quizError) throw quizError;
 
-      const questions = generatedData.map((q: any) => ({
+      const questions = displayData.map((q: any) => ({
         quiz_id: quiz.id,
         question_text: q.question || q.sentence || 'No question text',
         question_type: type,
@@ -303,7 +343,7 @@ export default function GeneratorPage() {
   };
 
   const loadSavedQuiz = async (quizId: string) => {
-    setIsGenerating(true);
+    setIsGeneratingQuiz(true);
     setLoadingStep(0);
     setError(null);
     setGeneratedData(null);
@@ -338,14 +378,14 @@ export default function GeneratorPage() {
     } catch (err: any) {
       setError("Failed to load quiz: " + err.message);
     } finally {
-      setIsGenerating(false);
+      setIsGeneratingQuiz(false);
     }
   };
 
   const currentSettings = { type, difficulty, count };
 
   const downloadPDF = () => {
-    if (!generatedData) return;
+    if (!displayData) return;
 
     const doc = new jsPDF();
     let y = 20;
@@ -357,7 +397,7 @@ export default function GeneratorPage() {
     doc.setFontSize(12);
 
     if (type === 'mcq') {
-      generatedData.forEach((q: any, i: number) => {
+      displayData.forEach((q: any, i: number) => {
         const lines = doc.splitTextToSize(`${i + 1}. ${q.question}`, 170);
         doc.text(lines, 20, y);
         y += (lines.length * 7);
@@ -375,7 +415,7 @@ export default function GeneratorPage() {
         if (y > 270) { doc.addPage(); y = 20; }
       });
     } else if (type === 'fill_in_gap') {
-      generatedData.forEach((q: any, i: number) => {
+      displayData.forEach((q: any, i: number) => {
         const lines = doc.splitTextToSize(`${i + 1}. ${q.sentence}`, 170);
         doc.text(lines, 20, y);
         y += (lines.length * 7);
@@ -388,7 +428,7 @@ export default function GeneratorPage() {
         if (y > 270) { doc.addPage(); y = 20; }
       });
     } else if (type === 'theory') {
-      generatedData.forEach((q: any, i: number) => {
+      displayData.forEach((q: any, i: number) => {
         const qLines = doc.splitTextToSize(`${i + 1}. ${q.question}`, 170);
         doc.text(qLines, 20, y);
         y += (qLines.length * 7);
@@ -409,15 +449,16 @@ export default function GeneratorPage() {
   };
 
   const renderQuiz = () => {
-    if (!generatedData || currentQuestionIndex >= generatedData.length) return null;
-    const q = generatedData[currentQuestionIndex];
-    const progress = ((currentQuestionIndex) / generatedData.length) * 100;
+    if (!displayData || !Array.isArray(displayData) || currentQuestionIndex >= displayData.length) return null;
+    const q = displayData[currentQuestionIndex];
+    if (!q) return null;
+    const progress = ((currentQuestionIndex) / displayData.length) * 100;
 
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-6 max-w-4xl mx-auto w-full animate-in fade-in zoom-in duration-500">
         <div className="w-full mb-8">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Question {currentQuestionIndex + 1} of {generatedData.length}</span>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Question {currentQuestionIndex + 1} of {displayData.length}</span>
             <span className="text-xs font-bold text-[#1a5c2a]">{Math.round(progress)}% Complete</span>
           </div>
           <div className="h-1.5 w-full bg-slate-200 dark:bg-[#1a1a24] rounded-full overflow-hidden">
@@ -509,7 +550,7 @@ export default function GeneratorPage() {
                 onClick={handleNextQuestion}
                 className="flex-1 h-16 bg-[#1a5c2a] text-white font-black rounded-2xl hover:bg-[#144823] transition-all shadow-xl shadow-orange-500/20 flex items-center justify-center gap-3"
               >
-                <span>{currentQuestionIndex + 1 === generatedData.length ? 'SEE RESULTS' : 'NEXT QUESTION'}</span>
+                <span>{currentQuestionIndex + 1 === displayData.length ? 'SEE RESULTS' : 'NEXT QUESTION'}</span>
                 <span className="material-symbols-outlined">arrow_forward</span>
               </button>
             ) : (
@@ -536,7 +577,8 @@ export default function GeneratorPage() {
   };
 
   const renderResults = () => {
-    const percentage = Math.round((score / generatedData.length) * 100);
+    if (!displayData || !Array.isArray(displayData)) return null;
+    const percentage = Math.round((score / displayData.length) * 100);
     const xpEarned = score * 5;
 
     return (
@@ -553,7 +595,7 @@ export default function GeneratorPage() {
           <div className="bg-white dark:bg-[#1a1a24] p-8 rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] text-center">
             <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Score</p>
             <p className="text-4xl font-black text-[#5b5bfa]">{percentage}%</p>
-            <p className="text-xs font-bold text-slate-500 mt-1">{score}/{generatedData.length} Correct</p>
+            <p className="text-xs font-bold text-slate-500 mt-1">{score}/{displayData.length} Correct</p>
           </div>
           <div className="bg-white dark:bg-[#1a1a24] p-8 rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] text-center border-[#1a5c2a]/30 ring-4 ring-orange-500/5">
             <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">XP Earned</p>
@@ -628,7 +670,7 @@ export default function GeneratorPage() {
 
         {isQuizActive ? (
           renderQuiz()
-        ) : userAnswers.length > 0 && userAnswers.length === generatedData?.length && !isQuizActive ? (
+        ) : (userAnswers.length > 0 && !isStreaming) ? (
           renderResults()
         ) : (
           <main className="flex-1 md:overflow-y-auto w-full max-w-[1440px] mx-auto">

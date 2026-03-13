@@ -45,7 +45,7 @@ async function processResource(
 
         if (fileType === 'application/pdf') {
             if (!process.env.GEMINI_API_KEY) throw new Error('AI extraction not configured');
-            const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+            const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
             const arrayBuffer = await fileData.arrayBuffer();
             const base64Data = Buffer.from(arrayBuffer).toString('base64');
             const result = await model.generateContent([
@@ -58,7 +58,7 @@ async function processResource(
             }
         } else if (fileType.startsWith('image/')) {
             if (!process.env.GEMINI_API_KEY) throw new Error('OCR not configured');
-            const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+            const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
             const arrayBuffer = await fileData.arrayBuffer();
             const base64Data = Buffer.from(arrayBuffer).toString('base64');
             const result = await model.generateContent([
@@ -103,7 +103,7 @@ async function processResource(
             // .ppt is the legacy binary OLE format — JSZip can't parse it.
             // Send to Gemini with the correct MIME type for text extraction.
             if (!process.env.GEMINI_API_KEY) throw new Error('AI extraction not configured');
-            const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+            const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
             const arrayBuffer = await fileData.arrayBuffer();
             const base64Data = Buffer.from(arrayBuffer).toString('base64');
             const result = await model.generateContent([

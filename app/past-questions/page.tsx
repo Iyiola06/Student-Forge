@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Sidebar from '@/components/layout/Sidebar';
 import { createClient } from '@/lib/supabase/client';
 import { useProfile } from '@/hooks/useProfile';
+import { awardXp } from '@/app/actions/gamifier';
 import { toast } from 'react-toastify';
 import { compressImage } from '@/lib/image-utils';
 
@@ -189,8 +190,7 @@ function PastQuestionsContent() {
       if (insertError) throw insertError;
 
       // Gamification Hook
-      const newXp = (profile.xp || 0) + 25;
-      await supabase.from('profiles').update({ xp: newXp }).eq('id', profile.id);
+      await awardXp(profile.id, 25, 'past_question_upload');
       await supabase.from('study_history').insert({
         user_id: profile.id,
         action_type: 'past_question_upload',
