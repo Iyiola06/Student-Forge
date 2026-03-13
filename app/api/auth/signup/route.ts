@@ -5,6 +5,7 @@ export async function POST(request: Request) {
     try {
         const { email, password, firstName, lastName, studyLevel, avatarUrl } = await request.json();
         const supabase = await createClient();
+        const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'https://student.sulvatech.com';
 
         const { data, error } = await supabase.auth.signUp({
             email,
@@ -15,7 +16,7 @@ export async function POST(request: Request) {
                     study_level: studyLevel,
                     avatar_url: avatarUrl,
                 },
-                emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+                emailRedirectTo: `${origin}/auth/callback`,
             },
         });
 
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
             );
         }
 
-        return NextResponse.json({ success: true, user: data.user });
+        return NextResponse.json({ success: true, user: data.user, session: data.session });
     } catch (err: any) {
         return NextResponse.json(
             { error: err.message || 'An unexpected error occurred' },

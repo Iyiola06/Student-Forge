@@ -5,9 +5,10 @@ export async function POST(request: Request) {
     try {
         const { email } = await request.json();
         const supabase = await createClient();
+        const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'https://student.sulvatech.com';
 
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
+            redirectTo: `${origin}/reset-password`,
         });
 
         if (error) {

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -92,8 +92,13 @@ export default function SignupPage() {
         throw new Error(data.error || 'Failed to sign up');
       }
 
-      router.push('/dashboard');
-      router.refresh();
+      if (data.session) {
+        router.push('/dashboard');
+        router.refresh();
+      } else {
+        // No session means they need to confirm their email
+        setError("Account created perfectly! Please check your email to verify your account so you can log in.");
+      }
     } catch (err: any) {
       setError(err.message);
     } finally {
