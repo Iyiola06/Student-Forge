@@ -4,10 +4,10 @@ import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useProfile } from '@/hooks/useProfile';
-import MissionHub from '@/components/gamifier/MissionHub';
-import AdventureRun from '@/components/gamifier/AdventureRun';
-import MissionResults from '@/components/gamifier/MissionResults';
-import { AdventureRunRecord } from '@/lib/gamifier/adventure';
+import GameLobby from '@/components/gamifier/GameLobby';
+import SessionPlay from '@/components/gamifier/SessionPlay';
+import SessionResults from '@/components/gamifier/SessionResults';
+import { GameMode, GameSessionRecord } from '@/lib/gamifier/masteryArena';
 
 function GamifierShell() {
   const searchParams = useSearchParams();
@@ -16,8 +16,8 @@ function GamifierShell() {
   const supabase = createClient();
 
   const [resources, setResources] = useState<any[]>([]);
-  const [activeRun, setActiveRun] = useState<AdventureRunRecord | null>(null);
-  const [resumableRun, setResumableRun] = useState<AdventureRunRecord | null>(null);
+  const [activeSession, setActiveSession] = useState<GameSessionRecord | null>(null);
+  const [resumableSession, setResumableSession] = useState<GameSessionRecord | null>(null);
   const [completedSummary, setCompletedSummary] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLaunching, setIsLaunching] = useState(false);
@@ -28,15 +28,15 @@ function GamifierShell() {
       .from('resources')
       .select('id, title, subject, content, processing_status')
       .eq('user_id', profile.id)
-      .order('created_at', { ascending: false });
+      .order('last_accessed_at', { ascending: false });
     setResources(data || []);
   };
 
-  const loadActiveRun = async () => {
-    const res = await fetch('/api/gamifier/mission', { cache: 'no-store' });
+  const loadActiveSession = async () => {
+    const res = await fetch('/api/gamifier/session', { cache: 'no-store' });
     const json = await res.json();
-    setActiveRun(json.run || null);
-    setResumableRun(json.run || null);
+    setActiveSession(json.session || null);
+    setResumableSession(json.session || null);
   };
 
   useEffect(() => {
@@ -44,7 +44,7 @@ function GamifierShell() {
       if (!profile?.id) return;
       setIsLoading(true);
       try {
-        await Promise.all([loadResources(), loadActiveRun()]);
+        await Promise.all([loadResources(), loadActiveSession()]);
       } finally {
         setIsLoading(false);
       }
@@ -53,29 +53,30 @@ function GamifierShell() {
   }, [profile?.id]);
 
   useEffect(() => {
-    if (!initialResourceId || !resources.length || activeRun) return;
+    if (!initialResourceId || !resources.length || activeSession) return;
     const resourceExists = resources.some((resource) => resource.id === initialResourceId);
     if (resourceExists) {
-      void startMission(initialResourceId);
+      void startSession('quick_recall', initialResourceId);
     }
-  }, [initialResourceId, resources, activeRun]);
+  }, [initialResourceId, resources, activeSession]);
 
-  const startMission = async (resourceId?: string) => {
+  const startSession = async (mode: GameMode, resourceId?: string) => {
     setIsLaunching(true);
     setCompletedSummary(null);
     try {
-      const res = await fetch('/api/gamifier/mission', {
+      const res = await fetch('/api/gamifier/session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          mode,
           resourceId,
           forceNew: true,
         }),
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error || 'Failed to start mission');
-      setActiveRun(json.run);
-      setResumableRun(json.run);
+      if (!res.ok) throw new Error(json.error || 'Failed to start session');
+      setActiveSession(json.session);
+      setResumableSession(json.session);
     } catch (error) {
       console.error(error);
     } finally {
@@ -83,59 +84,69 @@ function GamifierShell() {
     }
   };
 
-  const persistRun = async (runId: string, currentNodeId: string, currentState: any, completedNodeId?: string) => {
-    const res = await fetch(`/api/gamifier/run/${runId}`, {
+  const persistSession = async (
+    sessionId: string,
+    currentRound: number,
+    currentState: any,
+    score: number,
+    bestStreak: number,
+    roundResult?: any
+  ) => {
+    const res = await fetch(`/api/gamifier/session/${sessionId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ currentNodeId, currentState, completedNodeId }),
+      body: JSON.stringify({ currentRound, currentState, score, bestStreak, roundResult }),
     });
     const json = await res.json();
-    if (!res.ok) throw new Error(json.error || 'Failed to save mission state');
-    setActiveRun((prev) => prev ? { ...prev, current_node_id: currentNodeId, current_state: currentState } : prev);
+    if (!res.ok) throw new Error(json.error || 'Failed to save session state');
+    setActiveSession((prev) => prev ? {
+      ...prev,
+      current_round: currentRound,
+      current_state: currentState,
+      score,
+      best_streak: bestStreak,
+    } : prev);
   };
 
-  const completeRun = async (runId: string) => {
-    const res = await fetch('/api/gamifier/complete', {
+  const completeSession = async (sessionId: string) => {
+    const res = await fetch('/api/gamifier/session/complete', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ runId }),
+      body: JSON.stringify({ sessionId }),
     });
     const json = await res.json();
-    if (!res.ok) throw new Error(json.error || 'Failed to complete mission');
-    setCompletedSummary({
-      missionTitle: activeRun?.mission_title || 'Story Mission',
-      summary: json.summary,
-    });
-    setActiveRun(null);
-    setResumableRun(null);
+    if (!res.ok) throw new Error(json.error || 'Failed to complete session');
+    setCompletedSummary(json.summary);
+    setActiveSession(null);
+    setResumableSession(null);
     await mutate();
   };
 
-  const abandonRun = async () => {
-    setResumableRun(activeRun);
-    setActiveRun(null);
+  const abandonSession = async () => {
+    setResumableSession(activeSession);
+    setActiveSession(null);
   };
 
-  const resumeMission = async () => {
-    if (resumableRun) {
-      setActiveRun(resumableRun);
+  const resumeSession = async () => {
+    if (resumableSession) {
+      setActiveSession(resumableSession);
       return;
     }
-    await loadActiveRun();
+    await loadActiveSession();
   };
 
   const view = useMemo(() => {
     if (completedSummary) return 'results';
-    if (activeRun) return 'run';
-    return 'hub';
-  }, [activeRun, completedSummary]);
+    if (activeSession) return 'play';
+    return 'lobby';
+  }, [activeSession, completedSummary]);
 
   if (isLoading || !profile) {
     return (
-      <div className="min-h-[100dvh] bg-[#050510] text-white flex items-center justify-center">
+      <div className="min-h-[100dvh] bg-[#0a0c12] text-white flex items-center justify-center">
         <div className="text-center">
-          <div className="size-16 rounded-full border border-dashed border-[#ea580c] animate-spin border-t-transparent mx-auto mb-4" />
-          <div className="text-xs uppercase tracking-widest font-bold text-[#ea580c]">Initializing Story Adventure...</div>
+          <div className="size-16 rounded-full border border-dashed border-[#f97316] animate-spin border-t-transparent mx-auto mb-4" />
+          <div className="text-xs uppercase tracking-widest font-bold text-[#f97316]">Loading Mastery Arena...</div>
         </div>
       </div>
     );
@@ -143,32 +154,32 @@ function GamifierShell() {
 
   if (view === 'results' && completedSummary) {
     return (
-      <MissionResults
-        missionTitle={completedSummary.missionTitle}
-        summary={completedSummary.summary}
+      <SessionResults
+        summary={completedSummary}
         onReturn={() => setCompletedSummary(null)}
+        onReplay={(mode) => void startSession(mode)}
       />
     );
   }
 
-  if (view === 'run' && activeRun) {
+  if (view === 'play' && activeSession) {
     return (
-      <AdventureRun
-        run={activeRun}
-        onPersist={persistRun}
-        onComplete={completeRun}
-        onAbort={abandonRun}
+      <SessionPlay
+        session={activeSession}
+        onPersist={persistSession}
+        onComplete={completeSession}
+        onAbort={abandonSession}
       />
     );
   }
 
   return (
-    <MissionHub
+    <GameLobby
       profile={profile}
       resources={resources}
-      activeRun={resumableRun}
-      onStartMission={startMission}
-      onResumeMission={resumeMission}
+      activeSession={resumableSession}
+      onStartSession={startSession}
+      onResumeSession={resumeSession}
       isLaunching={isLaunching}
     />
   );
@@ -177,8 +188,8 @@ function GamifierShell() {
 export default function GamifierPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-[100dvh] bg-[#050510] flex items-center justify-center text-white">
-        <div className="size-16 rounded-full border border-dashed border-[#ea580c] animate-spin border-t-transparent" />
+      <div className="min-h-[100dvh] bg-[#0a0c12] flex items-center justify-center text-white">
+        <div className="size-16 rounded-full border border-dashed border-[#f97316] animate-spin border-t-transparent" />
       </div>
     }>
       <GamifierShell />
