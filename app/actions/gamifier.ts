@@ -1,65 +1,50 @@
 'use server';
 
-import { createClient } from '@supabase/supabase-js';
-
-// We will initialize this inside the function to prevent top-level crashes 
-// if the environment variable is missing on the deployed server.
+import { createClient } from '@/lib/supabase/server';
 
 /**
- * Securely awards XP to a user and recalculates their level.
- * This should ONLY be called from secure server context or validated client requests.
+ * Awards XP through a database RPC so we do not depend on the service-role key
+ * being present in the app runtime.
  */
 export async function awardXp(userId: string, xpToAdd: number, source: string) {
     if (!userId || xpToAdd <= 0) {
         return { success: false, error: 'Invalid parameters' };
     }
 
-    const supabaseAdmin = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!,
-        {
-            auth: { autoRefreshToken: false, persistSession: false },
-        }
-    );
-
     try {
-        // Fetch current profile
-        const { data: profile, error: fetchError } = await supabaseAdmin
-            .from('profiles')
-            .select('xp, level, full_name')
-            .eq('id', userId)
-            .single();
+        const supabase = await createClient();
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-        if (fetchError || !profile) {
-            console.error('awardXp fetchError:', fetchError);
-            return { success: false, error: 'Profile not found' };
+        if (authError || !user) {
+            return { success: false, error: 'Unauthorized' };
         }
 
-        const newXp = (profile.xp || 0) + xpToAdd;
-        // The standard level formula used across the app
-        const calculatedLevel = Math.floor(Math.sqrt(newXp / 100)) + 1;
-        const newLevel = calculatedLevel > (profile.level || 0) ? calculatedLevel : profile.level;
-
-        // Perform the secure update using the service_role key
-        // This will bypass the RLS trigger because current_setting('role') won't be 'authenticated'
-        const { error: updateError } = await supabaseAdmin
-            .from('profiles')
-            .update({ xp: newXp, level: newLevel })
-            .eq('id', userId);
-
-        if (updateError) {
-            console.error('awardXp updateError:', updateError);
-            return { success: false, error: 'Failed to update profile' };
+        if (user.id !== userId) {
+            return { success: false, error: 'User mismatch' };
         }
 
-        // Optionally, log the XP event in study_history
-        await supabaseAdmin.from('study_history').insert({
-            user_id: userId,
-            action_type: 'xp_awarded',
-            details: { xp_earned: xpToAdd, source }
+        const { data, error } = await supabase.rpc('award_xp', {
+            p_user_id: userId,
+            p_xp_to_add: xpToAdd,
+            p_source: source,
         });
 
-        return { success: true, newXp, newLevel };
+        if (error) {
+            console.error('awardXp rpcError:', error);
+            return { success: false, error: error.message || 'Failed to award XP' };
+        }
+
+        const result = Array.isArray(data) ? data[0] : data;
+        if (!result?.success) {
+            return { success: false, error: result?.error || 'Failed to award XP' };
+        }
+
+        return {
+            success: true,
+            newXp: result.new_xp,
+            newLevel: result.new_level,
+            xpAdded: result.xp_added,
+        };
     } catch (err: any) {
         console.error('awardXp exception:', err);
         return { success: false, error: err.message || 'An unexpected error occurred' };
