@@ -475,7 +475,7 @@ export default function GeneratorPage() {
       <div className="flex-1 flex flex-col items-center justify-center p-6 max-w-4xl mx-auto w-full animate-in fade-in zoom-in duration-500">
         <div className="w-full mb-8">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Question {currentQuestionIndex + 1} of {displayData.length}</span>
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">Question {currentQuestionIndex + 1} of {displayData.length}</span>
             <span className="text-xs font-bold text-[#1a5c2a]">{Math.round(progress)}% Complete</span>
           </div>
           <div className="h-1.5 w-full bg-slate-200 dark:bg-[#1a1a24] rounded-full overflow-hidden">
@@ -511,7 +511,7 @@ export default function GeneratorPage() {
                   onClick={() => handleOptionSelect(opt)}
                   className={`flex items-center gap-6 p-6 rounded-2xl border-2 transition-all text-left group ${bgClass}`}
                 >
-                  <div className={`size-10 rounded-xl flex items-center justify-center font-black text-lg transition-colors ${isSelected ? 'bg-[#1a5c2a] text-white' : 'bg-white dark:bg-[#1b1b27] text-slate-400 group-hover:text-[#1a5c2a]'}`}>
+                  <div className={`size-10 rounded-xl flex items-center justify-center font-black text-lg transition-colors ${isSelected ? 'bg-[#1a5c2a] text-white' : 'bg-white dark:bg-[#1b1b27] text-slate-500 dark:text-slate-300 group-hover:text-[#1a5c2a]'}`}>
                     {letter}
                   </div>
                   <span className="text-lg font-bold flex-1">{opt}</span>
@@ -574,7 +574,7 @@ export default function GeneratorPage() {
               <>
                 <button
                   onClick={() => setIsQuizActive(false)}
-                  className="px-8 h-16 bg-slate-100 dark:bg-[#252535] text-slate-500 font-black rounded-2xl hover:bg-slate-200 dark:hover:bg-[#2d2d3f] transition-all"
+                  className="px-8 h-16 bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-slate-200 font-black rounded-2xl hover:bg-slate-200 dark:hover:bg-[#2d2d3f] transition-all"
                 >
                   QUIT
                 </button>
@@ -605,29 +605,29 @@ export default function GeneratorPage() {
             <span className="material-symbols-outlined text-5xl text-[#1a5c2a] animate-bounce">emoji_events</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-4">Quiz Completed!</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-lg font-medium">Excellent work. You&apos;ve mastered these concepts.</p>
+          <p className="text-slate-600 dark:text-slate-300 text-lg font-medium">Excellent work. You&apos;ve mastered these concepts.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-10">
           <div className="bg-white dark:bg-[#1a1a24] p-8 rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] text-center">
-            <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Score</p>
+            <p className="text-xs font-black text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">Score</p>
             <p className="text-4xl font-black text-[#5b5bfa]">{percentage}%</p>
-            <p className="text-xs font-bold text-slate-500 mt-1">{score}/{displayData.length} Correct</p>
+            <p className="text-xs font-bold text-slate-600 dark:text-slate-300 mt-1">{score}/{displayData.length} Correct</p>
           </div>
           <div className="bg-white dark:bg-[#1a1a24] p-8 rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] text-center border-[#1a5c2a]/30 ring-4 ring-orange-500/5">
-            <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">XP Earned</p>
+            <p className="text-xs font-black text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">XP Earned</p>
             <p className="text-4xl font-black text-[#1a5c2a]">+{xpEarned}</p>
             <div className="flex items-center justify-center gap-1 mt-1">
               <span className="material-symbols-outlined text-sm text-yellow-500 fill-current">star</span>
-              <span className="text-xs font-bold text-slate-500">Generation Bonus included</span>
+              <span className="text-xs font-bold text-slate-600 dark:text-slate-300">Generation Bonus included</span>
             </div>
           </div>
           <div className="bg-white dark:bg-[#1a1a24] p-8 rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] text-center">
-            <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Time spent</p>
+            <p className="text-xs font-black text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">Time spent</p>
             <p className="text-4xl font-black text-white">
               {quizStartTime ? Math.floor((Date.now() - quizStartTime) / 60000) : 0}:{quizStartTime ? String(Math.floor(((Date.now() - quizStartTime) % 60000) / 1000)).padStart(2, '0') : '00'}
             </p>
-            <p className="text-xs font-bold text-slate-500 mt-1">Focus Session</p>
+            <p className="text-xs font-bold text-slate-600 dark:text-slate-300 mt-1">Focus Session</p>
           </div>
         </div>
 
@@ -695,7 +695,7 @@ export default function GeneratorPage() {
               <h1 className="text-3xl font-black text-slate-900 dark:text-white">
                 AI Question Generator
               </h1>
-              <p className="text-slate-500 dark:text-slate-400 mt-2 text-lg">
+              <p className="text-slate-600 dark:text-slate-300 mt-2 text-lg">
                 Upload your study material and let AI create the perfect quiz for you.
               </p>
             </div>
@@ -710,7 +710,7 @@ export default function GeneratorPage() {
                       <span className="material-symbols-outlined text-3xl text-[#5b5bfa]">cloud_upload</span>
                     </div>
                     <h3 className="text-xl font-bold text-white mb-2">Upload Study Material</h3>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">Drag and drop PDF, images, or paste text here</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-300 mb-6">Drag and drop PDF, images, or paste text here</p>
                     <div className="flex flex-col items-center gap-4 w-full max-w-md">
                       <input
                         type="file"
@@ -775,14 +775,14 @@ export default function GeneratorPage() {
                       <div className="flex flex-wrap md:flex-nowrap gap-3">
                         <button
                           onClick={() => setType('mcq')}
-                          className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all whitespace-nowrap ${type === 'mcq' ? 'bg-[#1a5c2a] text-white' : 'bg-slate-100 dark:bg-[#252535] text-[#9c9cba] hover:bg-[#2d2d3f]'}`}
+                          className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all whitespace-nowrap ${type === 'mcq' ? 'bg-[#1a5c2a] text-white' : 'bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-slate-300 hover:bg-[#2d2d3f]'}`}
                         >
                           {type === 'mcq' && <span className="material-symbols-outlined text-[18px]">check_circle</span>}
                           Multiple Choice
                         </button>
                         <button
                           onClick={() => setType('fill_in_gap')}
-                          className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all whitespace-nowrap ${type === 'fill_in_gap' ? 'bg-[#1a5c2a] text-white' : 'bg-slate-100 dark:bg-[#252535] text-[#9c9cba] hover:bg-[#2d2d3f]'}`}
+                          className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all whitespace-nowrap ${type === 'fill_in_gap' ? 'bg-[#1a5c2a] text-white' : 'bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-slate-300 hover:bg-[#2d2d3f]'}`}
                         >
                           {type === 'fill_in_gap' && <span className="material-symbols-outlined text-[18px]">check_circle</span>}
                           {!type.includes('fill') && <span className="material-symbols-outlined text-[18px] mr-1">edit</span>}
@@ -790,7 +790,7 @@ export default function GeneratorPage() {
                         </button>
                         <button
                           onClick={() => setType('theory')}
-                          className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all whitespace-nowrap ${type === 'theory' ? 'bg-[#1a5c2a] text-white' : 'bg-slate-100 dark:bg-[#252535] text-[#9c9cba] hover:bg-[#2d2d3f]'}`}
+                          className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all whitespace-nowrap ${type === 'theory' ? 'bg-[#1a5c2a] text-white' : 'bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-slate-300 hover:bg-[#2d2d3f]'}`}
                         >
                           {type === 'theory' && <span className="material-symbols-outlined text-[18px]">check_circle</span>}
                           {type !== 'theory' && <span className="material-symbols-outlined text-[18px] mr-1">menu_book</span>}
@@ -808,19 +808,19 @@ export default function GeneratorPage() {
                         <div className="flex bg-slate-100 dark:bg-[#252535] rounded-xl p-1 gap-1">
                           <button
                             onClick={() => setDifficulty('easy')}
-                            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${difficulty === 'easy' ? 'bg-[#1a5c2a] text-white' : 'text-[#9c9cba] hover:text-white'}`}
+                            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${difficulty === 'easy' ? 'bg-[#1a5c2a] text-white' : 'text-slate-600 dark:text-slate-300 hover:text-white'}`}
                           >
                             Easy
                           </button>
                           <button
                             onClick={() => setDifficulty('medium')}
-                            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${difficulty === 'medium' ? 'bg-[#1a5c2a] text-white' : 'text-[#9c9cba] hover:text-white'}`}
+                            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${difficulty === 'medium' ? 'bg-[#1a5c2a] text-white' : 'text-slate-600 dark:text-slate-300 hover:text-white'}`}
                           >
                             Medium
                           </button>
                           <button
                             onClick={() => setDifficulty('hard')}
-                            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${difficulty === 'hard' ? 'bg-[#1a5c2a] text-white' : 'text-[#9c9cba] hover:text-white'}`}
+                            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${difficulty === 'hard' ? 'bg-[#1a5c2a] text-white' : 'text-slate-600 dark:text-slate-300 hover:text-white'}`}
                           >
                             Hard
                           </button>
@@ -898,7 +898,7 @@ export default function GeneratorPage() {
                       <div className="flex items-start justify-between mb-4">
                         <div>
                           <h3 className="text-xl font-bold text-slate-900 dark:text-white">{selectedResource ? resources.find(r => r.id === selectedResource)?.title || 'Generated Quiz' : 'Generated Quiz'}</h3>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Generated just now â€¢ {generatedData.length} Questions</p>
+                          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">Generated just now • {generatedData.length} Questions</p>
                         </div>
                         <span className="bg-[#1a3826] border border-green-500/20 text-[#4ade80] text-xs font-bold px-3 py-1 rounded">Ready</span>
                       </div>
@@ -913,7 +913,7 @@ export default function GeneratorPage() {
                           </div>
                         ))}
                         {generatedData.length > 2 && (
-                          <div className="text-center text-xs font-bold text-slate-500 pt-2">+ {generatedData.length - 2} more questions</div>
+                          <div className="text-center text-xs font-bold text-slate-600 dark:text-slate-300 pt-2">+ {generatedData.length - 2} more questions</div>
                         )}
                       </div>
 
@@ -946,12 +946,12 @@ export default function GeneratorPage() {
                               <span className="bg-blue-500/10 text-blue-500 text-[10px] font-black px-2 py-0.5 rounded uppercase">{quiz.quiz_questions?.[0]?.count || 0} Qs</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs text-slate-500 dark:text-slate-400 truncate">{quiz.subject}</span>
+                              <span className="text-xs text-slate-600 dark:text-slate-300 truncate">{quiz.subject}</span>
                               <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-200 dark:bg-[#2d2d3f] text-slate-600 dark:text-slate-300 uppercase">{quiz.difficulty}</span>
                             </div>
                           </div>
                           <div className="flex justify-between items-center w-full mt-4 pt-4 border-t border-slate-200 dark:border-[#2d2d3f]">
-                            <span className="text-[10px] font-medium text-slate-400">{new Date(quiz.created_at).toLocaleDateString()}</span>
+                            <span className="text-[10px] font-medium text-slate-500 dark:text-slate-300">{new Date(quiz.created_at).toLocaleDateString()}</span>
                             <span className="text-blue-500 text-xs font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">Retake <span className="material-symbols-outlined text-[14px]">arrow_forward</span></span>
                           </div>
                         </div>
@@ -967,7 +967,7 @@ export default function GeneratorPage() {
                   </div>
                   <div className="space-y-4">
                     {/* Empty state for demo */}
-                    <div className="text-center py-6 text-slate-500 dark:text-slate-400 text-sm">
+                    <div className="text-center py-6 text-slate-600 dark:text-slate-300 text-sm">
                       No recent generations found. Start by uploading a document!
                     </div>
                   </div>
