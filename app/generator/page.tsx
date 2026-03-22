@@ -514,7 +514,7 @@ export default function GeneratorPage() {
                   <div className={`size-10 rounded-xl flex items-center justify-center font-black text-lg transition-colors ${isSelected ? 'bg-[#1a5c2a] text-white' : 'bg-white dark:bg-[#1b1b27] text-slate-500 dark:text-slate-300 group-hover:text-[#1a5c2a]'}`}>
                     {letter}
                   </div>
-                  <span className="text-lg font-bold flex-1">{opt}</span>
+                  <span className="text-lg font-bold text-white flex-1">{opt}</span>
                   {showExplanation && isCorrect && <span className="material-symbols-outlined text-green-500">check_circle</span>}
                   {showExplanation && isSelected && !isCorrect && <span className="material-symbols-outlined text-red-500">cancel</span>}
                 </button>
