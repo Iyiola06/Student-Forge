@@ -1,246 +1,187 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
-import { awardXp } from '@/app/actions/gamifier';
 import { useProfile } from '@/hooks/useProfile';
-import GalaxyMap from '@/components/gamifier/GalaxyMap';
-import SpaceReader from '@/components/gamifier/SpaceReader';
-import BossBattle from '@/components/gamifier/BossBattle';
-import MissionComplete from '@/components/gamifier/MissionComplete';
+import MissionHub from '@/components/gamifier/MissionHub';
+import AdventureRun from '@/components/gamifier/AdventureRun';
+import MissionResults from '@/components/gamifier/MissionResults';
+import { AdventureRunRecord } from '@/lib/gamifier/adventure';
 
-function GamifierOrchestrator() {
+function GamifierShell() {
   const searchParams = useSearchParams();
   const initialResourceId = searchParams.get('id');
-  const { profile, mutate: mutateProfile } = useProfile();
+  const { profile, mutate } = useProfile();
   const supabase = createClient();
 
-  // App State: 'galaxy' | 'warp' | 'reader' | 'boss' | 'complete'
-  const [viewState, setViewState] = useState<'galaxy' | 'warp' | 'reader' | 'boss' | 'complete'>('galaxy');
-
-  // Data State
   const [resources, setResources] = useState<any[]>([]);
-  const [selectedResource, setSelectedResource] = useState<any>(null);
+  const [activeRun, setActiveRun] = useState<AdventureRunRecord | null>(null);
+  const [resumableRun, setResumableRun] = useState<AdventureRunRecord | null>(null);
+  const [completedSummary, setCompletedSummary] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentMilestone, setCurrentMilestone] = useState<string | null>(null);
-  const [bossContent, setBossContent] = useState<string | null>(null);
-  const [missionStats, setMissionStats] = useState<any>(null);
+  const [isLaunching, setIsLaunching] = useState(false);
 
-  // Load initial data
+  const loadResources = async () => {
+    if (!profile?.id) return;
+    const { data } = await supabase
+      .from('resources')
+      .select('id, title, subject, content, processing_status')
+      .eq('user_id', profile.id)
+      .order('created_at', { ascending: false });
+    setResources(data || []);
+  };
+
+  const loadActiveRun = async () => {
+    const res = await fetch('/api/gamifier/mission', { cache: 'no-store' });
+    const json = await res.json();
+    setActiveRun(json.run || null);
+    setResumableRun(json.run || null);
+  };
+
   useEffect(() => {
-    async function loadData() {
+    async function bootstrap() {
       if (!profile?.id) return;
-
-      // Fetch user resources
-      const { data: res } = await supabase
-        .from('resources')
-        .select('*')
-        .eq('user_id', profile.id)
-        .order('created_at', { ascending: false });
-
-      if (res) setResources(res);
-
-      // If arrived via URL param, launch straight to reader
-      if (initialResourceId && res) {
-        const target = res.find(r => r.id === initialResourceId);
-        if (target) {
-          setSelectedResource(target);
-          // Skip warp on direct link
-          setViewState('reader');
-        }
-      }
-
-      setIsLoading(false);
-    }
-
-    loadData();
-  }, [profile?.id, initialResourceId]);
-
-  // Handlers
-  const handleLaunchMission = (resource: any) => {
-    setSelectedResource(resource);
-    setViewState('warp');
-    // Warp CSS animation lasts 1.5s
-    setTimeout(() => {
-      setViewState('reader');
-    }, 1500);
-  };
-
-  const handleAbortMission = () => {
-    setSelectedResource(null);
-    setViewState('galaxy');
-    setCurrentMilestone(null);
-    setBossContent(null);
-    mutateProfile(); // Refresh xp/level stats
-  };
-
-  const handleBossEncounter = (milestone: string, readContent?: string) => {
-    // Prepare boss battle
-    setCurrentMilestone(milestone);
-    if (readContent) setBossContent(readContent);
-    setViewState('boss');
-  };
-
-  const handleBossWin = async (xp: number) => {
-    // Always return to reader immediately — DB updates are best-effort
-    setViewState('reader');
-    setCurrentMilestone(null);
-
-    if (profile?.id) {
+      setIsLoading(true);
       try {
-        await awardXp(profile.id, xp, 'boss_encounter_win');
-        // increment boss_wins
-        await supabase.rpc('increment_boss_wins', { user_id: profile.id }).then(res => {
-          if (res.error) console.error('Error incrementing boss wins:', res.error);
-        });
-      } catch (err) {
-        // DB error doesn't matter — user already won, just log it
-        console.error('[BossWin] Failed to save XP:', err);
+        await Promise.all([loadResources(), loadActiveRun()]);
+      } finally {
+        setIsLoading(false);
       }
-      mutateProfile();
     }
-  };
+    bootstrap();
+  }, [profile?.id]);
 
-  const handleBossLose = (retry: boolean) => {
-    if (retry) {
-      // Force BossBattle remount by toggling state
-      setViewState('warp');
-      setTimeout(() => {
-        setViewState('boss');
-      }, 50);
-    } else {
-      // Abort
-      handleAbortMission();
+  useEffect(() => {
+    if (!initialResourceId || !resources.length || activeRun) return;
+    const resourceExists = resources.some((resource) => resource.id === initialResourceId);
+    if (resourceExists) {
+      void startMission(initialResourceId);
     }
-  };
+  }, [initialResourceId, resources, activeRun]);
 
-  const handleMissionComplete = (stats: any) => {
-    setMissionStats(stats);
-    setViewState('complete');
-  };
-
-  const handleReturnToGalaxy = () => {
-    setSelectedResource(null);
-    setViewState('galaxy');
-    setMissionStats(null);
-    mutateProfile();
-
-    // Refresh resources
-    if (profile?.id) {
-      supabase.from('resources').select('*').eq('user_id', profile.id).then(({ data }) => {
-        if (data) setResources(data);
+  const startMission = async (resourceId?: string) => {
+    setIsLaunching(true);
+    setCompletedSummary(null);
+    try {
+      const res = await fetch('/api/gamifier/mission', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          resourceId,
+          forceNew: true,
+        }),
       });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to start mission');
+      setActiveRun(json.run);
+      setResumableRun(json.run);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLaunching(false);
     }
   };
 
-  // Rendering views
+  const persistRun = async (runId: string, currentNodeId: string, currentState: any, completedNodeId?: string) => {
+    const res = await fetch(`/api/gamifier/run/${runId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ currentNodeId, currentState, completedNodeId }),
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Failed to save mission state');
+    setActiveRun((prev) => prev ? { ...prev, current_node_id: currentNodeId, current_state: currentState } : prev);
+  };
+
+  const completeRun = async (runId: string) => {
+    const res = await fetch('/api/gamifier/complete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ runId }),
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Failed to complete mission');
+    setCompletedSummary({
+      missionTitle: activeRun?.mission_title || 'Story Mission',
+      summary: json.summary,
+    });
+    setActiveRun(null);
+    setResumableRun(null);
+    await mutate();
+  };
+
+  const abandonRun = async () => {
+    setResumableRun(activeRun);
+    setActiveRun(null);
+  };
+
+  const resumeMission = async () => {
+    if (resumableRun) {
+      setActiveRun(resumableRun);
+      return;
+    }
+    await loadActiveRun();
+  };
+
+  const view = useMemo(() => {
+    if (completedSummary) return 'results';
+    if (activeRun) return 'run';
+    return 'hub';
+  }, [activeRun, completedSummary]);
+
   if (isLoading || !profile) {
     return (
-      <div className="w-full h-[100dvh] bg-[#050510] flex flex-col items-center justify-center font-display text-[#ea580c]">
-        <div className="size-16 rounded-full border border-dashed border-[#ea580c] animate-spin border-t-transparent mx-auto mb-4" />
-        <div className="text-xs uppercase tracking-widest font-bold">Initializing Galaxy Map...</div>
+      <div className="min-h-[100dvh] bg-[#050510] text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="size-16 rounded-full border border-dashed border-[#ea580c] animate-spin border-t-transparent mx-auto mb-4" />
+          <div className="text-xs uppercase tracking-widest font-bold text-[#ea580c]">Initializing Story Adventure...</div>
+        </div>
       </div>
     );
   }
 
+  if (view === 'results' && completedSummary) {
+    return (
+      <MissionResults
+        missionTitle={completedSummary.missionTitle}
+        summary={completedSummary.summary}
+        onReturn={() => setCompletedSummary(null)}
+      />
+    );
+  }
+
+  if (view === 'run' && activeRun) {
+    return (
+      <AdventureRun
+        run={activeRun}
+        onPersist={persistRun}
+        onComplete={completeRun}
+        onAbort={abandonRun}
+      />
+    );
+  }
+
   return (
-    <div className="w-full min-h-[100dvh] md:h-[100dvh] bg-[#050510] md:overflow-hidden text-white font-display">
-
-      {/* 1. Galaxy Map */}
-      {viewState === 'galaxy' && (
-        <GalaxyMap
-          profile={profile}
-          resources={resources}
-          onSelectPlanet={(res) => handleLaunchMission(res)}
-        />
-      )}
-
-      {/* 2. Warp Speed Transition */}
-      {viewState === 'warp' && (
-        <div className="absolute inset-0 z-50 bg-[#050510] flex items-center justify-center overflow-hidden">
-          <div className="text-[#38bdf8] font-black text-4xl mb-20 animate-pulse tracking-[0.5em] uppercase">Calculating Trajectory...</div>
-          <div className="absolute inset-0 warp-container pointer-events-none">
-            {Array.from({ length: 50 }).map((_, i) => (
-              <div key={i} className="warp-line" style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDuration: `${0.2 + Math.random() * 0.5}s`,
-                animationDelay: `${Math.random() * 0.5}s`
-              }} />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 3. Space Reader */}
-      {viewState === 'reader' && selectedResource && (
-        <SpaceReader
-          resource={selectedResource}
-          profile={profile}
-          onAbort={handleAbortMission}
-          onComplete={handleMissionComplete}
-          onBossEncounter={handleBossEncounter}
-        />
-      )}
-
-      {/* 4. Boss Battle */}
-      {viewState === 'boss' && selectedResource && (
-        <BossBattle
-          content={bossContent || selectedResource.content || ''}
-          milestone={currentMilestone || ''}
-          onWin={handleBossWin}
-          onLose={handleBossLose}
-        />
-      )}
-
-      {/* 5. Mission Complete */}
-      {viewState === 'complete' && selectedResource && (
-        <MissionComplete
-          resource={selectedResource}
-          stats={missionStats}
-          onReturn={handleReturnToGalaxy}
-        />
-      )}
-
-      <style jsx global>{`
-                .warp-container {
-                    perspective: 600px;
-                }
-                .warp-line {
-                    position: absolute;
-                    width: 2px;
-                    height: 100px;
-                    background: linear-gradient(to bottom, rgba(56, 189, 248, 0), #38bdf8, white);
-                    opacity: 0;
-                    transform-origin: center;
-                    animation: warpSpeed linear forwards;
-                }
-                @keyframes warpSpeed {
-                    0% { transform: translateZ(-1000px) scale(0.1); opacity: 0; }
-                    20% { opacity: 1; }
-                    100% { transform: translateZ(600px) scale(2); opacity: 0; }
-                }
-                
-                @keyframes float {
-                    0%, 100% { transform: translateY(0); }
-                    50% { transform: translateY(-15px); }
-                }
-            `}</style>
-    </div>
+    <MissionHub
+      profile={profile}
+      resources={resources}
+      activeRun={resumableRun}
+      onStartMission={startMission}
+      onResumeMission={resumeMission}
+      isLaunching={isLaunching}
+    />
   );
 }
 
 export default function GamifierPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-[100dvh] bg-[#050510] flex flex-col items-center justify-center text-[#ea580c] font-display">
-        <div className="size-16 rounded-full border border-dashed border-[#ea580c] animate-[spin_3s_linear_infinite] border-t-transparent mb-4" />
-        <div className="text-xs uppercase tracking-widest font-bold">Scanning Sector...</div>
+      <div className="min-h-[100dvh] bg-[#050510] flex items-center justify-center text-white">
+        <div className="size-16 rounded-full border border-dashed border-[#ea580c] animate-spin border-t-transparent" />
       </div>
     }>
-      <GamifierOrchestrator />
+      <GamifierShell />
     </Suspense>
   );
 }
