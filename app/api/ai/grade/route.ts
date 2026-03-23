@@ -13,7 +13,18 @@ export async function POST(request: Request) {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-        const { type, imageData, typedAnswer, question, context } = await request.json();
+        const {
+            type,
+            imageData,
+            typedAnswer,
+            question,
+            context,
+            maxScore = 100,
+        } = await request.json();
+
+        const safeMaxScore = Number.isFinite(Number(maxScore))
+            ? Math.max(1, Math.min(100, Number(maxScore)))
+            : 100;
 
         const model = genAI.getGenerativeModel({
             model: "gemini-3-flash-preview",
@@ -21,17 +32,30 @@ export async function POST(request: Request) {
         });
 
         let promptTokens: any[] = [];
-        let promptText = `
-        You are an expert examiner. Your task is to grade a student's answer to a specific question.
-        
+        const promptText = `
+        You are an expert examiner. Grade the student's answer to the question below.
+
         Question: ${question}
         Subject Context: ${context}
-        
-        Provide a grading result in this JSON format:
+        Score Range: 0 to ${safeMaxScore}
+
+        Very important rules:
+        - Do not require the student to match the model answer word-for-word.
+        - Reward correct paraphrasing, partial understanding, and relevant points.
+        - Penalize factual errors, missing key points, weak structure, and vagueness.
+        - "feedback" should explain the score clearly.
+        - "improvements" should be 2 to 4 short, specific ways to improve the answer.
+        - "strengths" should be 0 to 3 short points.
+        - "isCorrect" should be true only if the answer is mostly correct overall.
+
+        Return valid JSON only in this exact format:
         {
-          "score": 0-100,
-          "feedback": "Specific feedback on why the score was given",
-          "correctAnswer": "The ideal model answer based on context",
+          "score": number,
+          "maxScore": ${safeMaxScore},
+          "feedback": "string",
+          "correctAnswer": "string",
+          "improvements": ["string"],
+          "strengths": ["string"],
           "isCorrect": boolean
         }
         `;
@@ -53,7 +77,20 @@ export async function POST(request: Request) {
         }
 
         const result = await model.generateContent(promptTokens);
-        return NextResponse.json(JSON.parse(result.response.text()));
+        const parsed = JSON.parse(result.response.text());
+        const score = Math.max(0, Math.min(safeMaxScore, Number(parsed.score) || 0));
+
+        return NextResponse.json({
+            score,
+            maxScore: safeMaxScore,
+            feedback: parsed.feedback || 'No feedback provided.',
+            correctAnswer: parsed.correctAnswer || 'No model answer provided.',
+            improvements: Array.isArray(parsed.improvements) ? parsed.improvements : [],
+            strengths: Array.isArray(parsed.strengths) ? parsed.strengths : [],
+            isCorrect: typeof parsed.isCorrect === 'boolean'
+                ? parsed.isCorrect
+                : score >= Math.ceil(safeMaxScore * 0.6),
+        });
 
     } catch (error: any) {
         console.error('Grading Route Error:', error);

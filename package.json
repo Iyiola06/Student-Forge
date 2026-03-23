@@ -12,6 +12,7 @@
   "dependencies": {
     "@ai-sdk/google": "^3.0.43",
     "@ai-sdk/react": "^3.0.118",
+    "@ckeditor/ckeditor5-react": "^11.0.1",
     "@google/genai": "^1.17.0",
     "@google/generative-ai": "^0.24.1",
     "@hookform/resolvers": "^5.2.1",
@@ -21,6 +22,7 @@
     "ai": "^6.0.116",
     "autoprefixer": "^10.4.21",
     "canvas-confetti": "^1.9.4",
+    "ckeditor5": "^47.6.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.34.3",

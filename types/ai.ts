@@ -14,8 +14,11 @@ export interface Quiz {
 
 export interface GradingResult {
     score: number;
+    maxScore?: number;
     feedback: string;
     correctAnswer: string;
+    improvements?: string[];
+    strengths?: string[];
     isCorrect: boolean;
 }
 

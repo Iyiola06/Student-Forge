@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import Sidebar from '@/components/layout/Sidebar';
 import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -38,11 +39,35 @@ const examSnapshotSchema = z.object({
   hot_list: z.array(z.object({ question: z.string(), difficulty: z.string(), rationale: z.string() }))
 });
 
+const TheoryAnswerEditor = dynamic(() => import('@/components/editor/TheoryAnswerEditor'), { ssr: false });
+
 interface Resource {
   id: string;
   title: string;
   content: string;
   processing_status: string;
+}
+
+interface TheoryGradingResult {
+  score: number;
+  maxScore?: number;
+  feedback: string;
+  correctAnswer: string;
+  improvements?: string[];
+  strengths?: string[];
+  isCorrect: boolean;
+}
+
+function stripEditorHtml(value: string) {
+  return value
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+\n/g, '\n')
+    .replace(/\n\s+/g, '\n')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 export default function GeneratorPage() {
@@ -273,10 +298,67 @@ export default function GeneratorPage() {
     setSelectedOption(option);
   };
 
-  const handleCheckAnswer = () => {
-    if (!selectedOption || !displayData) return;
+  const handleCheckAnswer = async () => {
+    if (!selectedOption || !displayData || isGeneratingQuiz) return;
 
     const currentQ = displayData[currentQuestionIndex];
+    const isTheoryQuestion = type === 'theory' || (!currentQ.options && currentQ.model_answer);
+    const normalizedTheoryAnswer = isTheoryQuestion ? stripEditorHtml(selectedOption) : selectedOption;
+
+    if (isTheoryQuestion && !normalizedTheoryAnswer) return;
+
+    if (isTheoryQuestion) {
+      try {
+        setIsGeneratingQuiz(true);
+        const gradingContext = [
+          `Question: ${currentQ.question || currentQ.sentence || ''}`,
+          `Model answer: ${currentQ.model_answer || ''}`,
+          `Key points: ${Array.isArray(currentQ.key_points) ? currentQ.key_points.join('; ') : ''}`,
+          `Explanation: ${currentQ.explanation || ''}`,
+        ].join('\n');
+
+        const res = await fetch('/api/ai/grade', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'typed',
+            question: currentQ.question || currentQ.sentence,
+            context: gradingContext,
+            typedAnswer: normalizedTheoryAnswer,
+            maxScore: 10,
+          }),
+        });
+
+        const result: TheoryGradingResult | { error?: string } = await res.json();
+        if (!res.ok) throw new Error((result as any).error || 'Failed to grade answer');
+
+        const grading = result as TheoryGradingResult;
+        setScore((prev) => prev + grading.score);
+        setUserAnswers([
+          ...userAnswers,
+          {
+            question: currentQ.question || currentQ.sentence,
+            selected: normalizedTheoryAnswer,
+            correct: grading.correctAnswer || currentQ.model_answer,
+            isCorrect: grading.isCorrect,
+            explanation: grading.feedback,
+            score: grading.score,
+            maxScore: grading.maxScore || 10,
+            improvements: grading.improvements || [],
+            strengths: grading.strengths || [],
+          },
+        ]);
+      } catch (err: any) {
+        setError(err.message || 'Failed to grade theory answer');
+        return;
+      } finally {
+        setIsGeneratingQuiz(false);
+      }
+
+      setShowExplanation(true);
+      return;
+    }
+
     const isCorrect = selectedOption === currentQ.answer;
 
     if (isCorrect) setScore(s => s + 1);
@@ -305,8 +387,11 @@ export default function GeneratorPage() {
   const finishQuiz = async () => {
     setIsQuizActive(false);
     // Award XP based on performance
-    const finalScore = score + (selectedOption === displayData[currentQuestionIndex].answer ? 1 : 0);
-    const xpEarned = finalScore * 5; // 5 XP per correct answer
+    const isTheoryQuiz = type === 'theory';
+    const finalScore = isTheoryQuiz
+      ? score
+      : score + (selectedOption === displayData[currentQuestionIndex].answer ? 1 : 0);
+    const xpEarned = isTheoryQuiz ? Math.round(finalScore * 2) : finalScore * 5;
 
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -470,6 +555,10 @@ export default function GeneratorPage() {
     const q = displayData[currentQuestionIndex];
     if (!q) return null;
     const progress = ((currentQuestionIndex) / displayData.length) * 100;
+    const isTheoryQuestion = type === 'theory' || (!q.options && q.model_answer);
+    const currentAnswer = userAnswers[currentQuestionIndex];
+    const theoryScore = currentAnswer?.score ?? 0;
+    const theoryMaxScore = currentAnswer?.maxScore ?? 10;
 
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-6 max-w-4xl mx-auto w-full animate-in fade-in zoom-in duration-500">
@@ -521,19 +610,27 @@ export default function GeneratorPage() {
               );
             }) : (
               <div className="space-y-4">
-                <input
-                  type="text"
-                  disabled={showExplanation}
-                  value={selectedOption || ''}
-                  onChange={(e) => setSelectedOption(e.target.value)}
-                  placeholder="Type your answer here..."
-                  className={`w-full p-6 rounded-2xl bg-[#f5f5f8] dark:bg-[#13131a] border-2 outline-none text-xl font-bold ${showExplanation
-                    ? (selectedOption?.toLowerCase().trim() === (q.answer || q.model_answer || '').toLowerCase().trim()
-                      ? 'border-green-500 text-green-600 dark:text-green-400'
-                      : 'border-red-500 text-red-600 dark:text-red-400')
-                    : 'border-slate-200 dark:border-[#2d2d3f] focus:border-[#1a5c2a]'
-                    }`}
-                />
+                {isTheoryQuestion ? (
+                  <TheoryAnswerEditor
+                    value={selectedOption || ''}
+                    onChange={setSelectedOption}
+                    disabled={showExplanation}
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    disabled={showExplanation}
+                    value={selectedOption || ''}
+                    onChange={(e) => setSelectedOption(e.target.value)}
+                    placeholder="Type your answer here..."
+                    className={`w-full p-6 rounded-2xl bg-[#f5f5f8] dark:bg-[#13131a] border-2 outline-none text-xl font-bold ${showExplanation
+                      ? selectedOption?.toLowerCase().trim() === (q.answer || q.model_answer || '').toLowerCase().trim()
+                        ? 'border-green-500 text-green-600 dark:text-green-400'
+                        : 'border-red-500 text-red-600 dark:text-red-400'
+                      : 'border-slate-200 dark:border-[#2d2d3f] focus:border-[#1a5c2a]'
+                      }`}
+                  />
+                )}
 
                 {showExplanation && (q.answer || q.model_answer) && (
                   <div className="p-4 rounded-xl border border-green-500/20 bg-green-500/5 mt-4">
@@ -541,7 +638,7 @@ export default function GeneratorPage() {
                       {q.model_answer ? 'Model Answer' : 'Correct Answer'}
                     </p>
                     <p className="text-lg font-bold text-slate-800 dark:text-white">
-                      {q.answer || q.model_answer}
+                      {currentAnswer?.correct || q.answer || q.model_answer}
                     </p>
                   </div>
                 )}
@@ -553,11 +650,37 @@ export default function GeneratorPage() {
             <div className="mb-10 p-6 rounded-2xl bg-blue-500/5 border border-blue-500/20 animate-in slide-in-from-top-4">
               <div className="flex items-center gap-2 mb-2 text-blue-500">
                 <span className="material-symbols-outlined">info</span>
-                <span className="text-xs font-black uppercase tracking-widest">Explanation</span>
+                <span className="text-xs font-black uppercase tracking-widest">
+                  {isTheoryQuestion ? `Score: ${theoryScore}/${theoryMaxScore}` : 'Explanation'}
+                </span>
               </div>
               <p className="text-slate-600 dark:text-slate-300 font-bold leading-relaxed whitespace-pre-wrap">
-                {q.explanation || "No explanation provided for this question."}
+                {currentAnswer?.explanation || q.explanation || "No explanation provided for this question."}
               </p>
+              {isTheoryQuestion && currentAnswer?.improvements?.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-xs font-black uppercase tracking-widest text-amber-500 mb-2">Where To Improve</p>
+                  <ul className="space-y-2 text-slate-600 dark:text-slate-300 text-sm">
+                    {currentAnswer.improvements.map((item: string) => (
+                      <li key={item} className="rounded-xl bg-white/60 dark:bg-[#13131a]/80 px-4 py-3 border border-blue-500/10">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {isTheoryQuestion && currentAnswer?.strengths?.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-xs font-black uppercase tracking-widest text-emerald-500 mb-2">What You Did Well</p>
+                  <ul className="space-y-2 text-slate-600 dark:text-slate-300 text-sm">
+                    {currentAnswer.strengths.map((item: string) => (
+                      <li key={item} className="rounded-xl bg-white/60 dark:bg-[#13131a]/80 px-4 py-3 border border-emerald-500/10">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           )}
 
@@ -579,11 +702,11 @@ export default function GeneratorPage() {
                   QUIT
                 </button>
                 <button
-                  disabled={!selectedOption}
+                  disabled={!(isTheoryQuestion ? stripEditorHtml(selectedOption || '') : selectedOption) || isGeneratingQuiz}
                   onClick={handleCheckAnswer}
                   className="flex-1 h-16 bg-[#5b5bfa] disabled:opacity-50 text-white font-black rounded-2xl hover:bg-[#4a4ae0] transition-all shadow-xl shadow-blue-500/20"
                 >
-                  CHECK ANSWER
+                  {isTheoryQuestion ? (isGeneratingQuiz ? 'GRADING...' : 'GRADE ANSWER') : 'CHECK ANSWER'}
                 </button>
               </>
             )}
@@ -595,8 +718,13 @@ export default function GeneratorPage() {
 
   const renderResults = () => {
     if (!displayData || !Array.isArray(displayData)) return null;
-    const percentage = Math.round((score / displayData.length) * 100);
-    const xpEarned = score * 5;
+    const isTheoryQuiz = type === 'theory' || displayData.some((item: any) => item.model_answer);
+    const maxPossibleScore = isTheoryQuiz ? displayData.length * 10 : displayData.length;
+    const percentage = Math.round((score / maxPossibleScore) * 100);
+    const xpEarned = isTheoryQuiz ? Math.round(score * 2) : score * 5;
+    const averageTheoryScore = isTheoryQuiz && displayData.length > 0
+      ? (score / displayData.length).toFixed(1)
+      : null;
 
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-6 max-w-4xl mx-auto w-full animate-in fade-in zoom-in duration-700">
@@ -612,7 +740,9 @@ export default function GeneratorPage() {
           <div className="bg-white dark:bg-[#1a1a24] p-8 rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] text-center">
             <p className="text-xs font-black text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">Score</p>
             <p className="text-4xl font-black text-[#5b5bfa]">{percentage}%</p>
-            <p className="text-xs font-bold text-slate-600 dark:text-slate-300 mt-1">{score}/{displayData.length} Correct</p>
+            <p className="text-xs font-bold text-slate-600 dark:text-slate-300 mt-1">
+              {isTheoryQuiz ? `Average ${averageTheoryScore}/10` : `${score}/${displayData.length} Correct`}
+            </p>
           </div>
           <div className="bg-white dark:bg-[#1a1a24] p-8 rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] text-center border-[#1a5c2a]/30 ring-4 ring-orange-500/5">
             <p className="text-xs font-black text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">XP Earned</p>
