@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VUI Studify Explainer</title>
+  <style>
+    :root {
+      --bg: #05070b;
+      --text: #f8fafc;
+    }
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Lexend, "Segoe UI", Arial, sans-serif;
+    }
+    .wrap {
+      min-height: 100%;
+      display: grid;
+      place-items: center;
+    }
+    canvas {
+      width: 1280px;
+      height: 720px;
+      max-width: 100vw;
+      max-height: 100vh;
+      border-radius: 18px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+      background: #07110b;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <canvas id="video" width="1280" height="720"></canvas>
+  </div>
+  <script>
+    const canvas = document.getElementById("video");
+    const ctx = canvas.getContext("2d");
+    const W = canvas.width;
+    const H = canvas.height;
+    const TOTAL_SECONDS = 120;
+    const FPS = 30;
+    const logo = new Image();
+    logo.src = "/logo-light.png";
+
+    const slides = [
+      {
+        start: 0, end: 12, label: "INTRO", accent: "#1a5c2a", visual: "hero",
+        title: "VUI Studify is an AI-powered study app built to help students learn faster and perform better in exams.",
+        body: "It combines content processing, AI study tools, gamified sessions, analytics, and community resources in one experience.",
+        pills: ["Next.js + Supabase", "AI Study Engine", "Exam Prep", "Gamified Progress"],
+      },
+      {
+        start: 12, end: 24, label: "DASHBOARD", accent: "#38bdf8", visual: "dashboard",
+        title: "The dashboard gives every learner a personalized command center.",
+        body: "It tracks exam readiness, due reviews, streaks, recent resources, and AI-generated study insights based on what the student has been learning.",
+        pills: ["Exam readiness", "Cards due", "AI insights", "Streak tracking"],
+      },
+      {
+        start: 24, end: 36, label: "RESOURCE LIBRARY", accent: "#f59e0b", visual: "resources",
+        title: "Students can upload PDFs, Word files, PowerPoints, and images into a secure resource library.",
+        body: "The app extracts usable content, lets users preview files, organize by subject, manage uploads, and search Google Books for extra learning materials.",
+        pills: ["Upload and process", "Preview documents", "Folder organization", "Google Books search"],
+      },
+      {
+        start: 36, end: 48, label: "AI GENERATOR", accent: "#7c3aed", visual: "generator",
+        title: "The AI generator turns study material into exam-ready practice instantly.",
+        body: "It supports multiple choice, fill-in-the-gap, theory questions, and exam snapshots, with difficulty control, curriculum context, quiz play, saves, and PDF export.",
+        pills: ["MCQ", "Fill-in-gap", "Theory grading", "PDF export"],
+      },
+      {
+        start: 48, end: 60, label: "FLASHCARDS", accent: "#22c55e", visual: "flashcards",
+        title: "VUI Studify also generates smart flashcards and supports active recall workflows.",
+        body: "Learners can build decks from resources, study card by card, save them, review scheduled items later, and even share public flashcard links with others.",
+        pills: ["AI flashcards", "Deck saving", "Shared study links", "Spaced review"],
+      },
+      {
+        start: 60, end: 72, label: "AI LEARNING TOOLS", accent: "#ef4444", visual: "ai-tools",
+        title: "Beyond quizzes, the app includes an AI tutor, document simplifier, essay grader, and exam-ready snapshot tools.",
+        body: "Students can ask contextual questions from a resource, simplify hard material for different levels, get rubric-style essay feedback, and extract high-yield exam points.",
+        pills: ["AI tutor", "Text simplifier", "Essay grading", "Exam snapshot"],
+      },
+      {
+        start: 72, end: 84, label: "GAMIFIER", accent: "#8b5cf6", visual: "gamifier",
+        title: "The gamifier transforms study into a short-session challenge loop.",
+        body: "Users can start quick recall, exam sprint, and weak-spot rescue modes, earn XP, protect streaks, complete sessions, and turn weak areas into visible progress.",
+        pills: ["Quick Recall", "Exam Sprint", "Weak-spot Rescue", "XP rewards"],
+      },
+      {
+        start: 84, end: 96, label: "COMPETITION + COMMUNITY", accent: "#3b82f6", visual: "community",
+        title: "The app keeps motivation high with leaderboards and a community past questions bank.",
+        body: "Students can climb all-time or weekly rankings, upload past papers, browse by school and subject, upvote useful submissions, and download papers shared by the community.",
+        pills: ["Global leaderboard", "Weekly ranking", "Past question uploads", "Community downloads"],
+      },
+      {
+        start: 96, end: 108, label: "PROFILE + SETTINGS", accent: "#14b8a6", visual: "profile",
+        title: "Profiles, history, and settings help learners personalize the experience and monitor growth.",
+        body: "The app includes achievements, titles, themes, activity history, study history, avatar updates, dark mode, exam date planning, and push notification controls.",
+        pills: ["Badges and themes", "Activity history", "Exam date planning", "Push notifications"],
+      },
+      {
+        start: 108, end: 120, label: "CLOSING", accent: "#1a5c2a", visual: "closing",
+        title: "In short, VUI Studify is a full exam-prep ecosystem, not just a quiz generator.",
+        body: "It helps students upload, understand, practice, review, compete, and stay consistent from first resource to final exam day.",
+        pills: ["Upload", "Understand", "Practice", "Compete", "Succeed"],
+      },
+    ];
+
+    const particles = Array.from({ length: 32 }, (_, i) => ({
+      x: (i * 37) % W,
+      y: (i * 79) % H,
+      r: 2 + (i % 5),
+      s: 0.15 + (i % 7) * 0.05,
+    }));
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function easeOutCubic(t) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    function roundedRect(x, y, w, h, r, fill, stroke) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      if (fill) {
+        ctx.fillStyle = fill;
+        ctx.fill();
+      }
+      if (stroke) {
+        ctx.strokeStyle = stroke;
+        ctx.stroke();
+      }
+    }
+
+    function drawText(text, x, y, maxWidth, lineHeight, font, color) {
+      ctx.font = font;
+      ctx.fillStyle = color;
+      const words = text.split(" ");
+      let line = "";
+      let yy = y;
+      for (let i = 0; i < words.length; i += 1) {
+        const test = line + words[i] + " ";
+        if (ctx.measureText(test).width > maxWidth && line) {
+          ctx.fillText(line.trim(), x, yy);
+          line = words[i] + " ";
+          yy += lineHeight;
+        } else {
+          line = test;
+        }
+      }
+      if (line) ctx.fillText(line.trim(), x, yy);
+    }
+
+    function drawBackground(now) {
+      const gradient = ctx.createLinearGradient(0, 0, W, H);
+      gradient.addColorStop(0, "#06120b");
+      gradient.addColorStop(0.45, "#0d1525");
+      gradient.addColorStop(1, "#111827");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, W, H);
+
+      const glow1 = ctx.createRadialGradient(200, 160, 0, 200, 160, 280);
+      glow1.addColorStop(0, "rgba(26,92,42,0.30)");
+      glow1.addColorStop(1, "rgba(26,92,42,0)");
+      ctx.fillStyle = glow1;
+      ctx.fillRect(0, 0, W, H);
+
+      const glow2 = ctx.createRadialGradient(1040, 560, 0, 1040, 560, 260);
+      glow2.addColorStop(0, "rgba(56,189,248,0.22)");
+      glow2.addColorStop(1, "rgba(56,189,248,0)");
+      ctx.fillStyle = glow2;
+      ctx.fillRect(0, 0, W, H);
+
+      particles.forEach((p, idx) => {
+        const x = (p.x + now * 20 * p.s) % W;
+        const y = (p.y + Math.sin(now * p.s + idx) * 25 + H) % H;
+        ctx.beginPath();
+        ctx.fillStyle = idx % 3 === 0 ? "rgba(56,189,248,0.35)" : "rgba(255,255,255,0.18)";
+        ctx.arc(x, y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    function drawChrome(frameX, frameY, frameW, frameH, accent) {
+      roundedRect(frameX, frameY, frameW, frameH, 28, "rgba(6,10,18,0.72)", "rgba(255,255,255,0.08)");
+      roundedRect(frameX + 18, frameY + 16, frameW - 36, 44, 16, "rgba(255,255,255,0.05)");
+      ctx.fillStyle = "#f87171";
+      ctx.beginPath();
+      ctx.arc(frameX + 40, frameY + 38, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#fbbf24";
+      ctx.beginPath();
+      ctx.arc(frameX + 60, frameY + 38, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#4ade80";
+      ctx.beginPath();
+      ctx.arc(frameX + 80, frameY + 38, 6, 0, Math.PI * 2);
+      ctx.fill();
+      roundedRect(frameX + 108, frameY + 24, frameW - 180, 28, 12, "rgba(255,255,255,0.08)");
+      ctx.fillStyle = "rgba(255,255,255,0.70)";
+      ctx.font = "14px Lexend, Segoe UI, Arial, sans-serif";
+      ctx.fillText("vui-studify.app", frameX + 128, frameY + 43);
+      roundedRect(frameX + 18, frameY + 72, 92, frameH - 90, 18, "rgba(255,255,255,0.05)");
+      ctx.globalAlpha = 0.9;
+      roundedRect(frameX + 30, frameY + 96, 68, 10, 5, accent);
+      ctx.globalAlpha = 1;
+      for (let i = 0; i < 7; i += 1) {
+        roundedRect(frameX + 30, frameY + 128 + i * 54, 68, 34, 12, i === 2 ? "rgba(26,92,42,0.35)" : "rgba(255,255,255,0.06)");
+      }
+    }
+
+    function drawMiniChart(x, y, values, color) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.strokeStyle = "rgba(255,255,255,0.12)";
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 4; i += 1) {
+        ctx.beginPath();
+        ctx.moveTo(0, i * 26);
+        ctx.lineTo(220, i * 26);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      values.forEach((value, index) => {
+        const px = index * (220 / (values.length - 1));
+        const py = 78 - value;
+        if (index === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      });
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawVisual(kind, accent, localT) {
+      const frameX = 700;
+      const frameY = 84;
+      const frameW = 520;
+      const frameH = 560;
+      const bx = frameX + 130;
+      const by = frameY + 92;
+      const pulse = 6 * Math.sin(localT * Math.PI * 2);
+
+      drawChrome(frameX, frameY, frameW, frameH, accent);
+
+      if (kind === "hero") {
+        roundedRect(bx, by, 340, 132, 24, "rgba(26,92,42,0.22)");
+        ctx.fillStyle = "#f8fafc";
+        ctx.font = "800 34px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("Master your exams", bx + 26, by + 50);
+        ctx.fillText("with AI study tools", bx + 26, by + 92);
+        roundedRect(bx, by + 158, 164, 50, 16, accent);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "700 18px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("Start learning", bx + 36, by + 190);
+        roundedRect(bx + 188, by + 158, 132, 50, 16, "rgba(255,255,255,0.09)");
+        ctx.fillText("Watch demo", bx + 216, by + 190);
+        for (let i = 0; i < 3; i += 1) {
+          roundedRect(bx + i * 110, by + 246, 96, 120, 18, "rgba(255,255,255,0.08)");
+        }
+      }
+
+      if (kind === "dashboard") {
+        roundedRect(bx, by, 184, 180, 22, "rgba(255,255,255,0.08)");
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "700 18px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("Exam readiness", bx + 18, by + 28);
+        ctx.beginPath();
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 10;
+        ctx.arc(bx + 92, by + 100, 50, -Math.PI / 2, -Math.PI / 2 + 5.1 + localT * 0.4);
+        ctx.stroke();
+        ctx.fillStyle = "#f8fafc";
+        ctx.font = "800 34px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("78%", bx + 58, by + 112);
+        roundedRect(bx + 206, by, 252, 180, 22, "rgba(255,255,255,0.08)");
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "700 18px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("AI insight trend", bx + 224, by + 28);
+        drawMiniChart(bx + 224, by + 68, [16, 30, 26, 48, 60, 52, 72], accent);
+        roundedRect(bx, by + 206, 458, 140, 22, "rgba(255,255,255,0.08)");
+        ["Cards due", "Streak", "Recent file", "Predicted topics"].forEach((label, idx) => {
+          roundedRect(bx + 18 + idx * 108, by + 228, 92, 84, 16, idx === 0 ? "rgba(26,92,42,0.30)" : "rgba(255,255,255,0.06)");
+          ctx.fillStyle = "#e2e8f0";
+          ctx.font = "600 13px Lexend, Segoe UI, Arial, sans-serif";
+          ctx.fillText(label, bx + 28 + idx * 108, by + 256);
+          ctx.font = "800 22px Lexend, Segoe UI, Arial, sans-serif";
+          ctx.fillText(["12", "7d", "Biology", "4"][idx], bx + 28 + idx * 108, by + 288);
+        });
+      }
+
+      if (kind === "resources") {
+        roundedRect(bx, by, 458, 64, 18, "rgba(255,255,255,0.08)");
+        roundedRect(bx + 16, by + 14, 120, 36, 12, accent);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "700 16px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("Upload File", bx + 38, by + 38);
+        roundedRect(bx + 156, by + 14, 286, 36, 12, "rgba(255,255,255,0.06)");
+        ctx.fillStyle = "rgba(255,255,255,0.72)";
+        ctx.fillText("Search topics, books, past papers...", bx + 176, by + 38);
+        for (let i = 0; i < 6; i += 1) {
+          const col = i % 2;
+          const row = Math.floor(i / 2);
+          const x = bx + col * 230;
+          const y = by + 90 + row * 120;
+          roundedRect(x, y, 214, 100, 18, "rgba(255,255,255,0.08)");
+          roundedRect(x + 14, y + 14, 56, 56, 16, i % 3 === 0 ? "rgba(239,68,68,0.25)" : i % 3 === 1 ? "rgba(59,130,246,0.22)" : "rgba(245,158,11,0.22)");
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "700 15px Lexend, Segoe UI, Arial, sans-serif";
+          ctx.fillText(["Biology.pdf", "Chemistry.docx", "Physics.pptx", "Exam notes.jpg", "Google Book", "Past paper"][i], x + 82, y + 36);
+          ctx.fillStyle = "rgba(255,255,255,0.66)";
+          ctx.font = "600 12px Lexend, Segoe UI, Arial, sans-serif";
+          ctx.fillText(["PDF", "DOCX", "PPTX", "IMAGE", "BOOK", "PDF"][i] + "  •  Ready", x + 82, y + 60);
+        }
+      }
+
+      if (kind === "generator") {
+        roundedRect(bx, by, 286, 320, 22, "rgba(255,255,255,0.08)");
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "800 22px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("AI Question Generator", bx + 20, by + 36);
+        ["Multiple Choice", "Fill-in-gap", "Theory", "Exam snapshot"].forEach((label, idx) => {
+          roundedRect(bx + 18, by + 64 + idx * 54, 250, 40, 14, idx === 0 ? "rgba(26,92,42,0.35)" : "rgba(255,255,255,0.06)");
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "700 15px Lexend, Segoe UI, Arial, sans-serif";
+          ctx.fillText(label, bx + 32, by + 89 + idx * 54);
+        });
+        roundedRect(bx + 18, by + 286, 250, 18, 9, "rgba(255,255,255,0.07)");
+        roundedRect(bx + 18, by + 286, 160 + pulse, 18, 9, accent);
+        roundedRect(bx + 306, by, 152, 320, 22, "rgba(255,255,255,0.08)");
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "800 18px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("Preview", bx + 326, by + 34);
+        for (let i = 0; i < 4; i += 1) {
+          roundedRect(bx + 324, by + 58 + i * 60, 116, 46, 14, "rgba(255,255,255,0.06)");
+          ctx.fillStyle = "rgba(255,255,255,0.82)";
+          ctx.font = "600 12px Lexend, Segoe UI, Arial, sans-serif";
+          ctx.fillText("Question " + (i + 1), bx + 338, by + 84 + i * 60);
+        }
+      }
+
+      if (kind === "flashcards") {
+        roundedRect(bx + 32, by + 54, 360, 220, 26, "rgba(255,255,255,0.10)");
+        roundedRect(bx + 48, by + 72, 328, 184, 20, "rgba(26,92,42,0.26)");
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "800 18px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("Card 3 / 20", bx + 72, by + 104);
+        ctx.font = "800 32px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("What is", bx + 72, by + 156);
+        ctx.fillText("photosynthesis?", bx + 72, by + 196);
+        roundedRect(bx + 70, by + 214, 120, 14, 7, "rgba(255,255,255,0.10)");
+        roundedRect(bx + 70, by + 214, 72 + pulse, 14, 7, accent);
+        roundedRect(bx + 32, by + 300, 170, 52, 16, accent);
+        roundedRect(bx + 222, by + 300, 170, 52, 16, "rgba(255,255,255,0.08)");
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "700 16px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("Save Deck", bx + 84, by + 333);
+        ctx.fillText("Share Deck", bx + 270, by + 333);
+      }
+    }
+
+    function drawVisualExtra(kind, accent, localT) {
+      const frameX = 700;
+      const frameY = 84;
+      const bx = frameX + 130;
+      const by = frameY + 92;
+      const pulse = 6 * Math.sin(localT * Math.PI * 2);
+
+      if (kind === "ai-tools") {
+        const labels = [
+          ["AI Tutor", "Ask contextual questions"],
+          ["Simplifier", "Rewrite by level"],
+          ["Essay Grader", "Score and feedback"],
+          ["Exam Snapshot", "Hot topics and terms"],
+        ];
+        labels.forEach((entry, idx) => {
+          const col = idx % 2;
+          const row = Math.floor(idx / 2);
+          const x = bx + col * 230;
+          const y = by + row * 150;
+          roundedRect(x, y, 212, 126, 20, "rgba(255,255,255,0.08)");
+          roundedRect(x + 18, y + 18, 48, 48, 14, idx % 2 === 0 ? "rgba(239,68,68,0.25)" : "rgba(59,130,246,0.20)");
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "800 19px Lexend, Segoe UI, Arial, sans-serif";
+          ctx.fillText(entry[0], x + 80, y + 42);
+          ctx.fillStyle = "rgba(255,255,255,0.70)";
+          ctx.font = "600 13px Lexend, Segoe UI, Arial, sans-serif";
+          ctx.fillText(entry[1], x + 80, y + 68);
+          roundedRect(x + 18, y + 84, 176, 12, 6, "rgba(255,255,255,0.07)");
+          roundedRect(x + 18, y + 84, 94 + idx * 18 + pulse, 12, 6, accent);
+        });
+      }
+
+      if (kind === "gamifier") {
+        roundedRect(bx, by, 458, 100, 22, "rgba(255,255,255,0.08)");
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "800 26px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("Mastery Arena", bx + 24, by + 42);
+        ctx.font = "700 15px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("Pick a mode and jump into short recall rounds.", bx + 24, by + 72);
+        ["Quick Recall", "Exam Sprint", "Weak-spot Rescue"].forEach((label, idx) => {
+          roundedRect(bx + idx * 150, by + 130, 140, 160, 20, idx === 1 ? "rgba(124,58,237,0.30)" : "rgba(255,255,255,0.08)");
+          ctx.fillStyle = "#ffffff";
+          drawText(label, bx + 16 + idx * 150, by + 176, 108, 22, "800 18px Lexend, Segoe UI, Arial, sans-serif", "#ffffff");
+        });
+        roundedRect(bx, by + 320, 458, 92, 22, "rgba(255,255,255,0.08)");
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "700 16px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("XP earned  +125", bx + 24, by + 360);
+        ctx.fillText("Streak protected  7 days", bx + 24, by + 388);
+      }
+
+      if (kind === "community") {
+        roundedRect(bx, by, 458, 80, 22, "rgba(255,255,255,0.08)");
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "800 26px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("Leaderboard", bx + 24, by + 46);
+        ["#1 Ada  12,430 XP", "#2 David  11,980 XP", "#3 Tolu  11,420 XP"].forEach((row, idx) => {
+          roundedRect(bx + idx * 148, by + 104, 138, 120, 18, idx === 0 ? "rgba(59,130,246,0.30)" : "rgba(255,255,255,0.08)");
+          ctx.fillStyle = "#ffffff";
+          drawText(row, bx + 16 + idx * 148, by + 144, 110, 20, "700 16px Lexend, Segoe UI, Arial, sans-serif", "#ffffff");
+        });
+        roundedRect(bx, by + 256, 458, 180, 22, "rgba(255,255,255,0.08)");
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "800 22px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("Past Questions Bank", bx + 24, by + 292);
+        for (let i = 0; i < 3; i += 1) {
+          roundedRect(bx + 24, by + 316 + i * 38, 410, 28, 12, "rgba(255,255,255,0.06)");
+          ctx.fillStyle = "rgba(255,255,255,0.78)";
+          ctx.font = "600 13px Lexend, Segoe UI, Arial, sans-serif";
+          ctx.fillText(["University of Lagos • Physics 2024", "WAEC Biology • 2023", "YABATECH Math • 2022"][i], bx + 40, by + 334 + i * 38);
+        }
+      }
+
+      if (kind === "profile") {
+        roundedRect(bx, by, 458, 114, 22, "rgba(255,255,255,0.08)");
+        roundedRect(bx + 24, by + 24, 72, 72, 36, "rgba(255,255,255,0.12)");
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "800 24px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("Student Profile", bx + 118, by + 48);
+        ctx.font = "700 15px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("Level 12  •  6,240 XP", bx + 118, by + 80);
+        ["Badges", "Themes", "Activity", "Push", "Dark mode", "Exam date"].forEach((label, idx) => {
+          const col = idx % 3;
+          const row = Math.floor(idx / 3);
+          roundedRect(bx + col * 150, by + 146 + row * 118, 138, 98, 18, idx === 3 ? "rgba(20,184,166,0.28)" : "rgba(255,255,255,0.08)");
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "800 18px Lexend, Segoe UI, Arial, sans-serif";
+          ctx.fillText(label, bx + 18 + col * 150, by + 196 + row * 118);
+        });
+      }
+
+      if (kind === "closing") {
+        roundedRect(bx, by + 40, 458, 310, 28, "rgba(255,255,255,0.08)");
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "800 36px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("Upload", bx + 42, by + 110);
+        ctx.fillText("Understand", bx + 42, by + 162);
+        ctx.fillText("Practice", bx + 42, by + 214);
+        ctx.fillText("Compete", bx + 42, by + 266);
+        ctx.fillText("Succeed", bx + 42, by + 318);
+        [118, 170, 222, 274, 326].forEach((yy, idx) => {
+          roundedRect(bx + 242, by + yy - 22, 166 + (idx % 2 ? pulse : -pulse), 16, 8, accent);
+        });
+      }
+    }
+
+    function drawProgress(second) {
+      roundedRect(42, H - 38, W - 84, 10, 5, "rgba(255,255,255,0.12)");
+      const progress = clamp(second / TOTAL_SECONDS, 0, 1);
+      roundedRect(42, H - 38, (W - 84) * progress, 10, 5, "#1a5c2a");
+      ctx.fillStyle = "rgba(255,255,255,0.78)";
+      ctx.font = "700 14px Lexend, Segoe UI, Arial, sans-serif";
+      ctx.fillText("Explainer video • 2 minutes", 42, H - 52);
+      ctx.fillText(String(Math.floor(second)).padStart(2, "0") + "s / 120s", W - 140, H - 52);
+    }
+
+    function drawBrand(slide, alpha) {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      if (logo.complete) {
+        ctx.drawImage(logo, 52, 40, 168, 56);
+      } else {
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "800 28px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText("VUI Studify", 52, 78);
+      }
+      roundedRect(52, 118, 112, 30, 15, "rgba(255,255,255,0.10)");
+      ctx.fillStyle = slide.accent;
+      ctx.font = "800 14px Lexend, Segoe UI, Arial, sans-serif";
+      ctx.fillText(slide.label, 74, 138);
+      ctx.restore();
+    }
+
+    function render(nowMs) {
+      const second = nowMs / 1000;
+      const slide = slides.find((item) => second >= item.start && second < item.end) || slides[slides.length - 1];
+      const span = slide.end - slide.start;
+      const localT = clamp((second - slide.start) / span, 0, 1);
+      const reveal = easeOutCubic(clamp(localT * 1.6, 0, 1));
+
+      drawBackground(second);
+      drawBrand(slide, 0.95);
+
+      ctx.save();
+      ctx.translate(0, 30 * (1 - reveal));
+      ctx.globalAlpha = 0.15 + reveal * 0.85;
+      ctx.fillStyle = slide.accent;
+      ctx.fillRect(52, 182, 6, 382);
+      drawText(slide.title, 82, 220, 540, 54, "800 42px Lexend, Segoe UI, Arial, sans-serif", "#ffffff");
+      drawText(slide.body, 82, 404, 530, 30, "600 20px Lexend, Segoe UI, Arial, sans-serif", "rgba(226,232,240,0.92)");
+
+      let px = 82;
+      let py = 520;
+      slide.pills.forEach((pill) => {
+        const width = ctx.measureText(pill).width + 34;
+        roundedRect(px, py, width, 38, 19, "rgba(255,255,255,0.08)");
+        ctx.fillStyle = slide.accent;
+        ctx.font = "700 15px Lexend, Segoe UI, Arial, sans-serif";
+        ctx.fillText(pill, px + 18, py + 24);
+        px += width + 12;
+        if (px > 560) {
+          px = 82;
+          py += 50;
+        }
+      });
+      ctx.restore();
+
+      drawVisual(slide.visual, slide.accent, localT);
+      drawVisualExtra(slide.visual, slide.accent, localT);
+      drawProgress(second);
+    }
+
+    async function startRecording() {
+      const types = ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"];
+      const mimeType = types.find((type) => MediaRecorder.isTypeSupported(type)) || "";
+      const stream = canvas.captureStream(FPS);
+      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+      const chunks = [];
+      recorder.ondataavailable = (event) => {
+        if (event.data && event.data.size) chunks.push(event.data);
+      };
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: mimeType || "video/webm" });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.download = "vui-studify-explainer.webm";
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        window.__videoExported = true;
+      };
+
+      recorder.start(1000);
+      const started = performance.now();
+      function frame() {
+        const elapsed = performance.now() - started;
+        render(elapsed);
+        if (elapsed < TOTAL_SECONDS * 1000) {
+          requestAnimationFrame(frame);
+        } else {
+          render(TOTAL_SECONDS * 1000);
+          recorder.stop();
+        }
+      }
+
+      render(0);
+      requestAnimationFrame(frame);
+    }
+
+    window.addEventListener("load", () => {
+      startRecording().catch((error) => {
+        console.error(error);
+        window.__videoError = String(error);
+      });
+    });
+  </script>
+</body>
+</html>
