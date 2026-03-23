@@ -59,7 +59,7 @@ export default function Sidebar() {
         { name: 'Leaderboard', href: '/leaderboard', icon: 'leaderboard' },
         { name: 'Past Questions', href: '/past-questions', icon: 'history_edu' },
         { name: 'Question Generator', href: '/generator', icon: 'psychology' },
-        { name: 'Snake Game', href: '/snake', icon: 'stadia_controller' },
+        // { name: 'Snake Game', href: '/snake', icon: 'stadia_controller' },
         { name: 'Document Simplifier', href: '/simplifier', icon: 'auto_stories' },
         { name: 'Essay Grader', href: '/essay-grader', icon: 'grading' },
         { name: 'Flashcards', href: '/flashcards', icon: 'style' },
