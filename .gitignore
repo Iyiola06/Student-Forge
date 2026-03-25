@@ -5,3 +5,7 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# React Native mobile app – separate project, keep out of web repo
+mobile/
+app/mobile-bridge/

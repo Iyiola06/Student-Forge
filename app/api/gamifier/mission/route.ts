@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { createClient } from '@/lib/supabase/server';
+import { createAuthedRouteClient } from '@/lib/supabase/routeAuth';
 import {
     AdventureNode,
     RewardOption,
@@ -322,9 +322,8 @@ function hydrateRun(run: any, nodes: any[]) {
     };
 }
 
-export async function GET() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+export async function GET(request: Request) {
+    const { supabase, user } = await createAuthedRouteClient(request);
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { data: run } = await supabase
@@ -348,9 +347,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-    const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const { supabase, user } = await createAuthedRouteClient(request);
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const parsed = requestSchema.safeParse(await request.json().catch(() => ({})));
     if (!parsed.success) {

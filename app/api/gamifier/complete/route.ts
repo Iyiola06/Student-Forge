@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createClient } from '@/lib/supabase/server';
+import { createAuthedRouteClient } from '@/lib/supabase/routeAuth';
 import { missionXpConfig } from '@/lib/gamifier/adventure';
 
 const requestSchema = z.object({
@@ -8,8 +8,7 @@ const requestSchema = z.object({
 });
 
 export async function POST(request: Request) {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const { supabase, user } = await createAuthedRouteClient(request);
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const parsed = requestSchema.safeParse(await request.json().catch(() => ({})));

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateObject, streamObject } from 'ai';
 import { z } from 'zod';
-import { createClient } from '@/lib/supabase/server';
+import { createAuthedRouteClient } from '@/lib/supabase/routeAuth';
 
 const google = createGoogleGenerativeAI({
     apiKey: process.env.GEMINI_API_KEY || '',
@@ -15,10 +15,8 @@ const MAX_CHARS = 25000;
 
 export async function POST(request: Request) {
     try {
-        const supabase = await createClient();
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-        if (authError || !user) {
+        const { supabase, user } = await createAuthedRouteClient(request);
+        if (!user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 

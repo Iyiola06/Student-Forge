@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 // @ts-ignore
 declare module 'pdfjs-dist/legacy/build/pdf.worker.mjs';
 
-import { createClient } from '@/lib/supabase/server';
+import { createAuthedRouteClient } from '@/lib/supabase/routeAuth';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Polyfill DOMMatrix for pdfjs-dist v5 in Node.js environment
@@ -40,10 +40,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
     try {
-        const supabase = await createClient();
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-        if (authError || !user) {
+        const { supabase, user } = await createAuthedRouteClient(request);
+        if (!user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 

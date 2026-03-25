@@ -91,7 +91,7 @@ export default function BossBattle({
     }, [content]);
 
     useEffect(() => {
-        let timer: NodeJS.Timeout;
+        let timer: ReturnType<typeof setInterval> | undefined;
         if (battleState === 'fighting' && !selectedOption && timeLeft > 0) {
             timer = setInterval(() => {
                 setTimeLeft(t => {
@@ -107,7 +107,9 @@ export default function BossBattle({
                 });
             }, 1000);
         }
-        return () => clearInterval(timer);
+        return () => {
+            if (timer) clearInterval(timer);
+        };
     }, [battleState, selectedOption, timeLeft]);
 
     const handleAnswer = (option: string) => {

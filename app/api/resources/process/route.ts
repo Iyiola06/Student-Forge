@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 // @ts-ignore
 declare module 'pdfjs-dist/legacy/build/pdf.worker.mjs';
 
-import { createClient as createServerClient } from '@/lib/supabase/server';
+import { createAuthedRouteClient } from '@/lib/supabase/routeAuth';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
@@ -166,14 +166,11 @@ async function processResource(
 
 export async function POST(request: Request) {
     try {
-        const supabase = await createServerClient();
-        const { data: { session }, error: authError } = await supabase.auth.getSession();
-
-        if (authError || !session?.user || !session.access_token) {
+        const { supabase, user, accessToken } = await createAuthedRouteClient(request);
+        if (!user || !accessToken) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const user = session.user;
         const { filePath, fileName, fileType, fileSize, extractedText } = await request.json();
 
         if (!filePath) {
@@ -228,7 +225,7 @@ export async function POST(request: Request) {
         }
 
         // Process the file synchronously — no fire-and-forget, result is reliable
-        await processResource(filePath, fileName, fileType, fileSize, resourceData.id, session.access_token);
+        await processResource(filePath, fileName, fileType, fileSize, resourceData.id, accessToken);
 
         // Return the final status directly from this same request
         return NextResponse.json(

@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 @import "ckeditor5/ckeditor5.css";
 @plugin "@tailwindcss/typography";
 
@@ -166,4 +166,28 @@ html {
 
 .dark html {
   scrollbar-color: #334155 transparent;
+}
+
+/* ─── CKEditor mobile overrides ─────────────────────────────────────────── */
+
+/* Minimum height for the editable area – taller on mobile means less
+   zooming and more comfortable typing. */
+.ckeditor-mobile-wrapper .ck-editor__editable {
+  min-height: 180px;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+@media (min-width: 768px) {
+  .ckeditor-mobile-wrapper .ck-editor__editable {
+    min-height: 224px;
+  }
+}
+
+/* Allow the toolbar to scroll horizontally on small screens instead of
+   wrapping awkwardly or overflowing out of the card. */
+.ckeditor-mobile-wrapper .ck-toolbar {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }

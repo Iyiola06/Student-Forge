@@ -21,6 +21,38 @@ interface EditorParts {
   Undo: any;
 }
 
+// Start loading CKEditor immediately when this module is imported (not lazily on mount).
+// This means the download begins as soon as the generator page loads, so by the time
+// the user reaches a theory question on mobile the editor is already ready.
+let editorPartsPromise: Promise<EditorParts> | null = null;
+
+function getEditorParts(): Promise<EditorParts> {
+  if (!editorPartsPromise) {
+    editorPartsPromise = Promise.all([
+      import('@ckeditor/ckeditor5-react'),
+      import('ckeditor5'),
+    ]).then(([reactModule, editorModule]) => ({
+      CKEditor: reactModule.CKEditor,
+      ClassicEditor: editorModule.ClassicEditor,
+      Essentials: editorModule.Essentials,
+      Paragraph: editorModule.Paragraph,
+      Bold: editorModule.Bold,
+      Italic: editorModule.Italic,
+      Underline: editorModule.Underline,
+      List: editorModule.List,
+      Heading: editorModule.Heading,
+      Undo: editorModule.Undo,
+    }));
+  }
+  return editorPartsPromise;
+}
+
+// Kick off the load immediately when this module is first imported.
+getEditorParts().catch(() => {
+  // Reset so it can be retried on next render if it failed transiently.
+  editorPartsPromise = null;
+});
+
 export default function TheoryAnswerEditor({ value, onChange, disabled = false }: TheoryAnswerEditorProps) {
   const [editorParts, setEditorParts] = useState<EditorParts | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
@@ -28,25 +60,9 @@ export default function TheoryAnswerEditor({ value, onChange, disabled = false }
   useEffect(() => {
     let isMounted = true;
 
-    Promise.all([
-      import('@ckeditor/ckeditor5-react'),
-      import('ckeditor5'),
-    ])
-      .then(([reactModule, editorModule]) => {
-        if (!isMounted) return;
-
-        setEditorParts({
-          CKEditor: reactModule.CKEditor,
-          ClassicEditor: editorModule.ClassicEditor,
-          Essentials: editorModule.Essentials,
-          Paragraph: editorModule.Paragraph,
-          Bold: editorModule.Bold,
-          Italic: editorModule.Italic,
-          Underline: editorModule.Underline,
-          List: editorModule.List,
-          Heading: editorModule.Heading,
-          Undo: editorModule.Undo,
-        });
+    getEditorParts()
+      .then((parts) => {
+        if (isMounted) setEditorParts(parts);
       })
       .catch((error) => {
         console.error('CKEditor failed to load:', error);
@@ -69,7 +85,7 @@ export default function TheoryAnswerEditor({ value, onChange, disabled = false }
           onChange={(event) => onChange(event.target.value)}
           disabled={disabled}
           placeholder="Write your answer here..."
-          className="w-full h-56 p-6 rounded-[2rem] bg-[#f5f5f8] dark:bg-[#13131a] border-2 border-slate-200 dark:border-[#2d2d3f] outline-none text-base font-medium text-slate-900 dark:text-white resize-none"
+          className="w-full min-h-[180px] md:min-h-[224px] p-4 md:p-6 rounded-[2rem] bg-[#f5f5f8] dark:bg-[#13131a] border-2 border-slate-200 dark:border-[#2d2d3f] outline-none text-sm md:text-base font-medium text-slate-900 dark:text-white resize-none"
         />
       </div>
     );
@@ -77,7 +93,7 @@ export default function TheoryAnswerEditor({ value, onChange, disabled = false }
 
   if (!editorParts) {
     return (
-      <div className="rounded-[2rem] border-2 border-slate-200 dark:border-[#2d2d3f] bg-white dark:bg-[#13131a] px-6 py-10 text-center text-sm font-medium text-slate-600 dark:text-slate-300">
+      <div className="rounded-[2rem] border-2 border-slate-200 dark:border-[#2d2d3f] bg-white dark:bg-[#13131a] px-4 py-8 md:px-6 md:py-10 text-center text-sm font-medium text-slate-600 dark:text-slate-300">
         Loading rich text editor...
       </div>
     );
@@ -97,7 +113,7 @@ export default function TheoryAnswerEditor({ value, onChange, disabled = false }
   } = editorParts;
 
   return (
-    <div className="rounded-[2rem] border-2 border-slate-200 dark:border-[#2d2d3f] overflow-hidden bg-white dark:bg-[#13131a]">
+    <div className="rounded-[2rem] border-2 border-slate-200 dark:border-[#2d2d3f] overflow-hidden bg-white dark:bg-[#13131a] ckeditor-mobile-wrapper">
       <CKEditor
         disabled={disabled}
         editor={ClassicEditor}

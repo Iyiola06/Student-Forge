@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createClient } from '@/lib/supabase/server';
+import { createAuthedRouteClient } from '@/lib/supabase/routeAuth';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import {
     ChallengeType,
     GameMode,
@@ -289,7 +290,7 @@ function ensureBossRound(rounds: GameRound[]) {
     return next.map((round, index) => ({ ...round, roundOrder: index }));
 }
 
-async function fetchData(supabase: Awaited<ReturnType<typeof createClient>>, userId: string, resourceId?: string) {
+async function fetchData(supabase: SupabaseClient, userId: string, resourceId?: string) {
     const [resourcesResult, flashDecksResult, quizzesResult, masteryResult] = await Promise.all([
         supabase
             .from('resources')
@@ -463,9 +464,8 @@ function buildRoundsForMode(mode: GameMode, data: Awaited<ReturnType<typeof fetc
     };
 }
 
-export async function GET() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+export async function GET(request: Request) {
+    const { supabase, user } = await createAuthedRouteClient(request);
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { data: session } = await supabase
@@ -489,9 +489,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-    const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const { supabase, user } = await createAuthedRouteClient(request);
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const parsed = requestSchema.safeParse(await request.json().catch(() => ({})));
     if (!parsed.success) {
