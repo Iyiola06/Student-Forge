@@ -91,11 +91,11 @@ export default function Sidebar() {
       <div className="glass-panel sticky top-4 z-40 flex items-center justify-between px-4 py-3 md:hidden">
         <Link href="/dashboard" className="flex items-center gap-3">
           <div className="relative size-10 overflow-hidden rounded-2xl bg-[#102117] p-1 shadow-[0_14px_30px_rgba(10,21,15,0.22)]">
-            <Image src="/logo-favicon.png" alt="VUI Studify" fill className="object-contain p-1" />
+            <Image src="/icon-192.png" alt="VUI Studify" fill className="object-contain p-1" />
           </div>
           <div>
             <p className="eyebrow">VUI Studify</p>
-            <p className="text-sm font-bold text-slate-700 dark:text-slate-200">Daily revision loop</p>
+            <p className="text-sm font-bold text-slate-700 dark:text-slate-200">Study workspace</p>
           </div>
         </Link>
         <button
@@ -124,11 +124,11 @@ export default function Sidebar() {
         <div className="nvidia-line px-4 py-4">
           <Link href="/dashboard" className="flex items-center gap-3">
             <div className="relative size-11 overflow-hidden rounded-xl bg-[#102117] p-1 shadow-[0_10px_24px_rgba(10,21,15,0.18)]">
-              <Image src="/logo-favicon.png" alt="VUI Studify" fill className="object-contain p-1" />
+              <Image src="/icon-192.png" alt="VUI Studify" fill className="object-contain p-1" />
             </div>
             <div>
               <p className="eyebrow">VUI Studify</p>
-              <p className="mt-0.5 text-[13px] font-bold text-slate-700 dark:text-slate-200">Upload. Generate. Review.</p>
+              <p className="mt-0.5 text-[13px] font-bold text-slate-700 dark:text-slate-200">Study workspace</p>
             </div>
           </Link>
         </div>

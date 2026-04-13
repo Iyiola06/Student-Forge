@@ -127,7 +127,7 @@ export default function PwaInstallPrompt() {
                 <div className="flex flex-col items-center text-center">
                     <div className="relative size-20 rounded-2xl shadow-lg border-4 border-white dark:border-[#101022] overflow-hidden bg-white mb-4">
                         <Image
-                            src="/logo-favicon.png"
+                            src="/apple-touch-icon.png"
                             alt="VUI Studify App Icon"
                             fill
                             className="object-contain p-1"

@@ -49,7 +49,7 @@ export default function ReviewPage() {
   const currentItem = queue?.items[currentIndex] ?? null;
   const remainingCount = useMemo(
     () => Math.max(0, (queue?.items.length ?? 0) - currentIndex - (currentItem ? 1 : 0)),
-    [queue, currentIndex, currentItem]
+    [currentIndex, currentItem, queue]
   );
 
   async function startSession(sessionType: ReviewSessionType) {
@@ -81,6 +81,7 @@ export default function ReviewPage() {
 
   async function submitAnswer(result: 'correct' | 'incorrect') {
     if (!queue || !currentItem) return;
+
     setIsSubmitting(true);
     setError(null);
 
@@ -122,31 +123,29 @@ export default function ReviewPage() {
 
   const sidebar = (
     <>
-      <section className="glass-panel p-5">
+      <section className="glass-panel app-panel-tight">
         <p className="eyebrow">Review Signals</p>
-        <div className="mt-4 space-y-3">
-          <div className="rounded-[24px] border border-black/5 bg-white/55 p-4 dark:border-white/8 dark:bg-white/5">
-            <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">Due in session</p>
-            <p className="mt-3 text-3xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">
-              {queue?.dueCount ?? 0}
-            </p>
+        <div className="mt-4 app-list">
+          <div className="app-list-row">
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">Due in session</p>
+              <p className="mt-2 text-2xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">{queue?.dueCount ?? 0}</p>
+            </div>
           </div>
-          <div className="rounded-[24px] border border-black/5 bg-white/55 p-4 dark:border-white/8 dark:bg-white/5">
-            <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">Weak topics</p>
-            <p className="mt-3 text-3xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">
-              {queue?.weakTopicCount ?? 0}
-            </p>
+          <div className="app-list-row">
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">Weak topics</p>
+              <p className="mt-2 text-2xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">{queue?.weakTopicCount ?? 0}</p>
+            </div>
           </div>
         </div>
       </section>
-      <section className="glass-panel p-5">
+
+      <section className="glass-panel app-panel-tight">
         <p className="eyebrow">Fallback Route</p>
-        <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
-          Legacy flashcard drills still work, but this queue now updates due dates and topic mastery after every answer.
-        </p>
         <Link
           href="/flashcards"
-          className="mt-4 inline-flex h-11 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623]"
+          className="mt-4 inline-flex h-10 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623]"
         >
           Open flashcards
         </Link>
@@ -155,12 +154,7 @@ export default function ReviewPage() {
   );
 
   return (
-    <AppShell
-      eyebrow="Review"
-      title="Daily review queue"
-      description="This is now the operating layer of the product: one due-first queue that records each answer, updates scheduling, and surfaces weak topics automatically."
-      sidebar={sidebar}
-    >
+    <AppShell eyebrow="Review" title="Daily review queue" sidebar={sidebar}>
       {error ? (
         <div className="rounded-[24px] border border-red-500/15 bg-red-500/8 px-5 py-4 text-sm text-red-600 dark:text-red-300">
           {error}
@@ -175,51 +169,62 @@ export default function ReviewPage() {
 
       {!queue ? (
         <>
-          <section className="grid gap-6 lg:grid-cols-3">
-            {sessionModes.map((mode) => (
-              <div key={mode.id} className="glass-panel p-6">
-                <p className="eyebrow">Session Mode</p>
-                <h3 className="panel-title mt-2">{mode.label}</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{mode.body}</p>
-                <button
-                  onClick={() => startSession(mode.id)}
-                  disabled={startingMode === mode.id}
-                  className="mt-5 inline-flex h-11 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623] disabled:opacity-60"
-                >
-                  {startingMode === mode.id ? 'Starting...' : 'Start session'}
-                </button>
-              </div>
-            ))}
+          <section className="glass-panel app-panel">
+            <p className="eyebrow">Session Mode</p>
+            <h3 className="panel-title mt-2">Choose how much review you want</h3>
+            <div className="mt-4 app-list">
+              {sessionModes.map((mode) => (
+                <div key={mode.id} className="app-list-row items-center justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-black text-slate-950 dark:text-white">{mode.label}</p>
+                    <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">{mode.body}</p>
+                  </div>
+                  <button
+                    onClick={() => startSession(mode.id)}
+                    disabled={startingMode === mode.id}
+                    className="inline-flex h-10 shrink-0 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623] disabled:opacity-60"
+                  >
+                    {startingMode === mode.id ? 'Starting...' : 'Start session'}
+                  </button>
+                </div>
+              ))}
+            </div>
           </section>
 
-          <section className="glass-panel p-6">
-            <p className="eyebrow">What happens now</p>
-            <h3 className="panel-title mt-2">The queue is no longer just a list</h3>
-            <div className="mt-5 grid gap-3 md:grid-cols-3">
-              <div className="rounded-[24px] border border-black/5 bg-white/55 p-4 dark:border-white/8 dark:bg-white/5">
-                <p className="text-sm font-black text-slate-950 dark:text-white">Legacy sync</p>
-                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                  Existing flashcards and quiz questions are pulled into the review engine automatically.
-                </p>
+          <section className="glass-panel app-panel">
+            <p className="eyebrow">Engine</p>
+            <h3 className="panel-title mt-2">What gets updated</h3>
+            <div className="mt-4 app-list">
+              <div className="app-list-row">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-black text-slate-950 dark:text-white">Legacy sync</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                    Existing flashcards and quiz questions are pulled into the review engine automatically.
+                  </p>
+                </div>
               </div>
-              <div className="rounded-[24px] border border-black/5 bg-white/55 p-4 dark:border-white/8 dark:bg-white/5">
-                <p className="text-sm font-black text-slate-950 dark:text-white">Spaced repetition</p>
-                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                  Every answer updates next due date, mastery score, and the learning state for that item.
-                </p>
+              <div className="app-list-row">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-black text-slate-950 dark:text-white">Spaced repetition</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                    Every answer updates next due date, mastery score, and the learning state for that item.
+                  </p>
+                </div>
               </div>
-              <div className="rounded-[24px] border border-black/5 bg-white/55 p-4 dark:border-white/8 dark:bg-white/5">
-                <p className="text-sm font-black text-slate-950 dark:text-white">Topic adaptation</p>
-                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                  Weak-topic counts and due pressure now come from actual review results, not static placeholders.
-                </p>
+              <div className="app-list-row">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-black text-slate-950 dark:text-white">Topic adaptation</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                    Weak-topic counts and due pressure now come from actual review results, not static placeholders.
+                  </p>
+                </div>
               </div>
             </div>
           </section>
         </>
       ) : (
-        <section className="grid gap-6 lg:grid-cols-[1.12fr_0.88fr]">
-          <div className="glass-panel p-6">
+        <section className="grid gap-5 lg:grid-cols-[1.12fr_0.88fr]">
+          <section className="glass-panel app-panel">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="eyebrow">{queue.sessionType.replace(/_/g, ' ')}</p>
@@ -227,24 +232,25 @@ export default function ReviewPage() {
                   Item {currentIndex + 1} of {queue.items.length}
                 </h3>
               </div>
-              <span className="metric-chip">
-                {currentItem?.masteryScore ?? 0}% mastery
-              </span>
+              <span className="metric-chip">{currentItem?.masteryScore ?? 0}% mastery</span>
             </div>
 
             {currentItem ? (
-              <div className="mt-6 space-y-5">
-                <div className="rounded-[28px] border border-black/5 bg-white/55 p-6 dark:border-white/8 dark:bg-white/5">
+              <div className="mt-5 space-y-4">
+                <div className="rounded-[24px] border border-black/5 bg-white/55 p-5 dark:border-white/8 dark:bg-white/5">
                   <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">
                     {currentItem.itemType === 'flashcard' ? 'Prompt' : 'Question'}
                   </p>
-                  <p className="mt-4 text-xl font-black leading-8 text-slate-950 dark:text-white">
+                  <p className="mt-3 text-lg font-black leading-8 text-slate-950 dark:text-white">
                     {currentItem.contentPayload?.front || currentItem.contentPayload?.question || currentItem.sourceTopic || 'Review item'}
                   </p>
                   {currentItem.contentPayload?.options?.length ? (
-                    <div className="mt-5 grid gap-3">
+                    <div className="mt-4 grid gap-2.5">
                       {currentItem.contentPayload.options.map((option: string, index: number) => (
-                        <div key={`${option}-${index}`} className="rounded-2xl border border-black/5 bg-white/70 px-4 py-3 text-sm text-slate-700 dark:border-white/8 dark:bg-white/6 dark:text-slate-200">
+                        <div
+                          key={`${option}-${index}`}
+                          className="rounded-2xl border border-black/5 bg-white/70 px-4 py-2.5 text-sm text-slate-700 dark:border-white/8 dark:bg-white/6 dark:text-slate-200"
+                        >
                           {option}
                         </div>
                       ))}
@@ -253,17 +259,16 @@ export default function ReviewPage() {
                 </div>
 
                 {showAnswer ? (
-                  <div className="rounded-[28px] border border-emerald-500/15 bg-emerald-500/8 p-6">
-                    <p className="text-[11px] font-black uppercase tracking-[0.24em] text-emerald-700 dark:text-emerald-300">
-                      Answer
-                    </p>
-                    <p className="mt-4 text-base font-bold leading-7 text-slate-900 dark:text-white">
-                      {currentItem.contentPayload?.back || currentItem.contentPayload?.answer || currentItem.contentPayload?.model_answer || 'No answer stored yet.'}
+                  <div className="rounded-[24px] border border-emerald-500/15 bg-emerald-500/8 p-5">
+                    <p className="text-[11px] font-black uppercase tracking-[0.24em] text-emerald-700 dark:text-emerald-300">Answer</p>
+                    <p className="mt-3 text-base font-bold leading-7 text-slate-900 dark:text-white">
+                      {currentItem.contentPayload?.back ||
+                        currentItem.contentPayload?.answer ||
+                        currentItem.contentPayload?.model_answer ||
+                        'No answer stored yet.'}
                     </p>
                     {currentItem.contentPayload?.explanation ? (
-                      <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                        {currentItem.contentPayload.explanation}
-                      </p>
+                      <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{currentItem.contentPayload.explanation}</p>
                     ) : null}
                   </div>
                 ) : null}
@@ -271,64 +276,70 @@ export default function ReviewPage() {
                 <div className="flex flex-wrap gap-3">
                   <button
                     onClick={() => setShowAnswer((value) => !value)}
-                    className="inline-flex h-11 items-center justify-center rounded-2xl border border-black/8 bg-white/60 px-4 text-sm font-black text-slate-950 transition hover:border-[#1a5c2a]/30 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                    className="inline-flex h-10 items-center justify-center rounded-2xl border border-black/8 bg-white/60 px-4 text-sm font-black text-slate-950 transition hover:border-[#1a5c2a]/30 dark:border-white/10 dark:bg-white/5 dark:text-white"
                   >
                     {showAnswer ? 'Hide answer' : 'Reveal answer'}
                   </button>
                   <button
                     onClick={() => submitAnswer('incorrect')}
                     disabled={isSubmitting}
-                    className="inline-flex h-11 items-center justify-center rounded-2xl border border-amber-500/20 bg-amber-500/10 px-4 text-sm font-black text-amber-700 transition hover:bg-amber-500/15 dark:text-amber-300 disabled:opacity-60"
+                    className="inline-flex h-10 items-center justify-center rounded-2xl border border-amber-500/20 bg-amber-500/10 px-4 text-sm font-black text-amber-700 transition hover:bg-amber-500/15 dark:text-amber-300 disabled:opacity-60"
                   >
                     Needs work
                   </button>
                   <button
                     onClick={() => submitAnswer('correct')}
                     disabled={isSubmitting}
-                    className="inline-flex h-11 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623] disabled:opacity-60"
+                    className="inline-flex h-10 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623] disabled:opacity-60"
                   >
                     I got it
                   </button>
                 </div>
               </div>
             ) : null}
-          </div>
+          </section>
 
-          <div className="space-y-6">
-            <section className="glass-panel p-6">
+          <div className="space-y-5">
+            <section className="glass-panel app-panel">
               <p className="eyebrow">Queue Health</p>
-              <div className="mt-5 grid gap-3">
-                <div className="rounded-[24px] border border-black/5 bg-white/55 p-4 dark:border-white/8 dark:bg-white/5">
-                  <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">Remaining</p>
-                  <p className="mt-3 text-3xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">{remainingCount}</p>
+              <div className="mt-4 app-list">
+                <div className="app-list-row">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">Remaining</p>
+                    <p className="mt-2 text-2xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">{remainingCount}</p>
+                  </div>
                 </div>
-                <div className="rounded-[24px] border border-black/5 bg-white/55 p-4 dark:border-white/8 dark:bg-white/5">
-                  <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">Weak topics</p>
-                  <p className="mt-3 text-3xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">{queue.weakTopicCount}</p>
+                <div className="app-list-row">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">Weak topics</p>
+                    <p className="mt-2 text-2xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">{queue.weakTopicCount}</p>
+                  </div>
                 </div>
               </div>
             </section>
 
-            <section className="glass-panel p-6">
+            <section className="glass-panel app-panel">
               <p className="eyebrow">Weak Topics</p>
               <h3 className="panel-title mt-2">Where the system sees risk</h3>
-              <div className="mt-5 space-y-3">
+              <div className="mt-4">
                 {queue.weakTopics.length ? (
-                  queue.weakTopics.map((topic) => (
-                    <div key={topic.topic} className="rounded-[24px] border border-black/5 bg-white/55 p-4 dark:border-white/8 dark:bg-white/5">
-                      <div className="flex items-center justify-between gap-4">
-                        <p className="text-sm font-black text-slate-950 dark:text-white">{topic.topic}</p>
-                        <span className="text-sm font-black text-amber-600 dark:text-amber-300">{topic.masteryScore}%</span>
+                  <div className="app-list">
+                    {queue.weakTopics.map((topic) => (
+                      <div key={topic.topic} className="app-list-row">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-3">
+                            <p className="text-sm font-black text-slate-950 dark:text-white">{topic.topic}</p>
+                            <span className="text-sm font-black text-amber-600 dark:text-amber-300">{topic.masteryScore}%</span>
+                          </div>
+                          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                            {topic.dueCount} due items / {topic.mistakesCount} mistakes
+                          </p>
+                        </div>
                       </div>
-                      <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                        {topic.dueCount} due items • {topic.mistakesCount} mistakes
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <div className="rounded-[24px] border border-dashed border-black/8 bg-white/45 p-5 text-sm text-slate-500 dark:border-white/10 dark:bg-white/5 dark:text-slate-400">
-                    Weak topics will sharpen as you complete more review attempts.
+                    ))}
                   </div>
+                ) : (
+                  <div className="app-empty">Weak topics will sharpen as you complete more review attempts.</div>
                 )}
               </div>
             </section>

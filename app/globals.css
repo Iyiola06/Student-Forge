@@ -231,6 +231,62 @@
     @apply p-4 md:p-5;
   }
 
+  .app-list {
+    @apply overflow-hidden rounded-[20px] border;
+    border-color: rgba(15, 23, 42, 0.06);
+    background: rgba(255, 255, 255, 0.54);
+  }
+
+  .dark .app-list {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .app-list-row {
+    @apply flex items-start gap-3 px-4 py-3;
+  }
+
+  .app-list-row + .app-list-row {
+    border-top: 1px solid rgba(15, 23, 42, 0.06);
+  }
+
+  .dark .app-list-row + .app-list-row {
+    border-top-color: rgba(255, 255, 255, 0.07);
+  }
+
+  .app-list-button {
+    @apply w-full text-left transition;
+  }
+
+  .app-list-button:hover {
+    background: rgba(26, 92, 42, 0.05);
+  }
+
+  .dark .app-list-button:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .app-list-button[data-active='true'] {
+    background: rgba(26, 92, 42, 0.08);
+  }
+
+  .dark .app-list-button[data-active='true'] {
+    background: rgba(96, 210, 132, 0.08);
+  }
+
+  .app-empty {
+    @apply rounded-[20px] border border-dashed px-4 py-4 text-sm;
+    border-color: rgba(15, 23, 42, 0.08);
+    background: rgba(255, 255, 255, 0.42);
+    color: rgb(100 116 139);
+  }
+
+  .dark .app-empty {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgb(148 163 184);
+  }
+
   .metric-tile {
     @apply rounded-[22px] border p-4;
     border-color: rgba(255, 255, 255, 0.1);

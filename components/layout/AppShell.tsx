@@ -38,11 +38,6 @@ export default function AppShell({
               <h1 className="mt-1.5 text-2xl font-black tracking-[-0.05em] text-slate-950 dark:text-white md:text-3xl">
                 {title}
               </h1>
-              {description ? (
-                <p className="mt-1.5 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">
-                  {description}
-                </p>
-              ) : null}
             </div>
             <div className="flex shrink-0 items-center gap-3">
               <Link href="/wallet" className="metric-chip hidden md:inline-flex">

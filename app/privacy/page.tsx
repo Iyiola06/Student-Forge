@@ -12,7 +12,7 @@ export default function PrivacyPolicyPage() {
                 <Link href="/" className="flex items-center gap-4 group">
                     <div className="relative size-10 flex items-center justify-center transition-transform group-hover:scale-110">
                         <Image
-                            src="/logo-favicon.png"
+                            src="/icon-192.png"
                             alt="VUI Studify Logo"
                             width={40}
                             height={40}
@@ -70,7 +70,7 @@ export default function PrivacyPolicyPage() {
                         <section className="space-y-4">
                             <h2 className="text-2xl font-bold text-[#1a5c2a]">4. AI Data Processing</h2>
                             <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                                Your uploaded study notes and PDFs are processed by AI models to generate quizzes and summaries. We use secure API connections to these services (like Google Gemini) and do not use your private data to train public models.
+                                Your uploaded study notes and PDFs are processed by study-generation models to create quizzes, flashcards, and summaries. We use secure API connections to these services and do not use your private data to train public models.
                             </p>
                         </section>
 
@@ -98,7 +98,7 @@ export default function PrivacyPolicyPage() {
 
             {/* Footer */}
             <footer className="py-10 text-center text-slate-500 dark:text-slate-600 border-t border-slate-200 dark:border-[#2d2d45]">
-                <p>Â© {new Date().getFullYear()} VUI Studify Inc. All rights reserved.</p>
+                <p>Copyright {new Date().getFullYear()} VUI Studify Inc. All rights reserved.</p>
             </footer>
         </div>
     );

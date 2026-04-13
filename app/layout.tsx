@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     default: 'VUI Studify',
     template: '%s | VUI Studify',
   },
-  description: 'Master any subject with AI-generated quizzes, flashcards, essay grading, and gamified study sessions. Built for students preparing for WAEC, JAMB, and university exams.',
+  description: 'Upload study materials, generate practice, and return to daily review in one focused workspace.',
   keywords: ['study', 'AI tutor', 'flashcards', 'quiz generator', 'essay grading', 'WAEC', 'JAMB', 'exam prep', 'Nigeria education', 'VUI Studify'],
   authors: [{ name: 'VUI Studify Team' }],
   appleWebApp: {
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'VUI Studify',
-    description: 'Master any subject with AI-generated quizzes, flashcards, essay grading, and gamified study sessions.',
+    description: 'Upload study materials, generate practice, and return to daily review in one focused workspace.',
     url: '/',
     siteName: 'VUI Studify',
     locale: 'en_US',
@@ -44,12 +44,16 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'VUI Studify',
-    description: 'Master any subject with AI-generated quizzes, flashcards, and gamified study sessions.',
+    description: 'Upload study materials, generate practice, and return to daily review in one focused workspace.',
     images: ['/logo-dark.png'],
   },
   icons: {
-    icon: '/logo-favicon.png',
-    apple: '/logo-favicon.png',
+    icon: [
+      { url: '/favicon.png', sizes: '64x64', type: 'image/png' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+    shortcut: '/favicon.png',
   },
 };
 
