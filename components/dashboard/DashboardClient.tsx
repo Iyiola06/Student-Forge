@@ -72,7 +72,6 @@ export default function DashboardClient({
 
   const firstName = profile?.full_name?.split(' ')[0] || 'Student';
   const dueTodayCount = dashboard.dueToday.length;
-  const nextResource = dashboard.recentResources[0];
   const topWeakTopic = dashboard.weakTopics[0];
   const balance = profile?.credit_balance ?? 0;
   const readiness = Math.min(
@@ -92,37 +91,36 @@ export default function DashboardClient({
 
   const sidebar = (
     <>
-      <section className="glass-panel p-5">
+      <section className="glass-panel app-panel-tight">
         <p className="eyebrow">Wallet</p>
-        <h3 className="mt-3 text-3xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">
+        <h3 className="mt-2 text-2xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">
           {balance} credits
         </h3>
         <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-          Credits are reserved for premium AI actions. Daily review stays light and habit-friendly.
+          Premium AI stays paid. Daily review stays light.
         </p>
         <Link
           href="/wallet"
-          className="mt-5 inline-flex h-11 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623]"
+          className="mt-4 inline-flex h-10 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623]"
         >
           Open wallet
         </Link>
       </section>
 
-      <section className="glass-panel p-5">
+      <section className="glass-panel app-panel-tight">
         <p className="eyebrow">Recent Sessions</p>
-        <div className="mt-4 space-y-3">
+        <div className="mt-3 space-y-2.5">
           {dashboard.recentSessions.length ? (
             dashboard.recentSessions.map((session) => (
-              <div key={session.id} className="rounded-2xl border border-black/5 bg-white/55 p-4 dark:border-white/8 dark:bg-white/5">
-                <div className="flex items-center justify-between">
+              <div key={session.id} className="rounded-[20px] border border-black/5 bg-white/55 p-3.5 dark:border-white/8 dark:bg-white/5">
+                <div className="flex items-center justify-between gap-3">
                   <p className="text-sm font-black capitalize text-slate-900 dark:text-white">
                     {session.session_type.replace(/_/g, ' ')}
                   </p>
                   <span className="metric-chip !px-2 !py-1 !text-[10px]">{session.status}</span>
                 </div>
-                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                  {session.completed_items}/{session.total_items} items •{' '}
-                  {new Date(session.started_at).toLocaleDateString()}
+                <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
+                  {session.completed_items}/{session.total_items} items • {new Date(session.started_at).toLocaleDateString()}
                 </p>
               </div>
             ))
@@ -138,63 +136,55 @@ export default function DashboardClient({
     <AppShell
       eyebrow="Daily Command"
       title={`Welcome back, ${firstName}`}
-      description="The product now revolves around one job: convert raw study material into a reliable review habit. Start with what is due, then fix weak areas, then generate more only when needed."
+      description="Convert raw material into a reliable review habit. Start with what is due, then generate only where you need more."
       sidebar={sidebar}
       actions={
         <Link
           href={dueTodayCount > 0 ? '/review' : '/generator'}
-          className="inline-flex h-11 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623]"
+          className="inline-flex h-10 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623]"
         >
           {dueTodayCount > 0 ? 'Start review' : 'Generate practice'}
         </Link>
       }
     >
-      <section className="glass-panel-strong p-6 text-white md:p-8">
-        <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+      <section className="glass-panel-strong app-panel text-white">
+        <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
           <div>
-            <p className="eyebrow !text-emerald-200/75">Today’s Focus</p>
-            <h2 className="mt-3 max-w-3xl text-4xl font-black tracking-[-0.06em] md:text-5xl">
+            <p className="eyebrow !text-emerald-200/75">Today's Focus</p>
+            <h2 className="mt-2 max-w-[13ch] text-[clamp(2rem,3.8vw,3.7rem)] font-black leading-[0.92] tracking-[-0.07em]">
               {dueTodayCount > 0
-                ? `${dueTodayCount} items are ready for today’s revision loop.`
+                ? `${dueTodayCount} items are ready for today's revision loop.`
                 : 'Your queue is clear. Generate a fresh practice set or deepen one weak topic.'}
             </h2>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/72 md:text-base">
-              Keep momentum by finishing due items first, then use generation only where you need fresh material.
+            <p className="mt-3 max-w-[56ch] text-sm leading-6 text-white/72">
+              Finish due items first, then use generation only where you need fresh material.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <span className="metric-chip !border-white/10 !bg-white/10 !text-white">
-                {dashboard.overdue.length} overdue
-              </span>
-              <span className="metric-chip !border-white/10 !bg-white/10 !text-white">
-                {dashboard.weakTopics.length} weak topics
-              </span>
-              <span className="metric-chip !border-white/10 !bg-white/10 !text-white">
-                {dashboard.firstReadyRate}% recent extraction success
-              </span>
-              <span className="metric-chip !border-white/10 !bg-white/10 !text-white">
-                {dashboard.reviewCompletionRate}% review completion
-              </span>
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              <span className="metric-chip !border-white/10 !bg-white/10 !text-white">{dashboard.overdue.length} overdue</span>
+              <span className="metric-chip !border-white/10 !bg-white/10 !text-white">{dashboard.weakTopics.length} weak topics</span>
+              <span className="metric-chip !border-white/10 !bg-white/10 !text-white">{dashboard.firstReadyRate}% extraction</span>
+              <span className="metric-chip !border-white/10 !bg-white/10 !text-white">{dashboard.reviewCompletionRate}% completion</span>
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
             {[
               { label: 'Readiness', value: `${readiness}%`, tone: 'text-emerald-200' },
               { label: 'Due today', value: `${dueTodayCount}`, tone: 'text-white' },
               { label: 'Low-balance risk', value: balance < 120 ? 'High' : 'Stable', tone: 'text-sky-200' },
               { label: 'Recent answers', value: `${dashboard.recentAttempts.length}`, tone: 'text-emerald-200' },
             ].map((item) => (
-              <div key={item.label} className="rounded-[24px] border border-white/10 bg-white/6 p-5">
+              <div key={item.label} className="metric-tile">
                 <p className="text-[11px] font-black uppercase tracking-[0.24em] text-white/55">{item.label}</p>
-                <p className={cn('mt-3 text-3xl font-black tracking-[-0.05em]', item.tone)}>{item.value}</p>
+                <p className={cn('mt-3 text-2xl font-black tracking-[-0.05em] md:text-3xl', item.tone)}>{item.value}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="glass-panel p-6">
+      <section className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
+        <div className="glass-panel app-panel">
           <div className="flex items-center justify-between">
             <div>
               <p className="eyebrow">Review Queue</p>
@@ -204,13 +194,10 @@ export default function DashboardClient({
               Open review
             </Link>
           </div>
-          <div className="mt-5 space-y-3">
+          <div className="mt-4 space-y-3">
             {dashboard.dueToday.length ? (
               dashboard.dueToday.slice(0, 6).map((item) => (
-                <div
-                  key={item.id}
-                  className="rounded-[24px] border border-black/5 bg-white/60 p-4 dark:border-white/8 dark:bg-white/5"
-                >
+                <div key={item.id} className="rounded-[22px] border border-black/5 bg-white/60 p-3.5 dark:border-white/8 dark:bg-white/5">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-sm font-black capitalize text-slate-950 dark:text-white">
@@ -222,27 +209,27 @@ export default function DashboardClient({
                     </div>
                     <span className="metric-chip !px-2 !py-1 !text-[10px]">{item.mastery_score}% mastery</span>
                   </div>
-                  <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
+                  <p className="mt-2.5 text-sm text-slate-500 dark:text-slate-400">
                     Due {new Date(item.due_at).toLocaleString()}
                   </p>
                 </div>
               ))
             ) : (
-              <div className="rounded-[24px] border border-dashed border-black/8 bg-white/45 p-5 text-sm text-slate-500 dark:border-white/10 dark:bg-white/5 dark:text-slate-400">
+              <div className="rounded-[22px] border border-dashed border-black/8 bg-white/45 p-4 text-sm text-slate-500 dark:border-white/10 dark:bg-white/5 dark:text-slate-400">
                 No due items yet. Save a flashcard deck or complete one generated quiz to start the review engine.
               </div>
             )}
           </div>
         </div>
 
-        <div className="glass-panel p-6">
+        <div className="glass-panel app-panel">
           <p className="eyebrow">Weak Topics</p>
           <h3 className="panel-title mt-2">Where confidence is lowest</h3>
-          <div className="mt-5 space-y-3">
+          <div className="mt-4 space-y-3">
             {dashboard.weakTopics.length ? (
               dashboard.weakTopics.slice(0, 5).map((topic) => (
-                <div key={topic.id} className="rounded-[24px] border border-black/5 bg-white/60 p-4 dark:border-white/8 dark:bg-white/5">
-                  <div className="flex items-center justify-between">
+                <div key={topic.id} className="rounded-[22px] border border-black/5 bg-white/60 p-3.5 dark:border-white/8 dark:bg-white/5">
+                  <div className="flex items-center justify-between gap-3">
                     <p className="text-sm font-black text-slate-950 dark:text-white">{topic.topic_label}</p>
                     <span className="text-sm font-black text-amber-600 dark:text-amber-300">{topic.mastery_score}%</span>
                   </div>
@@ -266,8 +253,8 @@ export default function DashboardClient({
         </div>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="glass-panel p-6">
+      <section className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="glass-panel app-panel">
           <div className="flex items-center justify-between">
             <div>
               <p className="eyebrow">Resource Health</p>
@@ -277,10 +264,10 @@ export default function DashboardClient({
               Open library
             </Link>
           </div>
-          <div className="mt-5 space-y-3">
+          <div className="mt-4 space-y-3">
             {dashboard.recentResources.length ? (
               dashboard.recentResources.map((resource) => (
-                <div key={resource.id} className="rounded-[24px] border border-black/5 bg-white/60 p-4 dark:border-white/8 dark:bg-white/5">
+                <div key={resource.id} className="rounded-[22px] border border-black/5 bg-white/60 p-3.5 dark:border-white/8 dark:bg-white/5">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-black text-slate-950 dark:text-white">{resource.title}</p>
@@ -290,7 +277,7 @@ export default function DashboardClient({
                     </div>
                     <span className="metric-chip !px-2 !py-1 !text-[10px]">{resource.processing_status || 'queued'}</span>
                   </div>
-                  <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                  <p className="mt-2.5 line-clamp-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
                     {resource.processing_error ||
                       resource.extracted_preview ||
                       'Extraction preview will appear here once the source text is available.'}
@@ -305,23 +292,28 @@ export default function DashboardClient({
           </div>
         </div>
 
-        <div className="glass-panel p-6">
+        <div className="glass-panel app-panel">
           <p className="eyebrow">Credit Activity</p>
           <h3 className="panel-title mt-2">Recent wallet movement</h3>
-          <div className="mt-5 space-y-3">
+          <div className="mt-4 space-y-3">
             {dashboard.recentTransactions.length ? (
               dashboard.recentTransactions.map((tx) => (
-                <div key={tx.id} className="rounded-[24px] border border-black/5 bg-white/60 p-4 dark:border-white/8 dark:bg-white/5">
+                <div key={tx.id} className="rounded-[22px] border border-black/5 bg-white/60 p-3.5 dark:border-white/8 dark:bg-white/5">
                   <div className="flex items-center justify-between gap-4">
                     <div className="min-w-0">
-                        <p className="truncate text-sm font-black text-slate-950 dark:text-white">
+                      <p className="truncate text-sm font-black text-slate-950 dark:text-white">
                         {tx.source.replace(/_/g, ' ')}
                       </p>
                       <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                         {new Date(tx.created_at).toLocaleString()}
                       </p>
                     </div>
-                    <span className={cn('text-sm font-black', tx.amount < 0 ? 'text-amber-600 dark:text-amber-300' : 'text-emerald-600 dark:text-emerald-300')}>
+                    <span
+                      className={cn(
+                        'text-sm font-black',
+                        tx.amount < 0 ? 'text-amber-600 dark:text-amber-300' : 'text-emerald-600 dark:text-emerald-300'
+                      )}
+                    >
                       {tx.amount > 0 ? '+' : ''}
                       {tx.amount}
                     </span>
@@ -329,7 +321,9 @@ export default function DashboardClient({
                 </div>
               ))
             ) : (
-              <p className="text-sm text-slate-500 dark:text-slate-400">Your wallet history will appear here after signup, usage, or purchase.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Your wallet history will appear here after signup, usage, or purchase.
+              </p>
             )}
           </div>
         </div>

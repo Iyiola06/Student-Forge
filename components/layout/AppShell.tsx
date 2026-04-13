@@ -35,11 +35,11 @@ export default function AppShell({
           <div className="app-topbar">
             <div className="min-w-0">
               <p className="eyebrow">{eyebrow}</p>
-              <h1 className="mt-2 text-3xl font-black tracking-[-0.05em] text-slate-950 dark:text-white md:text-4xl">
+              <h1 className="mt-1.5 text-2xl font-black tracking-[-0.05em] text-slate-950 dark:text-white md:text-3xl">
                 {title}
               </h1>
               {description ? (
-                <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300 md:text-base">
+                <p className="mt-1.5 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">
                   {description}
                 </p>
               ) : null}
@@ -53,7 +53,7 @@ export default function AppShell({
             </div>
           </div>
 
-          <div className={cn('mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]', !sidebar && 'xl:grid-cols-1')}>
+          <div className={cn('mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]', !sidebar && 'xl:grid-cols-1')}>
             <div className={cn('min-w-0', contentClassName)}>{children}</div>
             {sidebar ? <aside className="space-y-6">{sidebar}</aside> : null}
           </div>

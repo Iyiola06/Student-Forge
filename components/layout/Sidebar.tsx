@@ -62,7 +62,7 @@ export default function Sidebar() {
           key={link.href}
           href={link.href}
           className={cn(
-            'group flex items-center justify-between rounded-2xl px-3 py-3 text-sm font-bold transition-all',
+            'group flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-bold transition-all',
             isActive
               ? 'bg-[#102117] text-white shadow-[0_14px_30px_rgba(10,21,15,0.22)]'
               : 'text-slate-600 hover:bg-white/65 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/6 dark:hover:text-white'
@@ -71,7 +71,7 @@ export default function Sidebar() {
           <span className="flex items-center gap-3">
             <span
               className={cn(
-                'material-symbols-outlined rounded-xl p-2 text-[18px] transition-all',
+                'material-symbols-outlined rounded-lg p-1.5 text-[18px] transition-all',
                 isActive
                   ? 'bg-white/10 text-white'
                   : 'bg-slate-900/5 text-[#1a5c2a] group-hover:bg-[#1a5c2a]/10 dark:bg-white/5'
@@ -117,23 +117,23 @@ export default function Sidebar() {
 
       <aside
         className={cn(
-          'glass-panel fixed left-4 top-4 z-50 flex h-[calc(100vh-2rem)] w-[290px] flex-col overflow-hidden md:sticky md:left-0 md:top-4 md:z-20 md:w-[290px]',
+          'glass-panel fixed left-4 top-4 z-50 flex h-[calc(100vh-2rem)] w-[280px] flex-col overflow-hidden md:sticky md:left-0 md:top-4 md:z-20 md:w-[280px]',
           isOpen ? 'translate-x-0' : '-translate-x-[120%] md:translate-x-0'
         )}
       >
-        <div className="nvidia-line px-5 py-5">
+        <div className="nvidia-line px-4 py-4">
           <Link href="/dashboard" className="flex items-center gap-3">
-            <div className="relative size-12 overflow-hidden rounded-2xl bg-[#102117] p-1 shadow-[0_14px_30px_rgba(10,21,15,0.22)]">
+            <div className="relative size-11 overflow-hidden rounded-xl bg-[#102117] p-1 shadow-[0_10px_24px_rgba(10,21,15,0.18)]">
               <Image src="/logo-favicon.png" alt="VUI Studify" fill className="object-contain p-1" />
             </div>
             <div>
               <p className="eyebrow">VUI Studify</p>
-              <p className="mt-1 text-sm font-bold text-slate-700 dark:text-slate-200">Upload. Generate. Review.</p>
+              <p className="mt-0.5 text-[13px] font-bold text-slate-700 dark:text-slate-200">Upload. Generate. Review.</p>
             </div>
           </Link>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 py-4">
+        <div className="flex-1 overflow-y-auto px-3.5 py-3.5">
           <div className="space-y-2">
             <p className="px-3 text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">
               Core
@@ -149,12 +149,12 @@ export default function Sidebar() {
           </div>
         </div>
 
-        <div className="nvidia-line px-4 py-4">
-          <div className="glass-panel-strong rounded-[24px] px-4 py-4 text-white">
+        <div className="nvidia-line px-3.5 py-3.5">
+          <div className="glass-panel-strong rounded-[22px] px-3.5 py-3.5 text-white">
             <div className="flex items-center gap-3">
               <div
                 className={cn(
-                  'size-11 rounded-2xl bg-cover bg-center',
+                  'size-10 rounded-xl bg-cover bg-center',
                   isLoading ? 'animate-pulse bg-white/10' : ''
                 )}
                 style={{
@@ -171,7 +171,7 @@ export default function Sidebar() {
               </div>
               <button
                 onClick={handleLogout}
-                className="inline-flex size-9 items-center justify-center rounded-xl border border-white/12 bg-white/8 text-white/80 transition hover:bg-white/14"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-white/12 bg-white/8 text-white/80 transition hover:bg-white/14"
                 title="Log out"
               >
                 <span className="material-symbols-outlined text-[18px]">logout</span>
