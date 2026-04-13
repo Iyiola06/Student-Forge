@@ -2,10 +2,12 @@
 
 import Link from 'next/link';
 import Sidebar from '@/components/layout/Sidebar';
+import CreditStatusBanner from '@/components/billing/CreditStatusBanner';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { awardXp } from '@/app/actions/gamifier';
 import { jsPDF } from 'jspdf';
+import { getBillingErrorMessage } from '@/lib/billing/client';
 
 interface Resource {
     id: string;
@@ -77,7 +79,7 @@ export default function ExamReadyPage() {
             const result = await response.json();
 
             if (!response.ok) {
-                throw new Error(result.error || 'Failed to generate content');
+                throw new Error(getBillingErrorMessage(result, 'Failed to generate content'));
             }
 
             setSnapshotData(result.data);
@@ -210,6 +212,9 @@ export default function ExamReadyPage() {
                     ) : !snapshotData ? (
                         /* Input State */
                         <div className="max-w-3xl mx-auto w-full mt-10">
+                            <div className="mb-6">
+                                <CreditStatusBanner featureLabel="Exam snapshot" creditCost={40} />
+                            </div>
                             <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-8 shadow-sm">
                                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
                                     <span className="material-symbols-outlined text-[#5b5bfa]">bolt</span>

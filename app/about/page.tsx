@@ -252,7 +252,7 @@ export default function AboutPage() {
                             {
                                 emoji: 'ðŸ¤–',
                                 title: 'Harness AI for Every Student',
-                                desc: 'Powerful AI tools that were once only available to the privileged, now free for every student.',
+                                desc: 'Powerful AI study tools, now available through a flexible credit wallet built for real student budgets.',
                             },
                             {
                                 emoji: 'ðŸ¤',
@@ -319,7 +319,7 @@ export default function AboutPage() {
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <Link href="/signup">
                                 <button className="h-14 px-10 rounded-xl bg-white text-[#1a5c2a] font-black text-lg shadow-xl hover:scale-105 transition-all flex items-center gap-2">
-                                    Get Started Free
+                                    Create Your Wallet
                                     <span className="material-symbols-outlined text-xl">arrow_forward</span>
                                 </button>
                             </Link>

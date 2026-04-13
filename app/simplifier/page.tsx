@@ -2,12 +2,14 @@
 
 import Sidebar from '@/components/layout/Sidebar';
 import TopNavigation from '@/components/layout/TopNavigation';
+import CreditStatusBanner from '@/components/billing/CreditStatusBanner';
 import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useUpload } from '@/components/providers/UploadProgressProvider';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { awardXp } from '@/app/actions/gamifier';
+import { getBillingErrorMessage } from '@/lib/billing/client';
 
 interface Resource {
   id: string;
@@ -142,7 +144,7 @@ export default function SimplifierPage() {
 
       const data = await res.json();
       if (!res.ok || data.error) {
-        throw new Error(data.error || 'Failed to simplify document');
+        throw new Error(getBillingErrorMessage(data, 'Failed to simplify document'));
       }
 
       setSimplifiedOutput(data.result);
@@ -310,6 +312,9 @@ export default function SimplifierPage() {
 
               {/* Right Column: AI Config */}
               <div className="xl:w-96 flex-shrink-0">
+                <div className="mb-6">
+                  <CreditStatusBanner featureLabel="Document simplifier" creditCost={30} />
+                </div>
                 <div className="bg-white dark:bg-[#161621] rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm sticky top-6">
                   <h3 className="text-lg font-black text-slate-900 dark:text-white mb-6 flex items-center gap-2">
                     <span className="material-symbols-outlined text-[#1a5c2a]">tune</span>

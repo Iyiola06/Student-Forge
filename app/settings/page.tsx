@@ -2,17 +2,21 @@
 
 import Sidebar from '@/components/layout/Sidebar';
 import { useProfile } from '@/hooks/useProfile';
+import { useWallet } from '@/hooks/useWallet';
 import { createClient } from '@/lib/supabase/client';
 import { useState, useEffect } from 'react';
 import { pushService } from '@/lib/pushService';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import { getCreditBundles, formatNairaFromKobo } from '@/lib/billing/config';
 
 export default function SettingsPage() {
   const { profile, isLoading, mutate } = useProfile();
+  const { wallet, mutate: mutateWallet } = useWallet();
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [purchasingBundleId, setPurchasingBundleId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -233,6 +237,29 @@ export default function SettingsPage() {
     'https://api.dicebear.com/7.x/avataaars/svg?seed=Milo&backgroundColor=b6f4e3',
     'https://api.dicebear.com/7.x/avataaars/svg?seed=Zoe&backgroundColor=f4e3b6',
   ];
+  const bundles = getCreditBundles();
+
+  const handleBuyCredits = async (bundleId: string) => {
+    setPurchasingBundleId(bundleId);
+    try {
+      const res = await fetch('/api/billing/initialize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bundleId }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to start checkout');
+      }
+
+      window.location.href = data.authorizationUrl;
+    } catch (error: any) {
+      toast.error(error.message || 'Unable to launch checkout');
+    } finally {
+      setPurchasingBundleId(null);
+    }
+  };
 
   return (
     <div className="main-bg font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a] selection:text-white">
@@ -244,6 +271,106 @@ export default function SettingsPage() {
         {/* Settings Content */}
         <main className="flex-1 overflow-y-auto p-6 md:p-8">
           <div className="max-w-3xl mx-auto space-y-8">
+            <section className="overflow-hidden rounded-[1.75rem] border border-[#1a5c2a]/15 bg-[radial-gradient(circle_at_top_left,_rgba(40,112,67,0.24),_transparent_35%),linear-gradient(135deg,#08140d,#10281a_55%,#132b1f)] p-6 text-white shadow-[0_20px_80px_rgba(0,0,0,0.28)]">
+              <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <p className="text-[11px] font-black uppercase tracking-[0.28em] text-emerald-200/75">
+                      Study Wallet
+                    </p>
+                    <h2 className="mt-2 text-3xl font-black">
+                      {wallet?.balance ?? profile?.credit_balance ?? 0} credits available
+                    </h2>
+                    <p className="mt-2 max-w-2xl text-sm text-emerald-50/75">
+                      Every new and existing web account gets 1,000 credits. Paid top-ups last 6 months and power AI generation, tutoring, grading, and simplification.
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm">
+                    <div className="font-bold">Next expiry</div>
+                    <div className="mt-1 text-white/75">
+                      {wallet?.nextExpiry || profile?.next_credit_expiry
+                        ? new Date((wallet?.nextExpiry || profile?.next_credit_expiry) as string).toLocaleDateString()
+                        : 'No active expiry'}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-3">
+                  {bundles.map((bundle) => (
+                    <div key={bundle.id} className="rounded-2xl border border-white/10 bg-white/6 p-5 backdrop-blur-md">
+                      <p className="text-[11px] font-black uppercase tracking-[0.22em] text-emerald-200/75">
+                        {bundle.name}
+                      </p>
+                      <div className="mt-3 text-3xl font-black">{bundle.credits.toLocaleString()}</div>
+                      <div className="mt-1 text-sm text-white/75">{bundle.tagline}</div>
+                      <div className="mt-5 flex items-center justify-between">
+                        <span className="text-lg font-bold">{formatNairaFromKobo(bundle.amountKobo)}</span>
+                        <button
+                          onClick={() => handleBuyCredits(bundle.id)}
+                          disabled={purchasingBundleId === bundle.id}
+                          className="inline-flex h-10 items-center justify-center rounded-xl bg-white px-4 text-sm font-bold text-[#10281a] transition hover:bg-emerald-50 disabled:opacity-50"
+                        >
+                          {purchasingBundleId === bundle.id ? 'Opening...' : 'Buy'}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
+                  <div className="rounded-2xl border border-white/10 bg-black/15 p-5">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-bold">Upcoming Expiry Lots</h3>
+                      <button
+                        onClick={() => mutateWallet()}
+                        className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-200/70"
+                      >
+                        Refresh
+                      </button>
+                    </div>
+                    <div className="mt-4 space-y-3">
+                      {(wallet?.grants ?? []).slice(0, 4).map((grant) => (
+                        <div key={grant.id} className="flex items-center justify-between rounded-xl border border-white/8 bg-white/5 px-4 py-3 text-sm">
+                          <div>
+                            <div className="font-bold">{grant.credits_remaining} credits left</div>
+                            <div className="text-white/60">
+                              {grant.source.replace(/_/g, ' ')} • expires {new Date(grant.expires_at).toLocaleDateString()}
+                            </div>
+                          </div>
+                          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em]">
+                            {grant.credits_awarded} issued
+                          </span>
+                        </div>
+                      ))}
+                      {wallet?.grants?.length === 0 && (
+                        <p className="text-sm text-white/65">No credit lots found yet.</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-black/15 p-5">
+                    <h3 className="text-lg font-bold">Recent Credit Activity</h3>
+                    <div className="mt-4 space-y-3">
+                      {(wallet?.transactions ?? []).slice(0, 5).map((tx) => (
+                        <div key={tx.id} className="flex items-start justify-between gap-3 rounded-xl border border-white/8 bg-white/5 px-4 py-3 text-sm">
+                          <div>
+                            <div className="font-bold">{tx.description || tx.source.replace(/_/g, ' ')}</div>
+                            <div className="text-white/60">
+                              {new Date(tx.created_at).toLocaleString()}
+                            </div>
+                          </div>
+                          <span className={`font-black ${tx.amount < 0 ? 'text-amber-200' : 'text-emerald-200'}`}>
+                            {tx.amount > 0 ? '+' : ''}{tx.amount}
+                          </span>
+                        </div>
+                      ))}
+                      {wallet?.transactions?.length === 0 && (
+                        <p className="text-sm text-white/65">Your credit ledger will appear here after signup or purchase.</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
             {/* Account Settings */}
             <section className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm">
               <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-6 border-b border-slate-100 dark:border-[#2d2d3f] pb-4">

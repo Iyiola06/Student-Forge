@@ -1,9 +1,11 @@
 'use client';
 
 import Sidebar from '@/components/layout/Sidebar';
+import CreditStatusBanner from '@/components/billing/CreditStatusBanner';
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { awardXp } from '@/app/actions/gamifier';
+import { getBillingErrorMessage } from '@/lib/billing/client';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,7 +45,7 @@ export default function EssayGraderPage() {
             });
 
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Failed to grade essay');
+            if (!res.ok) throw new Error(getBillingErrorMessage(data, 'Failed to grade essay'));
             setResult(data);
 
             // Give XP
@@ -79,6 +81,7 @@ export default function EssayGraderPage() {
 
                     {/* Left Panel: Input Area */}
                     <div className="w-full lg:w-[600px] shrink-0 space-y-6">
+                        <CreditStatusBanner featureLabel="Essay grading" creditCost={25} />
                         <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm relative overflow-hidden">
                             <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
                                 <span className="material-symbols-outlined text-8xl">keyboard</span>

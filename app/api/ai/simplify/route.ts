@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { createAuthedRouteClient } from '@/lib/supabase/routeAuth';
+import { requireCredits } from '@/lib/billing/server';
+import { finalizeAiUsage } from '@/lib/ai/usage';
 
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey || '');
@@ -15,10 +16,8 @@ export async function POST(request: Request) {
             );
         }
 
-        const { user } = await createAuthedRouteClient(request);
-        if (!user) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
+        const billing = await requireCredits(request, 'ai_simplify');
+        if (!billing.ok) return NextResponse.json(billing.body, { status: billing.status });
 
         const body = await request.json();
         const { content, level, format, focus } = body;
@@ -87,6 +86,21 @@ ${trimmedContent}
                 youtube_topics: []
             };
         }
+
+        await finalizeAiUsage({
+            supabase: billing.supabase,
+            userId: billing.user.id,
+            feature: 'ai_simplify',
+            source: 'ai_simplify',
+            modelName: 'gemini-3-flash-preview',
+            inputSize: content.length,
+            outputSize: parsedOutput.result?.length ?? 0,
+            metadata: {
+                level: level || 'general',
+                format: format || 'paragraph',
+                focus: focus || null,
+            },
+        });
 
         return NextResponse.json(parsedOutput);
 

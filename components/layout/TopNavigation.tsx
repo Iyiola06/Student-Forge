@@ -62,6 +62,13 @@ export default function TopNavigation({ children }: { children?: React.ReactNode
                 <div className="flex items-center gap-4">
                     {children}
 
+                    <Link
+                        href="/settings"
+                        className="hidden rounded-full border border-[#1a5c2a]/20 bg-[#1a5c2a]/10 px-3 py-1.5 text-xs font-black uppercase tracking-[0.18em] text-[#1a5c2a] md:inline-flex"
+                    >
+                        {profile?.credit_balance ?? 0} Credits
+                    </Link>
+
                     <ThemeToggle />
 
                     <button className="bg-slate-100 dark:bg-[#252535] text-slate-900 dark:text-white p-2 rounded-full hover:bg-slate-200 dark:hover:bg-[#2d2d3f] transition-colors relative">

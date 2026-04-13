@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { createAuthedRouteClient } from '@/lib/supabase/routeAuth';
+import { requireCredits } from '@/lib/billing/server';
+import { finalizeAiUsage } from '@/lib/ai/usage';
 
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey || '');
@@ -24,8 +25,8 @@ export async function POST(request: Request) {
   try {
     if (!apiKey) return NextResponse.json({ error: 'AI Service key missing' }, { status: 500 });
 
-    const { user } = await createAuthedRouteClient(request);
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const billing = await requireCredits(request, 'ai_tutor');
+    if (!billing.ok) return NextResponse.json(billing.body, { status: billing.status });
 
     const { message, history, context } = await request.json();
 
@@ -59,10 +60,23 @@ export async function POST(request: Request) {
     const result = await chat.sendMessage(fullMessage);
     const reply = result.response.text();
 
+    await finalizeAiUsage({
+      supabase: billing.supabase,
+      userId: billing.user.id,
+      feature: 'ai_tutor',
+      source: 'ai_tutor',
+      modelName: 'gemini-3-flash-preview',
+      inputSize: fullMessage.length,
+      outputSize: reply.length,
+      metadata: {
+        historyCount: Array.isArray(history) ? history.length : 0,
+        hasContext: Boolean(context),
+      },
+    });
+
     return NextResponse.json({ reply });
   } catch (error: any) {
     console.error('Tutor Route Error:', error);
     return NextResponse.json({ error: error.message || 'Failed to get AI response' }, { status: 500 });
   }
 }
-

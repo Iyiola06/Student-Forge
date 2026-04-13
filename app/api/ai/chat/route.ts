@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { createAuthedRouteClient } from '@/lib/supabase/routeAuth';
+import { requireCredits } from '@/lib/billing/server';
+import { finalizeAiUsage } from '@/lib/ai/usage';
 
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey || '');
@@ -9,8 +10,8 @@ export async function POST(request: Request) {
     try {
         if (!apiKey) return NextResponse.json({ error: 'AI Service key missing' }, { status: 500 });
 
-        const { user } = await createAuthedRouteClient(request);
-        if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const billing = await requireCredits(request, 'ai_chat');
+        if (!billing.ok) return NextResponse.json(billing.body, { status: billing.status });
 
         const { userQuestion, title, content, fullText, history } = await request.json();
 
@@ -34,6 +35,20 @@ export async function POST(request: Request) {
 
         const result = await chat.sendMessage(contextPrompt);
         const response = result.response.text();
+
+        await finalizeAiUsage({
+            supabase: billing.supabase,
+            userId: billing.user.id,
+            feature: 'ai_chat',
+            source: 'ai_chat',
+            modelName: 'gemini-3-flash-preview',
+            inputSize: contextPrompt.length,
+            outputSize: response.length,
+            metadata: {
+                title,
+                historyCount: Array.isArray(history) ? history.length : 0,
+            },
+        });
 
         return NextResponse.json({ response });
 

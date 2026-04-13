@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { createAuthedRouteClient } from '@/lib/supabase/routeAuth';
+import { requireCredits } from '@/lib/billing/server';
+import { finalizeAiUsage } from '@/lib/ai/usage';
 
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey || '');
@@ -9,8 +10,8 @@ export async function POST(request: Request) {
     try {
         if (!apiKey) return NextResponse.json({ error: 'AI Service key missing' }, { status: 500 });
 
-        const { user } = await createAuthedRouteClient(request);
-        if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const billing = await requireCredits(request, 'ai_grade');
+        if (!billing.ok) return NextResponse.json(billing.body, { status: billing.status });
 
         const {
             type,
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
         const parsed = JSON.parse(result.response.text());
         const score = Math.max(0, Math.min(safeMaxScore, Number(parsed.score) || 0));
 
-        return NextResponse.json({
+        const payload = {
             score,
             maxScore: safeMaxScore,
             feedback: parsed.feedback || 'No feedback provided.',
@@ -89,7 +90,24 @@ export async function POST(request: Request) {
             isCorrect: typeof parsed.isCorrect === 'boolean'
                 ? parsed.isCorrect
                 : score >= Math.ceil(safeMaxScore * 0.6),
+        };
+
+        await finalizeAiUsage({
+            supabase: billing.supabase,
+            userId: billing.user.id,
+            feature: 'ai_grade',
+            source: 'ai_grade',
+            modelName: 'gemini-3-flash-preview',
+            inputSize: `${question || ''}${context || ''}${typedAnswer || ''}`.length,
+            outputSize: JSON.stringify(payload).length,
+            metadata: {
+                type,
+                maxScore: safeMaxScore,
+                hasImage: Boolean(imageData),
+            },
         });
+
+        return NextResponse.json(payload);
 
     } catch (error: any) {
         console.error('Grading Route Error:', error);

@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 import Sidebar from '@/components/layout/Sidebar';
+import CreditStatusBanner from '@/components/billing/CreditStatusBanner';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { awardXp } from '@/app/actions/gamifier';
 import { experimental_useObject as useObject } from '@ai-sdk/react';
 import { z } from 'zod';
+import { getBillingErrorMessage } from '@/lib/billing/client';
 
 interface Resource {
     id: string;
@@ -37,13 +38,12 @@ export default function FlashcardsPage() {
         onFinish: ({ object }) => {
             if (object) {
                 setFlashcards(object as Flashcard[]);
-                awardGenerationXP();
             }
         }
     });
 
     useEffect(() => {
-        if (aiError) setError(aiError.message);
+        if (aiError) setError(getBillingErrorMessage({ error: aiError.message }, aiError.message));
     }, [aiError]);
 
     const isGenerating = isStreaming || isGeneratingDeck;
@@ -113,18 +113,6 @@ export default function FlashcardsPage() {
             });
         } catch (err: any) {
             setError(err.message);
-        }
-    };
-
-    const awardGenerationXP = async () => {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
-
-        const { success, newLevel } = await awardXp(user.id, 30, 'flashcards_generation');
-
-        if (success && newLevel) {
-            // We successfully awarded XP.
         }
     };
 
@@ -236,6 +224,9 @@ export default function FlashcardsPage() {
                     {/* Left Panel: Configuration */}
                     {!isDrilling && (
                         <div className="w-full xl:w-[400px] shrink-0">
+                            <div className="mb-6">
+                                <CreditStatusBanner featureLabel="Flashcard generation" creditCost={40} />
+                            </div>
                             <div className="bg-white/60 dark:bg-[#1a1a24]/60 backdrop-blur-2xl rounded-3xl border border-white/50 dark:border-[#1a5c2a]/20 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(26,92,42,0.05)] sticky top-0 transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:hover:shadow-[0_0_40px_rgba(26,92,42,0.15)] hover:border-[#1a5c2a]/30 group/panel">
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/0 dark:from-white/5 dark:to-white/0 rounded-3xl pointer-events-none"></div>
                                 <h2 className="text-xl font-black text-slate-900 dark:text-white mb-8 flex items-center gap-3 relative z-10">

@@ -1,202 +1,172 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
-import { motion } from 'motion/react';
 import Image from 'next/image';
+import { motion } from 'motion/react';
+import { getCreditBundles, formatNairaFromKobo } from '@/lib/billing/config';
+
+const bundles = getCreditBundles().slice(0, 3);
+
+const proofPoints = [
+  'Upload notes, handouts, slides, or scanned pages',
+  'See extraction status and preview before generating',
+  'Turn source material into quizzes, flashcards, or guided review',
+  'Return daily to a queue built around what is due and what is weak',
+];
 
 export default function LandingPage() {
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
-      {/* Header */}
-      <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#3b3b54] px-4 sm:px-10 py-4 bg-white dark:bg-[#101022]/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="flex items-center gap-4 text-slate-900 dark:text-white">
-          <div className="relative size-10 flex items-center justify-center">
-            <Image
-              src="/logo-favicon.png"
-              alt="VUI Studify Logo"
-              width={40}
-              height={40}
-              className="object-contain rounded-full"
-              priority
-            />
+    <div className="main-bg min-h-screen text-slate-950 dark:text-white">
+      <header className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-5 py-5 md:px-8">
+        <Link href="/" className="flex items-center gap-3">
+          <div className="relative size-11 overflow-hidden rounded-2xl bg-[#102117] p-1 shadow-[0_14px_30px_rgba(10,21,15,0.22)]">
+            <Image src="/logo-favicon.png" alt="VUI Studify" fill className="object-contain p-1" />
           </div>
-          <h2 className="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">
-            VUI Studify
-          </h2>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link
-            className="text-slate-600 dark:text-slate-300 hover:text-[#1a5c2a] dark:hover:text-[#1a5c2a] transition-colors text-sm font-medium leading-normal hidden sm:block"
-            href="/login"
-          >
-            Log In
+          <div>
+            <p className="eyebrow">VUI Studify</p>
+            <p className="text-sm font-bold text-slate-600 dark:text-slate-300">Reliable daily revision</p>
+          </div>
+        </Link>
+
+        <div className="flex items-center gap-3">
+          <Link href="/login" className="hidden text-sm font-black text-slate-700 md:inline dark:text-slate-200">
+            Log in
           </Link>
-          <Link href="/signup">
-            <button className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-[#1a5c2a]/20">
-              <span className="truncate">Get Started</span>
-            </button>
+          <Link
+            href="/signup"
+            className="inline-flex h-11 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623]"
+          >
+            Start free
           </Link>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20 md:py-32 relative overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-[#1a5c2a]/10 rounded-full blur-[120px]"></div>
-          <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-purple-500/10 rounded-full blur-[120px]"></div>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-4xl mx-auto space-y-6"
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1a5c2a]/10 text-[#1a5c2a] text-sm font-medium mb-4 border border-[#1a5c2a]/20">
-            <span className="material-symbols-outlined text-lg">rocket_launch</span>
-            <span>The Future of Learning is Here</span>
-          </div>
-          <h1 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.1]">
-            Master Your Exams with <br />
-            <span className="text-[#1a5c2a]">
-              AI-Powered Study Tools
-            </span>
-          </h1>
-          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            Generate quizzes from your notes, track your progress with gamified
-            learning, and access thousands of past questions. All in one place.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
-            <Link href="/signup">
-              <button className="h-14 px-8 rounded-xl bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 text-white font-bold text-lg shadow-xl shadow-[#1a5c2a]/30 transition-all hover:scale-105 flex items-center gap-2">
-                Start Learning for Free
-                <span className="material-symbols-outlined">arrow_forward</span>
-              </button>
-            </Link>
-            <Link href="/resources">
-              <button className="h-14 px-8 rounded-xl bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] hover:bg-slate-50 dark:hover:bg-[#252535] text-slate-900 dark:text-white font-bold text-lg transition-all hover:scale-105 flex items-center gap-2">
-                <span className="material-symbols-outlined">play_circle</span>
-                Watch Demo
-              </button>
-            </Link>
-          </div>
-        </motion.div>
-
-        {/* Features Grid */}
-        <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="bg-white dark:bg-[#1b1b27] p-8 rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-lg hover:shadow-xl transition-shadow text-left"
-          >
-            <div className="size-12 rounded-xl bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-6">
-              <span className="material-symbols-outlined text-3xl">psychology</span>
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
-              AI Question Generator
-            </h3>
-            <p className="text-slate-500 dark:text-[#9c9cba]">
-              Upload your PDFs or notes and let our AI generate practice
-              questions, flashcards, and summaries instantly.
+      <main className="mx-auto w-full max-w-[1440px] px-5 pb-16 md:px-8">
+        <section className="grid gap-8 py-8 lg:grid-cols-[1.05fr_0.95fr] lg:py-12">
+          <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }}>
+            <p className="eyebrow">Core Loop</p>
+            <h1 className="mt-4 max-w-4xl text-5xl font-black leading-[0.94] tracking-[-0.07em] md:text-7xl">
+              Turn raw study material into a trustworthy daily review habit.
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600 dark:text-slate-300">
+              VUI Studify narrows the experience to one dependable flow: upload, extract, generate, review, return tomorrow, and only pay for premium AI actions when you need them.
             </p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="bg-white dark:bg-[#1b1b27] p-8 rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-lg hover:shadow-xl transition-shadow text-left"
-          >
-            <div className="size-12 rounded-xl bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-6">
-              <span className="material-symbols-outlined text-3xl">
-                sports_esports
-              </span>
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
-              Gamified Learning
-            </h3>
-            <p className="text-slate-500 dark:text-[#9c9cba]">
-              Earn XP, unlock badges, and climb the leaderboard as you study.
-              Make learning addictive and fun.
-            </p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="bg-white dark:bg-[#1b1b27] p-8 rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-lg hover:shadow-xl transition-shadow text-left"
-          >
-            <div className="size-12 rounded-xl bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 flex items-center justify-center mb-6">
-              <span className="material-symbols-outlined text-3xl">
-                history_edu
-              </span>
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
-              Past Questions Bank
-            </h3>
-            <p className="text-slate-500 dark:text-[#9c9cba]">
-              Access a vast library of past exam papers from WAEC, NECO, JAMB,
-              and more. Practice with real questions.
-            </p>
-          </motion.div>
-        </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="bg-white dark:bg-[#1b1b27] border-t border-slate-200 dark:border-[#2d2d3f] py-12 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col gap-8">
-          <div className="flex flex-col md:flex-row justify-between items-start gap-8">
-            {/* Logo and Copyright */}
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-3 text-slate-900 dark:text-white">
-                <div className="relative size-8 flex items-center justify-center">
-                  <Image
-                    src="/logo-favicon.png"
-                    alt="VUI Studify Logo"
-                    width={32}
-                    height={32}
-                    className="object-contain rounded-full"
-                  />
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/signup"
+                className="inline-flex h-14 items-center justify-center rounded-2xl bg-[#102117] px-6 text-base font-black text-white transition hover:bg-[#163623]"
+              >
+                Claim starter credits
+              </Link>
+              <Link
+                href="/dashboard"
+                className="inline-flex h-14 items-center justify-center rounded-2xl border border-black/8 bg-white/60 px-6 text-base font-black text-slate-950 transition hover:border-[#1a5c2a]/30 dark:border-white/10 dark:bg-white/5 dark:text-white"
+              >
+                Open workspace
+              </Link>
+            </div>
+
+            <div className="mt-8 grid gap-3 md:grid-cols-2">
+              {proofPoints.map((point) => (
+                <div key={point} className="glass-panel px-4 py-4 text-sm font-black text-slate-800 dark:text-slate-100">
+                  {point}
                 </div>
-                <span className="font-bold text-lg">VUI Studify</span>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, x: 22 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.08 }}>
+            <div className="glass-panel-strong p-6 text-white md:p-8">
+              <p className="eyebrow !text-emerald-200/75">Proof-First Surface</p>
+              <div className="mt-5 grid gap-4">
+                <div className="rounded-[28px] border border-white/10 bg-white/6 p-5">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-black">Cell Biology Notes.pdf</p>
+                    <span className="metric-chip !border-white/10 !bg-white/10 !text-white">ready</span>
+                  </div>
+                  <p className="mt-4 text-sm leading-7 text-white/75">
+                    Preview: mitochondria, ATP production, respiratory enzymes, membrane folds, energy transfer pathways…
+                  </p>
+                </div>
+
+                <div className="rounded-[28px] border border-white/10 bg-white/6 p-5">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-black">Today’s review queue</p>
+                    <span className="metric-chip !border-white/10 !bg-white/10 !text-white">12 due</span>
+                  </div>
+                  <div className="mt-4 grid gap-3">
+                    {['ATP cycle flashcards', 'Weak topic: oxidative phosphorylation', 'Missed quiz item resurfaced'].map((item) => (
+                      <div key={item} className="rounded-2xl border border-white/8 bg-black/15 px-4 py-3 text-sm text-white/80">
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="rounded-[28px] border border-white/10 bg-white/6 p-5">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-black">Wallet status</p>
+                    <span className="metric-chip !border-white/10 !bg-white/10 !text-white">1,000 credits</span>
+                  </div>
+                  <p className="mt-4 text-sm leading-7 text-white/75">
+                    Daily review remains friction-light. Credits are consumed only for premium AI generation, grading, tutoring, and advanced extraction.
+                  </p>
+                </div>
               </div>
-              <p className="text-sm text-slate-500 dark:text-[#9c9cba]">
-                Â© {new Date().getFullYear()} VUI Studify Inc. All rights reserved.
+            </div>
+          </motion.div>
+        </section>
+
+        <section className="grid gap-6 py-10 lg:grid-cols-[0.95fr_1.05fr]">
+          <div>
+            <p className="eyebrow">What changed</p>
+            <h2 className="mt-3 text-4xl font-black tracking-[-0.05em] md:text-5xl">
+              One focused study product instead of a pile of disconnected tools.
+            </h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {[
+              ['Reliability first', 'File processing states, previews, retries, and clearer failure messaging build trust before novelty.'],
+              ['Review is the product', 'Generated output matters only if it turns into tomorrow’s revision queue.'],
+              ['Wallet with clarity', 'Credits align premium AI cost with actual usage instead of forcing a subscription.'],
+              ['Campus-ready story', 'The product is easier to demo live because the value is obvious in minutes.'],
+            ].map(([title, body]) => (
+              <div key={title} className="glass-panel p-5">
+                <h3 className="text-xl font-black tracking-[-0.04em] text-slate-950 dark:text-white">{title}</h3>
+                <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">{body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="py-10">
+          <div className="glass-panel p-6 md:p-8">
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="eyebrow">Public Bundles</p>
+                <h2 className="mt-3 text-4xl font-black tracking-[-0.05em] md:text-5xl">Three clean top-up options.</h2>
+              </div>
+              <p className="max-w-xl text-sm leading-7 text-slate-600 dark:text-slate-300">
+                Keep pricing simple and seasonal. Credits stay useful across exam cycles, and the public store remains easy to explain.
               </p>
             </div>
 
-            {/* Dev Links (Sitemap) */}
-            <div className="flex flex-col gap-4">
-              <h4 className="font-bold text-slate-900 dark:text-white text-sm uppercase tracking-wider">
-                Site Map
-              </h4>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-3 text-sm font-medium text-slate-600 dark:text-slate-400">
-                <Link href="/login" className="hover:text-[#1a5c2a] transition-colors">Login</Link>
-                <Link href="/signup" className="hover:text-[#1a5c2a] transition-colors">Signup</Link>
-                <Link href="/dashboard" className="hover:text-[#1a5c2a] transition-colors">Dashboard</Link>
-                <Link href="/resources" className="hover:text-[#1a5c2a] transition-colors">Resources</Link>
-                <Link href="/gamifier" className="hover:text-[#1a5c2a] transition-colors">Gamifier</Link>
-                <Link href="/leaderboard" className="hover:text-[#1a5c2a] transition-colors">Leaderboard</Link>
-                <Link href="/history" className="hover:text-[#1a5c2a] transition-colors">History</Link>
-                <Link href="/generator" className="hover:text-[#1a5c2a] transition-colors">Generator</Link>
-                <Link href="/past-questions" className="hover:text-[#1a5c2a] transition-colors">Past Questions</Link>
-                <Link href="/profile" className="hover:text-[#1a5c2a] transition-colors">Profile</Link>
-                <Link href="/settings" className="hover:text-[#1a5c2a] transition-colors">Settings</Link>
-                <Link href="/forgot-password" className="hover:text-[#1a5c2a] transition-colors">Forgot Password</Link>
-                <Link href="/reset-password" className="hover:text-[#1a5c2a] transition-colors">Reset Password</Link>
-                <Link href="/verify-email" className="hover:text-[#1a5c2a] transition-colors">Verify Email</Link>
-                <Link href="/about" className="hover:text-[#1a5c2a] transition-colors">About</Link>
-                <Link href="/terms" className="hover:text-[#1a5c2a] transition-colors">Terms of Service</Link>
-                <Link href="/privacy" className="hover:text-[#1a5c2a] transition-colors">Privacy Policy</Link>
-              </div>
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              {bundles.map((bundle) => (
+                <div key={bundle.id} className="rounded-[28px] border border-black/5 bg-white/55 p-5 dark:border-white/8 dark:bg-white/5">
+                  <p className="eyebrow">{bundle.name}</p>
+                  <h3 className="mt-3 text-4xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">
+                    {bundle.credits.toLocaleString()}
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{bundle.tagline}</p>
+                  <p className="mt-5 text-lg font-black text-slate-950 dark:text-white">{formatNairaFromKobo(bundle.amountKobo)}</p>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      </footer>
+        </section>
+      </main>
     </div>
   );
 }

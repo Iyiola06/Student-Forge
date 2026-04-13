@@ -6,6 +6,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { createClient } from '@/lib/supabase/client';
 import { awardXp } from '@/app/actions/gamifier';
+import CreditStatusBanner from '@/components/billing/CreditStatusBanner';
+import { getBillingErrorMessage } from '@/lib/billing/client';
 
 interface Message {
     id: string;
@@ -75,7 +77,7 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || 'Failed to get response');
+                throw new Error(getBillingErrorMessage(data, 'Failed to get response'));
             }
 
             const aiMessage: Message = {
@@ -137,6 +139,10 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                         </div>
                     )}
                 </div>
+            </div>
+
+            <div className="shrink-0 px-6 pt-4">
+                <CreditStatusBanner featureLabel="AI tutor message" creditCost={15} />
             </div>
 
             {/* Messages Area */}

@@ -25,6 +25,9 @@ export interface Profile {
     active_title?: string;
     unlocked_themes?: string[];
     active_theme?: string;
+    credit_balance?: number;
+    next_credit_expiry?: string | null;
+    has_received_signup_bonus?: boolean;
 }
 
 const fetcher = async () => {

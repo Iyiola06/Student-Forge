@@ -1,1112 +1,350 @@
 'use client';
 
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import dynamic from 'next/dynamic';
-import Sidebar from '@/components/layout/Sidebar';
-import { useState, useEffect, useRef } from 'react';
-import { createClient } from '@/lib/supabase/client';
-import { awardXp } from '@/app/actions/gamifier';
-import { jsPDF } from 'jspdf';
-import { useUpload } from '@/components/providers/UploadProgressProvider';
 import { experimental_useObject as useObject } from '@ai-sdk/react';
 import { z } from 'zod';
+import AppShell from '@/components/layout/AppShell';
+import CreditStatusBanner from '@/components/billing/CreditStatusBanner';
+import { useUpload } from '@/components/providers/UploadProgressProvider';
+import { createClient } from '@/lib/supabase/client';
+import { getBillingErrorMessage } from '@/lib/billing/client';
+import { cn } from '@/lib/utils';
 
-const mcqSchema = z.array(z.object({
-  question: z.string(),
-  options: z.array(z.string()),
-  answer: z.string(),
-  explanation: z.string()
-}));
+const mcqSchema = z.array(
+  z.object({
+    question: z.string(),
+    options: z.array(z.string()),
+    answer: z.string(),
+    explanation: z.string(),
+  })
+);
 
-const fillInGapSchema = z.array(z.object({
-  sentence: z.string(),
-  answer: z.string(),
-  hint: z.string(),
-  explanation: z.string()
-}));
+const flashcardSchema = z.array(
+  z.object({
+    front: z.string(),
+    back: z.string(),
+  })
+);
 
-const theorySchema = z.array(z.object({
-  question: z.string(),
-  model_answer: z.string(),
-  key_points: z.array(z.string()),
-  explanation: z.string()
-}));
+const guidedReviewSchema = z.array(
+  z.object({
+    question: z.string(),
+    model_answer: z.string(),
+    key_points: z.array(z.string()),
+    explanation: z.string(),
+  })
+);
 
-const examSnapshotSchema = z.object({
-  abbreviations: z.array(z.object({ short: z.string(), full: z.string() })),
-  key_points: z.array(z.object({ point: z.string(), tag: z.string(), color: z.string() })),
-  hot_list: z.array(z.object({ question: z.string(), difficulty: z.string(), rationale: z.string() }))
-});
-
-const TheoryAnswerEditor = dynamic(() => import('@/components/editor/TheoryAnswerEditor'), { ssr: false });
-
-interface Resource {
+type ResourceOption = {
   id: string;
   title: string;
   content: string;
-  processing_status: string;
-}
+  processing_status: string | null;
+  extracted_preview?: string | null;
+};
 
-interface TheoryGradingResult {
-  score: number;
-  maxScore?: number;
-  feedback: string;
-  correctAnswer: string;
-  improvements?: string[];
-  strengths?: string[];
-  isCorrect: boolean;
-}
-
-function stripEditorHtml(value: string) {
-  return value
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<\/p>/gi, '\n')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/\s+\n/g, '\n')
-    .replace(/\n\s+/g, '\n')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
+const outputOptions = [
+  { id: 'mcq', label: 'Quiz', description: 'Multiple-choice questions for activation.' },
+  { id: 'flashcards', label: 'Flashcards', description: 'Fast retrieval cards for spaced review.' },
+  { id: 'theory', label: 'Guided Review', description: 'Open-ended prompts with model answers.' },
+] as const;
 
 export default function GeneratorPage() {
-  const [resources, setResources] = useState<Resource[]>([]);
-  const [selectedResource, setSelectedResource] = useState<string>('');
+  const { uploadFile } = useUpload();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [resources, setResources] = useState<ResourceOption[]>([]);
+  const [selectedResource, setSelectedResource] = useState('');
   const [pastedText, setPastedText] = useState('');
-
-  const [type, setType] = useState('mcq');
-  const [difficulty, setDifficulty] = useState('medium');
+  const [type, setType] = useState<'mcq' | 'flashcards' | 'theory'>('mcq');
+  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>('medium');
   const [count, setCount] = useState(10);
-  const [curriculum, setCurriculum] = useState<string>('');
-  const [topic, setTopic] = useState<string>('');
-
-  const [isGeneratingQuiz, setIsGeneratingQuiz] = useState(false);
-  const [loadingStep, setLoadingStep] = useState(0);
-  const [generatedData, setGeneratedData] = useState<any>(null);
+  const [topic, setTopic] = useState('');
+  const [curriculum, setCurriculum] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  const [currentSchema, setCurrentSchema] = useState<any>(mcqSchema);
-
-  useEffect(() => {
-    switch (type) {
-      case 'mcq': setCurrentSchema(mcqSchema); break;
-      case 'fill_in_gap': setCurrentSchema(fillInGapSchema); break;
-      case 'theory': setCurrentSchema(theorySchema); break;
-      case 'exam_snapshot': setCurrentSchema(examSnapshotSchema); break;
-      default: setCurrentSchema(mcqSchema);
-    }
+  const schema = useMemo(() => {
+    if (type === 'flashcards') return flashcardSchema;
+    if (type === 'theory') return guidedReviewSchema;
+    return mcqSchema;
   }, [type]);
 
-  const { object, submit, isLoading: isStreaming, error: aiError } = useObject({
+  const { object, submit, isLoading, error: aiError } = useObject({
     api: '/api/ai/generate',
-    schema: currentSchema,
-    onFinish: ({ object }) => {
-      if (object) {
-        setGeneratedData(object);
-        awardGenerationXP();
-      }
-    }
+    schema,
   });
 
   useEffect(() => {
-    if (aiError) setError(aiError.message);
+    if (aiError) {
+      setError(getBillingErrorMessage({ error: aiError.message }, aiError.message));
+    }
   }, [aiError]);
 
-  const isGenerating = isStreaming || isGeneratingQuiz;
-  const displayData = isStreaming ? object : generatedData;
-
-  const [isUploading, setIsUploading] = useState(false);
-  const { uploadFile, uploadState } = useUpload();
-  const isFileUploading = uploadState === 'uploading' || uploadState === 'compressing' || uploadState === 'processing';
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Quiz Interaction States
-  const [isQuizActive, setIsQuizActive] = useState(false);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [showExplanation, setShowExplanation] = useState(false);
-  const [score, setScore] = useState(0);
-  const [userAnswers, setUserAnswers] = useState<any[]>([]);
-  const [quizStartTime, setQuizStartTime] = useState<number | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
-  const [savedQuizId, setSavedQuizId] = useState<string | null>(null);
-  const [savedQuizzes, setSavedQuizzes] = useState<any[]>([]);
-
-  const awardGenerationXP = async () => {
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    await awardXp(user.id, 30, 'generator_quiz_generation');
-  };
-
   useEffect(() => {
-    async function fetchResources() {
+    async function loadResources() {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data: resData } = await supabase
+      const { data } = await supabase
         .from('resources')
-        .select('id, title, content, processing_status')
+        .select('id,title,content,processing_status,extracted_preview')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (resData) setResources(resData);
-
-      const { data: quizzesData } = await supabase
-        .from('quizzes')
-        .select('*, quiz_questions(count)')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (quizzesData) setSavedQuizzes(quizzesData);
+      setResources((data as ResourceOption[]) ?? []);
     }
-    fetchResources();
+
+    loadResources();
   }, []);
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    event.target.value = '';
-    setIsUploading(true);
-    setPastedText('');
-    setSelectedResource('');
-
-    // subscribe to realtime so when background processing finishes we auto-select
-    const supabase = createClient();
-    const ch = supabase
-      .channel('generator-upload-' + Date.now())
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'resources' }, async (payload) => {
-        if (payload.new.processing_status === 'ready') {
-          setSelectedResource(payload.new.id);
-          setIsUploading(false);
-          supabase.removeChannel(ch);
-          // Refresh resource list inline
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user) {
-            const { data } = await supabase
-              .from('resources')
-              .select('id, title, content, processing_status')
-              .eq('user_id', user.id)
-              .order('created_at', { ascending: false });
-            if (data) setResources(data);
-          }
-        } else if (payload.new.processing_status === 'error') {
-          setIsUploading(false);
-          supabase.removeChannel(ch);
-        }
-      })
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'resources' }, async (payload) => {
-        if (payload.new.processing_status === 'ready') {
-          setSelectedResource(payload.new.id);
-          setIsUploading(false);
-          supabase.removeChannel(ch);
-          // Refresh resource list inline
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user) {
-            const { data } = await supabase
-              .from('resources')
-              .select('id, title, content, processing_status')
-              .eq('user_id', user.id)
-              .order('created_at', { ascending: false });
-            if (data) setResources(data);
-          }
-        }
-      })
-      .subscribe();
-
-    await uploadFile(file);
-  };
-
-
-  const handleGenerate = async () => {
-    let contentToUse = pastedText;
-
-    if (selectedResource) {
-      const resource = resources.find(r => r.id === selectedResource);
-      if (resource) {
-        if (resource.processing_status !== 'ready') {
-          setError('Sector data is still warping (AI processing). Please wait a moment until the scan is complete.');
-          return;
-        }
-        if (resource.content) {
-          contentToUse = resource.content;
-        }
-      }
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const resourceId = params.get('resource');
+    if (resourceId) {
+      setSelectedResource(resourceId);
     }
+  }, []);
 
-    if (!contentToUse.trim()) {
-      setError('Please select a resource or paste some text to generate questions.');
+  const selectedResourceRecord = resources.find((resource) => resource.id === selectedResource) ?? null;
+
+  const onGenerate = () => {
+    const content = selectedResourceRecord?.content || pastedText;
+    if (!content?.trim()) {
+      setError('Choose a ready resource or paste study material before generating.');
+      return;
+    }
+    if (selectedResourceRecord && selectedResourceRecord.processing_status !== 'ready') {
+      setError('This resource is still processing. Wait for it to become ready or use pasted text.');
       return;
     }
 
-    // Validate the content isn't garbage / error text
-    const BLOCKED_PHRASES = [
-      'text extraction is currently only supported',
-      'failed to parse', 'could not extract',
-      'parsing failed', 'no text content',
-      'not currently supported for text extraction'
-    ];
-    const lowerContent = contentToUse.toLowerCase();
-    if (BLOCKED_PHRASES.some(p => lowerContent.includes(p)) || contentToUse.trim().length < 50) {
-      setError('This resource does not contain valid study material. Please re-upload the file or paste the text directly into the text box.');
-      return;
-    }
-
-    // submit will trigger isStreaming
-    setLoadingStep(0);
     setError(null);
-    setGeneratedData(null);
-
-    // Dynamic loading steps
-    const loadingInterval = setInterval(() => {
-      setLoadingStep(prev => (prev < 4 ? prev + 1 : prev));
-    }, 2500);
-
-    try {
-      submit({
-        content: contentToUse,
-        type,
-        difficulty,
-        count,
-        curriculum: curriculum.trim() || undefined,
-        topic: topic.trim() || undefined,
-        stream: true
-      });
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      clearInterval(loadingInterval);
-    }
+    submit({
+      content,
+      type,
+      difficulty,
+      count,
+      topic: topic.trim() || undefined,
+      curriculum: curriculum.trim() || undefined,
+      stream: true,
+    });
   };
 
-  const startQuiz = () => {
-    if (!displayData || displayData.length === 0) return;
-    setIsQuizActive(true);
-    setCurrentQuestionIndex(0);
-    setScore(0);
-    setUserAnswers([]);
-    setSelectedOption(null);
-    setShowExplanation(false);
-    setQuizStartTime(Date.now());
-  };
+  const resultItems = Array.isArray(object) ? object : [];
 
-  const handleOptionSelect = (option: string) => {
-    if (showExplanation) return;
-    setSelectedOption(option);
-  };
+  const sidebar = (
+    <>
+      <CreditStatusBanner featureLabel="Question generation" creditCost={40} />
+      <section className="glass-panel p-5">
+        <p className="eyebrow">Source Quality</p>
+        <h3 className="panel-title mt-2">{selectedResourceRecord ? 'Resource selected' : 'Paste-ready input'}</h3>
+        <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
+          {selectedResourceRecord?.extracted_preview ||
+            'Pasted text works best when it contains a full explanation, lecture note, or topic summary rather than a few bullets.'}
+        </p>
+      </section>
+    </>
+  );
 
-  const handleCheckAnswer = async () => {
-    if (!selectedOption || !displayData || isGeneratingQuiz) return;
-
-    const currentQ = displayData[currentQuestionIndex];
-    const isTheoryQuestion = type === 'theory' || (!currentQ.options && currentQ.model_answer);
-    const normalizedTheoryAnswer = isTheoryQuestion ? stripEditorHtml(selectedOption) : selectedOption;
-
-    if (isTheoryQuestion && !normalizedTheoryAnswer) return;
-
-    if (isTheoryQuestion) {
-      try {
-        setIsGeneratingQuiz(true);
-        const gradingContext = [
-          `Question: ${currentQ.question || currentQ.sentence || ''}`,
-          `Model answer: ${currentQ.model_answer || ''}`,
-          `Key points: ${Array.isArray(currentQ.key_points) ? currentQ.key_points.join('; ') : ''}`,
-          `Explanation: ${currentQ.explanation || ''}`,
-        ].join('\n');
-
-        const res = await fetch('/api/ai/grade', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'typed',
-            question: currentQ.question || currentQ.sentence,
-            context: gradingContext,
-            typedAnswer: normalizedTheoryAnswer,
-            maxScore: 10,
-          }),
-        });
-
-        const result: TheoryGradingResult | { error?: string } = await res.json();
-        if (!res.ok) throw new Error((result as any).error || 'Failed to grade answer');
-
-        const grading = result as TheoryGradingResult;
-        setScore((prev) => prev + grading.score);
-        setUserAnswers([
-          ...userAnswers,
-          {
-            question: currentQ.question || currentQ.sentence,
-            selected: normalizedTheoryAnswer,
-            correct: grading.correctAnswer || currentQ.model_answer,
-            isCorrect: grading.isCorrect,
-            explanation: grading.feedback,
-            score: grading.score,
-            maxScore: grading.maxScore || 10,
-            improvements: grading.improvements || [],
-            strengths: grading.strengths || [],
-          },
-        ]);
-      } catch (err: any) {
-        setError(err.message || 'Failed to grade theory answer');
-        return;
-      } finally {
-        setIsGeneratingQuiz(false);
+  return (
+    <AppShell
+      eyebrow="Generate"
+      title="Create study output"
+      description="The generator has been reduced to one clean decision tree: choose your source, choose the output style, and push it into review."
+      sidebar={sidebar}
+      actions={
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          className="inline-flex h-11 items-center justify-center rounded-2xl border border-black/8 bg-white/60 px-4 text-sm font-black text-slate-950 transition hover:border-[#1a5c2a]/30 dark:border-white/10 dark:bg-white/5 dark:text-white"
+        >
+          Upload source
+        </button>
       }
+    >
+      <input
+        ref={fileInputRef}
+        type="file"
+        className="hidden"
+        accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png,.webp,.txt"
+        onChange={async (event) => {
+          const file = event.target.files?.[0];
+          if (!file) return;
+          event.target.value = '';
+          await uploadFile(file);
+        }}
+      />
 
-      setShowExplanation(true);
-      return;
-    }
+      <section className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="glass-panel p-6">
+          <p className="eyebrow">Step 01</p>
+          <h3 className="panel-title mt-2">Pick your source</h3>
+          <div className="mt-5 space-y-4">
+            <select
+              value={selectedResource}
+              onChange={(event) => {
+                setSelectedResource(event.target.value);
+                if (event.target.value) setPastedText('');
+              }}
+              className="w-full rounded-[24px] border border-black/5 bg-white/60 px-4 py-3 text-sm outline-none dark:border-white/8 dark:bg-white/5"
+            >
+              <option value="">Choose a ready library file</option>
+              {resources.map((resource) => (
+                <option key={resource.id} value={resource.id}>
+                  {resource.title} {resource.processing_status !== 'ready' ? `(${resource.processing_status})` : ''}
+                </option>
+              ))}
+            </select>
 
-    const isCorrect = selectedOption === currentQ.answer;
-
-    if (isCorrect) setScore(s => s + 1);
-
-    setUserAnswers([...userAnswers, {
-      question: currentQ.question || currentQ.sentence,
-      selected: selectedOption,
-      correct: currentQ.answer,
-      isCorrect,
-      explanation: currentQ.explanation
-    }]);
-
-    setShowExplanation(true);
-  };
-
-  const handleNextQuestion = () => {
-    if (currentQuestionIndex + 1 < displayData.length) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedOption(null);
-      setShowExplanation(false);
-    } else {
-      finishQuiz();
-    }
-  };
-
-  const finishQuiz = async () => {
-    setIsQuizActive(false);
-    // Award XP based on performance
-    const isTheoryQuiz = type === 'theory';
-    const finalScore = isTheoryQuiz
-      ? score
-      : score + (selectedOption === displayData[currentQuestionIndex].answer ? 1 : 0);
-    const xpEarned = isTheoryQuiz ? Math.round(finalScore * 2) : finalScore * 5;
-
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    if (xpEarned > 0) {
-      await awardXp(user.id, xpEarned, 'generator_quiz');
-    }
-  };
-
-  const saveQuiz = async () => {
-    if (!displayData) return;
-    setIsSaving(true);
-    try {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not logged in');
-
-      const { data: quiz, error: quizError } = await supabase
-        .from('quizzes')
-        .insert({
-          user_id: user.id,
-          resource_id: selectedResource || null,
-          title: `Generated ${type.toUpperCase()}`,
-          subject: 'General',
-          difficulty,
-          is_public: true
-        })
-        .select().single();
-
-      if (quizError) throw quizError;
-
-      const questions = displayData.map((q: any) => ({
-        quiz_id: quiz.id,
-        question_text: q.question || q.sentence || 'No question text',
-        question_type: type,
-        options: q.options || [],
-        correct_answer: q.answer || q.model_answer || '',
-        explanation: q.explanation || ''
-      }));
-
-      const { error: itemsError } = await supabase.from('quiz_questions').insert(questions);
-      if (itemsError) throw itemsError;
-
-      setSavedQuizId(quiz.id);
-    } catch (err: any) {
-      alert(`Error saving quiz: ${err.message}`);
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const loadSavedQuiz = async (quizId: string) => {
-    setIsGeneratingQuiz(true);
-    setLoadingStep(0);
-    setError(null);
-    setGeneratedData(null);
-    setSavedQuizId(quizId);
-
-    try {
-      const supabase = createClient();
-
-      const { data: quiz } = await supabase.from('quizzes').select('*').eq('id', quizId).single();
-      if (quiz) {
-        setType(quiz.question_type || 'mcq');
-        setDifficulty(quiz.difficulty || 'medium');
-      }
-
-      const { data, error: qError } = await supabase
-        .from('quiz_questions')
-        .select('*')
-        .eq('quiz_id', quizId);
-
-      if (qError) throw qError;
-
-      const formatted = data.map((q: any) => ({
-        question: q.question_text,
-        sentence: q.question_text,
-        options: q.options || [],
-        answer: q.correct_answer,
-        model_answer: q.correct_answer,
-        explanation: q.explanation
-      }));
-
-      setGeneratedData(formatted);
-    } catch (err: any) {
-      setError("Failed to load quiz: " + err.message);
-    } finally {
-      setIsGeneratingQuiz(false);
-    }
-  };
-
-  const currentSettings = { type, difficulty, count };
-
-  const downloadPDF = () => {
-    if (!displayData) return;
-
-    const doc = new jsPDF();
-    let y = 20;
-
-    doc.setFontSize(16);
-    doc.text(`VUI Studify Generated ${type.toUpperCase()}`, 20, y);
-    y += 10;
-
-    doc.setFontSize(12);
-
-    if (type === 'mcq') {
-      displayData.forEach((q: any, i: number) => {
-        const lines = doc.splitTextToSize(`${i + 1}. ${q.question}`, 170);
-        doc.text(lines, 20, y);
-        y += (lines.length * 7);
-
-        q.options.forEach((opt: string, j: number) => {
-          doc.text(`${String.fromCharCode(65 + j)}. ${opt}`, 30, y);
-          y += 7;
-        });
-
-        doc.setTextColor(0, 150, 0); // Green
-        doc.text(`Answer: ${q.answer}`, 30, y);
-        doc.setTextColor(0, 0, 0); // Reset
-        y += 15;
-
-        if (y > 270) { doc.addPage(); y = 20; }
-      });
-    } else if (type === 'fill_in_gap') {
-      displayData.forEach((q: any, i: number) => {
-        const lines = doc.splitTextToSize(`${i + 1}. ${q.sentence}`, 170);
-        doc.text(lines, 20, y);
-        y += (lines.length * 7);
-
-        doc.setTextColor(0, 150, 0);
-        doc.text(`Answer: ${q.answer}`, 30, y);
-        doc.setTextColor(0, 0, 0);
-        y += 15;
-
-        if (y > 270) { doc.addPage(); y = 20; }
-      });
-    } else if (type === 'theory') {
-      displayData.forEach((q: any, i: number) => {
-        const qLines = doc.splitTextToSize(`${i + 1}. ${q.question}`, 170);
-        doc.text(qLines, 20, y);
-        y += (qLines.length * 7);
-
-        doc.text("Model Answer:", 30, y);
-        y += 7;
-        const aLines = doc.splitTextToSize(q.model_answer, 160);
-        doc.setTextColor(80, 80, 80);
-        doc.text(aLines, 30, y);
-        doc.setTextColor(0, 0, 0);
-        y += (aLines.length * 7) + 10;
-
-        if (y > 270) { doc.addPage(); y = 20; }
-      });
-    }
-
-    doc.save(`VUI Studify_${type}_${Date.now()}.pdf`);
-  };
-
-  const renderQuiz = () => {
-    if (!displayData || !Array.isArray(displayData) || currentQuestionIndex >= displayData.length) return null;
-    const q = displayData[currentQuestionIndex];
-    if (!q) return null;
-    const progress = ((currentQuestionIndex) / displayData.length) * 100;
-    const isTheoryQuestion = type === 'theory' || (!q.options && q.model_answer);
-    const currentAnswer = userAnswers[currentQuestionIndex];
-    const theoryScore = currentAnswer?.score ?? 0;
-    const theoryMaxScore = currentAnswer?.maxScore ?? 10;
-
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center p-6 max-w-4xl mx-auto w-full animate-in fade-in zoom-in duration-500">
-        <div className="w-full mb-8">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">Question {currentQuestionIndex + 1} of {displayData.length}</span>
-            <span className="text-xs font-bold text-[#1a5c2a]">{Math.round(progress)}% Complete</span>
-          </div>
-          <div className="h-1.5 w-full bg-slate-200 dark:bg-[#1a1a24] rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-[#1a5c2a] to-amber-500 transition-all duration-500" style={{ width: `${progress}%` }}></div>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-[#1a1a24] rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] p-8 md:p-12 shadow-2xl w-full relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-2 h-full bg-[#1a5c2a]"></div>
-
-          <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-10 leading-tight">
-            {q.question || q.sentence}
-          </h2>
-
-          <div className="grid grid-cols-1 gap-4 mb-10">
-            {q.options ? q.options.map((opt: string, i: number) => {
-              const letter = String.fromCharCode(65 + i);
-              const isSelected = selectedOption === opt;
-              const isCorrect = opt === q.answer;
-
-              let bgClass = "bg-[#f5f5f8] dark:bg-[#13131a] border-slate-200 dark:border-[#2d2d3f] hover:border-[#1a5c2a]/50";
-              if (showExplanation) {
-                if (isCorrect) bgClass = "bg-green-500/10 border-green-500 text-green-600 dark:text-green-400";
-                else if (isSelected) bgClass = "bg-red-500/10 border-red-500 text-red-600 dark:text-red-400";
-              } else if (isSelected) {
-                bgClass = "bg-[#1a5c2a]/10 border-[#1a5c2a] ring-2 ring-[#1a5c2a]/20";
-              }
-
-              return (
-                <button
-                  key={i}
-                  disabled={showExplanation}
-                  onClick={() => handleOptionSelect(opt)}
-                  className={`flex items-center gap-6 p-6 rounded-2xl border-2 transition-all text-left group ${bgClass}`}
-                >
-                  <div className={`size-10 rounded-xl flex items-center justify-center font-black text-lg transition-colors ${isSelected ? 'bg-[#1a5c2a] text-white' : 'bg-white dark:bg-[#1b1b27] text-slate-500 dark:text-slate-300 group-hover:text-[#1a5c2a]'}`}>
-                    {letter}
-                  </div>
-                  <span className="text-lg font-bold text-white flex-1">{opt}</span>
-                  {showExplanation && isCorrect && <span className="material-symbols-outlined text-green-500">check_circle</span>}
-                  {showExplanation && isSelected && !isCorrect && <span className="material-symbols-outlined text-red-500">cancel</span>}
-                </button>
-              );
-            }) : (
-              <div className="space-y-4">
-                {isTheoryQuestion ? (
-                  <TheoryAnswerEditor
-                    value={selectedOption || ''}
-                    onChange={setSelectedOption}
-                    disabled={showExplanation}
-                  />
-                ) : (
-                  <input
-                    type="text"
-                    disabled={showExplanation}
-                    value={selectedOption || ''}
-                    onChange={(e) => setSelectedOption(e.target.value)}
-                    placeholder="Type your answer here..."
-                    className={`w-full p-6 rounded-2xl bg-[#f5f5f8] dark:bg-[#13131a] border-2 outline-none text-xl font-bold ${showExplanation
-                      ? selectedOption?.toLowerCase().trim() === (q.answer || q.model_answer || '').toLowerCase().trim()
-                        ? 'border-green-500 text-green-600 dark:text-green-400'
-                        : 'border-red-500 text-red-600 dark:text-red-400'
-                      : 'border-slate-200 dark:border-[#2d2d3f] focus:border-[#1a5c2a]'
-                      }`}
-                  />
-                )}
-
-                {showExplanation && (q.answer || q.model_answer) && (
-                  <div className="p-4 rounded-xl border border-green-500/20 bg-green-500/5 mt-4">
-                    <p className="text-xs font-black text-green-600 dark:text-green-500 uppercase tracking-widest mb-1">
-                      {q.model_answer ? 'Model Answer' : 'Correct Answer'}
-                    </p>
-                    <p className="text-lg font-bold text-slate-800 dark:text-white">
-                      {currentAnswer?.correct || q.answer || q.model_answer}
-                    </p>
-                  </div>
-                )}
+            <div className="relative py-2">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-dashed border-black/8 dark:border-white/10" />
               </div>
-            )}
-          </div>
-
-          {showExplanation && (
-            <div className="mb-10 p-6 rounded-2xl bg-blue-500/5 border border-blue-500/20 animate-in slide-in-from-top-4">
-              <div className="flex items-center gap-2 mb-2 text-blue-500">
-                <span className="material-symbols-outlined">info</span>
-                <span className="text-xs font-black uppercase tracking-widest">
-                  {isTheoryQuestion ? `Score: ${theoryScore}/${theoryMaxScore}` : 'Explanation'}
+              <div className="relative flex justify-center">
+                <span className="bg-transparent px-3 text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">
+                  Or paste text
                 </span>
               </div>
-              <p className="text-slate-600 dark:text-slate-300 font-bold leading-relaxed whitespace-pre-wrap">
-                {currentAnswer?.explanation || q.explanation || "No explanation provided for this question."}
-              </p>
-              {isTheoryQuestion && currentAnswer?.improvements?.length > 0 && (
-                <div className="mt-4">
-                  <p className="text-xs font-black uppercase tracking-widest text-amber-500 mb-2">Where To Improve</p>
-                  <ul className="space-y-2 text-slate-600 dark:text-slate-300 text-sm">
-                    {currentAnswer.improvements.map((item: string) => (
-                      <li key={item} className="rounded-xl bg-white/60 dark:bg-[#13131a]/80 px-4 py-3 border border-blue-500/10">
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {isTheoryQuestion && currentAnswer?.strengths?.length > 0 && (
-                <div className="mt-4">
-                  <p className="text-xs font-black uppercase tracking-widest text-emerald-500 mb-2">What You Did Well</p>
-                  <ul className="space-y-2 text-slate-600 dark:text-slate-300 text-sm">
-                    {currentAnswer.strengths.map((item: string) => (
-                      <li key={item} className="rounded-xl bg-white/60 dark:bg-[#13131a]/80 px-4 py-3 border border-emerald-500/10">
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
             </div>
-          )}
 
-          <div className="flex gap-4">
-            {showExplanation ? (
-              <button
-                onClick={handleNextQuestion}
-                className="flex-1 h-16 bg-[#1a5c2a] text-white font-black rounded-2xl hover:bg-[#144823] transition-all shadow-xl shadow-orange-500/20 flex items-center justify-center gap-3"
-              >
-                <span>{currentQuestionIndex + 1 === displayData.length ? 'SEE RESULTS' : 'NEXT QUESTION'}</span>
-                <span className="material-symbols-outlined">arrow_forward</span>
-              </button>
-            ) : (
-              <>
-                <button
-                  onClick={() => setIsQuizActive(false)}
-                  className="px-8 h-16 bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-slate-200 font-black rounded-2xl hover:bg-slate-200 dark:hover:bg-[#2d2d3f] transition-all"
-                >
-                  QUIT
-                </button>
-                <button
-                  disabled={!(isTheoryQuestion ? stripEditorHtml(selectedOption || '') : selectedOption) || isGeneratingQuiz}
-                  onClick={handleCheckAnswer}
-                  className="flex-1 h-16 bg-[#5b5bfa] disabled:opacity-50 text-white font-black rounded-2xl hover:bg-[#4a4ae0] transition-all shadow-xl shadow-blue-500/20"
-                >
-                  {isTheoryQuestion ? (isGeneratingQuiz ? 'GRADING...' : 'GRADE ANSWER') : 'CHECK ANSWER'}
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderResults = () => {
-    if (!displayData || !Array.isArray(displayData)) return null;
-    const isTheoryQuiz = type === 'theory' || displayData.some((item: any) => item.model_answer);
-    const maxPossibleScore = isTheoryQuiz ? displayData.length * 10 : displayData.length;
-    const percentage = Math.round((score / maxPossibleScore) * 100);
-    const xpEarned = isTheoryQuiz ? Math.round(score * 2) : score * 5;
-    const averageTheoryScore = isTheoryQuiz && displayData.length > 0
-      ? (score / displayData.length).toFixed(1)
-      : null;
-
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center p-6 max-w-4xl mx-auto w-full animate-in fade-in zoom-in duration-700">
-        <div className="text-center mb-10">
-          <div className="inline-flex size-24 bg-[#1a5c2a]/20 rounded-full items-center justify-center mb-6 border-4 border-[#1a5c2a]/30">
-            <span className="material-symbols-outlined text-5xl text-[#1a5c2a] animate-bounce">emoji_events</span>
-          </div>
-          <h1 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-4">Quiz Completed!</h1>
-          <p className="text-slate-600 dark:text-slate-300 text-lg font-medium">Excellent work. You&apos;ve mastered these concepts.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mb-10">
-          <div className="bg-white dark:bg-[#1a1a24] p-8 rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] text-center">
-            <p className="text-xs font-black text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">Score</p>
-            <p className="text-4xl font-black text-[#5b5bfa]">{percentage}%</p>
-            <p className="text-xs font-bold text-slate-600 dark:text-slate-300 mt-1">
-              {isTheoryQuiz ? `Average ${averageTheoryScore}/10` : `${score}/${displayData.length} Correct`}
-            </p>
-          </div>
-          <div className="bg-white dark:bg-[#1a1a24] p-8 rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] text-center border-[#1a5c2a]/30 ring-4 ring-orange-500/5">
-            <p className="text-xs font-black text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">XP Earned</p>
-            <p className="text-4xl font-black text-[#1a5c2a]">+{xpEarned}</p>
-            <div className="flex items-center justify-center gap-1 mt-1">
-              <span className="material-symbols-outlined text-sm text-yellow-500 fill-current">star</span>
-              <span className="text-xs font-bold text-slate-600 dark:text-slate-300">Generation Bonus included</span>
-            </div>
-          </div>
-          <div className="bg-white dark:bg-[#1a1a24] p-8 rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] text-center">
-            <p className="text-xs font-black text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-2">Time spent</p>
-            <p className="text-4xl font-black text-white">
-              {quizStartTime ? Math.floor((Date.now() - quizStartTime) / 60000) : 0}:{quizStartTime ? String(Math.floor(((Date.now() - quizStartTime) % 60000) / 1000)).padStart(2, '0') : '00'}
-            </p>
-            <p className="text-xs font-bold text-slate-600 dark:text-slate-300 mt-1">Focus Session</p>
-          </div>
-        </div>
-
-        <div className="w-full space-y-4">
-          {savedQuizId ? (
-            <button
-              onClick={() => {
-                navigator.clipboard.writeText(`${window.location.origin}/shared/quiz/${savedQuizId}`);
-                alert('Link copied to clipboard!');
+            <textarea
+              value={pastedText}
+              onChange={(event) => {
+                setPastedText(event.target.value);
+                if (event.target.value) setSelectedResource('');
               }}
-              className="w-full h-16 bg-[#1a5c2a]/10 text-[#1a5c2a] font-black rounded-2xl hover:bg-[#1a5c2a]/20 transition-all shadow-xl shadow-orange-500/10 flex items-center justify-center gap-3 border-2 border-[#1a5c2a]/30"
-            >
-              <span className="material-symbols-outlined">link</span>
-              COPY SHARE LINK
-            </button>
-          ) : (
-            <button
-              onClick={saveQuiz}
-              disabled={isSaving}
-              className="w-full h-16 bg-[#1a5c2a] text-white font-black rounded-2xl hover:bg-[#144823] transition-all shadow-xl shadow-orange-500/20 flex items-center justify-center gap-3 disabled:opacity-50"
-            >
-              <span className="material-symbols-outlined">save</span>
-              {isSaving ? 'SAVING...' : 'SAVE & SHARE QUIZ'}
-            </button>
-          )}
+              className="h-48 w-full rounded-[24px] border border-black/5 bg-white/60 px-4 py-4 text-sm leading-7 outline-none dark:border-white/8 dark:bg-white/5"
+              placeholder="Paste a lecture note, chapter summary, or class handout here..."
+            />
+          </div>
+        </div>
+
+        <div className="glass-panel p-6">
+          <p className="eyebrow">Step 02</p>
+          <h3 className="panel-title mt-2">Shape the output</h3>
+          {error ? (
+            <div className="mt-4 rounded-[20px] border border-red-500/20 bg-red-500/8 px-4 py-3 text-sm text-red-600 dark:text-red-300">
+              {error}
+            </div>
+          ) : null}
+
+          <div className="mt-5 grid gap-3 md:grid-cols-3">
+            {outputOptions.map((option) => (
+              <button
+                key={option.id}
+                onClick={() => setType(option.id)}
+                className={cn(
+                  'rounded-[24px] border p-4 text-left transition-all',
+                  type === option.id
+                    ? 'border-[#1a5c2a]/30 bg-[#1a5c2a]/8'
+                    : 'border-black/5 bg-white/55 hover:border-[#1a5c2a]/20 dark:border-white/8 dark:bg-white/5'
+                )}
+              >
+                <p className="text-sm font-black text-slate-950 dark:text-white">{option.label}</p>
+                <p className="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">{option.description}</p>
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-5 grid gap-4 md:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">
+                Difficulty
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {(['easy', 'medium', 'hard'] as const).map((level) => (
+                  <button
+                    key={level}
+                    onClick={() => setDifficulty(level)}
+                    className={cn(
+                      'rounded-2xl px-3 py-3 text-sm font-black capitalize transition-all',
+                      difficulty === level
+                        ? 'bg-[#102117] text-white'
+                        : 'border border-black/5 bg-white/55 text-slate-700 dark:border-white/8 dark:bg-white/5 dark:text-white'
+                    )}
+                  >
+                    {level}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="mb-2 block text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">
+                Item count
+              </label>
+              <input
+                type="range"
+                min="4"
+                max="20"
+                value={count}
+                onChange={(event) => setCount(Number(event.target.value))}
+                className="mt-3 w-full accent-[#1a5c2a]"
+              />
+              <p className="mt-2 text-sm font-black text-slate-700 dark:text-slate-200">{count} items</p>
+            </div>
+          </div>
+
+          <div className="mt-5 grid gap-4 md:grid-cols-2">
+            <input
+              value={topic}
+              onChange={(event) => setTopic(event.target.value)}
+              className="rounded-[24px] border border-black/5 bg-white/60 px-4 py-3 text-sm outline-none dark:border-white/8 dark:bg-white/5"
+              placeholder="Specific topic (optional)"
+            />
+            <input
+              value={curriculum}
+              onChange={(event) => setCurriculum(event.target.value)}
+              className="rounded-[24px] border border-black/5 bg-white/60 px-4 py-3 text-sm outline-none dark:border-white/8 dark:bg-white/5"
+              placeholder="Curriculum (optional)"
+            />
+          </div>
 
           <button
-            onClick={() => { setGeneratedData(null); setIsQuizActive(false); setUserAnswers([]); setSavedQuizId(null); }}
-            className="w-full h-16 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-black rounded-2xl transition-all flex items-center justify-center gap-3"
+            onClick={onGenerate}
+            disabled={isLoading}
+            className="mt-6 inline-flex h-12 items-center justify-center rounded-2xl bg-[#102117] px-5 text-sm font-black text-white transition hover:bg-[#163623] disabled:opacity-60"
           >
-            DONE & RETURN TO LIBRARY
+            {isLoading ? 'Generating…' : 'Generate output'}
           </button>
-          <div className="flex gap-4">
-            <button
-              onClick={startQuiz}
-              className="flex-1 h-14 bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-white font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-[#2d2d3f] transition-all"
-            >
-              RETAKE QUIZ
-            </button>
-            <button
-              onClick={downloadPDF}
-              className="flex-1 h-14 bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-white font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-[#2d2d3f] transition-all"
-            >
-              DOWNLOAD PDF
-            </button>
-          </div>
         </div>
-      </div>
-    );
-  };
-  return (
-    <div className="main-bg flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
-      <Sidebar />
+      </section>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-h-screen">
+      <section className="glass-panel p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="eyebrow">Output</p>
+            <h3 className="panel-title mt-2">Generated study set</h3>
+          </div>
+          <Link href="/review" className="text-sm font-black text-[#1a5c2a]">
+            Open review queue
+          </Link>
+        </div>
 
-        {isQuizActive ? (
-          renderQuiz()
-        ) : (userAnswers.length > 0 && !isStreaming) ? (
-          renderResults()
-        ) : (
-          <main className="flex-1 md:overflow-y-auto w-full max-w-[1440px] mx-auto">
-            <div className="px-6 pt-10 pb-6 md:px-8">
-              <h1 className="text-3xl font-black text-slate-900 dark:text-white">
-                AI Question Generator
-              </h1>
-              <p className="text-slate-600 dark:text-slate-300 mt-2 text-lg">
-                Upload your study material and let AI create the perfect quiz for you.
-              </p>
-            </div>
-
-            <div className="flex-1 md:overflow-y-auto p-6 md:p-8 pt-0 flex flex-col xl:flex-row gap-6">
-              {/* Left Column */}
-              <div className="flex-1 max-w-3xl space-y-6">
-                {/* Upload Card */}
-                <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm">
-                  <div className="border border-dashed border-slate-300 dark:border-[#3b3b54] rounded-2xl p-10 flex flex-col items-center justify-center text-center">
-                    <div className="bg-[#1a5c2a]/20 p-4 rounded-full mb-4">
-                      <span className="material-symbols-outlined text-3xl text-[#5b5bfa]">cloud_upload</span>
-                    </div>
-                    <h3 className="text-xl font-bold text-white mb-2">Upload Study Material</h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-300 mb-6">Drag and drop PDF, images, or paste text here</p>
-                    <div className="flex flex-col items-center gap-4 w-full max-w-md">
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleFileUpload}
-                        className="hidden"
-                        accept="application/pdf,image/*,.doc,.docx,.ppt,.pptx,.txt"
-                      />
-                      <button
-                        onClick={() => fileInputRef.current?.click()}
-                        disabled={isUploading}
-                        className="bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 disabled:opacity-70 text-white font-bold py-2.5 px-6 rounded-lg shadow-md hover:shadow-lg transition-all w-48"
-                      >
-                        {isUploading ? 'Uploading...' : 'Browse Files'}
-                      </button>
-                      <select
-                        value={selectedResource}
-                        onChange={(e) => {
-                          setSelectedResource(e.target.value);
-                          if (e.target.value) setPastedText('');
-                        }}
-                        className="w-full rounded-lg border border-slate-200 dark:border-[#2d2d3f] bg-[#f5f5f8] dark:bg-[#13131a] p-2.5 text-sm focus:ring-2 focus:ring-[#1a5c2a] focus:outline-none text-slate-900 dark:text-white mt-4"
-                      >
-                        <option value="">-- Or select an existing library resource --</option>
-                        {resources.map(r => (
-                          <option key={r.id} value={r.id}>
-                            {r.title} {r.processing_status === 'processing' ? '(Processing...)' : r.processing_status === 'error' ? '(Error - Re-upload)' : ''}
-                          </option>
-                        ))}
-                      </select>
-                      <textarea
-                        value={pastedText}
-                        onChange={(e) => {
-                          setPastedText(e.target.value);
-                          if (e.target.value) setSelectedResource('');
-                        }}
-                        className="w-full h-20 rounded-lg border border-slate-200 dark:border-[#2d2d3f] bg-[#f5f5f8] dark:bg-[#13131a] p-3 text-sm focus:ring-2 focus:ring-[#1a5c2a] focus:outline-none text-slate-900 dark:text-white"
-                        placeholder="Or paste an excerpt here directly..."
-                      ></textarea>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Configuration Card */}
-                <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-8 shadow-sm">
-                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-8">
-                    Configuration
-                  </h2>
-
-                  {error && (
-                    <div className="mb-6 p-3 rounded bg-red-900/10 border border-red-900/30 text-red-400 text-sm">
-                      {error}
-                    </div>
-                  )}
-
-                  <div className="space-y-8">
-                    {/* QUESTION TYPE */}
-                    <div>
-                      <label className="block text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                        Question Type
-                      </label>
-                      <div className="flex flex-wrap md:flex-nowrap gap-3">
-                        <button
-                          onClick={() => setType('mcq')}
-                          className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all whitespace-nowrap ${type === 'mcq' ? 'bg-[#1a5c2a] text-white' : 'bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-slate-300 hover:bg-[#2d2d3f]'}`}
-                        >
-                          {type === 'mcq' && <span className="material-symbols-outlined text-[18px]">check_circle</span>}
-                          Multiple Choice
-                        </button>
-                        <button
-                          onClick={() => setType('fill_in_gap')}
-                          className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all whitespace-nowrap ${type === 'fill_in_gap' ? 'bg-[#1a5c2a] text-white' : 'bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-slate-300 hover:bg-[#2d2d3f]'}`}
-                        >
-                          {type === 'fill_in_gap' && <span className="material-symbols-outlined text-[18px]">check_circle</span>}
-                          {!type.includes('fill') && <span className="material-symbols-outlined text-[18px] mr-1">edit</span>}
-                          Fill-in-the-gap
-                        </button>
-                        <button
-                          onClick={() => setType('theory')}
-                          className={`flex-1 py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all whitespace-nowrap ${type === 'theory' ? 'bg-[#1a5c2a] text-white' : 'bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-slate-300 hover:bg-[#2d2d3f]'}`}
-                        >
-                          {type === 'theory' && <span className="material-symbols-outlined text-[18px]">check_circle</span>}
-                          {type !== 'theory' && <span className="material-symbols-outlined text-[18px] mr-1">menu_book</span>}
-                          Theory
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col md:flex-row gap-8">
-                      {/* DIFFICULTY */}
-                      <div className="flex-1">
-                        <label className="block text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                          Difficulty
-                        </label>
-                        <div className="flex bg-slate-100 dark:bg-[#252535] rounded-xl p-1 gap-1">
-                          <button
-                            onClick={() => setDifficulty('easy')}
-                            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${difficulty === 'easy' ? 'bg-[#1a5c2a] text-white' : 'text-slate-600 dark:text-slate-300 hover:text-white'}`}
-                          >
-                            Easy
-                          </button>
-                          <button
-                            onClick={() => setDifficulty('medium')}
-                            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${difficulty === 'medium' ? 'bg-[#1a5c2a] text-white' : 'text-slate-600 dark:text-slate-300 hover:text-white'}`}
-                          >
-                            Medium
-                          </button>
-                          <button
-                            onClick={() => setDifficulty('hard')}
-                            className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${difficulty === 'hard' ? 'bg-[#1a5c2a] text-white' : 'text-slate-600 dark:text-slate-300 hover:text-white'}`}
-                          >
-                            Hard
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* COUNT */}
-                      <div className="flex-1 flex flex-col">
-                        <label className="block text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                          Count
-                        </label>
-                        <div className="flex items-center gap-4 py-2 h-full">
-                          <input type="range" min="1" max="50" value={count} onChange={(e) => setCount(parseInt(e.target.value))} className="flex-1 accent-[#1a5c2a]" />
-                          <span className="bg-slate-100 dark:bg-[#252535] px-3 py-1 rounded-lg text-sm font-bold text-slate-900 dark:text-white w-12 text-center shadow-sm">
-                            {count}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* OPTIONAL CONTEXT */}
-                    <div className="flex flex-col md:flex-row gap-8">
-                      <div className="flex-1">
-                        <label className="block text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                          Curriculum (Optional)
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="e.g. IB, AP, GCSE..."
-                          value={curriculum}
-                          onChange={(e) => setCurriculum(e.target.value)}
-                          className="w-full bg-slate-100 dark:bg-[#252535] border border-transparent focus:border-[#1a5c2a] rounded-xl px-4 py-3 text-sm focus:outline-none dark:text-white transition-colors"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <label className="block text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                          Specific Topic (Optional)
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="e.g. Mitochondria, World War 2..."
-                          value={topic}
-                          onChange={(e) => setTopic(e.target.value)}
-                          className="w-full bg-slate-100 dark:bg-[#252535] border border-transparent focus:border-[#1a5c2a] rounded-xl px-4 py-3 text-sm focus:outline-none dark:text-white transition-colors"
-                        />
-                      </div>
-                    </div>
-
-                    <button disabled={isGenerating} onClick={handleGenerate} className="w-full mt-2 bg-[#5b5bfa] hover:bg-[#5b5bfa]/90 border-[1.5px] border-[#7b7bff] disabled:opacity-70 text-slate-900 dark:text-white font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(91,91,250,0.3)] transition-all flex items-center justify-center gap-2 relative overflow-hidden">
-                      {isGenerating ? (
-                        <>
-                          <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-                          <div className="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin z-10"></div>
-                          <span className="z-10 relative">
-                            {['Reading document text...', 'Extracting core concepts...', 'Formulating questions...', 'Validating answers...', 'Finalizing quiz...'][loadingStep]}
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="material-symbols-outlined">auto_awesome</span>
-                          Generate Questions
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
+        <div className="mt-5 grid gap-3 md:grid-cols-2">
+          {resultItems.length ? (
+            resultItems.map((item: any, index) => (
+              <div key={index} className="rounded-[24px] border border-black/5 bg-white/55 p-4 dark:border-white/8 dark:bg-white/5">
+                <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">
+                  {type === 'flashcards' ? `Card ${index + 1}` : `Item ${index + 1}`}
+                </p>
+                <p className="mt-3 text-sm font-black leading-6 text-slate-950 dark:text-white">
+                  {item.question || item.front}
+                </p>
+                <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
+                  {item.explanation || item.back || item.model_answer}
+                </p>
               </div>
-
-              {/* Right Column */}
-              <div className="w-full xl:w-[480px] flex flex-col gap-6 shrink-0">
-                {generatedData ? (
-                  <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm overflow-hidden relative">
-                    <div className="absolute top-0 w-full h-1 bg-gradient-to-r from-green-400 via-blue-500 to-[#1a5c2a]"></div>
-                    <div className="p-6 pt-7">
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
-                          <h3 className="text-xl font-bold text-slate-900 dark:text-white">{selectedResource ? resources.find(r => r.id === selectedResource)?.title || 'Generated Quiz' : 'Generated Quiz'}</h3>
-                          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">Generated just now • {generatedData.length} Questions</p>
-                        </div>
-                        <span className="bg-[#1a3826] border border-green-500/20 text-[#4ade80] text-xs font-bold px-3 py-1 rounded">Ready</span>
-                      </div>
-
-                      <div className="mt-6 space-y-4">
-                        {generatedData.slice(0, 2).map((q: any, i: number) => (
-                          <div key={i} className="flex gap-4 p-4 rounded-xl bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f]">
-                            <div className="text-xs font-black text-[#5b5bfa] bg-[#5b5bfa]/10 h-min px-2 py-1 rounded">Q{i + 1}</div>
-                            <p className="text-sm font-medium text-slate-600 dark:text-slate-300 leading-relaxed">
-                              {q.question || q.sentence}
-                            </p>
-                          </div>
-                        ))}
-                        {generatedData.length > 2 && (
-                          <div className="text-center text-xs font-bold text-slate-600 dark:text-slate-300 pt-2">+ {generatedData.length - 2} more questions</div>
-                        )}
-                      </div>
-
-                      <div className="flex gap-3 mt-6">
-                        <button
-                          onClick={downloadPDF}
-                          className="flex-1 min-w-[120px] bg-slate-100 dark:bg-[#252535] hover:bg-slate-200 dark:hover:bg-[#2d2d3f] text-slate-600 dark:text-slate-300 font-bold py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2"
-                        >
-                          Download PDF <span className="material-symbols-outlined text-[18px]">download</span>
-                        </button>
-                        <button onClick={startQuiz} className="flex-1 min-w-[120px] bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold py-3.5 px-4 rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5" >
-                          <span className="material-symbols-outlined text-[18px]">play_arrow</span>
-                          Start Quiz
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ) : savedQuizzes.length > 0 && (
-                  <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm flex-1">
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-                      <span className="material-symbols-outlined text-blue-500">assignment</span>
-                      Saved Quizzes
-                    </h3>
-                    <div className="flex flex-col gap-4">
-                      {savedQuizzes.map(quiz => (
-                        <div key={quiz.id} onClick={() => loadSavedQuiz(quiz.id)} className="cursor-pointer group bg-slate-50 dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-2xl p-5 hover:border-blue-500/50 hover:bg-white dark:hover:bg-[#1a1a24] transition-all flex flex-col justify-between items-start shadow-sm hover:shadow-md">
-                          <div className="w-full">
-                            <div className="flex justify-between items-start mb-2">
-                              <h4 className="font-bold text-slate-900 dark:text-white truncate pr-2 group-hover:text-blue-500 transition-colors">{quiz.title}</h4>
-                              <span className="bg-blue-500/10 text-blue-500 text-[10px] font-black px-2 py-0.5 rounded uppercase">{quiz.quiz_questions?.[0]?.count || 0} Qs</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs text-slate-600 dark:text-slate-300 truncate">{quiz.subject}</span>
-                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-200 dark:bg-[#2d2d3f] text-slate-600 dark:text-slate-300 uppercase">{quiz.difficulty}</span>
-                            </div>
-                          </div>
-                          <div className="flex justify-between items-center w-full mt-4 pt-4 border-t border-slate-200 dark:border-[#2d2d3f]">
-                            <span className="text-[10px] font-medium text-slate-500 dark:text-slate-300">{new Date(quiz.created_at).toLocaleDateString()}</span>
-                            <span className="text-blue-500 text-xs font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">Retake <span className="material-symbols-outlined text-[14px]">arrow_forward</span></span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {/* Recent Generations List */}
-                <div className="bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] shadow-sm flex-1">
-                  <div className="p-6 border-b border-slate-200 dark:border-[#2d2d3f] flex items-center justify-between">
-                    <h3 className="font-bold text-slate-900 dark:text-white text-[15px]">Recent Generations</h3>
-                    <Link href="/history" className="text-xs font-bold text-[#5b5bfa] hover:underline">View All</Link>
-                  </div>
-                  <div className="space-y-4">
-                    {/* Empty state for demo */}
-                    <div className="text-center py-6 text-slate-600 dark:text-slate-300 text-sm">
-                      No recent generations found. Start by uploading a document!
-                    </div>
-                  </div>
-                </div>
-              </div>
+            ))
+          ) : (
+            <div className="rounded-[24px] border border-dashed border-black/8 bg-white/45 p-5 text-sm text-slate-500 dark:border-white/10 dark:bg-white/5 dark:text-slate-400">
+              Your generated set will appear here after you run the workflow.
             </div>
-          </main>
-        )}
-      </div>
-    </div>
+          )}
+        </div>
+      </section>
+    </AppShell>
   );
 }
