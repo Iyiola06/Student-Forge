@@ -113,10 +113,12 @@ export default function GeneratorPage() {
 
   const onGenerate = () => {
     const content = selectedResourceRecord?.content || pastedText;
+
     if (!content?.trim()) {
       setError('Choose a ready resource or paste study material before generating.');
       return;
     }
+
     if (selectedResourceRecord && selectedResourceRecord.processing_status !== 'ready') {
       setError('This resource is still processing. Wait for it to become ready or use pasted text.');
       return;
@@ -131,36 +133,18 @@ export default function GeneratorPage() {
       topic: topic.trim() || undefined,
       curriculum: curriculum.trim() || undefined,
       stream: true,
+      resourceId: selectedResourceRecord?.id,
     });
   };
 
   const resultItems = Array.isArray(object) ? object : [];
 
-  const sidebar = (
-    <>
-      <CreditStatusBanner featureLabel="Question generation" creditCost={40} />
-      <section className="glass-panel p-5">
-        <p className="eyebrow">Source Quality</p>
-        <h3 className="panel-title mt-2">{selectedResourceRecord ? 'Resource selected' : 'Paste-ready input'}</h3>
-        <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
-          {selectedResourceRecord?.extracted_preview ||
-            'Pasted text works best when it contains a full explanation, lecture note, or topic summary rather than a few bullets.'}
-        </p>
-      </section>
-    </>
-  );
-
   return (
     <AppShell
       eyebrow="Generate"
       title="Create study output"
-      description="The generator has been reduced to one clean decision tree: choose your source, choose the output style, and push it into review."
-      sidebar={sidebar}
       actions={
-        <button
-          onClick={() => fileInputRef.current?.click()}
-          className="inline-flex h-11 items-center justify-center rounded-2xl border border-black/8 bg-white/60 px-4 text-sm font-black text-slate-950 transition hover:border-[#1a5c2a]/30 dark:border-white/10 dark:bg-white/5 dark:text-white"
-        >
+        <button onClick={() => fileInputRef.current?.click()} className="secondary-button">
           Upload source
         </button>
       }
@@ -178,173 +162,170 @@ export default function GeneratorPage() {
         }}
       />
 
-      <section className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="glass-panel p-6">
-          <p className="eyebrow">Step 01</p>
-          <h3 className="panel-title mt-2">Pick your source</h3>
-          <div className="mt-5 space-y-4">
-            <select
-              value={selectedResource}
-              onChange={(event) => {
-                setSelectedResource(event.target.value);
-                if (event.target.value) setPastedText('');
-              }}
-              className="w-full rounded-[24px] border border-black/5 bg-white/60 px-4 py-3 text-sm outline-none dark:border-white/8 dark:bg-white/5"
-            >
-              <option value="">Choose a ready library file</option>
-              {resources.map((resource) => (
-                <option key={resource.id} value={resource.id}>
-                  {resource.title} {resource.processing_status !== 'ready' ? `(${resource.processing_status})` : ''}
-                </option>
-              ))}
-            </select>
+      <div className="workspace-stack">
+        <CreditStatusBanner featureLabel="Question generation" creditCost={40} />
 
-            <div className="relative py-2">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-dashed border-black/8 dark:border-white/10" />
-              </div>
-              <div className="relative flex justify-center">
-                <span className="bg-transparent px-3 text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">
-                  Or paste text
-                </span>
-              </div>
-            </div>
+        <section className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+          <section className="glass-panel app-panel">
+            <p className="eyebrow">Step 01</p>
+            <h2 className="panel-title mt-2">Pick your source</h2>
 
-            <textarea
-              value={pastedText}
-              onChange={(event) => {
-                setPastedText(event.target.value);
-                if (event.target.value) setSelectedResource('');
-              }}
-              className="h-48 w-full rounded-[24px] border border-black/5 bg-white/60 px-4 py-4 text-sm leading-7 outline-none dark:border-white/8 dark:bg-white/5"
-              placeholder="Paste a lecture note, chapter summary, or class handout here..."
-            />
-          </div>
-        </div>
-
-        <div className="glass-panel p-6">
-          <p className="eyebrow">Step 02</p>
-          <h3 className="panel-title mt-2">Shape the output</h3>
-          {error ? (
-            <div className="mt-4 rounded-[20px] border border-red-500/20 bg-red-500/8 px-4 py-3 text-sm text-red-600 dark:text-red-300">
-              {error}
-            </div>
-          ) : null}
-
-          <div className="mt-5 grid gap-3 md:grid-cols-3">
-            {outputOptions.map((option) => (
-              <button
-                key={option.id}
-                onClick={() => setType(option.id)}
-                className={cn(
-                  'rounded-[24px] border p-4 text-left transition-all',
-                  type === option.id
-                    ? 'border-[#1a5c2a]/30 bg-[#1a5c2a]/8'
-                    : 'border-black/5 bg-white/55 hover:border-[#1a5c2a]/20 dark:border-white/8 dark:bg-white/5'
-                )}
+            <div className="mt-4 space-y-4">
+              <select
+                value={selectedResource}
+                onChange={(event) => {
+                  setSelectedResource(event.target.value);
+                  if (event.target.value) setPastedText('');
+                }}
+                className="w-full rounded-2xl border border-black/8 bg-white/72 px-4 py-3 text-sm outline-none dark:border-white/10 dark:bg-white/5 dark:text-white"
               >
-                <p className="text-sm font-black text-slate-950 dark:text-white">{option.label}</p>
-                <p className="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">{option.description}</p>
-              </button>
-            ))}
-          </div>
-
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
-            <div>
-              <label className="mb-2 block text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">
-                Difficulty
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {(['easy', 'medium', 'hard'] as const).map((level) => (
-                  <button
-                    key={level}
-                    onClick={() => setDifficulty(level)}
-                    className={cn(
-                      'rounded-2xl px-3 py-3 text-sm font-black capitalize transition-all',
-                      difficulty === level
-                        ? 'bg-[#102117] text-white'
-                        : 'border border-black/5 bg-white/55 text-slate-700 dark:border-white/8 dark:bg-white/5 dark:text-white'
-                    )}
-                  >
-                    {level}
-                  </button>
+                <option value="">Choose a ready library file</option>
+                {resources.map((resource) => (
+                  <option key={resource.id} value={resource.id}>
+                    {resource.title} {resource.processing_status !== 'ready' ? `(${resource.processing_status})` : ''}
+                  </option>
                 ))}
+              </select>
+
+              <div className="relative py-2">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-dashed border-black/8 dark:border-white/10" />
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="bg-transparent px-3 text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">
+                    Or paste text
+                  </span>
+                </div>
               </div>
-            </div>
-            <div>
-              <label className="mb-2 block text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">
-                Item count
-              </label>
-              <input
-                type="range"
-                min="4"
-                max="20"
-                value={count}
-                onChange={(event) => setCount(Number(event.target.value))}
-                className="mt-3 w-full accent-[#1a5c2a]"
+
+              <textarea
+                value={pastedText}
+                onChange={(event) => {
+                  setPastedText(event.target.value);
+                  if (event.target.value) setSelectedResource('');
+                }}
+                className="h-48 w-full rounded-2xl border border-black/8 bg-white/72 px-4 py-4 text-sm leading-7 outline-none dark:border-white/10 dark:bg-white/5 dark:text-white"
+                placeholder="Paste a lecture note, chapter summary, or class handout here..."
               />
-              <p className="mt-2 text-sm font-black text-slate-700 dark:text-slate-200">{count} items</p>
             </div>
-          </div>
+          </section>
 
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
-            <input
-              value={topic}
-              onChange={(event) => setTopic(event.target.value)}
-              className="rounded-[24px] border border-black/5 bg-white/60 px-4 py-3 text-sm outline-none dark:border-white/8 dark:bg-white/5"
-              placeholder="Specific topic (optional)"
-            />
-            <input
-              value={curriculum}
-              onChange={(event) => setCurriculum(event.target.value)}
-              className="rounded-[24px] border border-black/5 bg-white/60 px-4 py-3 text-sm outline-none dark:border-white/8 dark:bg-white/5"
-              placeholder="Curriculum (optional)"
-            />
-          </div>
+          <section className="glass-panel app-panel">
+            <p className="eyebrow">Step 02</p>
+            <h2 className="panel-title mt-2">Shape the output</h2>
 
-          <button
-            onClick={onGenerate}
-            disabled={isLoading}
-            className="mt-6 inline-flex h-12 items-center justify-center rounded-2xl bg-[#102117] px-5 text-sm font-black text-white transition hover:bg-[#163623] disabled:opacity-60"
-          >
-            {isLoading ? 'Generating…' : 'Generate output'}
-          </button>
-        </div>
-      </section>
+            {error ? <div className="mt-4 rounded-[20px] border border-red-500/20 bg-red-500/8 px-4 py-3 text-sm text-red-600 dark:text-red-300">{error}</div> : null}
 
-      <section className="glass-panel p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="eyebrow">Output</p>
-            <h3 className="panel-title mt-2">Generated study set</h3>
-          </div>
-          <Link href="/review" className="text-sm font-black text-[#1a5c2a]">
-            Open review queue
-          </Link>
-        </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              {outputOptions.map((option) => (
+                <button
+                  key={option.id}
+                  onClick={() => setType(option.id)}
+                  className={cn(
+                    'rounded-[18px] border p-4 text-left transition-all',
+                    type === option.id
+                      ? 'border-[#163f73]/20 bg-[#163f73]/8 dark:border-[#f39a2b]/20 dark:bg-[#f39a2b]/10'
+                      : 'border-black/8 bg-white/60 hover:border-[#163f73]/20 dark:border-white/10 dark:bg-white/5'
+                  )}
+                >
+                  <p className="text-sm font-black text-slate-950 dark:text-white">{option.label}</p>
+                  <p className="mt-2 text-[13px] leading-6 text-slate-500 dark:text-slate-400">{option.description}</p>
+                </button>
+              ))}
+            </div>
 
-        <div className="mt-5 grid gap-3 md:grid-cols-2">
-          {resultItems.length ? (
-            resultItems.map((item: any, index) => (
-              <div key={index} className="rounded-[24px] border border-black/5 bg-white/55 p-4 dark:border-white/8 dark:bg-white/5">
-                <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">
-                  {type === 'flashcards' ? `Card ${index + 1}` : `Item ${index + 1}`}
-                </p>
-                <p className="mt-3 text-sm font-black leading-6 text-slate-950 dark:text-white">
-                  {item.question || item.front}
-                </p>
-                <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
-                  {item.explanation || item.back || item.model_answer}
-                </p>
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">Difficulty</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {(['easy', 'medium', 'hard'] as const).map((level) => (
+                    <button
+                      key={level}
+                      onClick={() => setDifficulty(level)}
+                      className={cn(
+                        'rounded-2xl px-3 py-3 text-sm font-black capitalize transition-all',
+                        difficulty === level
+                          ? 'bg-[#163f73] text-white'
+                          : 'border border-black/8 bg-white/60 text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-white'
+                      )}
+                    >
+                      {level}
+                    </button>
+                  ))}
+                </div>
               </div>
-            ))
-          ) : (
-            <div className="rounded-[24px] border border-dashed border-black/8 bg-white/45 p-5 text-sm text-slate-500 dark:border-white/10 dark:bg-white/5 dark:text-slate-400">
-              Your generated set will appear here after you run the workflow.
+
+              <div>
+                <label className="mb-2 block text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">Item count</label>
+                <input type="range" min="4" max="20" value={count} onChange={(event) => setCount(Number(event.target.value))} className="mt-3 w-full accent-[#163f73]" />
+                <p className="mt-2 text-sm font-black text-slate-700 dark:text-slate-200">{count} items</p>
+              </div>
             </div>
-          )}
-        </div>
-      </section>
+
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              <input
+                value={topic}
+                onChange={(event) => setTopic(event.target.value)}
+                className="rounded-2xl border border-black/8 bg-white/72 px-4 py-3 text-sm outline-none dark:border-white/10 dark:bg-white/5 dark:text-white"
+                placeholder="Specific topic (optional)"
+              />
+              <input
+                value={curriculum}
+                onChange={(event) => setCurriculum(event.target.value)}
+                className="rounded-2xl border border-black/8 bg-white/72 px-4 py-3 text-sm outline-none dark:border-white/10 dark:bg-white/5 dark:text-white"
+                placeholder="Curriculum (optional)"
+              />
+            </div>
+
+            <button onClick={onGenerate} disabled={isLoading} className="primary-button mt-6 !h-12 disabled:opacity-60">
+              {isLoading ? 'Generating...' : 'Generate output'}
+            </button>
+          </section>
+        </section>
+
+        <section className="grid gap-5 lg:grid-cols-[0.94fr_1.06fr]">
+          <section className="glass-panel app-panel">
+            <p className="eyebrow">Source quality</p>
+            <h2 className="panel-title mt-2">{selectedResourceRecord ? 'Resource selected' : 'Paste-ready input'}</h2>
+            <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
+              {selectedResourceRecord?.extracted_preview ||
+                'Pasted text works best when it contains a full explanation, lecture note, or topic summary rather than a few bullets.'}
+            </p>
+          </section>
+
+          <section className="glass-panel app-panel">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="eyebrow">Output</p>
+                <h2 className="panel-title mt-2">Generated study set</h2>
+              </div>
+              <Link href="/review" className="ghost-button !h-9 !px-0">
+                Open review queue
+              </Link>
+            </div>
+
+            <div className="mt-4">
+              {resultItems.length ? (
+                <div className="app-list">
+                  {resultItems.map((item: any, index) => (
+                    <div key={index} className="app-list-row">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">
+                          {type === 'flashcards' ? `Card ${index + 1}` : `Item ${index + 1}`}
+                        </p>
+                        <p className="mt-2 text-sm font-black leading-6 text-slate-950 dark:text-white">{item.question || item.front}</p>
+                        <p className="mt-2 text-[13px] leading-6 text-slate-500 dark:text-slate-400">{item.explanation || item.back || item.model_answer}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="app-empty">Your generated set will appear here after you run the workflow.</div>
+              )}
+            </div>
+          </section>
+        </section>
+      </div>
     </AppShell>
   );
 }

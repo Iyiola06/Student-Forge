@@ -25,7 +25,7 @@ export default function ThemeToggle() {
     return (
         <button
             onClick={toggleTheme}
-            className="p-2 rounded-xl bg-slate-100 dark:bg-[#1b1b27] text-slate-600 dark:text-[#9c9cba] hover:text-[#1a5c2a] dark:hover:text-[#1a5c2a] transition-all duration-300 border border-transparent hover:border-slate-200 dark:hover:border-[#2d2d3f] shadow-sm active:scale-95"
+            className="inline-flex size-10 items-center justify-center rounded-2xl border border-black/8 bg-white/70 text-slate-600 transition-all duration-300 hover:border-[#163f73]/20 hover:text-[#163f73] active:scale-95 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-[#f39a2b]/20 dark:hover:text-[#f6b252]"
             aria-label="Toggle Theme"
         >
             {isDark ? (

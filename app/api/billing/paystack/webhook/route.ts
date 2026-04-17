@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createAdminClient, getPaystackSecretKey, recordCreditEvent } from '@/lib/billing/server';
+import { buildAdminConfigFailure, getAdminClientAvailability, getPaystackSecretKey, recordCreditEvent } from '@/lib/billing/server';
 import { trackServerEvent } from '@/lib/analytics/server';
 import { verifyPaystackSignature } from '@/lib/billing/paystackWebhook';
 
@@ -30,6 +30,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Paystack secret key is missing' }, { status: 500 });
     }
 
+    const adminAvailability = getAdminClientAvailability();
+    if (!adminAvailability.enabled) {
+      const failure = buildAdminConfigFailure('Wallet webhooks');
+      return NextResponse.json(failure.body, { status: failure.status });
+    }
+
     const verifyRes = await fetch(`https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`, {
       headers: {
         Authorization: `Bearer ${secretKey}`,
@@ -39,7 +45,7 @@ export async function POST(request: Request) {
     const payload = await verifyRes.json();
 
     if (verifyRes.ok && payload.status && payload.data?.status === 'success' && credits > 0) {
-      const admin = createAdminClient();
+      const admin = adminAvailability.client;
       await admin.rpc('finalize_paystack_credit_purchase', {
         target_user_id: userId,
         payment_reference: reference,
@@ -94,6 +100,17 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ received: true });
   } catch (error: any) {
+    if (error?.code === 'ADMIN_CONFIG_MISSING') {
+      return NextResponse.json(
+        {
+          error: 'Wallet webhooks are temporarily unavailable while admin services are being configured.',
+          code: 'ADMIN_CONFIG_MISSING',
+          missingKeys: error.missingKeys ?? [],
+        },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json({ error: error.message || 'Webhook processing failed' }, { status: 500 });
   }
 }

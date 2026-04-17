@@ -1,8 +1,13 @@
-import { createAdminClient } from '@/lib/billing/server';
+import { getAdminClientAvailability } from '@/lib/billing/server';
 import type { WalletSummary } from '@/lib/billing/types';
 
 export async function ensureLifecycleNotifications(userId: string, wallet: WalletSummary) {
-  const admin = createAdminClient();
+  const adminAvailability = getAdminClientAvailability();
+  if (!adminAvailability.enabled) {
+    return;
+  }
+
+  const admin = adminAvailability.client;
 
   if (wallet.balance > 0 && wallet.balance <= 120) {
     await admin.from('notification_events').upsert(

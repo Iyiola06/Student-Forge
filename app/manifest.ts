@@ -2,13 +2,13 @@
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'VUI Studify',
-    short_name: 'Studify',
+    name: "Sulva's Studify",
+    short_name: 'Sulva',
     description: 'Upload study materials, generate practice, and keep a daily review habit.',
     start_url: '/',
     display: 'standalone',
-    background_color: '#08100c',
-    theme_color: '#1a5c2a',
+    background_color: '#0b1420',
+    theme_color: '#163f73',
     icons: [
       {
         src: '/icon-192.png',

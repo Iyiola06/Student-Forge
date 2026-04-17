@@ -1,6 +1,12 @@
 import { NextResponse } from 'next/server';
 import { createAuthedRouteClient } from '@/lib/supabase/routeAuth';
-import { createAdminClient, getPaystackSecretKey, getWalletSummaryForUser, recordCreditEvent } from '@/lib/billing/server';
+import {
+  buildAdminConfigFailure,
+  getAdminClientAvailability,
+  getPaystackSecretKey,
+  getWalletSummaryForUser,
+  recordCreditEvent,
+} from '@/lib/billing/server';
 import { trackServerEvent } from '@/lib/analytics/server';
 
 export async function POST(request: Request) {
@@ -16,12 +22,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Paystack secret key is missing' }, { status: 500 });
     }
 
+    const adminAvailability = getAdminClientAvailability();
+    if (!adminAvailability.enabled) {
+      const failure = buildAdminConfigFailure('Wallet verification');
+      return NextResponse.json(failure.body, { status: failure.status });
+    }
+
     const { reference } = await request.json();
     if (!reference) {
       return NextResponse.json({ error: 'Payment reference is required' }, { status: 400 });
     }
 
-    const admin = createAdminClient();
+    const admin = adminAvailability.client;
     const { data: existingTx } = await admin
       .from('paystack_transactions')
       .select('reference, user_id, bundle_id, credit_grant_id')
@@ -114,6 +126,17 @@ export async function POST(request: Request) {
       reference,
     });
   } catch (error: any) {
+    if (error?.code === 'ADMIN_CONFIG_MISSING') {
+      return NextResponse.json(
+        {
+          error: 'Wallet verification is temporarily unavailable while admin services are being configured.',
+          code: 'ADMIN_CONFIG_MISSING',
+          missingKeys: error.missingKeys ?? [],
+        },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json({ error: error.message || 'Failed to verify payment' }, { status: 500 });
   }
 }

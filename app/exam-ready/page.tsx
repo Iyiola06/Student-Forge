@@ -108,7 +108,7 @@ export default function ExamReadyPage() {
 
         doc.setFontSize(18);
         doc.setTextColor(37, 37, 244);
-        doc.text(`VUI Studify Exam Snapshot`, 20, y);
+        doc.text(`Sulva's Studify Exam Snapshot`, 20, y);
         y += 15;
 
         // Abbreviations

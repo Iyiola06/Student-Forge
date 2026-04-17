@@ -6,7 +6,7 @@ import { useProfile } from '@/hooks/useProfile';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import ThemeToggle from '@/components/ui/ThemeToggle';
-import Image from 'next/image';
+import BrandLogo from '@/components/ui/BrandLogo';
 
 export default function TopNavigation({ children }: { children?: React.ReactNode }) {
     const pathname = usePathname();
@@ -31,15 +31,7 @@ export default function TopNavigation({ children }: { children?: React.ReactNode
     return (
         <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#3b3b54] px-4 sm:px-10 py-3 bg-white dark:bg-[#101022]/80 backdrop-blur-md sticky top-0 z-50">
             <div className="flex items-center gap-4 text-slate-900 dark:text-white">
-                <Link href="/dashboard" className="flex items-center gap-2">
-                    <div className="relative size-8 flex items-center justify-center">
-                        <Image src="/logo-light.png" alt="VUI Studify" width={32} height={32} className="object-contain dark:hidden rounded-full" priority />
-                        <Image src="/logo-dark.png" alt="VUI Studify" width={32} height={32} className="object-contain hidden dark:block rounded-full" priority />
-                    </div>
-                    <h2 className="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">
-                        VUI Studify
-                    </h2>
-                </Link>
+                <BrandLogo compact subtitle={null} href="/dashboard" />
             </div>
 
             <div className="flex flex-1 justify-end gap-8 items-center">

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createAuthedRouteClient } from '@/lib/supabase/routeAuth';
-import { createAdminClient, getPaystackCallbackUrl, getPaystackSecretKey } from '@/lib/billing/server';
+import { buildAdminConfigFailure, getAdminClientAvailability, getPaystackCallbackUrl, getPaystackSecretKey } from '@/lib/billing/server';
 import { getCreditBundle } from '@/lib/billing/config';
 
 export async function POST(request: Request) {
@@ -14,6 +14,12 @@ export async function POST(request: Request) {
     const secretKey = getPaystackSecretKey();
     if (!secretKey) {
       return NextResponse.json({ error: 'Paystack secret key is missing' }, { status: 500 });
+    }
+
+    const adminAvailability = getAdminClientAvailability();
+    if (!adminAvailability.enabled) {
+      const failure = buildAdminConfigFailure('Wallet top-ups');
+      return NextResponse.json(failure.body, { status: failure.status });
     }
 
     const { bundleId } = await request.json();
@@ -54,7 +60,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const admin = createAdminClient();
+    const admin = adminAvailability.client;
     await admin.from('paystack_transactions').upsert(
       {
         user_id: user.id,
@@ -76,6 +82,17 @@ export async function POST(request: Request) {
       bundle,
     });
   } catch (error: any) {
+    if (error?.code === 'ADMIN_CONFIG_MISSING') {
+      return NextResponse.json(
+        {
+          error: 'Wallet top-ups are temporarily unavailable while admin services are being configured.',
+          code: 'ADMIN_CONFIG_MISSING',
+          missingKeys: error.missingKeys ?? [],
+        },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json({ error: error.message || 'Failed to initialize checkout' }, { status: 500 });
   }
 }

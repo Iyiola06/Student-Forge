@@ -1,108 +1,58 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
-import { motion } from 'motion/react';
+import BrandLogo from '@/components/ui/BrandLogo';
+
+const sections = [
+  ['Acceptance', "By using Sulva's Studify you agree to these terms and to the service behavior described in the product."],
+  ['Service scope', 'The platform provides document ingestion, AI-assisted study generation, review workflows, and wallet-based premium actions.'],
+  ['User responsibilities', 'You are responsible for keeping your account secure and for only uploading content you have the right to use.'],
+  ['Credits and payments', 'Credits are used for premium AI actions. Top-ups and grants follow the product rules in your wallet and may expire by lot.'],
+  ['Availability', 'We may update or suspend parts of the service when needed for maintenance, reliability, or security.'],
+  ['Liability', 'The service is provided as available. We do not guarantee uninterrupted access or academic outcomes.'],
+];
 
 export default function TermsOfServicePage() {
-    return (
-        <div className="main-bg font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col selection:bg-[#1a5c2a] selection:text-white">
-            {/* Header */}
-            <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#2d2d45] px-10 py-4 bg-white dark:bg-[#1b1b2e]/50 backdrop-blur-md sticky top-0 z-50">
-                <Link href="/" className="flex items-center gap-4 group">
-                    <div className="relative size-10 flex items-center justify-center transition-transform group-hover:scale-110">
-                        <Image
-                            src="/icon-192.png"
-                            alt="VUI Studify Logo"
-                            width={40}
-                            height={40}
-                            className="object-contain rounded-full"
-                            priority
-                        />
-                    </div>
-                    <h2 className="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">
-                        VUI Studify
-                    </h2>
-                </Link>
-                <div className="flex items-center gap-4">
-                    <Link href="/signup">
-                        <button className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-[#1a5c2a]/20">
-                            Get Started
-                        </button>
-                    </Link>
+  return (
+    <div className="main-bg min-h-screen text-slate-950 dark:text-white">
+      <header className="mx-auto flex w-full max-w-[980px] items-center justify-between px-4 py-5 md:px-6">
+        <BrandLogo />
+        <Link href="/signup" className="primary-button">
+          Get started
+        </Link>
+      </header>
+
+      <main className="mx-auto flex w-full max-w-[980px] flex-col gap-5 px-4 pb-16 md:px-6">
+        <section className="glass-panel app-panel">
+          <p className="eyebrow">Terms</p>
+          <h1 className="mt-2 text-[25px] leading-[1.05] font-black tracking-[-0.05em] text-slate-950 dark:text-white">Terms of service</h1>
+          <p className="mt-2 text-[14px] leading-6 text-slate-500 dark:text-slate-400">
+            Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+          </p>
+        </section>
+
+        <section className="glass-panel app-panel">
+          <div className="app-list">
+            {sections.map(([title, body]) => (
+              <div key={title} className="app-list-row">
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-[18px] font-black tracking-[-0.03em] text-slate-950 dark:text-white">{title}</h2>
+                  <p className="mt-2 text-[14px] leading-7 text-slate-600 dark:text-slate-300">{body}</p>
                 </div>
-            </header>
+              </div>
+            ))}
+          </div>
+        </section>
 
-            {/* Main Content */}
-            <main className="flex-grow py-20 px-4 md:px-10 max-w-4xl mx-auto">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="premium-card glass-card p-8 md:p-12 space-y-8"
-                >
-                    <div className="text-center md:text-left space-y-4">
-                        <h1 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">Terms of Service</h1>
-                        <p className="text-slate-500 dark:text-[#9c9cba]">Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-                    </div>
-
-                    <div className="prose prose-slate dark:prose-invert max-w-none space-y-6">
-                        <section className="space-y-4">
-                            <h2 className="text-2xl font-bold text-[#1a5c2a]">1. Acceptance of Terms</h2>
-                            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                                By accessing and using VUI Studify, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.
-                            </p>
-                        </section>
-
-                        <section className="space-y-4">
-                            <h2 className="text-2xl font-bold text-[#1a5c2a]">2. Description of Service</h2>
-                            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                                VUI Studify provides a study platform for uploading materials, generating practice, and running daily review sessions. We reserve the right to modify or discontinue any part of the service at any time.
-                            </p>
-                        </section>
-
-                        <section className="space-y-4">
-                            <h2 className="text-2xl font-bold text-[#1a5c2a]">3. User Responsibilities</h2>
-                            <ul className="list-disc pl-6 text-slate-600 dark:text-slate-300 space-y-2">
-                                <li>You must be at least 13 years old to use this service.</li>
-                                <li>You are responsible for maintaining the security of your account and password.</li>
-                                <li>You agree not to use the service for any illegal or unauthorized purpose.</li>
-                                <li>You must not upload content that violates copyright or intellectual property rights.</li>
-                            </ul>
-                        </section>
-
-                        <section className="space-y-4">
-                            <h2 className="text-2xl font-bold text-[#1a5c2a]">4. Intellectual Property</h2>
-                            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                                The VUI Studify name, logo, and all related content and technology are the exclusive property of VUI Studify Inc. You retain ownership of any content you upload, but grant us a license to use it to provide our services.
-                            </p>
-                        </section>
-
-                        <section className="space-y-4">
-                            <h2 className="text-2xl font-bold text-[#1a5c2a]">5. Limitation of Liability</h2>
-                            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                                VUI Studify is provided "as is" without any warranties. We shall not be liable for any direct, indirect, incidental, or consequential damages resulting from the use or inability to use our services.
-                            </p>
-                        </section>
-
-                        <section className="space-y-4">
-                            <h2 className="text-2xl font-bold text-[#1a5c2a]">6. Governing Law</h2>
-                            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                                These terms shall be governed by and construed in accordance with the laws of the jurisdiction in which VUI Studify Inc. operates.
-                            </p>
-                        </section>
-                    </div>
-
-                    <div className="pt-8 border-t border-slate-200 dark:border-[#2d2d45] flex flex-col md:flex-row justify-between items-center gap-4">
-                        <p className="text-sm text-slate-500 dark:text-[#9c9cba]">Questions about our terms? Contact us.</p>
-                        <Link href="/login" className="text-[#1a5c2a] font-bold hover:underline">Back to Login</Link>
-                    </div>
-                </motion.div>
-            </main>
-
-            {/* Footer */}
-            <footer className="py-10 text-center text-slate-500 dark:text-slate-600 border-t border-slate-200 dark:border-[#2d2d45]">
-                <p>Copyright {new Date().getFullYear()} VUI Studify Inc. All rights reserved.</p>
-            </footer>
-        </div>
-    );
+        <section className="glass-panel app-panel">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <p className="text-[14px] leading-6 text-slate-600 dark:text-slate-300">If you have questions about these terms, contact support from inside the app.</p>
+            <Link href="/login" className="secondary-button">
+              Back to login
+            </Link>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
 }

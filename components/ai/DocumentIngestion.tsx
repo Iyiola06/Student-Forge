@@ -7,7 +7,7 @@ interface DocumentIngestionProps {
     onProcessed: (text: string) => void;
 }
 
-const STORAGE_KEY = 'VUI Studify_saved_materials';
+const STORAGE_KEY = 'Sulvas_Studify_saved_materials';
 const MAX_SAVED_ITEMS = 10;
 
 const DocumentIngestion: React.FC<DocumentIngestionProps> = ({ onProcessed }) => {

@@ -1,4 +1,4 @@
-import { createAdminClient, recordCreditEvent } from '@/lib/billing/server';
+import { getAdminClientAvailability, recordCreditEvent } from '@/lib/billing/server';
 import { trackServerEvent } from '@/lib/analytics/server';
 
 function buildReferralCode(userId: string) {
@@ -6,7 +6,12 @@ function buildReferralCode(userId: string) {
 }
 
 export async function ensureReferralCode(userId: string) {
-  const admin = createAdminClient();
+  const adminAvailability = getAdminClientAvailability();
+  if (!adminAvailability.enabled) {
+    return null;
+  }
+
+  const admin = adminAvailability.client;
   const { data: existing } = await admin.from('referral_codes').select('id,code,is_active').eq('user_id', userId).maybeSingle();
   if (existing) return existing;
 
@@ -29,7 +34,16 @@ export async function redeemReferralCode(params: {
   code: string;
   metadata?: Record<string, unknown>;
 }) {
-  const admin = createAdminClient();
+  const adminAvailability = getAdminClientAvailability();
+  if (!adminAvailability.enabled) {
+    const error = new Error('Referral credits are temporarily unavailable while admin services are being configured.');
+    (error as Error & { code?: string; status?: number; missingKeys?: string[] }).code = 'ADMIN_CONFIG_MISSING';
+    (error as Error & { code?: string; status?: number; missingKeys?: string[] }).status = 503;
+    (error as Error & { code?: string; status?: number; missingKeys?: string[] }).missingKeys = adminAvailability.missingKeys;
+    throw error;
+  }
+
+  const admin = adminAvailability.client;
   const referral = await ensureReferralCode(params.referredUserId);
   if (referral?.code === params.code) {
     throw new Error('You cannot redeem your own referral code');

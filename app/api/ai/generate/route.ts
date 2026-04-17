@@ -2,8 +2,12 @@ import { NextResponse } from 'next/server';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateObject, streamObject } from 'ai';
 import { z } from 'zod';
-import { recordCreditEvent, requireCredits } from '@/lib/billing/server';
-import { createAdminClient } from '@/lib/billing/server';
+import {
+  buildAdminConfigFailure,
+  getAdminClientAvailability,
+  recordCreditEvent,
+  requireCredits,
+} from '@/lib/billing/server';
 import { trackServerEvent } from '@/lib/analytics/server';
 import { persistGeneratedStudyOutput } from '@/lib/ai/persistGenerated';
 
@@ -20,8 +24,14 @@ const MODEL_NAME = 'gemini-3-flash-preview';
 export async function POST(request: Request) {
   let billingUserId: string | null = null;
   let jobId: string | null = null;
+  const adminAvailability = getAdminClientAvailability();
 
   try {
+    if (!adminAvailability.enabled) {
+      const failure = buildAdminConfigFailure('AI generation');
+      return NextResponse.json(failure.body, { status: failure.status });
+    }
+
     const billing = await requireCredits(request, 'ai_generate');
     if (!billing.ok) return NextResponse.json(billing.body, { status: billing.status });
     billingUserId = billing.user.id;
@@ -111,7 +121,7 @@ ${topic ? `Focus the topic specifically on: ${topic}.` : ''}`;
         return NextResponse.json({ error: 'Invalid generation type' }, { status: 400 });
     }
 
-    const admin = createAdminClient();
+    const admin = adminAvailability.client;
     const { data: job } = await admin
       .from('generation_jobs')
       .insert({
@@ -273,8 +283,8 @@ ${topic ? `Focus the topic specifically on: ${topic}.` : ''}`;
 
     return NextResponse.json({ success: true, data: object, jobId, persisted });
   } catch (error: any) {
-    if (jobId) {
-      const admin = createAdminClient();
+    if (jobId && adminAvailability.enabled) {
+      const admin = adminAvailability.client;
       await admin
         .from('generation_jobs')
         .update({
@@ -284,6 +294,18 @@ ${topic ? `Focus the topic specifically on: ${topic}.` : ''}`;
         })
         .eq('id', jobId);
     }
+
+    if (error?.code === 'ADMIN_CONFIG_MISSING') {
+      return NextResponse.json(
+        {
+          error: 'AI generation is temporarily unavailable while admin services are being configured.',
+          code: 'ADMIN_CONFIG_MISSING',
+          missingKeys: error.missingKeys ?? [],
+        },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json({ error: error?.message || 'Failed to generate content' }, { status: 500 });
   }
 }

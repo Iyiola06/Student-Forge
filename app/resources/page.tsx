@@ -125,34 +125,6 @@ export default function ResourcesPage() {
     );
   }, [jobsByResource, query, resources]);
 
-  const sidebar = (
-    <>
-      <section className="glass-panel app-panel-tight">
-        <p className="eyebrow">Upload State</p>
-        <h3 className="panel-title mt-2 capitalize">{uploadState === 'idle' ? 'Ready for the next file' : uploadState}</h3>
-      </section>
-      <section className="glass-panel app-panel-tight">
-        <p className="eyebrow">Next Action</p>
-        <div className="mt-4 space-y-2.5">
-          <Link
-            href={selectedResource?.processing_status === 'ready' ? `/generator?resource=${selectedResource.id}` : '/generator'}
-            className="flex items-center justify-between rounded-[18px] border border-black/5 bg-white/55 px-4 py-3 text-sm font-black text-slate-950 dark:border-white/8 dark:bg-white/5 dark:text-white"
-          >
-            <span>Generate from selected file</span>
-            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-          </Link>
-          <Link
-            href="/review"
-            className="flex items-center justify-between rounded-[18px] border border-black/5 bg-white/55 px-4 py-3 text-sm font-black text-slate-950 dark:border-white/8 dark:bg-white/5 dark:text-white"
-          >
-            <span>Open today's review queue</span>
-            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-          </Link>
-        </div>
-      </section>
-    </>
-  );
-
   const onRetry = async (resourceId: string) => {
     await fetch('/api/resources/retry', {
       method: 'POST',
@@ -170,9 +142,8 @@ export default function ResourcesPage() {
     <AppShell
       eyebrow="Library"
       title="Study materials"
-      sidebar={sidebar}
       actions={
-        <label className="inline-flex h-10 cursor-pointer items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623]">
+        <label className="primary-button cursor-pointer">
           Upload file
           <input
             type="file"
@@ -188,8 +159,42 @@ export default function ResourcesPage() {
         </label>
       }
     >
-      <section className="grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
-        <div className="space-y-5">
+      <div className="workspace-stack">
+        <section className="metric-strip">
+          <div className="glass-panel app-panel-tight">
+            <p className="eyebrow">Upload state</p>
+            <p className="mt-2 text-[25px] font-black capitalize tracking-[-0.05em] text-slate-950 dark:text-white">
+              {uploadState === 'idle' ? 'Ready' : uploadState}
+            </p>
+            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">Bring in PDFs, notes, decks, images, or text files.</p>
+          </div>
+          <div className="glass-panel app-panel-tight">
+            <p className="eyebrow">Files</p>
+            <p className="mt-2 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">{filteredResources.length}</p>
+            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">Items in your current library view.</p>
+          </div>
+          <div className="glass-panel app-panel-tight">
+            <p className="eyebrow">Books search</p>
+            <p className="mt-2 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">
+              {hasBookSearched ? bookResults.length : 0}
+            </p>
+            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">Reference titles from Google Books.</p>
+          </div>
+          <div className="glass-panel app-panel-tight">
+            <p className="eyebrow">Next action</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Link href={selectedResource?.processing_status === 'ready' ? `/generator?resource=${selectedResource.id}` : '/generator'} className="primary-button !h-9 !px-3">
+                Generate
+              </Link>
+              <Link href="/review" className="secondary-button !h-9 !px-3">
+                Review
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
+          <div className="space-y-5">
           <section className="glass-panel app-panel">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
@@ -265,11 +270,7 @@ export default function ResourcesPage() {
                   placeholder="Search author, topic, or title"
                   className="min-w-0 flex-1 rounded-2xl border border-black/5 bg-white/60 px-4 py-2.5 text-sm outline-none dark:border-white/8 dark:bg-white/5"
                 />
-                <button
-                  type="button"
-                  onClick={onSearchBooks}
-                  className="inline-flex h-10 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623]"
-                >
+                <button type="button" onClick={onSearchBooks} className="primary-button">
                   Search
                 </button>
               </div>
@@ -313,12 +314,7 @@ export default function ResourcesPage() {
                                 </a>
                               ) : null}
                               {book.pdfAvailable && book.pdfLink ? (
-                                <a
-                                  href={book.pdfLink}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="inline-flex h-8 items-center justify-center rounded-xl bg-[#102117] px-3 text-xs font-black text-white"
-                                >
+                                <a href={book.pdfLink} target="_blank" rel="noreferrer" className="primary-button !h-8 !rounded-xl !px-3 !text-xs">
                                   Open PDF
                                 </a>
                               ) : null}
@@ -339,7 +335,7 @@ export default function ResourcesPage() {
           </section>
         </div>
 
-        <section className="glass-panel app-panel">
+          <section className="glass-panel app-panel">
           <p className="eyebrow">Selected File</p>
           <h3 className="panel-title mt-2">{selectedResource?.title || 'Choose a file'}</h3>
           {selectedResource ? (
@@ -400,15 +396,12 @@ export default function ResourcesPage() {
               <div className="mt-4 flex flex-wrap gap-3">
                 <Link
                   href={selectedResource.processing_status === 'ready' ? `/generator?resource=${selectedResource.id}` : '/generator'}
-                  className="inline-flex h-10 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623]"
+                  className="primary-button"
                 >
                   Generate practice
                 </Link>
                 {(selectedJob?.status === 'failed' || selectedResource.processing_status === 'failed') ? (
-                  <button
-                    onClick={() => onRetry(selectedResource.id)}
-                    className="inline-flex h-10 items-center justify-center rounded-2xl border border-black/8 bg-white/60 px-4 text-sm font-black text-slate-950 transition hover:border-[#1a5c2a]/30 dark:border-white/10 dark:bg-white/5 dark:text-white"
-                  >
+                  <button onClick={() => onRetry(selectedResource.id)} className="secondary-button">
                     Retry extraction
                   </button>
                 ) : null}
@@ -417,8 +410,9 @@ export default function ResourcesPage() {
           ) : (
             <div className="mt-4 app-empty">Select a resource to inspect extraction health and preview content.</div>
           )}
+          </section>
         </section>
-      </section>
+      </div>
     </AppShell>
   );
 }

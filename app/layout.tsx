@@ -15,37 +15,37 @@ const lexend = Lexend({
 });
 
 export const viewport: Viewport = {
-  themeColor: '#1a5c2a',
+  themeColor: '#163f73',
 };
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://student.sulvatech.com'),
   title: {
-    default: 'VUI Studify',
-    template: '%s | VUI Studify',
+    default: "Sulva's Studify",
+    template: "%s | Sulva's Studify",
   },
   description: 'Upload study materials, generate practice, and return to daily review in one focused workspace.',
-  keywords: ['study', 'AI tutor', 'flashcards', 'quiz generator', 'essay grading', 'WAEC', 'JAMB', 'exam prep', 'Nigeria education', 'VUI Studify'],
-  authors: [{ name: 'VUI Studify Team' }],
+  keywords: ['study', 'AI tutor', 'flashcards', 'quiz generator', 'essay grading', 'WAEC', 'JAMB', 'exam prep', 'Nigeria education', "Sulva's Studify"],
+  authors: [{ name: "Sulva's Studify Team" }],
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'VUI Studify',
+    title: "Sulva's Studify",
   },
   openGraph: {
-    title: 'VUI Studify',
+    title: "Sulva's Studify",
     description: 'Upload study materials, generate practice, and return to daily review in one focused workspace.',
     url: '/',
-    siteName: 'VUI Studify',
+    siteName: "Sulva's Studify",
     locale: 'en_US',
     type: 'website',
-    images: [{ url: '/logo-dark.png', width: 512, height: 512, alt: 'VUI Studify Logo' }],
+    images: [{ url: '/icon-512.png', width: 512, height: 512, alt: "Sulva's Studify crest" }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'VUI Studify',
+    title: "Sulva's Studify",
     description: 'Upload study materials, generate practice, and return to daily review in one focused workspace.',
-    images: ['/logo-dark.png'],
+    images: ['/icon-512.png'],
   },
   icons: {
     icon: [

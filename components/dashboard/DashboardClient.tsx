@@ -89,245 +89,255 @@ export default function DashboardClient({
     )
   );
 
-  const sidebar = (
-    <>
-      <section className="glass-panel app-panel-tight">
-        <p className="eyebrow">Wallet</p>
-        <h3 className="mt-2 text-2xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">
-          {balance} credits
-        </h3>
-        <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-          Premium AI stays paid. Daily review stays light.
-        </p>
-        <Link
-          href="/wallet"
-          className="mt-4 inline-flex h-10 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623]"
-        >
-          Open wallet
-        </Link>
-      </section>
-
-      <section className="glass-panel app-panel-tight">
-        <p className="eyebrow">Recent Sessions</p>
-        <div className="mt-3 space-y-2.5">
-          {dashboard.recentSessions.length ? (
-            dashboard.recentSessions.map((session) => (
-              <div key={session.id} className="rounded-[20px] border border-black/5 bg-white/55 p-3.5 dark:border-white/8 dark:bg-white/5">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-black capitalize text-slate-900 dark:text-white">
-                    {session.session_type.replace(/_/g, ' ')}
-                  </p>
-                  <span className="metric-chip !px-2 !py-1 !text-[10px]">{session.status}</span>
-                </div>
-                <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
-                  {session.completed_items}/{session.total_items} items • {new Date(session.started_at).toLocaleDateString()}
-                </p>
-              </div>
-            ))
-          ) : (
-            <p className="text-sm text-slate-500 dark:text-slate-400">Your finished review sessions will appear here.</p>
-          )}
-        </div>
-      </section>
-    </>
-  );
+  const metrics = [
+    {
+      label: 'Due today',
+      value: `${dueTodayCount}`,
+      detail: dashboard.overdue.length ? `${dashboard.overdue.length} overdue` : 'Queue under control',
+    },
+    {
+      label: 'Readiness',
+      value: `${readiness}%`,
+      detail: `${dashboard.reviewCompletionRate}% review completion`,
+    },
+    {
+      label: 'Weak topics',
+      value: `${dashboard.weakTopics.length}`,
+      detail: topWeakTopic ? topWeakTopic.topic_label : 'No risk signal yet',
+    },
+    {
+      label: 'Credits',
+      value: `${balance}`,
+      detail: balance < 120 ? 'Low balance risk' : 'Premium actions available',
+    },
+  ];
 
   return (
     <AppShell
-      eyebrow="Daily Command"
-      title={`Welcome back, ${firstName}`}
-      description="Convert raw material into a reliable review habit. Start with what is due, then generate only where you need more."
-      sidebar={sidebar}
+      eyebrow="Dashboard"
+      title={`Hello, ${firstName}`}
       actions={
-        <Link
-          href={dueTodayCount > 0 ? '/review' : '/generator'}
-          className="inline-flex h-10 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623]"
-        >
-          {dueTodayCount > 0 ? 'Start review' : 'Generate practice'}
-        </Link>
+        <>
+          <Link href={dueTodayCount > 0 ? '/review' : '/generator'} className="primary-button">
+            {dueTodayCount > 0 ? 'Start review' : 'Generate practice'}
+          </Link>
+          <Link href="/resources" className="secondary-button hidden md:inline-flex">
+            Open library
+          </Link>
+        </>
       }
     >
-      <section className="glass-panel-strong app-panel text-white">
-        <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-          <div>
-            <p className="eyebrow !text-emerald-200/75">Today's Focus</p>
-            <h2 className="mt-2 max-w-[13ch] text-[clamp(2rem,3.8vw,3.7rem)] font-black leading-[0.92] tracking-[-0.07em]">
-              {dueTodayCount > 0
-                ? `${dueTodayCount} items are ready for today's revision loop.`
-                : 'Your queue is clear. Generate a fresh practice set or deepen one weak topic.'}
-            </h2>
-            <p className="mt-3 max-w-[56ch] text-sm leading-6 text-white/72">
-              Finish due items first, then use generation only where you need fresh material.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2.5">
-              <span className="metric-chip !border-white/10 !bg-white/10 !text-white">{dashboard.overdue.length} overdue</span>
-              <span className="metric-chip !border-white/10 !bg-white/10 !text-white">{dashboard.weakTopics.length} weak topics</span>
-              <span className="metric-chip !border-white/10 !bg-white/10 !text-white">{dashboard.firstReadyRate}% extraction</span>
-              <span className="metric-chip !border-white/10 !bg-white/10 !text-white">{dashboard.reviewCompletionRate}% completion</span>
+      <div className="workspace-stack">
+        <section className="metric-strip">
+          {metrics.map((metric) => (
+            <div key={metric.label} className="glass-panel app-panel-tight">
+              <p className="eyebrow">{metric.label}</p>
+              <p className="mt-2 text-[25px] leading-[1.05] font-black tracking-[-0.05em] text-slate-950 dark:text-white">
+                {metric.value}
+              </p>
+              <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">{metric.detail}</p>
             </div>
-          </div>
+          ))}
+        </section>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
-            {[
-              { label: 'Readiness', value: `${readiness}%`, tone: 'text-emerald-200' },
-              { label: 'Due today', value: `${dueTodayCount}`, tone: 'text-white' },
-              { label: 'Low-balance risk', value: balance < 120 ? 'High' : 'Stable', tone: 'text-sky-200' },
-              { label: 'Recent answers', value: `${dashboard.recentAttempts.length}`, tone: 'text-emerald-200' },
-            ].map((item) => (
-              <div key={item.label} className="metric-tile">
-                <p className="text-[11px] font-black uppercase tracking-[0.24em] text-white/55">{item.label}</p>
-                <p className={cn('mt-3 text-2xl font-black tracking-[-0.05em] md:text-3xl', item.tone)}>{item.value}</p>
+        <section className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
+          <div className="glass-panel app-panel">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="eyebrow">Review queue</p>
+                <h2 className="panel-title mt-2">What to review next</h2>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="glass-panel app-panel">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="eyebrow">Review Queue</p>
-              <h3 className="panel-title mt-2">What to review next</h3>
+              <Link href="/review" className="ghost-button !h-9 !px-0">
+                Open review
+              </Link>
             </div>
-            <Link href="/review" className="text-sm font-black text-[#1a5c2a]">
-              Open review
+
+            <div className="mt-4">
+              {dashboard.dueToday.length ? (
+                <div className="app-list">
+                  {dashboard.dueToday.slice(0, 6).map((item) => (
+                    <div key={item.id} className="app-list-row">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-black text-slate-950 dark:text-white">
+                              {item.source_topic || item.item_type.replace(/_/g, ' ')}
+                            </p>
+                            <p className="mt-1 text-xs uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
+                              {item.item_type.replace(/_/g, ' ')} • {item.review_state}
+                            </p>
+                          </div>
+                          <span className="metric-chip !px-2 !py-1 !text-[10px]">{item.mastery_score}%</span>
+                        </div>
+                        <p className="mt-2 text-[13px] text-slate-500 dark:text-slate-400">
+                          Due {new Date(item.due_at).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="app-empty">No due items yet. Generate one study set or save a flashcard deck to start the review engine.</div>
+              )}
+            </div>
+          </div>
+
+          <div className="glass-panel app-panel">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="eyebrow">Weak topics</p>
+                <h2 className="panel-title mt-2">Where confidence is lowest</h2>
+              </div>
+              <Link href="/review" className="ghost-button !h-9 !px-0">
+                Deepen
+              </Link>
+            </div>
+
+            <div className="mt-4">
+              {dashboard.weakTopics.length ? (
+                <div className="app-list">
+                  {dashboard.weakTopics.slice(0, 5).map((topic) => (
+                    <div key={topic.id} className="app-list-row">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-black text-slate-950 dark:text-white">{topic.topic_label}</p>
+                            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
+                              {topic.mistakes_count} mistakes • {topic.due_count} due items
+                            </p>
+                          </div>
+                          <span className="text-sm font-black text-amber-600 dark:text-amber-300">{topic.mastery_score}%</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="app-empty">Weak-topic signals will sharpen after your first few review sessions.</div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-5 lg:grid-cols-[1fr_1fr]">
+          <div className="glass-panel app-panel">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="eyebrow">Library health</p>
+                <h2 className="panel-title mt-2">Latest uploads and extraction status</h2>
+              </div>
+              <Link href="/resources" className="ghost-button !h-9 !px-0">
+                Open library
+              </Link>
+            </div>
+
+            <div className="mt-4">
+              {dashboard.recentResources.length ? (
+                <div className="app-list">
+                  {dashboard.recentResources.map((resource) => (
+                    <div key={resource.id} className="app-list-row">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-black text-slate-950 dark:text-white">{resource.title}</p>
+                            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
+                              {(resource.subject || 'General') + ' • ' + new Date(resource.created_at).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <span className="metric-chip !px-2 !py-1 !text-[10px]">{resource.processing_status || 'queued'}</span>
+                        </div>
+                        <p className="mt-2 line-clamp-2 text-[13px] text-slate-500 dark:text-slate-400">
+                          {resource.processing_error || resource.extracted_preview || 'Extraction preview will appear here when processing completes.'}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="app-empty">Upload your first study material to start the core loop.</div>
+              )}
+            </div>
+          </div>
+
+          <div className="glass-panel app-panel">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="eyebrow">Recent sessions</p>
+                <h2 className="panel-title mt-2">Your latest review runs</h2>
+              </div>
+              <Link href="/wallet" className="ghost-button !h-9 !px-0">
+                Open wallet
+              </Link>
+            </div>
+
+            <div className="mt-4">
+              {dashboard.recentSessions.length ? (
+                <div className="app-list">
+                  {dashboard.recentSessions.map((session) => (
+                    <div key={session.id} className="app-list-row">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-black capitalize text-slate-950 dark:text-white">
+                              {session.session_type.replace(/_/g, ' ')}
+                            </p>
+                            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
+                              {session.completed_items}/{session.total_items} items • {new Date(session.started_at).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <span
+                            className={cn(
+                              'metric-chip !px-2 !py-1 !text-[10px]',
+                              session.status === 'completed' && '!bg-[#163f73] !text-white dark:!bg-[#f39a2b] dark:!text-[#0b1420]'
+                            )}
+                          >
+                            {session.status}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="app-empty">Your finished review sessions will appear here.</div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        <section className="glass-panel app-panel">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="eyebrow">Wallet activity</p>
+              <h2 className="panel-title mt-2">Recent credit movement</h2>
+            </div>
+            <Link href="/wallet" className="ghost-button !h-9 !px-0">
+              View all
             </Link>
           </div>
-          <div className="mt-4 space-y-3">
-            {dashboard.dueToday.length ? (
-              dashboard.dueToday.slice(0, 6).map((item) => (
-                <div key={item.id} className="rounded-[22px] border border-black/5 bg-white/60 p-3.5 dark:border-white/8 dark:bg-white/5">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-black capitalize text-slate-950 dark:text-white">
-                        {item.source_topic || item.item_type.replace(/_/g, ' ')}
-                      </p>
-                      <p className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">
-                        {item.item_type.replace(/_/g, ' ')} • {item.review_state}
-                      </p>
-                    </div>
-                    <span className="metric-chip !px-2 !py-1 !text-[10px]">{item.mastery_score}% mastery</span>
-                  </div>
-                  <p className="mt-2.5 text-sm text-slate-500 dark:text-slate-400">
-                    Due {new Date(item.due_at).toLocaleString()}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <div className="rounded-[22px] border border-dashed border-black/8 bg-white/45 p-4 text-sm text-slate-500 dark:border-white/10 dark:bg-white/5 dark:text-slate-400">
-                No due items yet. Save a flashcard deck or complete one generated quiz to start the review engine.
-              </div>
-            )}
-          </div>
-        </div>
 
-        <div className="glass-panel app-panel">
-          <p className="eyebrow">Weak Topics</p>
-          <h3 className="panel-title mt-2">Where confidence is lowest</h3>
-          <div className="mt-4 space-y-3">
-            {dashboard.weakTopics.length ? (
-              dashboard.weakTopics.slice(0, 5).map((topic) => (
-                <div key={topic.id} className="rounded-[22px] border border-black/5 bg-white/60 p-3.5 dark:border-white/8 dark:bg-white/5">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm font-black text-slate-950 dark:text-white">{topic.topic_label}</p>
-                    <span className="text-sm font-black text-amber-600 dark:text-amber-300">{topic.mastery_score}%</span>
-                  </div>
-                  <div className="mt-3 h-2 rounded-full bg-slate-200 dark:bg-white/8">
-                    <div
-                      className="h-2 rounded-full bg-gradient-to-r from-amber-400 to-emerald-500"
-                      style={{ width: `${Math.max(8, topic.mastery_score)}%` }}
-                    />
-                  </div>
-                  <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                    {topic.mistakes_count} mistakes • {topic.due_count} due items
-                  </p>
-                </div>
-              ))
-            ) : (
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Weak-topic signals will appear after your first few review sessions.
-              </p>
-            )}
-          </div>
-        </div>
-      </section>
-
-      <section className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="glass-panel app-panel">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="eyebrow">Resource Health</p>
-              <h3 className="panel-title mt-2">Latest uploads and extraction status</h3>
-            </div>
-            <Link href="/resources" className="text-sm font-black text-[#1a5c2a]">
-              Open library
-            </Link>
-          </div>
-          <div className="mt-4 space-y-3">
-            {dashboard.recentResources.length ? (
-              dashboard.recentResources.map((resource) => (
-                <div key={resource.id} className="rounded-[22px] border border-black/5 bg-white/60 p-3.5 dark:border-white/8 dark:bg-white/5">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-black text-slate-950 dark:text-white">{resource.title}</p>
-                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                        {resource.subject || 'General'} • {new Date(resource.created_at).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <span className="metric-chip !px-2 !py-1 !text-[10px]">{resource.processing_status || 'queued'}</span>
-                  </div>
-                  <p className="mt-2.5 line-clamp-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                    {resource.processing_error ||
-                      resource.extracted_preview ||
-                      'Extraction preview will appear here once the source text is available.'}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Upload your first study resource to start the core loop.
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div className="glass-panel app-panel">
-          <p className="eyebrow">Credit Activity</p>
-          <h3 className="panel-title mt-2">Recent wallet movement</h3>
-          <div className="mt-4 space-y-3">
+          <div className="mt-4">
             {dashboard.recentTransactions.length ? (
-              dashboard.recentTransactions.map((tx) => (
-                <div key={tx.id} className="rounded-[22px] border border-black/5 bg-white/60 p-3.5 dark:border-white/8 dark:bg-white/5">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-black text-slate-950 dark:text-white">
-                        {tx.source.replace(/_/g, ' ')}
-                      </p>
-                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                        {new Date(tx.created_at).toLocaleString()}
-                      </p>
+              <div className="app-list">
+                {dashboard.recentTransactions.map((tx) => (
+                  <div key={tx.id} className="app-list-row">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-black text-slate-950 dark:text-white">{tx.source.replace(/_/g, ' ')}</p>
+                      <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">{new Date(tx.created_at).toLocaleString()}</p>
                     </div>
-                    <span
-                      className={cn(
-                        'text-sm font-black',
-                        tx.amount < 0 ? 'text-amber-600 dark:text-amber-300' : 'text-emerald-600 dark:text-emerald-300'
-                      )}
-                    >
+                    <span className={cn('text-sm font-black', tx.amount < 0 ? 'text-amber-600 dark:text-amber-300' : 'text-emerald-600 dark:text-emerald-300')}>
                       {tx.amount > 0 ? '+' : ''}
                       {tx.amount}
                     </span>
                   </div>
-                </div>
-              ))
+                ))}
+              </div>
             ) : (
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Your wallet history will appear here after signup, usage, or purchase.
-              </p>
+              <div className="app-empty">Your wallet history will appear here after signup, usage, or purchase.</div>
             )}
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </AppShell>
   );
 }

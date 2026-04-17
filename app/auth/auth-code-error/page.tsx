@@ -14,8 +14,8 @@ function AuthErrorContent() {
             <div className="w-full max-w-md premium-card glass-card p-8 text-center">
                 <div className="relative size-16 flex items-center justify-center mx-auto mb-6">
                     <Image
-                        src="/logo-favicon.png"
-                        alt="VUI Studify Logo"
+                        src="/apple-touch-icon.png"
+                        alt="Sulva's Studify crest"
                         width={64}
                         height={64}
                         className="object-contain rounded-full"

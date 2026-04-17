@@ -46,26 +46,20 @@ function BillingCallbackInner() {
   }, [reference, router]);
 
   return (
-    <main className="min-h-screen bg-[#08140d] px-6 py-20 text-white">
-      <div className="mx-auto max-w-xl rounded-[2rem] border border-white/10 bg-white/5 p-10 text-center shadow-[0_20px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-        <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-white/10">
+    <main className="main-bg min-h-screen px-4 py-16 text-slate-950 dark:text-white">
+      <div className="glass-panel mx-auto max-w-xl p-8 text-center md:p-10">
+        <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[#163f73]/8 text-[#163f73] dark:bg-white/8 dark:text-[#f6b252]">
           <span className="material-symbols-outlined text-3xl">
             {status === 'error' ? 'error' : status === 'success' ? 'verified' : 'sync'}
           </span>
         </div>
-        <h1 className="mt-6 text-3xl font-black">Wallet Update</h1>
-        <p className="mt-3 text-sm text-white/75">{message}</p>
+        <h1 className="mt-6 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">Wallet update</h1>
+        <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">{message}</p>
         <div className="mt-8 flex justify-center gap-3">
-          <Link
-            href="/settings"
-            className="inline-flex h-11 items-center justify-center rounded-xl bg-[#1a5c2a] px-5 text-sm font-bold text-white"
-          >
+          <Link href="/settings" className="primary-button !h-11 !rounded-xl !px-5">
             Open Wallet
           </Link>
-          <Link
-            href="/dashboard"
-            className="inline-flex h-11 items-center justify-center rounded-xl border border-white/15 px-5 text-sm font-bold text-white"
-          >
+          <Link href="/dashboard" className="secondary-button !h-11 !rounded-xl !px-5">
             Back to Dashboard
           </Link>
         </div>
@@ -78,13 +72,13 @@ export default function BillingCallbackPage() {
   return (
     <Suspense
       fallback={
-        <main className="min-h-screen bg-[#08140d] px-6 py-20 text-white">
-          <div className="mx-auto max-w-xl rounded-[2rem] border border-white/10 bg-white/5 p-10 text-center shadow-[0_20px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-            <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-white/10">
+        <main className="main-bg min-h-screen px-4 py-16 text-slate-950 dark:text-white">
+          <div className="glass-panel mx-auto max-w-xl p-8 text-center md:p-10">
+            <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[#163f73]/8 text-[#163f73] dark:bg-white/8 dark:text-[#f6b252]">
               <span className="material-symbols-outlined text-3xl">sync</span>
             </div>
-            <h1 className="mt-6 text-3xl font-black">Wallet Update</h1>
-            <p className="mt-3 text-sm text-white/75">Confirming your Paystack payment...</p>
+            <h1 className="mt-6 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">Wallet update</h1>
+            <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">Confirming your Paystack payment...</p>
           </div>
         </main>
       }

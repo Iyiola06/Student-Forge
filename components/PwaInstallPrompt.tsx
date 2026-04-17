@@ -113,7 +113,7 @@ export default function PwaInstallPrompt() {
         <div className="fixed inset-0 z-[100] flex flex-col justify-end sm:justify-center items-center p-4 sm:p-0 pointer-events-none">
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm pointer-events-auto sm:hidden" onClick={handleDismiss} />
 
-            <div className="relative w-full max-w-sm bg-white dark:bg-[#161621] border border-slate-200 dark:border-[#2d2d3f] rounded-3xl p-6 shadow-2xl pointer-events-auto transform transition-all animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-4">
+            <div className="glass-panel relative w-full max-w-sm p-6 shadow-2xl pointer-events-auto transform transition-all animate-in slide-in-from-bottom-8 sm:slide-in-from-bottom-4">
 
                 {/* Close Button */}
                 <button
@@ -125,17 +125,17 @@ export default function PwaInstallPrompt() {
 
                 {/* Content */}
                 <div className="flex flex-col items-center text-center">
-                    <div className="relative size-20 rounded-2xl shadow-lg border-4 border-white dark:border-[#101022] overflow-hidden bg-white mb-4">
+                    <div className="brand-mark-shell relative mb-4 size-20 overflow-hidden rounded-[22px] border border-black/6 shadow-lg dark:border-white/8">
                         <Image
                             src="/apple-touch-icon.png"
-                            alt="VUI Studify App Icon"
+                            alt="Sulva's Studify app icon"
                             fill
                             className="object-contain p-1"
                         />
                     </div>
 
-                    <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight mb-2">
-                        Install VUI Studify
+                    <h3 className="mb-2 text-[22px] font-black tracking-tight text-slate-900 dark:text-white">
+                        Install Sulva&apos;s Studify
                     </h3>
 
                     <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mb-6">
@@ -143,10 +143,7 @@ export default function PwaInstallPrompt() {
                     </p>
 
                     <div className="flex flex-col w-full gap-3">
-                        <button
-                            onClick={handleInstallClick}
-                            className="w-full flex items-center justify-center gap-2 bg-[#1a5c2a] hover:bg-[#144823] text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-[#1a5c2a]/30 active:scale-95"
-                        >
+                        <button onClick={handleInstallClick} className="primary-button !h-12 !w-full gap-2 rounded-xl active:scale-95">
                             <span className="material-symbols-outlined text-[20px]">download</span>
                             Install App
                         </button>

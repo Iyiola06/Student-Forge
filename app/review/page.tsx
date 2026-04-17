@@ -121,40 +121,16 @@ export default function ReviewPage() {
     setShowAnswer(false);
   }
 
-  const sidebar = (
-    <>
-      <section className="glass-panel app-panel-tight">
-        <p className="eyebrow">Review Signals</p>
-        <div className="mt-4 app-list">
-          <div className="app-list-row">
-            <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">Due in session</p>
-              <p className="mt-2 text-2xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">{queue?.dueCount ?? 0}</p>
-            </div>
-          </div>
-          <div className="app-list-row">
-            <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">Weak topics</p>
-              <p className="mt-2 text-2xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">{queue?.weakTopicCount ?? 0}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="glass-panel app-panel-tight">
-        <p className="eyebrow">Fallback Route</p>
-        <Link
-          href="/flashcards"
-          className="mt-4 inline-flex h-10 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623]"
-        >
+  return (
+    <AppShell
+      eyebrow="Review"
+      title="Daily review queue"
+      actions={
+        <Link href="/flashcards" className="secondary-button hidden md:inline-flex">
           Open flashcards
         </Link>
-      </section>
-    </>
-  );
-
-  return (
-    <AppShell eyebrow="Review" title="Daily review queue" sidebar={sidebar}>
+      }
+    >
       {error ? (
         <div className="rounded-[24px] border border-red-500/15 bg-red-500/8 px-5 py-4 text-sm text-red-600 dark:text-red-300">
           {error}
@@ -169,6 +145,32 @@ export default function ReviewPage() {
 
       {!queue ? (
         <>
+          <section className="metric-strip">
+            <div className="glass-panel app-panel-tight">
+              <p className="eyebrow">Due in session</p>
+              <p className="mt-2 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">0</p>
+              <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">This will fill once a session starts.</p>
+            </div>
+            <div className="glass-panel app-panel-tight">
+              <p className="eyebrow">Weak topics</p>
+              <p className="mt-2 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">0</p>
+              <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">Adaptive pressure comes from review results.</p>
+            </div>
+            <div className="glass-panel app-panel-tight">
+              <p className="eyebrow">Session types</p>
+              <p className="mt-2 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">{sessionModes.length}</p>
+              <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">Quick review, exam prep, and streak saver.</p>
+            </div>
+            <div className="glass-panel app-panel-tight">
+              <p className="eyebrow">Fallback</p>
+              <div className="mt-3">
+                <Link href="/flashcards" className="secondary-button !h-9 !px-3">
+                  Open flashcards
+                </Link>
+              </div>
+            </div>
+          </section>
+
           <section className="glass-panel app-panel">
             <p className="eyebrow">Session Mode</p>
             <h3 className="panel-title mt-2">Choose how much review you want</h3>
@@ -179,11 +181,7 @@ export default function ReviewPage() {
                     <p className="text-sm font-black text-slate-950 dark:text-white">{mode.label}</p>
                     <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">{mode.body}</p>
                   </div>
-                  <button
-                    onClick={() => startSession(mode.id)}
-                    disabled={startingMode === mode.id}
-                    className="inline-flex h-10 shrink-0 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623] disabled:opacity-60"
-                  >
+                  <button onClick={() => startSession(mode.id)} disabled={startingMode === mode.id} className="primary-button shrink-0 disabled:opacity-60">
                     {startingMode === mode.id ? 'Starting...' : 'Start session'}
                   </button>
                 </div>
@@ -276,7 +274,7 @@ export default function ReviewPage() {
                 <div className="flex flex-wrap gap-3">
                   <button
                     onClick={() => setShowAnswer((value) => !value)}
-                    className="inline-flex h-10 items-center justify-center rounded-2xl border border-black/8 bg-white/60 px-4 text-sm font-black text-slate-950 transition hover:border-[#1a5c2a]/30 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                    className="secondary-button"
                   >
                     {showAnswer ? 'Hide answer' : 'Reveal answer'}
                   </button>
@@ -287,11 +285,7 @@ export default function ReviewPage() {
                   >
                     Needs work
                   </button>
-                  <button
-                    onClick={() => submitAnswer('correct')}
-                    disabled={isSubmitting}
-                    className="inline-flex h-10 items-center justify-center rounded-2xl bg-[#102117] px-4 text-sm font-black text-white transition hover:bg-[#163623] disabled:opacity-60"
-                  >
+                  <button onClick={() => submitAnswer('correct')} disabled={isSubmitting} className="primary-button disabled:opacity-60">
                     I got it
                   </button>
                 </div>

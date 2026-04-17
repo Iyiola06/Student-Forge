@@ -72,7 +72,7 @@ export default function SharedQuizClient({ quiz, questions }: SharedQuizClientPr
                             <span className="material-symbols-outlined text-2xl">school</span>
                         </div>
                         <h2 className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
-                            Vui Studify Shared Quiz
+                            Sulva&apos;s Studify Shared Quiz
                         </h2>
                     </Link>
                 </div>

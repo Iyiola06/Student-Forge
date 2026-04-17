@@ -19,6 +19,20 @@ type BillingGuardFailure = {
   body: Record<string, unknown>;
 };
 
+export type AdminClientAvailability =
+  | {
+      enabled: true;
+      client: SupabaseClient;
+      missingKeys: [];
+      reason: null;
+    }
+  | {
+      enabled: false;
+      client: null;
+      missingKeys: string[];
+      reason: string;
+    };
+
 export function getPaystackCallbackUrl() {
   const appUrl =
     process.env.PAYSTACK_CALLBACK_URL ||
@@ -37,20 +51,69 @@ export function getPaystackPublicKey() {
   return process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || '';
 }
 
-export function createAdminClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+export function getAdminClientAvailability(): AdminClientAvailability {
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const missingKeys: string[] = [];
 
-  if (!supabaseUrl || !serviceRoleKey) {
-    throw new Error('Missing Supabase admin credentials');
+  if (!supabaseUrl) {
+    missingKeys.push('SUPABASE_URL or NEXT_PUBLIC_SUPABASE_URL');
   }
 
-  return createSupabaseAdminClient(supabaseUrl, serviceRoleKey, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
+  if (!serviceRoleKey) {
+    missingKeys.push('SUPABASE_SERVICE_ROLE_KEY');
+  }
+
+  if (missingKeys.length) {
+    return {
+      enabled: false,
+      client: null,
+      missingKeys,
+      reason: 'Missing Supabase admin credentials',
+    };
+  }
+
+  const resolvedSupabaseUrl = supabaseUrl as string;
+  const resolvedServiceRoleKey = serviceRoleKey as string;
+
+  return {
+    enabled: true,
+    client: createSupabaseAdminClient(resolvedSupabaseUrl, resolvedServiceRoleKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    }),
+    missingKeys: [],
+    reason: null,
+  };
+}
+
+export function buildAdminConfigFailure(feature: string) {
+  const availability = getAdminClientAvailability();
+
+  return {
+    status: 503,
+    body: {
+      error: `${feature} is temporarily unavailable while admin services are being configured.`,
+      code: 'ADMIN_CONFIG_MISSING',
+      missingKeys: availability.enabled ? [] : availability.missingKeys,
     },
-  });
+  };
+}
+
+export function createAdminClient() {
+  const availability = getAdminClientAvailability();
+
+  if (!availability.enabled) {
+    const error = new Error('Supabase admin services are not configured.');
+    (error as Error & { code?: string; status?: number; missingKeys?: string[] }).code = 'ADMIN_CONFIG_MISSING';
+    (error as Error & { code?: string; status?: number; missingKeys?: string[] }).status = 503;
+    (error as Error & { code?: string; status?: number; missingKeys?: string[] }).missingKeys = availability.missingKeys;
+    throw error;
+  }
+
+  return availability.client;
 }
 
 export async function getWalletSummaryForUser(userId: string): Promise<WalletSummary> {

@@ -1,4 +1,4 @@
-import { createAdminClient } from '@/lib/billing/server';
+import { getAdminClientAvailability } from '@/lib/billing/server';
 import type { ProductAnalyticsEvent } from '@/types/product';
 
 export async function trackServerEvent(options: {
@@ -7,7 +7,12 @@ export async function trackServerEvent(options: {
   idempotencyKey: string;
   properties?: Record<string, unknown>;
 }) {
-  const admin = createAdminClient();
+  const adminAvailability = getAdminClientAvailability();
+  if (!adminAvailability.enabled) {
+    return;
+  }
+
+  const admin = adminAvailability.client;
   await admin.from('app_analytics_events').upsert(
     {
       user_id: options.userId ?? null,
