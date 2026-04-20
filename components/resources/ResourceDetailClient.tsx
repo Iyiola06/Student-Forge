@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import AppDataList, { AppDataRow } from '@/components/app/AppDataList';
+import { AppDataList, AppDataRow } from '@/components/app/AppDataList';
 import AppEmptyState from '@/components/app/AppEmptyState';
 import AppSection from '@/components/app/AppSection';
 import { AppTabs } from '@/components/app/AppTabs';

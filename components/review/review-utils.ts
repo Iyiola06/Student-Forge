@@ -1,16 +1,13 @@
 import type { ReviewSessionType, ReviewQueueItem } from '@/components/review/types';
 
+const SESSION_TYPE_LABELS: Record<ReviewSessionType, string> = {
+  quick_review: 'Quick review',
+  exam_prep: 'Exam prep',
+  streak_saver: 'Streak saver',
+};
+
 export function formatSessionType(value: ReviewSessionType) {
-  switch (value) {
-    case 'quick_review':
-      return 'Quick review';
-    case 'exam_prep':
-      return 'Exam prep';
-    case 'streak_saver':
-      return 'Streak saver';
-    default:
-      return value.replace(/_/g, ' ');
-  }
+  return SESSION_TYPE_LABELS[value];
 }
 
 export function getReviewPrompt(item: ReviewQueueItem) {

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import type { CSSProperties } from 'react';
 import type { User } from '@supabase/supabase-js';
-import AppDataList, { AppDataRow } from '@/components/app/AppDataList';
+import { AppDataList, AppDataRow } from '@/components/app/AppDataList';
 import AppEmptyState from '@/components/app/AppEmptyState';
 import AppSection from '@/components/app/AppSection';
 import AppStatCard from '@/components/app/AppStatCard';
