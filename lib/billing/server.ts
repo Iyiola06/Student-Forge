@@ -34,11 +34,29 @@ export type AdminClientAvailability =
     };
 
 export function getPaystackCallbackUrl() {
-  const appUrl =
-    process.env.PAYSTACK_CALLBACK_URL ||
-    process.env.NEXT_PUBLIC_APP_URL ||
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    'http://localhost:3000';
+  const configuredCallbackUrl = process.env.PAYSTACK_CALLBACK_URL?.trim();
+
+  if (configuredCallbackUrl) {
+    try {
+      const parsedUrl = new URL(configuredCallbackUrl);
+
+      // Accept either a full callback URL or a bare site origin in env config.
+      if (parsedUrl.pathname && parsedUrl.pathname !== '/') {
+        parsedUrl.search = '';
+        parsedUrl.hash = '';
+        return parsedUrl.toString().replace(/\/$/, '');
+      }
+
+      parsedUrl.pathname = '/billing/callback';
+      parsedUrl.search = '';
+      parsedUrl.hash = '';
+      return parsedUrl.toString().replace(/\/$/, '');
+    } catch {
+      return `${configuredCallbackUrl.replace(/\/$/, '')}/billing/callback`;
+    }
+  }
+
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').trim();
 
   return `${appUrl.replace(/\/$/, '')}/billing/callback`;
 }
