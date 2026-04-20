@@ -53,6 +53,16 @@ export default function SimplifierPage() {
     fetchResources();
   }, []);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const resourceId = params.get('resource');
+    if (resourceId) {
+      setSelectedResource(resourceId);
+      setPastedText('');
+    }
+  }, []);
+
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;

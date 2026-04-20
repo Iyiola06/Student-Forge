@@ -13,6 +13,8 @@ type BrandLogoProps = {
   labelClassName?: string;
 };
 
+const BRAND_NAME = 'Sulva\u2019s Studify';
+
 export default function BrandLogo({
   href = '/',
   compact = false,
@@ -30,10 +32,10 @@ export default function BrandLogo({
           markClassName
         )}
       >
-        <Image src="/apple-touch-icon.png" alt="Sulva's Studify crest" fill className="object-contain p-1.5" priority />
+        <Image src="/apple-touch-icon.png" alt={`${BRAND_NAME} crest`} fill className="object-contain p-1.5" priority />
       </div>
       <div className={cn('min-w-0', labelClassName)}>
-        <p className="eyebrow">Sulva&apos;s Studify</p>
+        <p className="eyebrow">{BRAND_NAME}</p>
         {subtitle ? (
           <p className={cn('truncate text-[13px] font-bold text-slate-600 dark:text-slate-300', compact && 'text-xs')}>
             {subtitle}

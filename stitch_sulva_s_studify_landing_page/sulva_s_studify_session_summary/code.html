@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sulva's Studify - Session Summary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style data-purpose="custom-colors">
+    /* Custom palette based on the provided image */
+    :root {
+      --bg-cream: #FDFBF7;
+      --navy-dark: #103778;
+      --gold: #D4AF37;
+      --gold-light: #E8D399;
+      --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+    body {
+      background-color: var(--bg-cream);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+  </style>
+<style data-purpose="gauge-styling">
+    /* Circular progress gauge styles */
+    .gauge-container {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      margin: 0 auto;
+    }
+    .gauge-svg {
+      transform: rotate(-90deg);
+    }
+    .gauge-bg {
+      fill: none;
+      stroke: var(--navy-dark);
+      stroke-width: 14;
+    }
+    .gauge-progress {
+      fill: none;
+      stroke: var(--gold-light);
+      stroke-width: 14;
+      stroke-linecap: round;
+      stroke-dasharray: 628; /* Circumference of circle with r=100 */
+      stroke-dashoffset: 450; /* Adjust this to change progress length */
+    }
+    .trophy-badge {
+      position: absolute;
+      top: 55px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
+    .confetti {
+      position: absolute;
+      top: 30px;
+      right: 10px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="antialiased text-[#1A1A1A]">
+<!-- BEGIN: Main Container -->
+<main class="max-w-md mx-auto px-6 py-12 min-h-screen flex flex-col">
+<!-- BEGIN: Header -->
+<header class="flex items-center space-x-2 mb-12" data-purpose="app-branding">
+<img alt="Studify Logo" class="w-6 h-6 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDb4H70MBbZB6OAHeIjp-umzz8AwniLRncSTkO6lhWt-yLrYjWgkvSUZbT-AxT48ylE9ughwHDWLHLNsJ7gvh8VC-GABKGtDBklIvDNASVy_UQNVHUl0SaWSth9r6irUkX0qG74c30tTGysmnSowKxnNSP6qB8AT4x-heQNvygghTi8WhjXXlyDh7wncpS2yb9OPiI4r_rGoxFT1jxLrhx1m2fRy_i_b4pyXCxBcswptdALg8HuFv4hBNzBPQDpEce_4GbVzLcvySsK"/>
+<span class="font-bold text-sm tracking-tight">Sulva's Studify</span>
+</header>
+<!-- END: Header -->
+<!-- BEGIN: Title Section -->
+<section class="text-center mb-10" data-purpose="page-title">
+<h1 class="text-3xl font-extrabold leading-tight text-[#103778]">Sulva's Studify<br/>Session Summary</h1>
+</section>
+<!-- END: Title Section -->
+<!-- BEGIN: Progress Gauge -->
+<section class="mb-12" data-purpose="mastery-gauge">
+<div class="gauge-container">
+<!-- Confetti Decoration -->
+<div class="confetti">
+<svg height="100" viewbox="0 0 100 100" width="100">
+<rect fill="#103778" height="6" transform="rotate(30 85 45)" width="3" x="85" y="45"></rect>
+<rect fill="#D4AF37" height="5" transform="rotate(45 90 65)" width="3" x="90" y="65"></rect>
+<circle cx="95" cy="35" fill="#103778" r="2"></circle>
+<circle cx="75" cy="25" fill="#D4AF37" r="2.5"></circle>
+<rect fill="#103778" height="6" transform="rotate(-20 55 15)" width="2" x="55" y="15"></rect>
+<circle cx="65" cy="10" fill="#D4AF37" r="2"></circle>
+</svg>
+</div>
+<svg class="gauge-svg" height="240" viewbox="0 0 220 220" width="240">
+<!-- Main Navy Ring -->
+<circle class="gauge-bg" cx="110" cy="110" r="100"></circle>
+<!-- Gold Progress Ring Overlay -->
+<circle class="gauge-progress" cx="110" cy="110" r="100"></circle>
+</svg>
+<!-- Trophy Badge Positioned at end of gold arc -->
+<div class="trophy-badge">
+<img alt="Trophy" class="w-6 h-6" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1EOoPj8NO62kL9DENSmkLc2XfSMcRYkHafGvkmuTQf7RzpjzBPBzZbqM6c0aL7YvDq4lZyop53v6x5KI3DYObyaXcRVqdlzLY_IKLl1p7_-saWZZdHVWtCEztgrasACD8AbLd2RSd5GFXv8Si2TD4VvMN8RfS_IimlXJlqehymQV56FXZ6OJ9GKslr0ZMDi3Fayh0mDCapPVxZq3mGy5DYETZjjjWnUp6nk6didgTIBr-91TkSB0zbzkpm1hMSu6D1mbm6o5ZFQsJ"/>
+</div>
+<!-- Center Text -->
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-5xl font-bold text-[#1A1A1A]">+4%</span>
+<span class="text-gray-500 font-medium text-sm mt-1">Mastery gained</span>
+</div>
+</div>
+</section>
+<!-- END: Progress Gauge -->
+<!-- BEGIN: Statistics Grid -->
+<section class="grid grid-cols-3 gap-3 mb-6" data-purpose="session-stats">
+<!-- Card 1: Cards Reviewed -->
+<div class="bg-white rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.05)] text-center flex flex-col items-center justify-between min-h-[140px]">
+<div class="text-[13px] text-[#1A1A1A] mb-1">Cards Reviewed</div>
+<img alt="Cards" class="w-14 h-14 object-contain my-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDowi3D1dmXx9fe1svOj4mJaF1RhmQV_JJx_w6tXs5aB0LbAGzPleMwqFhO3_2dWxqcjN9Lo3_6z6_3zEm-KfnkxjMB1FbeEccsgoUiXgjyJoDoaD_t3DSdwtPwXUKeBq-WwmNSWXIUpzPer25yropYpQKm3bY9Rnm_cM52FFyz56uJsyD7P1f0DhE_nPC9vKx9eW0L6u5QnRFSXly84260TcFFtVa0ZhOnQzktf6bkaW-M8-w4T250quE5KRgXv2R01Mc9-VM3YGFN"/>
+<span class="text-4xl font-extrabold text-[#1A1A1A]">24</span>
+</div>
+<!-- Card 2: Duration -->
+<div class="bg-white rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.05)] text-center flex flex-col items-center justify-between min-h-[140px]">
+<div class="text-[13px] text-[#1A1A1A] mb-1">Duration</div>
+<img alt="Timer" class="w-14 h-14 object-contain my-1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn-0obfuh00bwi6JLJYgA_jUNt5aROqJ7oCbZVXjMghFs5BQJ2lhlCHiEp3ZT4byKhpGfC0gcCpT08mRh6qg62iKo6ruXKZjAybX_PvEClxkIzZxg5Vg8qFJtDVCBirlz2JA1dqqb3XdDU98Ss__LBz0CnCPX0X1puKjiD4oyMgQW6Ptk9V0UKsgBHsEddzot_wvUbGqf0m2agIFJ9bKJj5P0l6ls7oGiHOz53auoCK9hHyjV7qBFs6RSwEPUsH8tfaVN59Tq6lvf5"/>
+<span class="text-4xl font-extrabold text-[#1A1A1A]">12m</span>
+</div>
+<!-- Card 3: Streak -->
+<div class="bg-white rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.05)] text-center flex flex-col items-center justify-between min-h-[140px]">
+<div class="text-[13px] text-[#1A1A1A] mb-1">Streak</div>
+<img alt="Streak" class="w-12 h-12 object-contain my-2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcMPuBN8q_-0sCYfZ1K-VJvkudzdFIDU7mdiCUpD8mwRVbEftGZ2qvWmS-S0asEg_RAv0e-7gVhjaC0a69bA_OjS9-RF-CCvIGUcRD0XrTUe1vtlzIEcH3hTUfYcCo2i2hwVnK_-DbBf1pnKAm_0u4yl47og7ELysi3MeBFF4aqH1UH368yaIQ6oAS_xwkSa0lXeuLoUvnEKjP2Qfybcz9o918JU5LRHSi5IrJo7Mw9Y4IKgIIRLgyL6gYx1B0Nyc8GbgunekUZoyY"/>
+<div class="flex items-center justify-center">
+<span class="text-4xl font-extrabold text-[#1A1A1A]">7</span>
+<div class="text-[11px] text-[#B8860B] leading-tight text-left ml-2 font-medium">Day ↑<br/>Streak</div>
+</div>
+</div>
+</section>
+<!-- END: Statistics Grid -->
+<!-- BEGIN: Weak Topics Section -->
+<section class="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] mb-10 overflow-hidden" data-purpose="weak-topics">
+<div class="px-6 py-4 border-b border-gray-100">
+<h2 class="text-sm font-bold text-[#1A1A1A]">Weak Topics Found</h2>
+</div>
+<ul class="divide-y divide-gray-100">
+<li class="px-6 py-4 flex items-center">
+<span class="w-2 h-2 bg-[#E55B5B] rounded-full mr-4"></span>
+<span class="text-sm text-gray-700 font-medium">Chemical Bonding</span>
+</li>
+<li class="px-6 py-4 flex items-center">
+<span class="w-2 h-2 bg-[#E55B5B] rounded-full mr-4"></span>
+<span class="text-sm text-gray-700 font-medium">Enthalpy</span>
+</li>
+</ul>
+</section>
+<!-- END: Weak Topics Section -->
+<!-- BEGIN: Action Buttons -->
+<section class="space-y-4 mt-auto pb-6" data-purpose="navigation-actions">
+<button class="w-full bg-[#0F3472] text-white py-4 rounded-full font-bold text-sm shadow-lg hover:bg-opacity-90 transition-all">
+        Back to Dashboard
+      </button>
+<button class="w-full bg-white text-[#0F3472] border-[#0F3472] py-4 rounded-full font-bold text-sm hover:bg-gray-50 transition-all border">
+        Review Weak Topics Now
+      </button>
+</section>
+<!-- END: Action Buttons -->
+</main>
+<!-- END: Main Container -->
+</body></html>

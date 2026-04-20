@@ -14,6 +14,8 @@ const lexend = Lexend({
   display: 'swap',
 });
 
+const BRAND_NAME = 'Sulva\u2019s Studify';
+
 export const viewport: Viewport = {
   themeColor: '#163f73',
 };
@@ -21,29 +23,29 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://student.sulvatech.com'),
   title: {
-    default: "Sulva's Studify",
-    template: "%s | Sulva's Studify",
+    default: BRAND_NAME,
+    template: `%s | ${BRAND_NAME}`,
   },
   description: 'Upload study materials, generate practice, and return to daily review in one focused workspace.',
-  keywords: ['study', 'AI tutor', 'flashcards', 'quiz generator', 'essay grading', 'WAEC', 'JAMB', 'exam prep', 'Nigeria education', "Sulva's Studify"],
-  authors: [{ name: "Sulva's Studify Team" }],
+  keywords: ['study', 'AI tutor', 'flashcards', 'quiz generator', 'essay grading', 'WAEC', 'JAMB', 'exam prep', 'Nigeria education', BRAND_NAME],
+  authors: [{ name: `${BRAND_NAME} Team` }],
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: "Sulva's Studify",
+    title: BRAND_NAME,
   },
   openGraph: {
-    title: "Sulva's Studify",
+    title: BRAND_NAME,
     description: 'Upload study materials, generate practice, and return to daily review in one focused workspace.',
     url: '/',
-    siteName: "Sulva's Studify",
+    siteName: BRAND_NAME,
     locale: 'en_US',
     type: 'website',
-    images: [{ url: '/icon-512.png', width: 512, height: 512, alt: "Sulva's Studify crest" }],
+    images: [{ url: '/icon-512.png', width: 512, height: 512, alt: `${BRAND_NAME} crest` }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Sulva's Studify",
+    title: BRAND_NAME,
     description: 'Upload study materials, generate practice, and return to daily review in one focused workspace.',
     images: ['/icon-512.png'],
   },

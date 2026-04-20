@@ -1,10 +1,17 @@
 'use client';
 
 import Link from 'next/link';
+import type { CSSProperties } from 'react';
 import type { User } from '@supabase/supabase-js';
+import AppDataList, { AppDataRow } from '@/components/app/AppDataList';
+import AppEmptyState from '@/components/app/AppEmptyState';
+import AppSection from '@/components/app/AppSection';
+import AppStatCard from '@/components/app/AppStatCard';
+import AppStatusBadge from '@/components/app/AppStatusBadge';
+import DashboardHeroCard from '@/components/dashboard/DashboardHeroCard';
+import DashboardProgressCluster from '@/components/dashboard/DashboardProgressCluster';
 import AppShell from '@/components/layout/AppShell';
 import { useProfile, type Profile } from '@/hooks/useProfile';
-import { cn } from '@/lib/utils';
 
 type DashboardData = {
   dueToday: Array<{
@@ -62,6 +69,40 @@ type DashboardData = {
   failedResources: number;
 };
 
+function toneForProcessingStatus(status?: string | null) {
+  switch (status) {
+    case 'ready':
+    case 'completed':
+      return 'success' as const;
+    case 'failed':
+    case 'error':
+      return 'danger' as const;
+    case 'processing':
+    case 'running':
+      return 'info' as const;
+    default:
+      return 'neutral' as const;
+  }
+}
+
+function toneForSessionStatus(status?: string | null) {
+  switch (status) {
+    case 'completed':
+      return 'success' as const;
+    case 'active':
+    case 'in_progress':
+      return 'info' as const;
+    case 'failed':
+      return 'warning' as const;
+    default:
+      return 'neutral' as const;
+  }
+}
+
+function formatLabel(value: string) {
+  return value.replace(/_/g, ' ');
+}
+
 export default function DashboardClient({
   initialData,
 }: {
@@ -72,18 +113,29 @@ export default function DashboardClient({
 
   const firstName = profile?.full_name?.split(' ')[0] || 'Student';
   const dueTodayCount = dashboard.dueToday.length;
+  const overdueCount = dashboard.overdue.length;
   const topWeakTopic = dashboard.weakTopics[0];
+  const nextItem = dashboard.dueToday[0];
+  const streakDays = profile?.streak_days ?? 0;
   const balance = profile?.credit_balance ?? 0;
+  const cardsMastered = profile?.cards_mastered ?? 0;
+  const level = profile?.level ?? 1;
+  const xp = profile?.xp ?? 0;
+  const completedRecentSessions = dashboard.recentSessions.filter((session) => session.status === 'completed').length;
+  const accuracyRate = dashboard.recentAttempts.length
+    ? Math.round((dashboard.recentAttempts.filter((attempt) => attempt.result === 'correct').length / dashboard.recentAttempts.length) * 100)
+    : 0;
+  const examReadinessScore = profile?.exam_readiness_score ?? 0;
   const readiness = Math.min(
     100,
     Math.round(
       dueTodayCount === 0
-        ? 72
+        ? examReadinessScore || 76
         : Math.max(
-            30,
+            32,
             100 -
               dueTodayCount * 6 -
-              dashboard.overdue.length * 8 -
+              overdueCount * 8 -
               Math.max(0, 70 - (topWeakTopic?.mastery_score ?? 70)) / 2
           )
     )
@@ -93,22 +145,17 @@ export default function DashboardClient({
     {
       label: 'Due today',
       value: `${dueTodayCount}`,
-      detail: dashboard.overdue.length ? `${dashboard.overdue.length} overdue` : 'Queue under control',
+      detail: overdueCount ? `${overdueCount} overdue` : 'Queue in control',
     },
     {
-      label: 'Readiness',
-      value: `${readiness}%`,
-      detail: `${dashboard.reviewCompletionRate}% review completion`,
+      label: 'Recent accuracy',
+      value: `${accuracyRate}%`,
+      detail: dashboard.recentAttempts.length ? `${dashboard.recentAttempts.length} recent answers tracked` : 'Builds after your first review run',
     },
     {
-      label: 'Weak topics',
-      value: `${dashboard.weakTopics.length}`,
-      detail: topWeakTopic ? topWeakTopic.topic_label : 'No risk signal yet',
-    },
-    {
-      label: 'Credits',
-      value: `${balance}`,
-      detail: balance < 120 ? 'Low balance risk' : 'Premium actions available',
+      label: 'Cards mastered',
+      value: `${cardsMastered}`,
+      detail: `${Math.max(examReadinessScore, readiness)}% exam readiness`,
     },
   ];
 
@@ -116,226 +163,239 @@ export default function DashboardClient({
     <AppShell
       eyebrow="Dashboard"
       title={`Hello, ${firstName}`}
+      description="Your next study move, your weak spots, and your learning momentum are all organized here."
       actions={
-        <>
-          <Link href={dueTodayCount > 0 ? '/review' : '/generator'} className="primary-button">
-            {dueTodayCount > 0 ? 'Start review' : 'Generate practice'}
-          </Link>
-          <Link href="/resources" className="secondary-button hidden md:inline-flex">
-            Open library
-          </Link>
-        </>
+        <Link href="/resources" className="secondary-button hidden md:inline-flex">
+          Open library
+        </Link>
       }
     >
       <div className="workspace-stack">
-        <section className="metric-strip">
-          {metrics.map((metric) => (
-            <div key={metric.label} className="glass-panel app-panel-tight">
-              <p className="eyebrow">{metric.label}</p>
-              <p className="mt-2 text-[25px] leading-[1.05] font-black tracking-[-0.05em] text-slate-950 dark:text-white">
-                {metric.value}
-              </p>
-              <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">{metric.detail}</p>
+        <section className="grid gap-5 xl:grid-cols-[minmax(0,1.22fr)_360px]">
+          <DashboardHeroCard
+            dueTodayCount={dueTodayCount}
+            overdueCount={overdueCount}
+            weakTopicCount={dashboard.weakTopics.length}
+            readiness={readiness}
+            streakDays={streakDays}
+            nextItem={
+              nextItem
+                ? {
+                    title: nextItem.source_topic || formatLabel(nextItem.item_type),
+                    kind: formatLabel(nextItem.item_type),
+                    dueAt: nextItem.due_at,
+                    masteryScore: nextItem.mastery_score,
+                  }
+                : null
+            }
+          />
+
+          <AppSection
+            eyebrow="Consistency"
+            title={`${streakDays}-day streak`}
+            description="The best dashboards reduce hesitation. The best study habits reduce recovery time."
+            variant="soft"
+            bodyClassName="space-y-4"
+          >
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+              <div className="dashboard-mini-surface">
+                <p className="dashboard-mini-label">Level {'\u2022'} XP</p>
+                <p className="mt-3 text-2xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">
+                  {level} {'\u2022'} {xp}
+                </p>
+                <p className="mt-2 text-sm leading-7 text-slate-500 dark:text-slate-400">Progress compounds fastest when your next block starts on time.</p>
+              </div>
+
+              <div className="dashboard-mini-surface">
+                <p className="dashboard-mini-label">Session cadence</p>
+                <p className="mt-3 text-2xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">
+                  {dashboard.recentSessions.length ? Math.round((completedRecentSessions / dashboard.recentSessions.length) * 100) : 0}%
+                </p>
+                <p className="mt-2 text-sm leading-7 text-slate-500 dark:text-slate-400">
+                  {completedRecentSessions} of {dashboard.recentSessions.length || 0} recent sessions finished cleanly.
+                </p>
+              </div>
             </div>
+
+            <div className="dashboard-mini-surface">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="dashboard-mini-label">Recent rhythm</p>
+                  <p className="mt-2 text-sm font-black text-slate-950 dark:text-white">Latest session outcomes</p>
+                </div>
+                <span className="app-toolbar-chip">
+                  <span className="material-symbols-outlined text-[15px]">account_balance_wallet</span>
+                  {balance} credits
+                </span>
+              </div>
+
+              {dashboard.recentSessions.length ? (
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  {dashboard.recentSessions.slice(0, 8).map((session) => (
+                    <span key={session.id} className="dashboard-session-dot" data-state={session.status} title={session.status} />
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-4 text-sm leading-7 text-slate-500 dark:text-slate-400">Your session rhythm appears here after the first focused review run.</p>
+              )}
+            </div>
+          </AppSection>
+        </section>
+
+        <section className="grid gap-4 md:grid-cols-3">
+          {metrics.map((metric) => (
+            <AppStatCard key={metric.label} label={metric.label} value={metric.value} detail={metric.detail} />
           ))}
         </section>
 
-        <section className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
-          <div className="glass-panel app-panel">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="eyebrow">Review queue</p>
-                <h2 className="panel-title mt-2">What to review next</h2>
-              </div>
+        <section className="grid gap-5 xl:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)]">
+          <AppSection
+            eyebrow="Weak topics"
+            title="Where confidence needs reinforcement"
+            description="These topics are most likely to create drag in your next review block."
+            action={
               <Link href="/review" className="ghost-button !h-9 !px-0">
                 Open review
               </Link>
-            </div>
-
-            <div className="mt-4">
-              {dashboard.dueToday.length ? (
-                <div className="app-list">
-                  {dashboard.dueToday.slice(0, 6).map((item) => (
-                    <div key={item.id} className="app-list-row">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-black text-slate-950 dark:text-white">
-                              {item.source_topic || item.item_type.replace(/_/g, ' ')}
-                            </p>
-                            <p className="mt-1 text-xs uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
-                              {item.item_type.replace(/_/g, ' ')} • {item.review_state}
-                            </p>
-                          </div>
-                          <span className="metric-chip !px-2 !py-1 !text-[10px]">{item.mastery_score}%</span>
+            }
+          >
+            {dashboard.weakTopics.length ? (
+              <AppDataList>
+                {dashboard.weakTopics.slice(0, 5).map((topic) => (
+                  <AppDataRow key={topic.id}>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-black text-slate-950 dark:text-white">{topic.topic_label}</p>
+                          <p className="mt-1 text-[13px] leading-6 text-slate-500 dark:text-slate-400">
+                            {topic.mistakes_count} mistakes {'\u2022'} {topic.due_count} due items
+                          </p>
                         </div>
-                        <p className="mt-2 text-[13px] text-slate-500 dark:text-slate-400">
-                          Due {new Date(item.due_at).toLocaleString()}
-                        </p>
+                        <AppStatusBadge tone={topic.mastery_score < 45 ? 'danger' : 'warning'}>{topic.mastery_score}% mastery</AppStatusBadge>
+                      </div>
+
+                      <div className="mt-3 dashboard-progress-track">
+                        <div
+                          className="dashboard-progress-fill"
+                          data-tone="warm"
+                          style={{ '--value': topic.mastery_score } as CSSProperties}
+                        />
                       </div>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="app-empty">No due items yet. Generate one study set or save a flashcard deck to start the review engine.</div>
-              )}
-            </div>
-          </div>
+                  </AppDataRow>
+                ))}
+              </AppDataList>
+            ) : (
+              <AppEmptyState description="No weak-topic pressure yet. Keep reviewing and this area will stay intentionally quiet." />
+            )}
+          </AppSection>
 
-          <div className="glass-panel app-panel">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="eyebrow">Weak topics</p>
-                <h2 className="panel-title mt-2">Where confidence is lowest</h2>
-              </div>
-              <Link href="/review" className="ghost-button !h-9 !px-0">
-                Deepen
-              </Link>
-            </div>
-
-            <div className="mt-4">
-              {dashboard.weakTopics.length ? (
-                <div className="app-list">
-                  {dashboard.weakTopics.slice(0, 5).map((topic) => (
-                    <div key={topic.id} className="app-list-row">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-black text-slate-950 dark:text-white">{topic.topic_label}</p>
-                            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
-                              {topic.mistakes_count} mistakes • {topic.due_count} due items
-                            </p>
-                          </div>
-                          <span className="text-sm font-black text-amber-600 dark:text-amber-300">{topic.mastery_score}%</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="app-empty">Weak-topic signals will sharpen after your first few review sessions.</div>
-              )}
-            </div>
-          </div>
+          <AppSection
+            eyebrow="Mastery"
+            title="Progress that explains your next move"
+            description="A calmer view of readiness, completion quality, and how reliably materials become study-ready."
+            variant="soft"
+          >
+            <DashboardProgressCluster
+              examReadinessScore={Math.max(examReadinessScore, readiness)}
+              reviewCompletionRate={dashboard.reviewCompletionRate}
+              firstReadyRate={dashboard.firstReadyRate}
+              accuracyRate={accuracyRate}
+              cardsMastered={cardsMastered}
+              level={level}
+              xp={xp}
+              attempts={dashboard.recentAttempts}
+            />
+          </AppSection>
         </section>
 
-        <section className="grid gap-5 lg:grid-cols-[1fr_1fr]">
-          <div className="glass-panel app-panel">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="eyebrow">Library health</p>
-                <h2 className="panel-title mt-2">Latest uploads and extraction status</h2>
-              </div>
+        <section className="grid gap-5 xl:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)]">
+          <AppSection
+            eyebrow="Recent resources"
+            title="Study material entering the system"
+            description="The latest uploads and whether they are already ready for flashcards, quizzes, and review."
+            action={
               <Link href="/resources" className="ghost-button !h-9 !px-0">
                 Open library
               </Link>
-            </div>
-
-            <div className="mt-4">
-              {dashboard.recentResources.length ? (
-                <div className="app-list">
-                  {dashboard.recentResources.map((resource) => (
-                    <div key={resource.id} className="app-list-row">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-black text-slate-950 dark:text-white">{resource.title}</p>
-                            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
-                              {(resource.subject || 'General') + ' • ' + new Date(resource.created_at).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <span className="metric-chip !px-2 !py-1 !text-[10px]">{resource.processing_status || 'queued'}</span>
-                        </div>
-                        <p className="mt-2 line-clamp-2 text-[13px] text-slate-500 dark:text-slate-400">
-                          {resource.processing_error || resource.extracted_preview || 'Extraction preview will appear here when processing completes.'}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="app-empty">Upload your first study material to start the core loop.</div>
-              )}
-            </div>
-          </div>
-
-          <div className="glass-panel app-panel">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="eyebrow">Recent sessions</p>
-                <h2 className="panel-title mt-2">Your latest review runs</h2>
-              </div>
-              <Link href="/wallet" className="ghost-button !h-9 !px-0">
-                Open wallet
-              </Link>
-            </div>
-
-            <div className="mt-4">
-              {dashboard.recentSessions.length ? (
-                <div className="app-list">
-                  {dashboard.recentSessions.map((session) => (
-                    <div key={session.id} className="app-list-row">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-black capitalize text-slate-950 dark:text-white">
-                              {session.session_type.replace(/_/g, ' ')}
-                            </p>
-                            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
-                              {session.completed_items}/{session.total_items} items • {new Date(session.started_at).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <span
-                            className={cn(
-                              'metric-chip !px-2 !py-1 !text-[10px]',
-                              session.status === 'completed' && '!bg-[#163f73] !text-white dark:!bg-[#f39a2b] dark:!text-[#0b1420]'
-                            )}
-                          >
-                            {session.status}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="app-empty">Your finished review sessions will appear here.</div>
-              )}
-            </div>
-          </div>
-        </section>
-
-        <section className="glass-panel app-panel">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="eyebrow">Wallet activity</p>
-              <h2 className="panel-title mt-2">Recent credit movement</h2>
-            </div>
-            <Link href="/wallet" className="ghost-button !h-9 !px-0">
-              View all
-            </Link>
-          </div>
-
-          <div className="mt-4">
-            {dashboard.recentTransactions.length ? (
-              <div className="app-list">
-                {dashboard.recentTransactions.map((tx) => (
-                  <div key={tx.id} className="app-list-row">
+            }
+          >
+            {dashboard.recentResources.length ? (
+              <AppDataList>
+                {dashboard.recentResources.map((resource) => (
+                  <AppDataRow key={resource.id}>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-black text-slate-950 dark:text-white">{tx.source.replace(/_/g, ' ')}</p>
-                      <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">{new Date(tx.created_at).toLocaleString()}</p>
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-black text-slate-950 dark:text-white">{resource.title}</p>
+                          <p className="mt-1 text-[13px] leading-6 text-slate-500 dark:text-slate-400">
+                            {(resource.subject || 'General') + ' \u2022 ' + new Date(resource.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <AppStatusBadge tone={toneForProcessingStatus(resource.processing_status)}>
+                          {resource.processing_status || 'queued'}
+                        </AppStatusBadge>
+                      </div>
+                      <p className="mt-2 line-clamp-2 text-[13px] leading-6 text-slate-500 dark:text-slate-400">
+                        {resource.processing_error || resource.extracted_preview || 'Extraction preview will appear here when processing completes.'}
+                      </p>
                     </div>
-                    <span className={cn('text-sm font-black', tx.amount < 0 ? 'text-amber-600 dark:text-amber-300' : 'text-emerald-600 dark:text-emerald-300')}>
-                      {tx.amount > 0 ? '+' : ''}
-                      {tx.amount}
-                    </span>
-                  </div>
+                  </AppDataRow>
                 ))}
-              </div>
+              </AppDataList>
             ) : (
-              <div className="app-empty">Your wallet history will appear here after signup, usage, or purchase.</div>
+              <AppEmptyState
+                description="Upload your first resource and Sulva’s Studify will turn it into material that can be reviewed daily."
+                action={
+                  <Link href="/resources" className="secondary-button">
+                    Upload material
+                  </Link>
+                }
+              />
             )}
-          </div>
+          </AppSection>
+
+          <AppSection
+            eyebrow="Recent practice"
+            title="Flashcards and quizzes you touched last"
+            description="A compact record of the most recent review sessions across flashcards, quizzes, and mixed study runs."
+            action={
+              <Link href="/review" className="ghost-button !h-9 !px-0">
+                Continue
+              </Link>
+            }
+          >
+            {dashboard.recentSessions.length ? (
+              <AppDataList>
+                {dashboard.recentSessions.map((session) => (
+                  <AppDataRow key={session.id}>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-black capitalize text-slate-950 dark:text-white">
+                            {formatLabel(session.session_type)}
+                          </p>
+                          <p className="mt-1 text-[13px] leading-6 text-slate-500 dark:text-slate-400">
+                            {session.completed_items}/{session.total_items} items {'\u2022'} {new Date(session.started_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <AppStatusBadge tone={toneForSessionStatus(session.status)}>{session.status}</AppStatusBadge>
+                      </div>
+                    </div>
+                  </AppDataRow>
+                ))}
+              </AppDataList>
+            ) : (
+              <AppEmptyState
+                description="Your flashcard and quiz history will appear here after the first review session."
+                action={
+                  <Link href="/review" className="primary-button">
+                    Start review
+                  </Link>
+                }
+              />
+            )}
+          </AppSection>
         </section>
       </div>
     </AppShell>

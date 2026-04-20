@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Welcome Back - Sulva's Studify</title>
+<!-- Tailwind CSS v3 CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Serif for heading, Sans for UI -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'brand-blue': '#2563eb',
+            'streak-orange': '#f3b45a',
+            'bg-left': '#f9f7f2',
+            'bg-right': '#e9eaeb',
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-styling">
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .serif-heading {
+      font-family: 'DM Serif Display', serif;
+    }
+    /* Custom shadow to match the soft mockup feel */
+    .card-shadow {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+  </style>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/></head>
+<body class="min-h-screen flex flex-col md:flex-row">
+<!-- BEGIN: Left Column -->
+<section class="w-full md:w-1/2 bg-bg-left flex flex-col items-center justify-center p-8 md:p-16" data-purpose="hero-section">
+<div class="max-w-md w-full">
+<!-- Main Greeting -->
+<h1 class="serif-heading text-4xl md:text-5xl text-gray-800 text-center mb-12 leading-tight">
+        Welcome back to<br/>your study flow
+      </h1>
+<!-- BEGIN: Study Stats Card -->
+<div class="bg-white rounded-2xl p-6 card-shadow border border-gray-100" data-purpose="stats-card">
+<!-- Top Row Cards -->
+<div class="flex gap-4 mb-6">
+<!-- Due Today Box -->
+<div class="flex-1 bg-[#f9fafb] border border-gray-100 rounded-xl p-4">
+<div class="flex justify-between items-start mb-2">
+<span class="text-sm font-semibold text-gray-600">Due Today:</span>
+<!-- Book Icon Placeholder -->
+<span class="material-symbols-outlined text-gray-400 text-xl">menu_book</span>
+</div>
+<div class="text-4xl font-bold text-gray-800">12</div>
+</div>
+<!-- Streak Box -->
+<div class="flex-1 bg-streak-orange rounded-xl p-4 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<span class="text-sm font-semibold text-gray-800">7-day streak</span>
+<!-- Flame Icon Placeholder -->
+<span class="material-symbols-outlined text-gray-800 text-xl">local_fire_department</span>
+</div>
+<div class="mt-4">
+<!-- Empty spacer to match heights visual balance -->
+</div>
+</div>
+</div>
+<!-- Middle Row: Mastery Progress -->
+<div class="border border-gray-100 rounded-xl p-4 mb-6">
+<div class="flex justify-between items-center mb-3">
+<span class="text-sm font-semibold text-gray-700">Mastery Progress</span>
+<span class="material-symbols-outlined text-gray-400 text-xl">check_circle</span>
+</div>
+<!-- Progress Bar Container -->
+<div class="w-full bg-gray-100 rounded-full h-2.5 mb-3">
+<div class="bg-brand-blue h-2.5 rounded-full" style="width: 75%"></div>
+</div>
+<p class="text-xs text-gray-500 font-medium">75% Advanced Physics</p>
+</div>
+<!-- Bottom Row: Next Session -->
+<div class="text-center pt-2">
+<p class="text-sm text-gray-400">
+            Next Session: <span class="font-medium text-gray-600">Organic Chemistry Review at 4:00 PM</span>
+</p>
+</div>
+</div>
+<!-- END: Study Stats Card -->
+</div>
+</section>
+<!-- END: Left Column -->
+<!-- BEGIN: Right Column -->
+<section class="w-full md:w-1/2 bg-bg-right flex flex-col items-center justify-center p-8 md:p-16" data-purpose="login-section">
+<!-- BEGIN: Login Card -->
+<div class="bg-white rounded-2xl p-8 md:p-12 w-full max-w-sm card-shadow" data-purpose="login-card">
+<!-- Logo and Brand -->
+<div class="flex items-center justify-center gap-3 mb-8"><img alt="Sulva's Studify Logo" class="h-24 object-contain -ml-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeIIHm-CupK_qn5Ars0MwjIQXNwVBSM8M9p8YibYFk9TChgzI3v_nwCOGIOfDI8ZU32QNJP4VC2ZXFsIxH582lk_KSioejm0P2fgHxki4H5Vs-Kw299AzyDjczVuxs1PRZtQe9XEZ8uYcZnUHBmA3vZ8p0s8GRBp-r4st28e8jo3IzXUl1a9amZJkehBjxTsagrbanYhiQzpMWpe-3NatPZUhCSlyWMh-_MWkQcdXUb2Uuk73jHYkiMVR31hjXhMNqCQ98NIO5xHpe"/></div>
+<!-- Google Button -->
+<button class="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-2.5 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors mb-6">
+<svg class="w-5 h-5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path><path d="M1 1h22v22H1z" fill="none"></path></svg>
+        Continue with Google
+      </button>
+<!-- Divider -->
+<div class="relative flex items-center justify-center mb-6">
+<div class="border-t border-gray-200 w-full"></div>
+<span class="absolute bg-white px-3 text-xs text-gray-400 uppercase tracking-wider">OR</span>
+</div>
+<!-- Login Form -->
+<form class="space-y-4">
+<!-- Email Field -->
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-1" for="email">Email</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-gray-400 text-[20px]">mail</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue" id="email" placeholder="Enter your student email" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div>
+<label class="block text-sm font-semibold text-gray-700 mb-1" for="password">Password</label>
+<div class="relative">
+<input class="block w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-brand-blue" id="password" placeholder="Enter your password" type="password"/>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+<button class="text-gray-400 hover:text-gray-600 focus:outline-none" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility_off</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Forgot Password -->
+<div class="text-right">
+<a class="text-xs font-semibold text-gray-800 hover:underline" href="#">Forgot password?</a>
+</div>
+<!-- Submit Button -->
+<button class="w-full bg-brand-blue hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-sm transition-colors mt-2" type="submit">
+          Log in
+        </button>
+</form>
+<!-- Footer Links -->
+<div class="mt-8 text-center">
+<p class="text-sm text-gray-600">
+          Don't have an account? <a class="font-bold text-gray-800 hover:underline" href="#">Sign up</a>
+</p>
+</div>
+</div>
+<!-- END: Login Card -->
+</section>
+<!-- END: Right Column -->
+</body></html>

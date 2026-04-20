@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sulva's Studify - Dashboard</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="custom-config">
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #F9F6F0;
+    }
+    .sidebar-bg {
+      background-color: #1A1F2B;
+    }
+    .hero-gradient {
+      background: linear-gradient(110deg, #81A8EA 0%, #C2B6C8 45%, #DF9D5B 100%);
+    }
+    .card-shadow {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+    }
+  </style>
+</head>
+<body class="flex min-h-screen text-slate-800">
+<!-- BEGIN: Sidebar -->
+<aside class="sidebar-bg w-60 flex-shrink-0 flex flex-col text-slate-300 fixed h-full z-10">
+<div class="p-6">
+<!-- Brand Logo -->
+<div class="flex items-center gap-3 mb-10">
+<div class="w-8 h-8 bg-blue-500 rounded flex items-center justify-center">
+<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<span class="font-bold text-white text-lg leading-none uppercase tracking-tight">Sulva's<br/><span class="text-sm opacity-80">Studify</span></span>
+</div>
+<!-- Navigation -->
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#273247] text-[#5586F5] font-medium" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Dashboard
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Resources
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Generate
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Review
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Flashcards
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Past Questions
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          AI Tutor
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Exam Ready
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Wallet
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          Settings
+        </a>
+</nav>
+</div>
+<!-- Bottom Sidebar Section -->
+<div class="mt-auto p-6 space-y-4">
+<a class="flex items-center gap-3 px-4 py-2 hover:text-white transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Settings</span>
+</a>
+<div class="flex items-center gap-3 p-2 bg-white/5 rounded-xl border border-white/10">
+<img alt="USER_AVATAR_PLACEHOLDER" class="w-10 h-10 rounded-full border-2 border-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_zwtZi2VNNhqUB8BUK_MW8LErq8OE0a377BDL5lloGI6Zc7FwC_lncoqx8vREbJOdTl8HWqw7mcleHoa6tgyrTgpns7VfSXVJCUrZg_78X9c2w9I9jioiNbbh4BDOSyJHuq921pWYDurP-m-nGrj8QhCkzenPvJ_yZVuBbeQcWUSILQ3gzo71fwzG4IrQAtpYrK7DvVER10TKZL4LjJJtyWq76PUxoXM-k2HwrVmh_R5mEtXSN5UZwMAaURbpP9NmuU9pGAlT1QfP"/>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold text-white truncate">Iyiola Ogun...</p>
+<p class="text-xs opacity-60">1460 credits</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- END: Sidebar -->
+<!-- BEGIN: Main Content Area -->
+<main class="ml-60 flex-1 p-8">
+<!-- BEGIN: Header -->
+<header class="flex items-center justify-between mb-10">
+<div class="relative w-96">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</span>
+<input class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" placeholder="Search" type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-slate-400 hover:text-slate-600 transition-colors">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+</button>
+<div class="flex items-center gap-3 bg-white p-1 pr-4 rounded-full border border-slate-200 card-shadow">
+<img alt="USER_AVATAR_PLACEHOLDER" class="w-8 h-8 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAftoGyovWsoCWcA8bvUR2HD1Z2vV0UWAORwsWm-c3P_bqWP2j4L0eB3imHHugm2fl0DBHu9ILfGELhHHhPwWHyyshTTUX5jRMdgw8mLAY8dewhG-x-E_Oxc7vtdQkC6_G5uouOXTqdMkMypv2sS9HgC5ox15owbPhU1YNkqErFYxZuC1s4PUus8L8IHUwsenN_fMnYM8sU-PHS26q-MxMuF6Tha2gnuLJUDtNHVVilBJpNZFil7jNzScGOSsAVWDwTzQjQHwepcw9r"/>
+<span class="text-sm font-semibold text-slate-700">1,460 Credits</span>
+</div>
+</div>
+</header>
+<!-- END: Header -->
+<!-- BEGIN: Greeting & Action -->
+<div class="flex items-end justify-between mb-8">
+<div>
+<h1 class="text-4xl font-bold text-slate-900">Good evening, Iyiola</h1>
+<p class="text-slate-500 mt-1">You have 18 items due today</p>
+</div>
+<button class="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition-all">
+        Continue Review
+      </button>
+</div>
+<!-- END: Greeting & Action -->
+<!-- BEGIN: Hero Card -->
+<div class="hero-gradient rounded-3xl p-8 mb-8 text-white relative overflow-hidden flex flex-col items-center justify-center text-center">
+<!-- Decorative background blur effect -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+<div class="relative z-10">
+<h2 class="text-[5rem] font-bold mb-2 leading-tight">18 items due</h2>
+<p class="text-2xl font-medium text-amber-100 mb-6">5 day streak</p>
+<div class="flex items-center justify-center gap-2 bg-black/25 backdrop-blur-md px-4 py-2 rounded-full text-sm mb-12 w-max mx-auto">
+<svg class="w-4 h-4 text-amber-400" fill="currentColor" viewbox="0 0 20 20"><path clip-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" fill-rule="evenodd"></path></svg>
+<span class="font-medium">Weak topic: General Chemistry</span>
+</div>
+<button class="w-full max-w-md py-5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-[20px] shadow-xl transition-all">
+          Start today's review
+        </button>
+</div>
+</div>
+<!-- END: Hero Card -->
+<!-- BEGIN: Stats Row -->
+<div class="grid grid-cols-4 gap-6 mb-8">
+<div class="bg-white p-6 rounded-2xl border border-slate-100 card-shadow">
+<p class="text-slate-500 text-sm font-medium mb-1">Due Today:</p>
+<p class="text-3xl font-bold">18</p>
+</div>
+<div class="bg-white p-6 rounded-2xl border border-slate-100 card-shadow">
+<p class="text-slate-500 text-sm font-medium mb-1">Mastery:</p>
+<p class="text-3xl font-bold">82%</p>
+</div>
+<div class="bg-white p-6 rounded-2xl border border-slate-100 card-shadow">
+<p class="text-slate-500 text-sm font-medium mb-1">Streak:</p>
+<p class="text-3xl font-bold">5 days</p>
+</div>
+<div class="bg-white p-6 rounded-2xl border border-slate-100 card-shadow">
+<p class="text-slate-500 text-sm font-medium mb-1">Credits:</p>
+<p class="text-3xl font-bold">1,460</p>
+</div>
+</div>
+<!-- END: Stats Row -->
+<!-- BEGIN: Second Row (Weak Topics & Review Queue) -->
+<div class="grid grid-cols-2 gap-8 mb-8">
+<!-- Weak Topics Card -->
+<section class="bg-white p-8 rounded-3xl border border-slate-100 card-shadow">
+<h3 class="text-lg font-bold text-slate-900 mb-6">Weak Topics</h3>
+<div class="space-y-6">
+<div data-purpose="topic-item">
+<div class="flex justify-between items-center mb-2">
+<span class="font-medium text-slate-700">General Chemistry</span>
+<span class="text-sm font-bold text-slate-500">34%</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2.5">
+<div class="bg-blue-600 h-2.5 rounded-full" style="width: 34%"></div>
+</div>
+</div>
+<div data-purpose="topic-item">
+<div class="flex justify-between items-center mb-2">
+<span class="font-medium text-slate-700">Organic Chemistry</span>
+<span class="text-sm font-bold text-slate-500">67%</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2.5">
+<div class="bg-blue-600 h-2.5 rounded-full" style="width: 67%"></div>
+</div>
+</div>
+<div data-purpose="topic-item">
+<div class="flex justify-between items-center mb-2">
+<span class="font-medium text-slate-700">Physics I</span>
+<span class="text-sm font-bold text-slate-500">58%</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-2.5">
+<div class="bg-blue-600 h-2.5 rounded-full" style="width: 58%"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Review Queue Card -->
+<section class="bg-white p-8 rounded-3xl border border-slate-100 card-shadow">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-lg font-bold text-slate-900">Review Queue</h3>
+<button class="text-slate-400 hover:text-slate-600">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 20 20"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"></path></svg>
+</button>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-2xl cursor-pointer transition-colors group">
+<div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex-1">
+<p class="font-semibold text-slate-800">Organic Chemistry - Flashcards</p>
+<p class="text-xs text-slate-500">Due 05/03/2024</p>
+</div>
+<svg class="w-5 h-5 text-slate-300 group-hover:text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-2xl cursor-pointer transition-colors group">
+<div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex-1">
+<p class="font-semibold text-slate-800">General Physics - Flashcards</p>
+<p class="text-xs text-slate-500">Due 05/03/2024</p>
+</div>
+<svg class="w-5 h-5 text-slate-300 group-hover:text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-2xl cursor-pointer transition-colors group">
+<div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex-1">
+<p class="font-semibold text-slate-800">General Physics - Flashcards</p>
+<p class="text-xs text-slate-500">Due 05/03/2024</p>
+</div>
+<svg class="w-5 h-5 text-slate-300 group-hover:text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+</section>
+</div>
+<!-- END: Second Row -->
+<!-- BEGIN: Third Row (Recent Activity & Recent Resources) -->
+<div class="grid grid-cols-2 gap-8 mb-8">
+<!-- Recent Activity Card -->
+<section class="bg-white p-8 rounded-3xl border border-slate-100 card-shadow">
+<h3 class="text-lg font-bold text-slate-900 mb-6">Recent Activity</h3>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-2 group cursor-pointer">
+<div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+<svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex-1">
+<p class="font-medium text-slate-800">Reviewed Flashcards</p>
+<p class="text-xs text-slate-400">10 minutes ago</p>
+</div>
+<svg class="w-4 h-4 text-slate-300 group-hover:text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex items-center gap-4 p-2 group cursor-pointer">
+<div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+<svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex-1">
+<p class="font-medium text-slate-800">Reviewed Flashcards</p>
+<p class="text-xs text-slate-400">10 minutes ago</p>
+</div>
+<svg class="w-4 h-4 text-slate-300 group-hover:text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex items-center gap-4 p-2 group cursor-pointer">
+<div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-500">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex-1">
+<p class="font-medium text-slate-800">Generated Flashcards</p>
+<p class="text-xs text-slate-400">10 minutes ago</p>
+</div>
+<svg class="w-4 h-4 text-slate-300 group-hover:text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+</section>
+<!-- Recent Resources Card -->
+<section class="bg-white p-8 rounded-3xl border border-slate-100 card-shadow">
+<h3 class="text-lg font-bold text-slate-900 mb-6">Recent Resources</h3>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-2 group cursor-pointer">
+<div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex-1">
+<p class="font-medium text-slate-800 truncate">NSC_nutrition_exam_prep.docx</p>
+<p class="text-xs text-slate-400">Uploaded pdf</p>
+</div>
+<svg class="w-4 h-4 text-slate-300 group-hover:text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex items-center gap-4 p-2 group cursor-pointer">
+<div class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex-1">
+<p class="font-medium text-slate-800">Smart_Grid_Notes.pdf</p>
+<p class="text-xs text-slate-400">Uploaded pdf</p>
+</div>
+<svg class="w-4 h-4 text-slate-300 group-hover:text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex items-center gap-4 p-2 group cursor-pointer">
+<div class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div class="flex-1">
+<p class="font-medium text-slate-800">Smart_Grid_Notes.pdf</p>
+<p class="text-xs text-slate-400">Uploaded pdf</p>
+</div>
+<svg class="w-4 h-4 text-slate-300 group-hover:text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+</section>
+</div>
+<!-- END: Third Row -->
+<!-- BEGIN: Charts Row -->
+<div class="grid grid-cols-2 gap-8">
+<!-- Mastery Progress (Line Chart Placeholder) -->
+<section class="bg-white p-8 rounded-3xl border border-slate-100 card-shadow">
+<h3 class="text-lg font-bold text-slate-900 mb-6">Mastery Progress</h3>
+<div class="w-full h-48 relative flex flex-col justify-between">
+<!-- Simple SVG Graph Simulation -->
+<svg class="w-full h-full" viewbox="0 0 400 100">
+<path d="M 0,85 C 100,85 150,55 200,55 C 250,55 300,25 400,20" fill="none" stroke="#2563EB" stroke-width="2"></path>
+<path d="M 0,85 C 100,85 150,55 200,55 C 250,55 300,25 400,20 L 400,100 L 0,100 Z" fill="url(#gradient)" opacity="0.1"></path>
+<defs>
+<lineargradient id="gradient" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#2563EB;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#2563EB;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+<!-- Chart Labels -->
+<div class="flex justify-between text-[10px] text-slate-400 mt-2 px-2">
+<span>Mar</span>
+<span>May</span>
+<span>Sep</span>
+</div>
+<!-- Y Axis Labels -->
+<div class="absolute -left-2 top-0 bottom-0 flex flex-col justify-between text-[10px] text-slate-400 pr-2 translate-x-[-100%]">
+<span>100</span>
+<span>80</span>
+<span>60</span>
+<span>40</span>
+<span>20</span>
+<span>0</span>
+</div>
+</div>
+</section>
+<!-- Study Consistency (Heatmap Placeholder) -->
+<section class="bg-white p-8 rounded-3xl border border-slate-100 card-shadow">
+<h3 class="text-lg font-bold text-slate-900 mb-6">Study Consistency</h3>
+<div class="flex gap-2">
+<!-- Days Labels -->
+<div class="flex flex-col justify-between text-[10px] text-slate-400 py-1 h-32">
+<span>Mon</span>
+<span>Tue</span>
+<span>Wed</span>
+<span>Thu</span>
+<span>Fri</span>
+<span>Sat</span>
+<span>Sun</span>
+</div>
+<!-- Grid -->
+<div class="flex-1 flex flex-col gap-1">
+<div class="grid grid-cols-12 gap-1 h-32" id="heatmap">
+<!-- JS would normally generate these, placing manually for layout -->
+<!-- This is a simplified representative grid -->
+<div class="flex flex-col gap-1"><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-blue-600 rounded-sm"></div></div>
+<div class="flex flex-col gap-1"><div class="w-4 h-4 bg-blue-200 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div></div>
+<div class="flex flex-col gap-1"><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-blue-300 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div></div>
+<div class="flex flex-col gap-1"><div class="w-4 h-4 bg-blue-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-blue-600 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div></div>
+<div class="flex flex-col gap-1"><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-blue-400 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-blue-600 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div></div>
+<div class="flex flex-col gap-1"><div class="w-4 h-4 bg-blue-400 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-blue-600 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-blue-500 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-blue-300 rounded-sm"></div></div>
+<div class="flex flex-col gap-1"><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-blue-300 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-blue-200 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div></div>
+<div class="flex flex-col gap-1"><div class="w-4 h-4 bg-blue-200 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-blue-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div></div>
+<div class="flex flex-col gap-1"><div class="w-4 h-4 bg-blue-500 rounded-sm"></div><div class="w-4 h-4 bg-blue-600 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-blue-200 rounded-sm"></div></div>
+<div class="flex flex-col gap-1"><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-blue-600 rounded-sm"></div><div class="w-4 h-4 bg-blue-500 rounded-sm"></div><div class="w-4 h-4 bg-blue-600 rounded-sm"></div></div>
+<div class="flex flex-col gap-1"><div class="w-4 h-4 bg-blue-600 rounded-sm"></div><div class="w-4 h-4 bg-blue-400 rounded-sm"></div><div class="w-4 h-4 bg-blue-300 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-blue-400 rounded-sm"></div><div class="w-4 h-4 bg-blue-400 rounded-sm"></div></div>
+<div class="flex flex-col gap-1"><div class="w-4 h-4 bg-blue-600 rounded-sm"></div><div class="w-4 h-4 bg-blue-800 rounded-sm"></div><div class="w-4 h-4 bg-slate-100 rounded-sm"></div><div class="w-4 h-4 bg-blue-500 rounded-sm"></div><div class="w-4 h-4 bg-blue-600 rounded-sm"></div><div class="w-4 h-4 bg-blue-600 rounded-sm"></div><div class="w-4 h-4 bg-blue-600 rounded-sm"></div></div>
+</div>
+<!-- Month Labels -->
+<div class="flex justify-between text-[10px] text-slate-400 mt-2">
+<span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- END: Charts Row -->
+</main>
+<!-- END: Main Content Area -->
+</body></html>

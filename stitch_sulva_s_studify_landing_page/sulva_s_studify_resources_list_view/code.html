@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sulva's Studify - Resources</title>
+<!-- Tailwind CSS v3 CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter for UI, Playfair Display for Headings -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'studify-dark': '#0B1221',
+            'studify-sidebar-active': '#2563EB',
+            'studify-bg': '#F8FAFC',
+            'status-ready-bg': '#F0FDF4',
+            'status-ready-text': '#166534',
+            'status-retry-bg': '#FFF7ED',
+            'status-retry-text': '#9A3412',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="layout">
+    body {
+      background-color: #F8FAFC;
+    }
+    .sidebar-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+      background: #1E293B;
+      border-radius: 10px;
+    }
+    .gradient-banner {
+      background: linear-gradient(90deg, #7E8CDB 0%, #A3B1F0 50%, #7E8CDB 100%);
+      opacity: 0.9;
+    }
+    .custom-shadow {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+  </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- BEGIN: Sidebar Navigation -->
+<aside class="w-64 bg-studify-dark text-slate-300 flex flex-col h-full flex-shrink-0" data-purpose="sidebar">
+<!-- Brand Logo -->
+<div class="p-6 flex items-center space-x-3">
+<div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+<img alt="Logo" class="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOz0ZjP38X5NntHNuFA8r74kYYXbqTWdJ56wLe-rhQiRxqB5VVJ-olJDDn2Gf2lRkmBDtNRqhdaTXiRxUv2N0tMdXSldpPlteIHBSj-eFUsuTvhkg6V9nWUfImZN1Mjf1QShN1Ngf_VL1X08kSNysDOgkG1R7-3svqq7GOnOBWPS6U_-chqbWbvCqRfdrM5FopFSxg-T5mAUIXJSYHkzEBGd8GGcJW1SX9-QdwsRyce98gdCGZU9chVLIJ-wnpSdu5yBjWwLoJEv4V"/>
+</div>
+<div>
+<h1 class="text-white font-semibold text-[15px] leading-tight mb-0.5">Sulva's Studify</h1>
+<p class="text-[11px] text-slate-400">Study workspace</p>
+</div>
+</div>
+<!-- Nav Items -->
+<nav class="flex-1 px-3 space-y-1 sidebar-scroll overflow-y-auto">
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg bg-studify-sidebar-active text-white transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Resources</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Generate</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Review</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Wallet</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Labs</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Ops</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">Settings</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-slate-800 transition-colors" href="#">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-sm font-medium">About</span>
+</a>
+</nav>
+<!-- User Profile Section -->
+<div class="p-4 border-t border-slate-800 flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<img alt="Tylola Ogu" class="w-8 h-8 rounded-full bg-slate-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTteHfWGpOJREVBSaXoL5e50CA-xDMeKFckdpUq8GG606o0E6hUzhjSkfTQAtiTltCmR0VuSZbHLRMXPXEepiDo0GWRZvebhizadT9Vz4y2jkwz0UdfrVzP-Cln8LyOmZ2u-y2Rp_9lI9cn5ubRL4kqhrDeCH9j5pSzMzlTe4VJiBHZCPpnPjzroN3dU0gzOXhdXmtGJOeIV5w9qEVqWFd_tOMQJ_-AoyO1Sgz_OUxyIyQn_CipCbb9y1OOwZ65Y-D-b1n3yRHKHcO"/>
+<div class="overflow-hidden">
+<p class="text-sm font-medium text-white truncate w-24">Tylola Ogu...</p>
+<p class="text-[10px] text-slate-500">1460 Credits</p>
+</div>
+</div>
+<button class="text-slate-500 hover:text-white">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</aside>
+<!-- END: Sidebar Navigation -->
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col overflow-y-auto">
+<!-- BEGIN: MainHeader -->
+<header class="px-8 pt-8 pb-6 flex items-center justify-between" data-purpose="header">
+<h2 class="font-serif text-4xl text-slate-900">Resources</h2>
+<button class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg flex items-center space-x-2 font-medium transition-colors">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Upload</span>
+</button>
+</header>
+<!-- END: MainHeader -->
+<div class="px-8 space-y-6">
+<!-- BEGIN: Hero Section -->
+<section class="bg-gradient-to-r from-[#6b82db] via-[#8c9fe8] to-[#997bd6] rounded-2xl p-10 text-center text-white relative overflow-hidden h-32 flex items-center justify-center custom-shadow" data-purpose="upload-hero">
+<div class="relative z-10">
+<p class="text-sm font-medium opacity-90">
+            Securely upload and process your study materials with our advanced AI.<br/>
+            Drag &amp; drop files here or click to browse.
+          </p>
+</div>
+<!-- Decorative blur element -->
+<div class="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-300/30 via-transparent to-transparent"></div>
+</section>
+<!-- END: Hero Section -->
+<!-- BEGIN: Resources Table Card -->
+<section class="bg-white rounded-xl custom-shadow border border-slate-100 mb-10" data-purpose="table-container">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="text-slate-400 text-[12px] font-medium uppercase tracking-wider">
+<th class="px-6 py-4 border-b border-slate-100 font-medium text-slate-500 text-[13px]">File Name</th>
+<th class="px-6 py-4 border-b border-slate-100 font-medium text-slate-500 text-[13px]">Subject</th>
+<th class="px-6 py-4 border-b border-slate-100 font-medium text-slate-500 text-[13px]">Date Uploaded</th>
+<th class="px-6 py-4 border-b border-slate-100 font-medium text-slate-500 text-[13px]">Status</th>
+<th class="px-6 py-4 border-b border-slate-100"></th>
+</tr>
+</thead>
+<tbody class="text-sm text-slate-700">
+<!-- Row 1: Ready state with active menu -->
+<tr class="hover:bg-slate-50 relative bg-slate-50/50">
+<td class="px-6 py-4 flex items-center space-x-3">
+<div class="w-7 h-8 border-2 border-red-400 rounded-sm flex items-end justify-center pb-0.5">
+<span class="text-[8px] font-bold text-red-500 leading-none">PDF</span>
+</div>
+<span class="font-medium text-slate-800">NSC_nutrition_exam_prep.docx</span>
+</td>
+<td class="px-6 py-4 font-medium text-slate-700">Nutrition</td>
+<td class="px-6 py-4 text-slate-600 font-medium">23/02/2024</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-[#E1F1F8] text-[#3B82F6] rounded-full text-xs font-semibold">Ready</span>
+</td>
+<td class="px-6 py-4 text-right relative">
+<button class="text-slate-400 hover:text-slate-600 font-bold tracking-widest">...</button>
+<div class="absolute right-6 top-8 z-20 w-36 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-slate-100 py-1.5 text-left">
+<button class="w-full text-left px-3 py-1.5 text-[13px] text-slate-600 hover:bg-slate-50">Generate Quiz</button>
+<div class="px-2">
+<button class="w-full text-left px-3 py-1.5 text-[13px] text-red-500 hover:bg-red-50 border border-red-200 rounded-md flex items-center justify-between mt-1">
+<span>Delete</span>
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+</td>
+</tr>
+<!-- Row 2: Processing state -->
+<tr class="hover:bg-slate-50">
+<td class="px-6 py-4 flex items-center space-x-3">
+<div class="w-7 h-8 border-2 border-blue-400 rounded-sm flex items-end justify-center pb-0.5">
+<span class="text-[8px] font-bold text-blue-500 leading-none">DOCX</span>
+</div>
+<span class="font-medium text-slate-800">VUICSC315VUISEN305.docx</span>
+</td>
+<td class="px-6 py-4 font-medium text-slate-700">General</td>
+<td class="px-6 py-4 text-slate-600 font-medium">22/03/2024</td>
+<td class="px-6 py-4">
+<div class="flex items-center space-x-3">
+<span class="text-slate-700 font-semibold text-xs">Processing</span>
+<div class="w-12 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+<div class="bg-blue-500 h-full" style="width: 65%"></div>
+</div>
+<span class="text-[11px] text-slate-500 font-medium">65%</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-slate-600 font-bold tracking-widest">...</button>
+</td>
+</tr>
+<!-- Row 3: Needs Retry state -->
+<tr class="hover:bg-slate-50">
+<td class="px-6 py-4 flex items-center space-x-3">
+<div class="w-7 h-8 border-2 border-blue-400 rounded-sm flex items-end justify-center pb-0.5">
+<span class="text-[8px] font-bold text-blue-500 leading-none">DOCX</span>
+</div>
+<span class="font-medium text-slate-800">Smart_Grid_and_Modelling_Notes.docx</span>
+</td>
+<td class="px-6 py-4 font-medium text-slate-700">General</td>
+<td class="px-6 py-4 text-slate-600 font-medium">17/04/2024</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center space-x-1 px-3 py-1 bg-[#FFF4E5] text-[#D97706] rounded-full text-xs font-semibold">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Needs Retry</span>
+</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-slate-600 font-bold tracking-widest">...</button>
+</td>
+</tr>
+<!-- Row 4: Ready -->
+<tr class="hover:bg-slate-50">
+<td class="px-6 py-4 flex items-center space-x-3">
+<div class="w-7 h-8 border-2 border-blue-400 rounded-sm flex items-end justify-center pb-0.5">
+<span class="text-[8px] font-bold text-blue-500 leading-none">DOCX</span>
+</div>
+<span class="font-medium text-slate-800">SEN 303 - Topic 2.docx</span>
+</td>
+<td class="px-6 py-4 font-medium text-slate-700">SEN 303</td>
+<td class="px-6 py-4 text-slate-600 font-medium">11/03/2024</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-[#E1F1F8] text-[#3B82F6] rounded-full text-xs font-semibold">Ready</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-slate-600 font-bold tracking-widest">...</button>
+</td>
+</tr>
+<!-- Row 5: Processing (PPTX) -->
+<tr class="hover:bg-slate-50">
+<td class="px-6 py-4 flex items-center space-x-3">
+<div class="w-7 h-8 border-2 border-orange-400 rounded-sm flex items-end justify-center pb-0.5">
+<span class="text-[8px] font-bold text-orange-500 leading-none">PPTX</span>
+</div>
+<span class="font-medium text-slate-800">NSC 307 NUTRITIONAL DEFINITION OF TERMS.pptx</span>
+</td>
+<td class="px-6 py-4 font-medium text-slate-700">General</td>
+<td class="px-6 py-4 text-slate-600 font-medium">08/03/2024</td>
+<td class="px-6 py-4">
+<div class="flex items-center space-x-3">
+<span class="text-slate-700 font-semibold text-xs">Processing</span>
+<div class="w-12 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+<div class="bg-blue-500 h-full" style="width: 30%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-slate-600 font-bold tracking-widest">...</button>
+</td>
+</tr>
+<!-- Row 6: Needs Retry (PPTX) -->
+<tr class="hover:bg-slate-50">
+<td class="px-6 py-4 flex items-center space-x-3">
+<div class="w-7 h-8 border-2 border-orange-400 rounded-sm flex items-end justify-center pb-0.5">
+<span class="text-[8px] font-bold text-orange-500 leading-none">PPTX</span>
+</div>
+<span class="font-medium text-slate-800">FOOD NUTRIENTS.pptx</span>
+</td>
+<td class="px-6 py-4 font-medium text-slate-700">General</td>
+<td class="px-6 py-4 text-slate-600 font-medium">08/03/2024</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center space-x-1 px-3 py-1 bg-[#FFF4E5] text-[#D97706] rounded-full text-xs font-semibold">
+<span>Needs Retry</span>
+</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-slate-600 font-bold tracking-widest">...</button>
+</td>
+</tr>
+<!-- Row 7: Ready -->
+<tr class="hover:bg-slate-50">
+<td class="px-6 py-4 flex items-center space-x-3">
+<div class="w-7 h-8 border-2 border-blue-400 rounded-sm flex items-end justify-center pb-0.5">
+<span class="text-[8px] font-bold text-blue-500 leading-none">DOCX</span>
+</div>
+<span class="font-medium text-slate-800">CYB 263 Lecture Material.docx</span>
+</td>
+<td class="px-6 py-4 font-medium text-slate-700">General</td>
+<td class="px-6 py-4 text-slate-600 font-medium">08/03/2024</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-[#E1F1F8] text-[#3B82F6] rounded-full text-xs font-semibold">Ready</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-slate-600 font-bold tracking-widest">...</button>
+</td>
+</tr>
+<!-- Row 8: Ready (PDF) -->
+<tr class="hover:bg-slate-50">
+<td class="px-6 py-4 flex items-center space-x-3">
+<div class="w-7 h-8 border-2 border-red-400 rounded-sm flex items-end justify-center pb-0.5">
+<span class="text-[8px] font-bold text-red-500 leading-none">PDF</span>
+</div>
+<span class="font-medium text-slate-800">Introduction to Web Programming.pdf</span>
+</td>
+<td class="px-6 py-4 font-medium text-slate-700">General</td>
+<td class="px-6 py-4 text-slate-600 font-medium">08/03/2024</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-[#E1F1F8] text-[#3B82F6] rounded-full text-xs font-semibold">Ready</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-slate-600 font-bold tracking-widest">...</button>
+</td>
+</tr>
+<!-- Row 9: Ready (PPTX) -->
+<tr class="hover:bg-slate-50">
+<td class="px-6 py-4 flex items-center space-x-3">
+<div class="w-7 h-8 border-2 border-orange-400 rounded-sm flex items-end justify-center pb-0.5">
+<span class="text-[8px] font-bold text-orange-500 leading-none">PPTX</span>
+</div>
+<span class="font-medium text-slate-800">SMART GRID.pptx</span>
+</td>
+<td class="px-6 py-4 font-medium text-slate-700">SEN 303</td>
+<td class="px-6 py-4 text-slate-600 font-medium">06/03/2024</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-[#E1F1F8] text-[#3B82F6] rounded-full text-xs font-semibold">Ready</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-slate-600 font-bold tracking-widest">...</button>
+</td>
+</tr>
+<!-- Row 10: Ready -->
+<tr class="hover:bg-slate-50">
+<td class="px-6 py-4 flex items-center space-x-3">
+<div class="w-7 h-8 border-2 border-blue-400 rounded-sm flex items-end justify-center pb-0.5">
+<span class="text-[8px] font-bold text-blue-500 leading-none">DOCX</span>
+</div>
+<span class="font-medium text-slate-800">SEN 303 note new.docx</span>
+</td>
+<td class="px-6 py-4 font-medium text-slate-700">SEN 303</td>
+<td class="px-6 py-4 text-slate-600 font-medium">01/03/2024</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-[#E1F1F8] text-[#3B82F6] rounded-full text-xs font-semibold">Ready</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-slate-600 font-bold tracking-widest">...</button>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<!-- END: Resources Table Card -->
+</div>
+</main>
+</body></html><!-- MISSING_IMAGES:
+- TEMP_LOGO_ICON: Small icon next to brand name 'Sulva's Studify'
+- TEMP_USER_AVATAR: Profile picture for user Tylola Ogu
+- TEMP_DOCX_ICON: Word document icon (blue)
+- TEMP_PPTX_ICON: PowerPoint icon (orange)
+- TEMP_PDF_ICON: PDF icon (red)
+-->

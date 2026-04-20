@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>General Chemistry Review</title>
+<!-- Tailwind CSS v3 CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'review-bg': '#f7f4ed',
+            'review-blue': '#4a89dc',
+            'review-accent': '#fef3c7', // for the yellow badge
+            'review-text-gold': '#92400e',
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-shadows">
+    .card-shadow {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
+    .sidebar-shadow {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+  </style>
+</head>
+<body class="bg-review-bg font-sans text-gray-800 min-h-screen flex flex-col">
+<!-- BEGIN: MainHeader -->
+<header class="w-full px-6 py-4 flex items-center justify-between border-b border-gray-200/50 bg-white/30 backdrop-blur-sm fixed top-0 left-0 z-10" data-purpose="navigation-header">
+<div class="flex-1">
+<h1 class="text-lg font-medium text-gray-700">General Chemistry Review</h1>
+</div>
+<!-- Progress Indicator Container -->
+<div class="flex-1 flex flex-col items-center max-w-xs" data-purpose="progress-container">
+<div class="w-full h-[2px] bg-gray-200 rounded-full overflow-hidden">
+<div class="bg-review-blue h-full" style="width: 65%;"></div>
+</div>
+<span class="text-[10px] font-bold text-review-blue mt-1 uppercase tracking-wider">65%</span>
+</div>
+<div class="flex-1 flex justify-end">
+<button class="flex items-center gap-2 px-3 py-1.5 border border-gray-300 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+        Exit
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: ContentArea -->
+<main class="flex-grow flex items-center justify-center p-6 pt-24 pb-12 relative overflow-hidden" data-purpose="main-problem-content">
+<!-- Central Flashcard Container -->
+<div class="max-w-2xl w-full flex flex-col items-center gap-8 relative">
+<!-- Main Question Card -->
+<div class="w-full aspect-[4/3] bg-white rounded-2xl card-shadow p-12 flex flex-col justify-center items-center text-center relative overflow-hidden" data-purpose="problem-card">
+<!-- Problem Statement -->
+<p class="text-xl md:text-2xl font-medium leading-[1.5] text-gray-800 mb-8 max-w-[90%]">
+          A reaction has a standard enthalpy change ΔH° = -45.2 kJ and a standard entropy change ΔS° = -120.5 J/K. At 25°C, calculate the standard Gibbs free energy change ΔG° for the reaction and determine if it is spontaneous under standard conditions.
+        </p>
+<!-- Formula/Hint -->
+<p class="text-lg font-semibold text-gray-600 tracking-wide mt-4" data-purpose="formula-hint">
+          ΔG° = ΔH° - TΔS°
+        </p>
+</div>
+<!-- Action Button -->
+<button class="px-8 py-3 bg-[#447ecc] hover:bg-[#3b6eb3] text-white rounded-lg font-semibold shadow-sm transition-all active:scale-95" data-purpose="reveal-button">
+        Reveal Answer
+      </button>
+<aside class="absolute -right-[240px] top-0 hidden xl:block" data-purpose="sidebar-stats">
+<div class="bg-white/80 backdrop-blur-md rounded-xl p-4 sidebar-shadow border border-white flex flex-col gap-1.5 min-w-[200px]">
+<div class="flex justify-end">
+<svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M5 15l7-7 7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div data-purpose="stat-item">
+<p class="text-xs text-gray-400 font-medium">Topic:</p>
+<p class="text-sm font-bold text-gray-800">Thermodynamics</p>
+</div>
+<div data-purpose="stat-item">
+<p class="text-xs text-gray-400 font-medium inline">Mastery: </p>
+<p class="text-sm font-bold text-green-600 inline">+2%</p>
+</div>
+<div class="flex items-center gap-2 bg-review-accent/50 px-2 py-1 rounded border border-yellow-100" data-purpose="status-badge">
+<span class="text-[11px] font-bold text-review-text-gold">⚠️ Weak Topic</span>
+</div>
+</div>
+</aside></div>
+<!-- BEGIN: SidebarStats -->
+<!-- Info Card positioned to the right -->
+<!-- END: SidebarStats -->
+</main>
+<!-- END: ContentArea -->
+<!-- BEGIN: MobileSidebar -->
+<!-- Floating stats for smaller screens -->
+<div class="xl:hidden fixed bottom-6 right-6" data-purpose="mobile-stats">
+<div class="bg-white/90 backdrop-blur rounded-lg p-3 shadow-lg border border-gray-200">
+<div class="flex items-center gap-2 bg-review-accent px-2 py-0.5 rounded">
+<span class="text-[10px] font-bold text-review-text-gold">Weak Topic: Thermodynamics</span>
+</div>
+</div>
+</div>
+<!-- END: MobileSidebar -->
+</body></html>

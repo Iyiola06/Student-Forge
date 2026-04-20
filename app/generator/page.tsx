@@ -104,8 +104,12 @@ export default function GeneratorPage() {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
     const resourceId = params.get('resource');
+    const outputType = params.get('type');
     if (resourceId) {
       setSelectedResource(resourceId);
+    }
+    if (outputType === 'mcq' || outputType === 'flashcards' || outputType === 'theory') {
+      setType(outputType);
     }
   }, []);
 

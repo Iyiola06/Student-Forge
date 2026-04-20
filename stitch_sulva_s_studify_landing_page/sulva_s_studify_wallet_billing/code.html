@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Wallet Dashboard - Sulva's Studify</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            'dashboard-bg': '#FAF9F6',
+            'sidebar-bg': '#F7F4F0',
+            'brand-blue': '#2563EB',
+            'brand-light-blue': '#DBEAFE',
+            'card-border': '#E5E7EB',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-scrollbar">
+    /* Custom scrollbar for a cleaner look */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 10px;
+    }
+  </style>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/></head>
+<body class="bg-dashboard-bg font-sans text-slate-800 antialiased min-h-screen flex">
+<!-- BEGIN: Sidebar -->
+<aside class="w-64 bg-sidebar-bg flex-shrink-0 flex flex-col border-r border-slate-200" data-purpose="navigation-sidebar">
+<div class="p-6 flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-slate-800 text-2xl">school</span>
+<span class="font-bold text-lg tracking-tight">Sulva's Studify</span>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-200/50 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] opacity-70">home</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-200/50 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] opacity-70">menu_book</span>
+<span class="font-medium text-sm">Library</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-200/50 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] opacity-70">bolt</span>
+<span class="font-medium text-sm">Generate</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-200/50 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] opacity-70">edit_document</span>
+<span class="font-medium text-sm">Review</span>
+</a>
+<!-- Active Link -->
+<a class="flex items-center gap-3 px-3 py-2 bg-indigo-100 text-blue-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+<span class="font-semibold text-sm">Wallet</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-200/50 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] opacity-70">science</span>
+<span class="font-medium text-sm">Labs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-200/50 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] opacity-70">group</span>
+<span class="font-medium text-sm">Ops</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-200/50 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] opacity-70">settings</span>
+<span class="font-medium text-sm">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-200/50 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] opacity-70">info</span>
+<span class="font-medium text-sm">About</span>
+</a>
+</nav>
+</aside>
+<!-- END: Sidebar -->
+<!-- BEGIN: Main Content -->
+<main class="flex-1 overflow-y-auto">
+<div class="max-w-6xl mx-auto p-8">
+<!-- BEGIN: Header Section -->
+<header class="flex justify-between items-start mb-8">
+<div>
+<h1 class="text-[2rem] font-bold text-slate-900 leading-tight">Wallet</h1>
+<p class="text-slate-500 mt-1">Manage credits and usage</p>
+</div>
+<div class="flex items-center bg-[#1E293B] text-white px-4 py-2 rounded-lg gap-2 text-sm font-medium">
+<img alt="" class="w-4 h-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8W4vhxULih8aMl6dP_i3ryIq2Cvt692bA1OTBqFlKEUCEGYN21mPb7b7362BW6UJB62YATI3dMIP2xaO-xY_zValod6Y46KV51iD2rGMeohKhoKB1z7dltxMpz8NB3WXbN4NAbSgiLg64IaDBCNlyMcKSvTbIeJuujhNIMxeiWo1TVuC_DwrWRnldggvG9Qm-sM4YjxIA0BOL5cidomjtKqGeE7uSfMrtYbcRZ6_CHEQuConSXgvYa8paSHDReDxJElHr8ISYhiNt"/>
+<span>1480 Credits</span>
+<button class="ml-2 opacity-80 hover:opacity-100">
+<span class="material-symbols-outlined text-base">refresh</span>
+</button>
+</div>
+</header>
+<!-- END: Header Section -->
+<!-- BEGIN: Summary Stats -->
+<div class="grid grid-cols-4 gap-6 mb-10">
+<div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+<p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">Current Balance</p>
+<p class="text-2xl font-bold text-slate-900">1460</p>
+</div>
+<div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+<p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">This Week's Usage</p>
+<p class="text-2xl font-bold text-slate-900">320</p>
+</div>
+<div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+<p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">Referral Code</p>
+<p class="text-xl font-bold text-slate-900">VUI-8C7CBCD4</p>
+</div>
+<div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+<p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">Notifications</p>
+<p class="text-2xl font-bold text-slate-900">1</p>
+</div>
+</div>
+<!-- END: Summary Stats -->
+<!-- BEGIN: Public Bundles -->
+<section class="mb-10">
+<h2 class="text-xl font-semibold mb-5 text-slate-900">Public Bundles</h2>
+<div class="grid grid-cols-3 gap-6">
+<!-- Starter Bundle -->
+<div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+<div>
+<p class="font-bold text-lg text-slate-900 mb-4">Starter</p>
+<p class="text-3xl font-bold text-slate-900">500 <span class="text-sm font-normal text-slate-500">credits</span></p>
+<p class="text-slate-500 text-sm mt-3 leading-relaxed">Small top-up for focused sessions</p>
+</div>
+<div class="mt-8 flex items-center justify-between">
+<span class="text-xl font-bold text-slate-900">N500</span>
+<button class="bg-brand-blue text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Buy</button>
+</div>
+</div>
+<!-- Standard Bundle (Recommended) -->
+<div class="bg-white p-6 rounded-2xl border-2 border-brand-blue shadow-md flex flex-col justify-between relative">
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+              Recommended
+            </div>
+<div>
+<p class="font-bold text-lg text-slate-900 mb-4">Standard</p>
+<p class="text-3xl font-bold text-slate-900">1500 <span class="text-sm font-normal text-slate-500">credits</span></p>
+<p class="text-slate-500 text-sm mt-3 leading-relaxed">A clean refill for weekly study</p>
+</div>
+<div class="mt-8 flex items-center justify-between">
+<span class="text-xl font-bold text-slate-900">N1,500</span>
+<button class="bg-brand-blue text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Buy</button>
+</div>
+</div>
+<!-- Exam Prep Bundle -->
+<div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+<div>
+<p class="font-bold text-lg text-slate-900 mb-4">Exam Prep</p>
+<p class="text-3xl font-bold text-slate-900">3500 <span class="text-sm font-normal text-slate-500">credits</span></p>
+<p class="text-slate-500 text-sm mt-3 leading-relaxed">A deeper reserve for exam-week generation bursts</p>
+</div>
+<div class="mt-8 flex items-center justify-between">
+<span class="text-xl font-bold text-slate-900">N3,000</span>
+<button class="bg-brand-blue text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Buy</button>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Public Bundles -->
+<!-- BEGIN: Bottom Section Grid -->
+<div class="grid grid-cols-2 gap-6 items-start">
+<!-- BEGIN: Referral & Activity Card -->
+<div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+<h3 class="text-xl font-bold mb-2">Referral</h3>
+<p class="text-sm text-slate-500 mb-4">Invite friends, earn credits</p>
+<div class="space-y-1 mb-6">
+<p class="text-sm text-slate-600 font-medium">Code your referral code:</p>
+<p class="text-lg font-bold text-slate-900">VUI-8C7CBCD4</p>
+<p class="text-xs text-slate-500 pt-1">Approved referrals grant 200 credits for exam wearing.</p>
+</div>
+<div class="flex gap-2 mb-8">
+<input class="flex-1 border-slate-200 rounded-lg px-4 text-sm focus:ring-brand-blue focus:border-brand-blue" placeholder="Enter referral code" type="text"/>
+<button class="bg-brand-blue text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">Redeem</button>
+</div>
+<div>
+<h4 class="text-sm font-bold mb-4 text-slate-900">Referral activity</h4>
+<div class="space-y-4">
+<!-- Referral Item 1 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<img alt="" class="w-8 h-8 bg-slate-100 rounded-full border border-slate-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXE3ZqAVEg69PEjDh28xbnn21Rc74pSAOx5QDWF-OK-i30YODn9If2bsVgIwsjl1iflN0L-tcU0Vu0WICPtWuM2cXMMl8GOY8jFDsKTWpuhm1gwot0reJAzTpDZV5M0AP7jREznNxeQk6P6ABOSC7QKrMZyARj3jjyNS397zkSb9xvigx1ghg-ewaL79S3Sj90zYLeIwmj3YoXfNP264U0z8ih169t4WqBKgLO0sRndxaLiBbvobhbndXYH2Eivh3PmskzoJ44KDjN"/>
+<span class="text-sm font-medium text-slate-700">Sanudk@sulvan</span>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-slate-900">400</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-tighter">credits</p>
+</div>
+</div>
+<!-- Referral Item 2 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<img alt="" class="w-8 h-8 bg-slate-100 rounded-full border border-slate-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcx8NKa9OuZmJ0zZh1PwB1RsfuOT8uqLZcRMizTFquGm0d1odFefKCUcRQ47jvChsATxCORWpgk2nc0EhDJBp8d_zGwDviXK_SWMt5sjCI25sR1fAPwr5NFtN--YmGxKzhbmcW0sTPn0Gj4CdVoBv8ybALJ-VnA8GIQEtIlfIi4pt6f5skSO1aC6zDfjGW3rlb29SXs-sMxF9Gd3sZknYC92i4VPQp2OYxR2UT8CWaJtc47xsYFGJdHhhrZ7AKKA_ep_OutJh6Zbm5"/>
+<span class="text-sm font-medium text-slate-700">Marki @pilva</span>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-slate-900">200</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-tighter">credits</p>
+</div>
+</div>
+<!-- Referral Item 3 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<img alt="" class="w-8 h-8 bg-slate-100 rounded-full border border-slate-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpUlWMKv_Afq_BqRGWw4u9u-hZqob_YhKXhcZhtZuJI6uZeFKEXbGUT-KiA4ikOeGallEzldWDEuEbMMD2Eu1m1qKpQcufkxA7Gina8TLn6UZNireHQFqCw5q--22reNcegZ2BfHTztwwaaEdI_im-nctjJTt0yyvHryZz5rcBl2k0pXtp5uJM-5FmxJAs__PLBesq3PQ3gelWvZr6nAowEzBMQIo28bbIqV7coFtehkjW0aKE7Dbw-I0Bvx0BG7boiFN1ryRUee2p"/>
+<span class="text-sm font-medium text-slate-700">Johnna@yleva</span>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-slate-900">100</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-tighter">credits</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- END: Referral & Activity Card -->
+<!-- BEGIN: Credit Lots Card -->
+<div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+<h3 class="text-xl font-bold mb-2">Credit Lots</h3>
+<p class="text-sm text-slate-500 mb-6">Upcoming expiry lots</p>
+<div class="space-y-3">
+<!-- Lot 1 -->
+<div class="flex items-center justify-between p-4 bg-[#FEF9C3] bg-opacity-40 rounded-xl border border-slate-100">
+<div>
+<p class="text-sm font-bold text-slate-900">960 credits left</p>
+<p class="text-xs text-slate-500">signup bonus</p>
+<p class="text-xs text-slate-400 mt-1">expires 13/10/2026</p>
+</div>
+<div class="text-right">
+<p class="text-lg font-bold text-slate-900">1000</p>
+<p class="text-[10px] font-bold text-slate-400 uppercase">ISSUED</p>
+</div>
+</div>
+<!-- Lot 2 -->
+<div class="flex items-center justify-between p-4 bg-[#FEF9C3] rounded-xl border border-[#FDE68A]/50">
+<div>
+<p class="text-sm font-bold text-slate-900">500 credits left</p>
+<p class="text-xs text-slate-500">paystock purchase</p>
+<p class="text-xs text-slate-400 mt-1">expires 20/02/2026</p>
+</div>
+<div class="text-right flex flex-col items-end">
+<div class="flex items-center gap-1 text-[#D97706]">
+<span class="text-xs">💧</span>
+<p class="text-lg font-bold">8</p>
+</div>
+<p class="text-[10px] font-bold text-slate-400 uppercase">ISSUED</p>
+</div>
+</div>
+</div>
+</div>
+<!-- END: Credit Lots Card -->
+<!-- BEGIN: Recent Activity Card -->
+<div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mt-6">
+<h3 class="text-xl font-bold mb-6">Recent Activity</h3>
+<div class="bg-[#FBF9F7] -mx-6 px-6 py-2 border-y border-slate-100 mb-4">
+<span class="text-sm font-medium text-slate-600">Ledger list</span>
+</div>
+<div class="divide-y divide-slate-100">
+<!-- Activity 1 -->
+<div class="py-4 flex justify-between items-start">
+<div>
+<p class="text-sm font-bold text-slate-900">Purchase</p>
+<p class="text-xs text-slate-400 mt-0.5">20/04/2026</p>
+</div>
+<p class="text-sm font-bold text-[#059669]">+500</p>
+</div>
+<!-- Activity 2 -->
+<div class="py-4 flex justify-between items-start">
+<div>
+<p class="text-sm font-bold text-slate-900">Generation Spend</p>
+<p class="text-xs text-slate-400 mt-0.5">19/04/2026</p>
+</div>
+<p class="text-sm font-bold text-[#DC2626]">-40</p>
+</div>
+<!-- Empty lines for visual match -->
+<div class="py-4 border-b border-transparent"></div>
+<div class="py-4 border-b border-transparent"></div>
+</div>
+</div>
+<!-- END: Recent Activity Card -->
+<!-- BEGIN: Wallet Notifications Card -->
+<div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mt-6 h-full min-h-[300px]">
+<h3 class="text-xl font-bold mb-6">Wallet Notifications</h3>
+<div class="space-y-4">
+<div>
+<p class="text-sm font-bold text-slate-900">Purchase confirmation</p>
+<p class="text-xs text-slate-500 mt-1">20/04/2026</p>
+</div>
+</div>
+</div>
+<!-- END: Wallet Notifications Card -->
+</div>
+<!-- END: Bottom Section Grid -->
+</div>
+</main>
+<!-- END: Main Content -->
+</body></html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sulva's Studify - Daily Study Workspace</title>
+<!-- Tailwind CSS v3 CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter for a clean, modern sans-serif look -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="custom-config">
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1f2937;
+    }
+    .bg-cream {
+      background-color: #faf9f6;
+    }
+    .text-gray-muted {
+      color: #4b5563;
+    }
+    .btn-primary {
+      background-color: #3b82f6;
+      color: white;
+      transition: background-color 0.2s;
+    }
+    .btn-primary:hover {
+      background-color: #2563eb;
+    }
+    .btn-secondary {
+      background-color: white;
+      border: 1px solid #e5e7eb;
+      color: #374151;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover {
+      background-color: #f9fafb;
+    }
+    .card-shadow {
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+    }
+  </style>
+<script src="https://unpkg.com/lucide@latest"></script></head>
+<body class="bg-white">
+<!-- BEGIN: MainHeader -->
+<header class="sticky top-0 z-50 bg-cream/80 backdrop-blur-md px-6 py-4 lg:px-12">
+<nav class="max-w-7xl mx-auto flex items-center justify-between">
+<!-- Logo Section -->
+<div class="flex items-center gap-2" data-purpose="logo">
+<img alt="Sulva's Studify Logo" class="h-8 w-8" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwx-rSHxAbTCXrZpJu30yUD4N7SeBT-Q_PSON7WwqEYW0OEVLwZmrSpBbbaYFN4rGGy4-JwOkSWE8d6dmf7b1W1_su9BtW_MfNZlGkOueTw13MLP9HB_b2YK4S5J9M6e7bwzv_jExsewKU6l2tIvKP4kYMLM90hjBPZYLenVTZar41SXXiuOCT310buqgePGtQv3EzByzHQtWTsL5F2vQp4tj36mRoQMiK2__g-cXn_dUfx1AAnX21OC2vt9a83pxEzdlkN9DzSCFR"/>
+<div>
+<span class="block font-bold text-lg leading-tight">Sulva's Studify</span>
+<span class="block text-xs text-gray-500 font-medium">Daily study workspace</span>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-600">
+<a class="hover:text-blue-600 transition" href="#features">Features</a>
+<a class="hover:text-blue-600 transition" href="#how-it-works">How it Works</a>
+<a class="hover:text-blue-600 transition" href="#pricing">Pricing</a>
+<a class="hover:text-blue-600 transition" href="#about">About</a>
+</div>
+<!-- Header Actions -->
+<div class="flex items-center gap-4">
+<button class="text-sm font-semibold text-gray-700 hover:text-blue-600">Log in</button>
+<button class="btn-primary px-5 py-2 rounded-lg text-sm font-semibold">Get Started</button>
+</div>
+</nav>
+</header>
+<!-- END: MainHeader -->
+<main>
+<!-- BEGIN: HeroSection -->
+<section class="bg-cream pt-16 pb-20 px-6 lg:px-12">
+<div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
+<!-- Text Content -->
+<div class="lg:w-1/2 space-y-6">
+<h1 class="text-5xl lg:text-6xl font-black text-gray-900 leading-tight">Turn any study material into a daily review system</h1>
+<p class="text-lg text-gray-muted max-w-lg leading-loose">
+            Sulva's Studify turns your notes and PDFs into intelligent quizzes, flashcards, and personalized review sessions to build lasting knowledge.
+          </p>
+<div class="flex flex-wrap gap-4 pt-4">
+<button class="btn-primary px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-blue-200">Start studying smarter</button>
+<button class="btn-secondary px-8 py-3.5 rounded-xl font-bold flex items-center gap-2">
+              Watch how it works
+            </button>
+</div>
+</div>
+<!-- Dashboard Preview -->
+<div class="lg:w-1/2 w-full">
+<div class="relative rounded-2xl border-8 border-white/50 shadow-2xl overflow-hidden bg-white">
+<img alt="Dashboard Preview" class="w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5QgoUiGpH3kRcPP22yBSN-T2_kNyXjZoZ-QN9sNM3uxns3Z3oxnveH4wCeihwM50adp-pL04eS8_F7UugXc3us5qJyUwjzBbcG5RNGBNSbA7WRI4HN8k691UZ36iWGuP2tr0Fjaww67_2t57WhzZf9568oibXwQngha_f33qzvQCVp6yHzULhe2l92dobJXeAVVLP_ZUcTDMzMfnTCy3p1EPDjgxFklRZXy3JH3NRJ-WhgKRF9r-n-CHa9ZTOpk2JGr77usNrnU9w"/>
+</div>
+</div>
+</div>
+</section>
+<!-- END: HeroSection -->
+<!-- BEGIN: BenefitsBar -->
+<section class="border-y border-gray-100 py-10 bg-white">
+<div class="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
+<div class="flex items-center justify-center gap-3 text-gray-500 font-medium">
+<i class="w-6 h-6" data-lucide="file-up"></i>
+<span>Upload PDFs</span>
+</div>
+<div class="flex items-center justify-center gap-3 text-gray-500 font-medium">
+<i class="w-6 h-6" data-lucide="pen-tool"></i>
+<span>Generate Quizzes</span>
+</div>
+<div class="flex items-center justify-center gap-3 text-gray-500 font-medium">
+<i class="w-6 h-6" data-lucide="trending-up"></i>
+<span>Track Weak Topics</span>
+</div>
+<div class="flex items-center justify-center gap-3 text-gray-500 font-medium">
+<i class="w-6 h-6" data-lucide="check-circle"></i>
+<span>Daily Review</span>
+</div>
+</div>
+</section>
+<!-- END: BenefitsBar -->
+<!-- BEGIN: HowItWorks -->
+<section class="py-24 px-6 lg:px-12 bg-white" id="how-it-works">
+<div class="max-w-7xl mx-auto">
+<h2 class="text-3xl font-bold text-center mb-16">How it Works</h2>
+<div class="grid md:grid-cols-3 gap-8">
+<!-- Step 1 -->
+<div class="p-10 rounded-3xl border border-gray-100 bg-white card-shadow hover:translate-y-[-4px] transition-transform duration-300">
+<div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
+<i class="w-8 h-8" data-lucide="cloud-upload"></i>
+</div>
+<h3 class="text-xl font-bold mb-3">Upload Source Material</h3>
+<p class="text-gray-muted leading-relaxed">
+              Securely upload any notes, slides, scanned pages, or plain text.
+            </p>
+</div>
+<!-- Step 2 -->
+<div class="p-10 rounded-3xl border border-gray-100 bg-white card-shadow hover:translate-y-[-4px] transition-transform duration-300">
+<div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
+<i class="w-8 h-8" data-lucide="sparkles"></i>
+</div>
+<h3 class="text-xl font-bold mb-3">Generate Study Aids</h3>
+<p class="text-gray-muted leading-relaxed">
+              Instantly turn materials into smart flashcards, quizzes, and summaries.
+            </p>
+</div>
+<!-- Step 3 -->
+<div class="p-10 rounded-3xl border border-gray-100 bg-white card-shadow hover:translate-y-[-4px] transition-transform duration-300">
+<div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
+<i class="w-8 h-8" data-lucide="calendar-check"></i>
+</div>
+<h3 class="text-xl font-bold mb-3">Daily Review</h3>
+<p class="text-gray-muted leading-relaxed">
+              Build a habit with a personalized queue focused on what's due and what's weak.
+            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: HowItWorks -->
+<!-- BEGIN: CoreFeatures -->
+<section class="py-24 px-6 lg:px-12 bg-white" id="features">
+<div class="max-w-7xl mx-auto">
+<h2 class="text-3xl font-bold text-center mb-24">Core Features</h2>
+<div class="space-y-32">
+<!-- Feature 1: Flashcards -->
+<div class="flex flex-col lg:flex-row items-center gap-16">
+<div class="lg:w-1/2">
+<h3 class="text-2xl font-bold mb-4">Smart Flashcards &amp; Quizzes</h3>
+<p class="text-gray-muted text-lg leading-relaxed">
+                Identify the stages of mitosis, instantly compare ventricles and interactive elements of mitosis.
+              </p>
+</div>
+<div class="lg:w-1/2">
+<div class="bg-blue-50/50 rounded-2xl p-6 md:p-10 border border-blue-100 flex items-center justify-center"><div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 w-full max-w-sm"><div class="flex justify-between items-center mb-4"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">?</div><span class="font-medium text-sm">Interactive quiz</span></div><span class="text-gray-400"><i class="w-4 h-4" data-lucide="x"></i></span></div><div class="space-y-3"><div class="p-3 rounded-lg border border-blue-200 bg-blue-50 text-blue-800 text-sm font-medium">Identify the stages of mitosis</div><div class="p-3 rounded-lg border border-gray-200 text-sm">Interphase</div><div class="p-3 rounded-lg border border-gray-200 text-sm">Prophase</div><div class="p-3 rounded-lg border border-gray-200 text-sm">Metaphase</div></div><div class="mt-4 flex justify-end"><button class="bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-lg">Submit</button></div></div></div>
+</div>
+</div>
+<!-- Feature 2: AI Tutor (Reversed) -->
+<div class="flex flex-col lg:flex-row-reverse items-center gap-16">
+<div class="lg:w-1/2">
+<h3 class="text-2xl font-bold mb-4">AI-Powered Tutor &amp; Explainer</h3>
+<p class="text-gray-muted text-lg leading-relaxed">
+                Instantly turn materials into smart flashcards, quizzes, and summaries, and summaries.
+              </p>
+</div>
+<div class="lg:w-1/2">
+<img alt="AI Tutor UI" class="rounded-2xl shadow-xl border border-gray-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtRaT04XT1m__rnpbK1iVmvTEnCkcmBRXFPmgWGqy1_YPEgk0C1oPWVE7l0xBqDjC-n0en0tu-e0fRxHujUCeMmlGezSo0iKhP6cPEP_T46025IGDa0tmIgRheQ35-D3TuesGvaBk9FHb_ON8Ude0p5UKaj5FVsKESrjx9Hn2BreesJRBQ_FNn8JzUYrc9U7K8URsBMXgHagAKwA8cf7ItnvIBDLt39TbMVWGcs0bb-29u_KpmhnRtfuS8rgOtvO_NFibwxegjuzQp"/>
+</div>
+</div>
+<!-- Feature 3: Tracking -->
+<div class="flex flex-col lg:flex-row items-center gap-16">
+<div class="lg:w-1/2">
+<h3 class="text-2xl font-bold mb-4">Weak Topic Tracking &amp; Mastery</h3>
+<p class="text-gray-muted text-lg leading-relaxed">
+                Progress system with the topic strength and repair strength with topics and seem better harvests.
+              </p>
+</div>
+<div class="lg:w-1/2">
+<div class="bg-blue-50/50 rounded-2xl p-6 md:p-10 border border-blue-100 flex items-center justify-center"><div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 w-full max-w-sm"><div class="flex items-center gap-3 mb-6"><div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><i class="w-5 h-5" data-lucide="bar-chart-2"></i></div><h4 class="font-bold text-gray-800">Topic Mastery</h4></div><div class="space-y-4"><div class="space-y-1"><div class="flex justify-between text-sm"><span class="font-medium">Biology</span><span class="text-blue-600 font-bold">85%</span></div><div class="h-2 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-blue-500 w-[85%]"></div></div></div><div class="space-y-1"><div class="flex justify-between text-sm"><span class="font-medium">Chemistry</span><span class="text-green-600 font-bold">60%</span></div><div class="h-2 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-green-500 w-[60%]"></div></div></div><div class="space-y-1"><div class="flex justify-between text-sm"><span class="font-medium">Physics</span><span class="text-orange-600 font-bold">40%</span></div><div class="h-2 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-orange-500 w-[40%]"></div></div></div></div></div></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: CoreFeatures -->
+<!-- BEGIN: HabitLoop -->
+<section class="py-24 px-6 lg:px-12">
+<div class="max-w-6xl mx-auto bg-cream rounded-[40px] p-8 md:p-16 text-center">
+<h2 class="text-4xl font-bold mb-4">Daily Habit Loop</h2>
+<p class="text-gray-muted mb-12 text-lg">Student dashboard UI your current mastery levels.</p>
+<div class="relative rounded-2xl border-8 border-white/50 shadow-2xl overflow-hidden bg-white max-w-4xl mx-auto">
+<img alt="Daily Pulse Dashboard" class="w-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqVqJbobg_fPR5qC7gXVOGXfMPwqIwO_B_DWPQtqUAsHurBA9w5I6V8Vt5UXD5rrboLdi0NM6nX5Z7N9cApwpkXrL3c-y7jzFWku1gY4nRsBTXpYyLFeVzJhyM4D-DPzzx7iRza7EZ2_bUIXYWJ9hkomSvwoYGWKN9dhrlnsiehdD9LsUewl63ZE0uaG04FGE7DbTPo68kJi4t12hbcsDFnuGUdtRqPG1Nr4x7ePh6GV8_bTuqzOPZsUk50IgJTQh65wyjr267faDn"/>
+</div>
+</div>
+</section>
+<!-- END: HabitLoop -->
+</main>
+<!-- BEGIN: Footer -->
+<footer class="py-12 px-6 lg:px-12 border-t border-gray-100 bg-white">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-2" data-purpose="footer-logo">
+<span class="font-bold text-gray-900">Sulva's Studify</span>
+</div>
+<div class="flex flex-wrap justify-center gap-8 text-xs text-gray-500 font-medium">
+<a class="hover:text-blue-600 transition" href="#">Privacy Policy</a>
+<a class="hover:text-blue-600 transition" href="#">Terms of Service</a>
+<a class="hover:text-blue-600 transition" href="#">Contact</a>
+</div>
+<div class="flex gap-5 text-gray-400">
+<!-- Simple Placeholder Social Icons -->
+<a class="hover:text-blue-600 transition" href="#">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path></svg>
+</a>
+<a class="hover:text-blue-600 transition" href="#">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
+</a>
+</div>
+</div>
+</footer>
+<!-- END: Footer -->
+<script>lucide.createIcons();</script></body></html><!-- MISSING_IMAGES:
+- TEMP_LOGO_PLACEHOLDER
+- TEMP_HERO_DASHBOARD_PLACEHOLDER
+- TEMP_ICON_UPLOAD
+- TEMP_ICON_QUIZ
+- TEMP_ICON_TRACK
+- TEMP_ICON_DAILY
+- TEMP_ICON_STEP1
+- TEMP_ICON_STEP2
+- TEMP_ICON_STEP3
+- TEMP_FEATURE_FLASHCARDS
+- TEMP_FEATURE_TUTOR
+- TEMP_FEATURE_TRACKING
+- TEMP_HABIT_LOOP_DASHBOARD
+-->

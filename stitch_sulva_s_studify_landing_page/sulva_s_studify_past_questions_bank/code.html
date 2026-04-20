@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Past Questions - Sulva's Studify</title>
+<!-- Google Fonts: Serif for titles, Sans for body -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Playfair Display"', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              bg: '#F8F5F0', // Soft off-white/beige from mockup
+              card: '#FFFFFF',
+              accent: '#3B82F6', // Primary blue
+              purple: '#6366F1',
+              text: '#333333',
+              muted: '#6B7280',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-layout">
+    body {
+      background-color: #F9F7F2;
+      color: #333333;
+    }
+    .gradient-card {
+      background: linear-gradient(135deg, #6366F1 0%, #3B82F6 100%);
+    }
+    /* Custom scrollbar for aesthetic consistency */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body class="font-sans antialiased min-h-screen p-8 lg:p-12">
+<div class="max-w-7xl mx-auto">
+<!-- BEGIN: HeaderSection -->
+<header class="mb-8" data-purpose="page-header">
+<h1 class="font-serif text-4xl font-bold mb-2">Past Questions</h1>
+<p class="text-brand-muted text-lg">Practice smarter with real exam-style material</p>
+</header>
+<!-- END: HeaderSection -->
+<!-- BEGIN: FilterSection -->
+<section class="flex flex-wrap items-center gap-4 mb-10" data-purpose="filters-bar">
+<!-- Dropdowns -->
+<div class="flex flex-wrap gap-3">
+<select class="rounded-lg border-gray-200 bg-white text-sm py-2 px-4 pr-10 focus:ring-brand-accent focus:border-brand-accent min-w-[140px]">
+<option>Exam Type</option>
+</select>
+<select class="rounded-lg border-gray-200 bg-white text-sm py-2 px-4 pr-10 focus:ring-brand-accent focus:border-brand-accent min-w-[140px]">
+<option>Subject</option>
+</select>
+<select class="rounded-lg border-gray-200 bg-white text-sm py-2 px-4 pr-10 focus:ring-brand-accent focus:border-brand-accent min-w-[140px]">
+<option>Topic</option>
+</select>
+<select class="rounded-lg border-gray-200 bg-white text-sm py-2 px-4 pr-10 focus:ring-brand-accent focus:border-brand-accent min-w-[100px]">
+<option>Year</option>
+</select>
+</div>
+<!-- Search Bar -->
+<div class="relative flex-grow max-w-xs lg:ml-auto">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</span>
+<input class="w-full pl-10 rounded-lg border-gray-200 bg-white text-sm py-2 focus:ring-brand-accent focus:border-brand-accent" placeholder="Search past questions..." type="text"/>
+</div>
+</section>
+<!-- END: FilterSection -->
+<!-- BEGIN: PracticeModes -->
+<section class="mb-12" data-purpose="practice-modes">
+<h2 class="text-xl font-bold mb-6">Practice Modes</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Timed Practice Card -->
+<div class="gradient-card rounded-2xl p-6 text-white shadow-lg flex flex-col justify-between min-h-[220px]">
+<div>
+<div class="flex items-center gap-2 mb-3">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<h3 class="text-xl font-semibold">Timed Practice</h3>
+</div>
+<p class="text-sm opacity-90 leading-relaxed">Simulate exam conditions. Answer within time limits to improve speed.</p>
+</div>
+<button class="w-full mt-6 bg-white text-blue-700 font-semibold py-2.5 rounded-lg transition hover:bg-gray-50">Start Now</button>
+</div>
+<!-- Topic Practice Card -->
+<div class="gradient-card rounded-2xl p-6 text-white shadow-lg flex flex-col justify-between min-h-[220px]">
+<div>
+<div class="flex items-center gap-2 mb-3">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<h3 class="text-xl font-semibold">Topic Practice</h3>
+</div>
+<p class="text-sm opacity-90 leading-relaxed">Master specific subjects. Focus on weak areas by practicing topic by topic.</p>
+</div>
+<button class="w-full mt-6 bg-white text-blue-700 font-semibold py-2.5 rounded-lg transition hover:bg-gray-50">Start Now</button>
+</div>
+<!-- Full Exam Mode Card -->
+<div class="gradient-card rounded-2xl p-6 text-white shadow-lg flex flex-col justify-between min-h-[220px]">
+<div>
+<div class="flex items-center gap-2 mb-3">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<h3 class="text-xl font-semibold">Full Exam Mode</h3>
+</div>
+<p class="text-sm opacity-90 leading-relaxed">Attempt full-length exams. Experience a comprehensive assessment with varied questions.</p>
+</div>
+<button class="w-full mt-6 bg-white text-blue-700 font-semibold py-2.5 rounded-lg transition hover:bg-gray-50">Start Now</button>
+</div>
+</div>
+</section>
+<!-- END: PracticeModes -->
+<!-- Main Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- BEGIN: CourseList -->
+<section class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 items-start h-min" data-purpose="course-list">
+<!-- Course Card 1 -->
+<div class="bg-white border border-[#F0EBE1] rounded-2xl p-5 shadow-sm flex flex-col justify-between min-h-[160px]">
+<div>
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-bold text-base text-gray-900">BCH202 - Second Semester</h4>
+<span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">24px</span>
+</div>
+<span class="inline-block bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-medium mb-5">Biochemistry</span>
+</div>
+<div class="flex items-end justify-between mt-2">
+<div class="flex gap-6">
+<div class="flex flex-col gap-1">
+<span class="text-xs text-gray-500">2025</span>
+<span class="text-xs font-medium text-gray-900">20 Questions</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-xs text-gray-500">Difficulty</span>
+<span class="text-xs font-medium text-gray-900">Medium</span>
+</div>
+</div>
+<button class="bg-brand-accent text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition">Start</button>
+</div>
+</div>
+<!-- Course Card 2 -->
+<div class="bg-white border border-[#F0EBE1] rounded-2xl p-5 shadow-sm flex flex-col justify-between min-h-[160px]">
+<div>
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-bold text-base text-gray-900">BCH101 - First Semester</h4>
+<span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">24px</span>
+</div>
+<span class="inline-block bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-medium mb-5">Biochemistry</span>
+</div>
+<div class="flex items-end justify-between mt-2">
+<div class="flex gap-6">
+<div class="flex flex-col gap-1">
+<span class="text-xs text-gray-500">2025</span>
+<span class="text-xs font-medium text-gray-900">20 Questions</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-xs text-gray-500">Difficulty</span>
+<span class="text-xs font-medium text-gray-900">Medium</span>
+</div>
+</div>
+<button class="bg-brand-accent text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition">Start</button>
+</div>
+</div>
+<!-- Course Card 3 -->
+<div class="bg-white border border-[#F0EBE1] rounded-2xl p-5 shadow-sm flex flex-col justify-between min-h-[160px]">
+<div>
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-bold text-base text-gray-900">CHM101 - First Semester</h4>
+<span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">24px</span>
+</div>
+<span class="inline-block bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-medium mb-5">Chemistry</span>
+</div>
+<div class="flex items-end justify-between mt-2">
+<div class="flex gap-6">
+<div class="flex flex-col gap-1">
+<span class="text-xs text-gray-500">2025</span>
+<span class="text-xs font-medium text-gray-900">30 Questions</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-xs text-gray-500">Difficulty</span>
+<span class="text-xs font-medium text-gray-900">Hard</span>
+</div>
+</div>
+<button class="bg-brand-accent text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition">Start</button>
+</div>
+</div>
+<!-- Course Card 4 -->
+<div class="bg-white border border-[#F0EBE1] rounded-2xl p-5 shadow-sm flex flex-col justify-between min-h-[160px]">
+<div>
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-bold text-base text-gray-900">PHY202 - First Semester</h4>
+<span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">24px</span>
+</div>
+<span class="inline-block bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-medium mb-5">Physics</span>
+</div>
+<div class="flex items-end justify-between mt-2">
+<div class="flex gap-6">
+<div class="flex flex-col gap-1">
+<span class="text-xs text-gray-500">2025</span>
+<span class="text-xs font-medium text-gray-900">25 Questions</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-xs text-gray-500">Difficulty</span>
+<span class="text-xs font-medium text-gray-900">Easy</span>
+</div>
+</div>
+<button class="bg-brand-accent text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition">Start</button>
+</div>
+</div>
+<!-- Course Card 5 -->
+<div class="bg-white border border-[#F0EBE1] rounded-2xl p-5 shadow-sm flex flex-col justify-between min-h-[160px]">
+<div>
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-bold text-base text-gray-900">PHY201 - First Semester</h4>
+<span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">24px</span>
+</div>
+<span class="inline-block bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-medium mb-5">Physics</span>
+</div>
+<div class="flex items-end justify-between mt-2">
+<div class="flex gap-6">
+<div class="flex flex-col gap-1">
+<span class="text-xs text-gray-500">2025</span>
+<span class="text-xs font-medium text-gray-900">--</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-xs text-gray-500">Difficulty</span>
+<span class="text-xs font-medium text-gray-900">--</span>
+</div>
+</div>
+<button class="bg-brand-accent text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition">Start</button>
+</div>
+</div>
+<!-- Course Card 6 -->
+<div class="bg-white border border-[#F0EBE1] rounded-2xl p-5 shadow-sm flex flex-col justify-between min-h-[160px]">
+<div>
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-bold text-base text-gray-900">CHM101 - First Semester</h4>
+<span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">24px</span>
+</div>
+<span class="inline-block bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-medium mb-5">Chemistry</span>
+</div>
+<div class="flex items-end justify-between mt-2">
+<div class="flex gap-6">
+<div class="flex flex-col gap-1">
+<span class="text-xs text-gray-500">2025</span>
+<span class="text-xs font-medium text-gray-900">--</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-xs text-gray-500">Difficulty</span>
+<span class="text-xs font-medium text-gray-900">--</span>
+</div>
+</div>
+<button class="bg-brand-accent text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition">Start</button>
+</div>
+</div>
+</section>
+<!-- END: CourseList -->
+<!-- BEGIN: InsightsPanel -->
+<aside class="space-y-6" data-purpose="insights-panel">
+<h2 class="text-xl font-bold">Insights Panel</h2>
+<div class="bg-white rounded-2xl p-6 shadow-sm">
+<div class="mb-6">
+<h3 class="font-bold text-lg mb-4">Your Performance</h3>
+<!-- Accuracy Rate -->
+<div class="mb-5">
+<div class="flex justify-between items-center mb-2">
+<div class="flex items-center gap-2 text-sm text-gray-600">
+<svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Accuracy Rate</span>
+</div>
+<span class="font-bold text-sm">78%</span>
+</div>
+<div class="w-full bg-gray-100 rounded-full h-2.5">
+<div class="bg-brand-accent h-2.5 rounded-full" style="width: 78%"></div>
+</div>
+</div>
+<!-- Average Time -->
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-sm text-gray-600">
+<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Average Time</span>
+</div>
+<span class="font-bold text-sm">45s</span>
+</div>
+</div>
+<!-- Recommended Next -->
+<div class="bg-[#FAF9F6] border border-gray-100 rounded-xl p-4 mb-6">
+<p class="text-xs text-gray-500 mb-2 uppercase tracking-wider font-semibold">Recommended next</p>
+<div class="flex items-center gap-1 text-brand-accent font-bold mb-1">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Thermodynamics</span>
+</div>
+<p class="text-xs text-gray-500 leading-relaxed">Focus on your weakest areas to improve scores.</p>
+</div>
+<!-- Line Chart Placeholder -->
+<div class="mt-4" data-purpose="chart-container">
+<canvas class="w-full" height="150" id="performanceChart" width="300"></canvas>
+</div>
+</div>
+</aside>
+<!-- END: InsightsPanel -->
+</div>
+</div>
+<!-- BEGIN: ChartScripts -->
+<script data-purpose="canvas-setup">
+    // Minimal custom line chart implementation to match mockup style
+    const canvas = document.getElementById('performanceChart');
+    if (canvas && canvas.getContext) {
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      // Draw grid lines (minimal)
+      ctx.strokeStyle = '#F3F4F6';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.33); ctx.lineTo(w, h * 0.33);
+      ctx.moveTo(0, h * 0.66); ctx.lineTo(w, h * 0.66);
+      ctx.stroke();
+
+      // Draw Labels
+      ctx.fillStyle = '#9CA3AF';
+      ctx.font = '10px Inter';
+      ctx.fillText('100', 5, 12);
+      ctx.fillText('50', 5, h/2 + 5);
+
+      // Draw Curve
+      ctx.beginPath();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#3B82F6';
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      // Sample curve points
+      const points = [
+        {x: 50, y: h * 0.8},
+        {x: 100, y: h * 0.85},
+        {x: 150, y: h * 0.6},
+        {x: 200, y: h * 0.7},
+        {x: 250, y: h * 0.3},
+        {x: 300, y: h * 0.4}
+      ];
+
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i++) {
+        const xc = (points[i].x + points[i-1].x) / 2;
+        const yc = (points[i].y + points[i-1].y) / 2;
+        ctx.quadraticCurveTo(points[i-1].x, points[i-1].y, xc, yc);
+      }
+      ctx.stroke();
+
+      // Area fill
+      ctx.lineTo(w, h);
+      ctx.lineTo(50, h);
+      ctx.closePath();
+      const gradient = ctx.createLinearGradient(0, 0, 0, h);
+      gradient.addColorStop(0, 'rgba(59, 130, 246, 0.1)');
+      gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+      ctx.fillStyle = gradient;
+      ctx.fill();
+    }
+  </script>
+<!-- END: ChartScripts -->
+</body></html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Flashcard Library Dashboard</title>
+<!-- Tailwind CSS v3 CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts for Serif Title and Sans-serif Body -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"DM+Serif+Display"', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              blue: '#2b6cb0',
+              'blue-hover': '#2c5282',
+              bg: '#f9f7f2', // Off-white/cream background
+              card: '#ffffff',
+              accent: '#fef3c7', // Light orange pill
+              'accent-text': '#92400e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-shadows">
+    .card-shadow {
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 10px -2px rgba(0, 0, 0, 0.03);
+    }
+    .progress-bg {
+      background-color: #e2e8f0;
+    }
+    /* Custom icons for the cards */
+    .icon-btn {
+      color: #718096;
+      transition: color 0.2s;
+    }
+    .icon-btn:hover {
+      color: #2d3748;
+    }
+  </style>
+</head>
+<body class="bg-[#F8F7F4] font-sans min-h-screen p-8 md:p-12 lg:p-16">
+<!-- BEGIN: MainHeader -->
+<header class="max-w-7xl mx-auto mb-10" data-purpose="page-header">
+<h1 class="text-4xl md:text-5xl font-serif text-slate-900 mb-8 font-bold tracking-tight">Flashcards</h1>
+<!-- Navigation and Search Bar -->
+<div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+<div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+<!-- Search Input -->
+<div class="relative w-full sm:w-64">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</span>
+<input class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white text-sm focus:ring-brand-blue focus:border-brand-blue" placeholder="Search flashcard sets..." type="text"/>
+</div>
+<!-- Filter Dropdowns -->
+<div class="flex gap-3">
+<div class="relative">
+<select class="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-sm focus:ring-brand-blue focus:border-brand-blue">
+<option>Subject</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+<div class="relative">
+<select class="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-sm focus:ring-brand-blue focus:border-brand-blue">
+<option>Source</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+<div class="relative">
+<select class="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 text-sm focus:ring-brand-blue focus:border-brand-blue">
+<option>Mastery</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Button -->
+<button class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-colors shadow-sm">
+        Generate New Set
+      </button>
+</div>
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: FlashcardGrid -->
+<main class="max-w-7xl mx-auto" data-purpose="flashcard-grid"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Card 1: Organic Chemistry -->
+<article class="bg-white rounded-xl p-6 card-shadow flex flex-col justify-between border border-gray-100" data-purpose="flashcard-card">
+<div>
+<h2 class="text-[1.125rem] font-bold text-gray-900 leading-tight">Organic Chemistry Basics</h2>
+<p class="text-[0.85rem] text-gray-500 mt-1">Source: Chapter 4 PDF</p>
+<div class="flex items-center gap-3 mt-6 text-[0.85rem]">
+<span class="text-gray-800 font-medium">42 Cards</span>
+<div class="w-px h-3.5 bg-gray-300"></div>
+<span class="text-gray-500">Last reviewed: 2 days ago</span>
+</div>
+<div class="mt-3 flex items-center gap-3">
+<div class="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
+<div class="bg-blue-600 h-full rounded-full" style="width: 72%;"></div>
+</div>
+<span class="text-xs font-bold text-gray-700">72%</span>
+</div>
+<div class="mt-4">
+<span class="inline-block bg-[#FDF0D5] text-[#995511] text-xs font-semibold px-2.5 py-1 rounded-full">
+          8 Due
+        </span>
+</div>
+</div>
+<div class="mt-6 flex justify-between items-center">
+<button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+        Review Now
+      </button>
+<div class="flex gap-1.5">
+<button aria-label="Edit" class="icon-btn text-gray-400 hover:text-gray-600">
+<svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+</button>
+<button aria-label="Delete" class="icon-btn text-gray-400 hover:text-gray-600">
+<svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 3 (now World History) -->
+<article class="bg-white rounded-xl p-6 card-shadow flex flex-col justify-between border border-gray-100" data-purpose="flashcard-card">
+<div>
+<h2 class="text-[1.125rem] font-bold text-gray-900 leading-tight">World History: Renaissance</h2>
+<p class="text-[0.85rem] text-gray-500 mt-1">Source: Lecture Notes</p>
+<div class="flex items-center gap-3 mt-6 text-[0.85rem]">
+<span class="text-gray-800 font-medium">56 Cards</span>
+<div class="w-px h-3.5 bg-gray-300"></div>
+<span class="text-gray-500">Last reviewed: 1 day ago</span>
+</div>
+<div class="mt-3 flex items-center gap-3">
+<div class="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
+<div class="bg-blue-600 h-full rounded-full" style="width: 90%;"></div>
+</div>
+<span class="text-xs font-bold text-gray-700">90%</span>
+</div>
+</div>
+<div class="mt-6 flex justify-between items-center">
+<button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+        Review Now
+      </button>
+<div class="flex gap-1.5">
+<button class="icon-btn text-gray-400 hover:text-gray-600"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+<button class="icon-btn text-gray-400 hover:text-gray-600"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+</div>
+</div>
+</article>
+<!-- Empty State Card -->
+<article class="bg-white rounded-xl p-10 card-shadow flex flex-col items-center justify-center text-center row-span-2 border border-gray-100" data-purpose="empty-state-card">
+<div class="mb-5">
+<svg class="w-[4.5rem] h-[4.5rem] text-gray-300" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path>
+<path d="M11 5V3m2 2V3M5 11H3m2 2H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"></path>
+</svg>
+</div>
+<h3 class="text-[1.1rem] font-bold text-gray-900 mb-2">No flashcard sets yet.</h3>
+<p class="text-gray-500 text-sm max-w-[180px] mb-6 leading-relaxed">
+      Upload a resource to generate your first deck.
+    </p>
+<button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition-colors">
+      CTA
+    </button>
+</article>
+<!-- Card 4 (now French Vocabulary) -->
+<article class="bg-white rounded-xl p-6 card-shadow flex flex-col justify-between border border-gray-100" data-purpose="flashcard-card">
+<div>
+<h2 class="text-[1.125rem] font-bold text-gray-900 leading-tight">French Vocabulary Level 1</h2>
+<p class="text-[0.85rem] text-gray-500 mt-1">Source: Duolingo</p>
+<div class="flex items-center gap-3 mt-6 text-[0.85rem]">
+<span class="text-gray-800 font-medium">30 Cards</span>
+<div class="w-px h-3.5 bg-gray-300"></div>
+<span class="text-gray-500">Last reviewed: 3 days ago</span>
+</div>
+<div class="mt-3 flex items-center gap-3">
+<div class="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
+<div class="bg-blue-600 h-full rounded-full" style="width: 50%;"></div>
+</div>
+<span class="text-xs font-bold text-gray-700">50%</span>
+</div>
+<div class="mt-4">
+<span class="inline-block bg-[#FDF0D5] text-[#995511] text-xs font-semibold px-2.5 py-1 rounded-full">
+          12 Due
+        </span>
+</div>
+</div>
+<div class="mt-6 flex justify-between items-center">
+<button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+        Review Now
+      </button>
+<div class="flex gap-1.5">
+<button class="icon-btn text-gray-400 hover:text-gray-600"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+<button class="icon-btn text-gray-400 hover:text-gray-600"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+</div>
+</div>
+</article>
+<!-- Card 5 (Marketing) -->
+<article class="bg-white rounded-xl p-6 card-shadow flex flex-col justify-between border border-gray-100" data-purpose="flashcard-card">
+<div>
+<h2 class="text-[1.125rem] font-bold text-gray-900 leading-tight">Marketing Principles</h2>
+<p class="text-[0.85rem] text-gray-500 mt-1">Source: Business Textbook</p>
+<div class="flex items-center gap-3 mt-6 text-[0.85rem]">
+<span class="text-gray-800 font-medium">45 Cards</span>
+<div class="w-px h-3.5 bg-gray-300"></div>
+<span class="text-gray-500">Last reviewed: 4 days ago</span>
+</div>
+<div class="mt-3 flex items-center gap-3">
+<div class="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
+<div class="bg-blue-600 h-full rounded-full" style="width: 85%;"></div>
+</div>
+<span class="text-xs font-bold text-gray-700">85%</span>
+</div>
+</div>
+<div class="mt-6 flex justify-between items-center">
+<button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+        Review Now
+      </button>
+<div class="flex gap-1.5">
+<button class="icon-btn text-gray-400 hover:text-gray-600"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+<button class="icon-btn text-gray-400 hover:text-gray-600"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+</div>
+</div>
+</article>
+<!-- Card 6 (Biology) -->
+<article class="bg-white rounded-xl p-6 card-shadow flex flex-col justify-between border border-gray-100" data-purpose="flashcard-card">
+<div>
+<h2 class="text-[1.125rem] font-bold text-gray-900 leading-tight">Biology: Cell Structure</h2>
+<p class="text-[0.85rem] text-gray-500 mt-1">Source: Video Course</p>
+<div class="flex items-center gap-3 mt-6 text-[0.85rem]">
+<span class="text-gray-800 font-medium">38 Cards</span>
+<div class="w-px h-3.5 bg-gray-300"></div>
+<span class="text-gray-500">Last reviewed: Yesterday</span>
+</div>
+<div class="mt-3 flex items-center gap-3">
+<div class="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
+<div class="bg-blue-600 h-full rounded-full" style="width: 60%;"></div>
+</div>
+<span class="text-xs font-bold text-gray-700">60%</span>
+</div>
+<div class="mt-4">
+<span class="inline-block bg-[#FDF0D5] text-[#995511] text-xs font-semibold px-2.5 py-1 rounded-full">
+          5 Due
+        </span>
+</div>
+</div>
+<div class="mt-6 flex justify-between items-center">
+<button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+        Review Now
+      </button>
+<div class="flex gap-1.5">
+<button class="icon-btn text-gray-400 hover:text-gray-600"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+<button class="icon-btn text-gray-400 hover:text-gray-600"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+</div>
+</div>
+</article>
+<!-- Card 7 (Financial Accounting) -->
+<article class="bg-white rounded-xl p-6 card-shadow flex flex-col justify-between border border-gray-100" data-purpose="flashcard-card">
+<div>
+<h2 class="text-[1.125rem] font-bold text-gray-900 leading-tight">Financial Accounting</h2>
+<p class="text-[0.85rem] text-gray-500 mt-1">Source: Course Materials</p>
+<div class="flex items-center gap-3 mt-6 text-[0.85rem]">
+<span class="text-gray-800 font-medium">60 Cards</span>
+<div class="w-px h-3.5 bg-gray-300"></div>
+<span class="text-gray-500">Last reviewed: 1 week ago</span>
+</div>
+<div class="mt-3 flex items-center gap-3">
+<div class="flex-1 bg-gray-200 h-2 rounded-full overflow-hidden">
+<div class="bg-blue-600 h-full rounded-full" style="width: 40%;"></div>
+</div>
+<span class="text-xs font-bold text-gray-700">40%</span>
+</div>
+<div class="mt-4">
+<span class="inline-block bg-[#FDF0D5] text-[#995511] text-xs font-semibold px-2.5 py-1 rounded-full">
+          15 Due
+        </span>
+</div>
+</div>
+<div class="mt-6 flex justify-between items-center">
+<button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+        Review Now
+      </button>
+<div class="flex gap-1.5">
+<button class="icon-btn text-gray-400 hover:text-gray-600"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+<button class="icon-btn text-gray-400 hover:text-gray-600"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+</div>
+</div>
+</article>
+</div></main>
+<!-- END: FlashcardGrid -->
+</body></html>

@@ -1,8 +1,10 @@
-﻿import { MetadataRoute } from 'next';
+import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
+  const brandName = 'Sulva\u2019s Studify';
+
   return {
-    name: "Sulva's Studify",
+    name: brandName,
     short_name: 'Sulva',
     description: 'Upload study materials, generate practice, and keep a daily review habit.',
     start_url: '/',

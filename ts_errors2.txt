@@ -1,1 +1,0 @@
-app/past-questions/page.tsx(210,70): error TS2551: Property 'catch' does not exist on type 'PostgrestFilterBuilder<any, any, any, any, "increment_downloads", null, "RPC">'. Did you mean 'match'?

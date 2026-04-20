@@ -3,9 +3,13 @@ node_modules/
 coverage/
 .DS_Store
 *.log
+*.err.log
+*.out.log
+*.tsbuildinfo
+output/
 .env*
 !.env.example
 
-# React Native mobile app – separate project, keep out of web repo
+# React Native mobile app - separate project, keep out of web repo
 mobile/
 app/mobile-bridge/

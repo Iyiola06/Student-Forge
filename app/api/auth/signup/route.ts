@@ -3,18 +3,19 @@ import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: Request) {
     try {
-        const { email, password, firstName, lastName, studyLevel, avatarUrl } = await request.json();
+        const { email, password, fullName, firstName, lastName, studyLevel, avatarUrl } = await request.json();
         const supabase = await createClient();
         const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'https://student.sulvatech.com';
+        const resolvedFullName = fullName?.trim() || `${firstName || ''} ${lastName || ''}`.trim();
 
         const { data, error } = await supabase.auth.signUp({
             email,
             password,
             options: {
                 data: {
-                    full_name: `${firstName} ${lastName}`.trim(),
-                    study_level: studyLevel,
-                    avatar_url: avatarUrl,
+                    ...(resolvedFullName ? { full_name: resolvedFullName } : {}),
+                    ...(studyLevel ? { study_level: studyLevel } : {}),
+                    ...(avatarUrl ? { avatar_url: avatarUrl } : {}),
                 },
                 emailRedirectTo: `${origin}/auth/callback`,
             },

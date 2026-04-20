@@ -64,18 +64,18 @@ export default function Sidebar() {
         key={link.href}
         href={link.href}
         className={cn(
-          'group flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-bold transition',
+          'group flex items-center gap-3 rounded-[20px] px-3 py-3 text-sm font-bold transition',
           active
-            ? 'bg-[#163f73] text-white shadow-[0_16px_34px_rgba(17,47,85,0.18)]'
-            : 'text-slate-700 hover:bg-[#163f73]/6 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/6 dark:hover:text-white'
+            ? 'border border-[#cfe0fb] bg-[linear-gradient(180deg,rgba(239,246,255,0.98),rgba(224,236,255,0.92))] text-[#163f73] shadow-[0_16px_32px_rgba(59,130,246,0.08)] dark:border-[#274770] dark:bg-[linear-gradient(180deg,rgba(27,48,76,0.96),rgba(19,34,54,0.92))] dark:text-white'
+            : 'text-slate-700 hover:bg-[#163f73]/5 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/6 dark:hover:text-white'
         )}
       >
         <span
           className={cn(
-            'material-symbols-outlined inline-flex size-9 items-center justify-center rounded-xl text-[18px] transition',
+            'material-symbols-outlined inline-flex size-9 items-center justify-center rounded-[14px] text-[18px] transition',
             active
-              ? 'bg-white/12 text-white'
-              : 'bg-[#163f73]/6 text-[#163f73] group-hover:bg-[#163f73]/10 dark:bg-white/5 dark:text-[#f6b252]'
+              ? 'bg-[#3b82f6] text-white shadow-[0_10px_20px_rgba(59,130,246,0.16)] dark:bg-[#4f86c5] dark:text-white'
+              : 'bg-[#eff6ff] text-[#2563eb] group-hover:bg-[#dbeafe] dark:bg-white/5 dark:text-[#93b7e7]'
           )}
         >
           {link.icon}
@@ -93,7 +93,7 @@ export default function Sidebar() {
           <ThemeToggle />
           <button
             onClick={() => setIsMenuOpen((value) => !value)}
-            className="inline-flex size-10 items-center justify-center rounded-2xl border border-black/8 bg-white/70 text-slate-700 transition hover:border-[#163f73]/20 hover:text-[#163f73] dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:border-[#f39a2b]/20 dark:hover:text-[#f6b252]"
+            className="inline-flex size-10 items-center justify-center rounded-2xl border border-black/8 bg-white/70 text-slate-700 transition hover:border-[#163f73]/20 hover:text-[#163f73] dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:border-[#4f86c5]/20 dark:hover:text-[#93b7e7]"
             aria-label="Open navigation menu"
           >
             <span className="material-symbols-outlined text-[20px]">{isMenuOpen ? 'close' : 'menu'}</span>
@@ -111,39 +111,20 @@ export default function Sidebar() {
             </div>
 
             <div className="space-y-2">
-              <p className="nav-section-label">More</p>
-              {secondaryLinks.map((link) => {
-                const active = isActive(link.href);
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={cn(
-                      'flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-bold transition',
-                      active
-                        ? 'bg-[#163f73] text-white'
-                        : 'text-slate-700 hover:bg-[#163f73]/6 dark:text-slate-200 dark:hover:bg-white/6'
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        'material-symbols-outlined inline-flex size-9 items-center justify-center rounded-xl text-[18px]',
-                        active ? 'bg-white/12 text-white' : 'bg-[#163f73]/6 text-[#163f73] dark:bg-white/5 dark:text-[#f6b252]'
-                      )}
-                    >
-                      {link.icon}
-                    </span>
-                    {link.name}
-                  </Link>
-                );
-              })}
+              <p className="nav-section-label">Core</p>
+              {primaryLinks.map((link) => renderDesktopLink(link))}
             </div>
 
-            <div className="mt-5 rounded-[18px] border border-black/6 bg-white/55 p-3 dark:border-white/8 dark:bg-white/5">
+            <div className="mt-4 space-y-2">
+              <p className="nav-section-label">More</p>
+              {secondaryLinks.map((link) => renderDesktopLink(link))}
+            </div>
+
+            <div className="mt-5 rounded-[20px] border border-black/6 bg-white/60 p-3.5 dark:border-white/8 dark:bg-white/5">
               <div className="flex items-center gap-3">
                 <div
                   className={cn(
-                    'size-11 rounded-2xl bg-cover bg-center',
+                    'size-11 rounded-[18px] bg-cover bg-center',
                     isLoading ? 'animate-pulse bg-slate-200 dark:bg-white/10' : 'bg-[#163f73]/10'
                   )}
                   style={{
@@ -152,9 +133,7 @@ export default function Sidebar() {
                 />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-black text-slate-950 dark:text-white">{profile?.full_name || 'Student'}</p>
-                  <p className="truncate text-xs text-slate-500 dark:text-slate-400">
-                    {profile?.credit_balance ?? 0} credits
-                  </p>
+                  <p className="mt-1 truncate text-xs text-slate-500 dark:text-slate-400">{profile?.credit_balance ?? 0} credits</p>
                 </div>
                 <button onClick={handleLogout} className="secondary-button !h-9 !rounded-xl !px-3">
                   Log out
@@ -165,7 +144,7 @@ export default function Sidebar() {
         </div>
       ) : null}
 
-      <aside className="glass-panel sticky top-4 hidden h-[calc(100vh-2rem)] w-[280px] shrink-0 overflow-hidden md:flex md:flex-col">
+      <aside className="glass-panel sticky top-4 hidden h-[calc(100vh-2rem)] w-[288px] shrink-0 overflow-hidden md:flex md:flex-col">
         <div className="nvidia-line flex items-center justify-between px-4 py-4">
           <BrandLogo />
           <ThemeToggle />
@@ -184,11 +163,11 @@ export default function Sidebar() {
         </div>
 
         <div className="nvidia-line px-3.5 py-3.5">
-          <div className="rounded-[18px] border border-black/6 bg-white/58 p-3 dark:border-white/8 dark:bg-white/5">
+          <div className="rounded-[20px] border border-black/6 bg-white/66 p-3.5 dark:border-white/8 dark:bg-white/5">
             <div className="flex items-center gap-3">
               <div
                 className={cn(
-                  'size-11 rounded-2xl bg-cover bg-center',
+                  'size-11 rounded-[18px] bg-cover bg-center',
                   isLoading ? 'animate-pulse bg-slate-200 dark:bg-white/10' : 'bg-[#163f73]/10'
                 )}
                 style={{
@@ -197,9 +176,13 @@ export default function Sidebar() {
               />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-black text-slate-950 dark:text-white">{profile?.full_name || 'Student'}</p>
-                <p className="truncate text-xs text-slate-500 dark:text-slate-400">
-                  {profile?.credit_balance ?? 0} credits • {profile?.streak_days ?? 0} day streak
-                </p>
+                <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-amber-700 dark:text-amber-200">
+                    <span className="material-symbols-outlined text-[13px]">local_fire_department</span>
+                    {profile?.streak_days ?? 0} day streak
+                  </span>
+                  <span>{profile?.credit_balance ?? 0} credits</span>
+                </div>
               </div>
               <button onClick={handleLogout} className="secondary-button !h-9 !rounded-xl !px-3">
                 <span className="material-symbols-outlined text-[18px]">logout</span>

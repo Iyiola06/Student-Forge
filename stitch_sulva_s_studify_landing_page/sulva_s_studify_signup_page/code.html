@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sign Up - Sulva's Studify</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Custom Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              background: '#F9F7F2', // Off-white/cream background from image
+              blue: '#2563EB', // Primary button blue
+              border: '#E5E7EB', // Subtle grey borders
+              text: '#111827', // Dark heading text
+              subtext: '#6B7280', // Lighter subtext
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="layout-styles">
+    /* Custom shadow to match the soft elevation in the image */
+    .soft-shadow {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+    /* Ensure the body takes up full viewport height */
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body class="bg-brand-background font-sans text-brand-text p-6 md:p-12">
+<!-- BEGIN: Page Wrapper -->
+<main class="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<!-- BEGIN: Signup Form Card -->
+<section class="bg-white rounded-2xl p-8 md:p-12 soft-shadow border border-brand-border" data-purpose="signup-card">
+<!-- Logo and Header -->
+<div class="text-center mb-8">
+<h2 class="text-lg font-bold mb-2">Sulva's Studify</h2>
+<h1 class="text-3xl font-extrabold mb-2">Create your account</h1>
+<p class="text-brand-subtext">Start with smarter revision, not more stress.</p>
+</div>
+<!-- Social Login -->
+<button class="w-full flex items-center justify-center gap-3 border border-brand-border rounded-lg py-3 px-4 hover:bg-gray-50 transition-colors mb-6">
+<img alt="Google Logo" class="w-5 h-5" id="TEMP_GOOGLE_LOGO" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVMjwxzdD0d4kE-HNOQL0gKejXIqzF456uXYK1-DzOo_xm-IHYDqKWV8iyb86hOCA3tqSInC0qgxTOU8vdiKP9V1mzAgXbmC-0qEKxk_1WzNBBWhTpbaF-zIvc4glY85qgHmdtV5vFQ-jXzgyNwPL6310_h_pAV6BVxhbpHxXLPeWVouxJSJi7aM8ty0P3jKpOrROi6uoVcml-Nwl6NQC4mO2tYnfE3oOsNDVRKp_XpHH63zHIufGNoULFMQs1tJwAgzg1BoF0Od1B"/>
+<span class="font-medium text-gray-700">Continue with Google</span>
+</button>
+<!-- Divider -->
+<div class="relative flex items-center mb-6">
+<div class="flex-grow border-t border-brand-border"></div>
+<span class="flex-shrink mx-4 text-sm text-brand-subtext">or</span>
+<div class="flex-grow border-t border-brand-border"></div>
+</div>
+<!-- Form Fields -->
+<form class="space-y-5" data-purpose="registration-form">
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1" for="full-name">Full Name</label>
+<input class="w-full border-brand-border rounded-lg focus:ring-brand-blue focus:border-brand-blue" id="full-name" name="full-name" placeholder="" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1" for="email">Email</label>
+<input class="w-full border-brand-border rounded-lg focus:ring-brand-blue focus:border-brand-blue" id="email" name="email" placeholder="" type="email"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1" for="password">Password</label>
+<input class="w-full border-brand-border rounded-lg focus:ring-brand-blue focus:border-brand-blue" id="password" name="password" placeholder="Create a password" type="password"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-1" for="confirm-password">Confirm Password</label>
+<input class="w-full border-brand-border rounded-lg focus:ring-brand-blue focus:border-brand-blue" id="confirm-password" name="confirm-password" placeholder="Repeat password" type="password"/>
+</div>
+<button class="w-full bg-brand-blue text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors mt-4" type="submit">
+          Create account
+        </button>
+</form>
+<!-- Footer Link -->
+<div class="text-center mt-6 text-sm">
+<span class="text-brand-subtext">Already have an account? </span>
+<a class="text-brand-blue font-semibold hover:underline" href="#">Log in</a>
+</div>
+</section>
+<!-- END: Signup Form Card -->
+<!-- BEGIN: Marketing Content / Mockup -->
+<section class="hidden lg:flex flex-col items-center" data-purpose="marketing-section">
+<!-- Dashboard Mockup Image -->
+<div class="relative mb-12 w-full">
+<img alt="Dashboard Mockup" class="w-full rounded-2xl shadow-xl" id="TEMP_DASHBOARD_MOCKUP" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAETGlJteu1U9gCcXwNhZQCS-aMc5XIZIzVBsJjboKD30apsEOI0xuTx5aO315vC5o-fGE1PBxZJ8vH50v2oL2zab5K-z5RX2GiK6n9TEW5gVsYQMntB4yN2B4v7IULwEOPMpX87vcpCWLATcqhdA0KpwuZ2DbV4fwxbRmQtww117yF_ctMKqnYqoR9_igc_kNU71zkzNN-A3du1iClnZXCddXs1w9pF66Ce9gvRh2RWV4C5X8AyimZ_Nbma0becvK3Jy6qlge7LC7K"/>
+<!-- Floating Notification Mockup (simulating the 'Quiz Ready' toast) -->
+</div>
+<!-- Feature List -->
+<div class="space-y-6 self-start pl-12">
+<div class="flex items-center gap-4">
+<div class="flex-shrink-0 w-10 h-10 flex items-center justify-center">
+<svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="text-lg font-medium text-gray-800">Upload class materials</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex-shrink-0 w-10 h-10 flex items-center justify-center">
+<svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="text-lg font-medium text-gray-800">Create quizzes instantly</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex-shrink-0 w-10 h-10 flex items-center justify-center">
+<svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="text-lg font-medium text-gray-800">Build a daily review habit</span>
+</div>
+</div>
+</section>
+<!-- END: Marketing Content / Mockup -->
+</main>
+<!-- END: Page Wrapper -->
+</body></html>
