@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import Link from 'next/link';
-import Sidebar from '@/components/layout/Sidebar';
+import AppShell from '@/components/layout/AppShell';
 import CreditStatusBanner from '@/components/billing/CreditStatusBanner';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -108,7 +108,7 @@ export default function ExamReadyPage() {
 
         doc.setFontSize(18);
         doc.setTextColor(37, 37, 244);
-        doc.text(`Sulva's Studify Exam Snapshot`, 20, y);
+        doc.text(`Sulva’s Studify Exam Snapshot`, 20, y);
         y += 15;
 
         // Abbreviations
@@ -140,7 +140,7 @@ export default function ExamReadyPage() {
             doc.setFontSize(11);
             doc.setFont('helvetica', 'normal');
             snapshotData.key_points.forEach(kp => {
-                const lines = doc.splitTextToSize(`â€¢ [${kp.tag}] ${kp.point}`, 170);
+                const lines = doc.splitTextToSize(`• [${kp.tag}] ${kp.point}`, 170);
                 doc.text(lines, 20, y);
                 y += (lines.length * 6) + 2;
                 if (y > 270) { doc.addPage(); y = 20; }
@@ -198,11 +198,12 @@ export default function ExamReadyPage() {
     };
 
     return (
-        <div className="bg-[#f5f5f8] dark:bg-[#13131a] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a] text-white">
-            <Sidebar />
-            <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
-
-                <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto p-6 md:p-8">
+        <AppShell
+            eyebrow="Generate"
+            title="Exam readiness snapshot"
+            description="Pull out the high-yield facts, likely questions, and revision cues from one source before an exam push."
+        >
+                <div className="flex-1 flex flex-col overflow-hidden w-full">
                     {isGenerating ? (
                         <div className="flex-1 flex flex-col items-center justify-center text-center">
                             <div className="size-16 border-4 border-[#1a5c2a] border-t-transparent rounded-full animate-spin mb-6"></div>
@@ -459,7 +460,6 @@ export default function ExamReadyPage() {
                         </div>
                     )}
                 </div>
-            </div>
-        </div>
+        </AppShell>
     );
 }

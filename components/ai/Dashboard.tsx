@@ -75,7 +75,7 @@ const Dashboard: React.FC = () => {
                     <header className="mb-16 text-center animate-in fade-in slide-in-from-top-6 duration-700">
                         <div className="inline-flex items-center gap-3 px-6 py-2 bg-[#1a5c2a]/10 rounded-full mb-6 border border-[#1a5c2a]/20">
                             <span className="w-2 h-2 bg-[#1a5c2a] rounded-full animate-pulse"></span>
-                            <span className="text-[#144823] dark:text-orange-400 text-[10px] font-black uppercase tracking-[0.3em]">Neural Study Hub</span>
+                            <span className="text-[#144823] dark:text-orange-400 text-[10px] font-black uppercase tracking-[0.3em]">Study workspace</span>
                         </div>
                         <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-4">
                             {view === 'ingestion' ? 'Master Any Subject.' : 'Targeted Roadmap.'}

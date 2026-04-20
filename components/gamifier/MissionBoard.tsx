@@ -36,7 +36,7 @@ export default function MissionBoard({
             xp: 20, progress: 1, target: 1, type: 'daily'
         },
         {
-            id: 'w1', title: 'Galactic Conqueror', desc: 'Complete any document',
+            id: 'w1', title: 'Weekly finisher', desc: 'Complete any document',
             xp: 300, reward: 'Reward Chest', progress: profile?.docs_completed_week || 0, target: 1, type: 'weekly'
         },
         {
@@ -65,7 +65,7 @@ export default function MissionBoard({
                 <header className="p-5 md:p-8 border-b border-[#2d2d3f] bg-gradient-to-r from-[#101022] to-[#1a1a2e] flex justify-between items-center">
                     <div>
                         <h2 className="text-xl md:text-3xl font-black text-white">MISSION BOARD</h2>
-                        <p className="text-[9px] md:text-xs font-bold text-[#38bdf8] uppercase tracking-[0.2em] md:tracking-[0.3em] mt-1">Galactic Priority Assignments</p>
+                        <p className="text-[9px] md:text-xs font-bold text-[#38bdf8] uppercase tracking-[0.2em] md:tracking-[0.3em] mt-1">Priority assignments</p>
                     </div>
                     <button onClick={onClose} className="size-10 rounded-full border border-[#2d2d3f] flex items-center justify-center hover:bg-[#1b1b2f] transition-colors">
                         <span className="material-symbols-outlined text-slate-400">close</span>
@@ -141,7 +141,7 @@ export default function MissionBoard({
                 {/* Footer */}
                 <footer className="p-4 border-t border-[#2d2d3f] bg-[#0c0c16] text-center">
                     <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">
-                        {tab === 'daily' ? 'Next refresh at 00:00 Local Galactic Time' : 'Season ends in 4 Days, 12 Hours'}
+                        {tab === 'daily' ? 'Next refresh at 00:00 local time' : 'Season ends in 4 days, 12 hours'}
                     </p>
                 </footer>
             </div>

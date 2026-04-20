@@ -4,7 +4,7 @@ import Link from 'next/link';
 import BrandLogo from '@/components/ui/BrandLogo';
 
 const sections = [
-  ['Acceptance', "By using Sulva's Studify you agree to these terms and to the service behavior described in the product."],
+  ['Acceptance', "By using Sulva’s Studify you agree to these terms and to the service behavior described in the product."],
   ['Service scope', 'The platform provides document ingestion, AI-assisted study generation, review workflows, and wallet-based premium actions.'],
   ['User responsibilities', 'You are responsible for keeping your account secure and for only uploading content you have the right to use.'],
   ['Credits and payments', 'Credits are used for premium AI actions. Top-ups and grants follow the product rules in your wallet and may expire by lot.'],

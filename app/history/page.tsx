@@ -1,7 +1,6 @@
 'use client';
 
-import Sidebar from '@/components/layout/Sidebar';
-import TopNavigation from '@/components/layout/TopNavigation';
+import AppShell from '@/components/layout/AppShell';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
@@ -173,12 +172,12 @@ export default function HistoryPage() {
   const groups = groupByDate(filteredItems);
 
   return (
-    <div className="bg-slate-50 dark:bg-[#0b0b10] font-display min-h-screen flex flex-col md:flex-row antialiased">
-      <Sidebar />
-      <div className="flex-1 flex flex-col min-h-screen">
-        <TopNavigation />
-
-        <main className="flex-1 px-4 md:px-8 py-6 max-w-3xl mx-auto w-full">
+    <AppShell
+      eyebrow="Profile"
+      title="Study history"
+      description="Everything you’ve done recently, with filters for the actions you want to review."
+    >
+        <main className="flex-1 max-w-3xl w-full">
 
           {/* Page Header */}
           <div className="mb-6">
@@ -298,7 +297,6 @@ export default function HistoryPage() {
             </div>
           )}
         </main>
-      </div>
-    </div>
+    </AppShell>
   );
 }

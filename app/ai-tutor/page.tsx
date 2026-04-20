@@ -3,7 +3,7 @@
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Sidebar from '@/components/layout/Sidebar';
+import AppShell from '@/components/layout/AppShell';
 import TutorChat from '@/components/ai/TutorChat';
 import { createClient } from '@/lib/supabase/client';
 
@@ -37,15 +37,19 @@ function AITutorContent() {
     }, [resourceId]);
 
     return (
-        <div className="main-bg font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
-            <Sidebar />
-            <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
+        <AppShell
+            eyebrow="Labs"
+            title="AI tutor"
+            description="Ask focused questions, unpack difficult topics, or study directly against one selected resource."
+            contentClassName="h-full"
+        >
+            <div className="h-[calc(100vh-13rem)] min-h-[640px] overflow-hidden rounded-[28px] border border-slate-200/80 bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)] dark:border-white/8 dark:bg-[#0f1724]">
                 <TutorChat
                     resourceContext={resourceContext}
                     resourceTitle={resourceTitle}
                 />
             </div>
-        </div>
+        </AppShell>
     );
 }
 

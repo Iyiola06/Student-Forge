@@ -86,9 +86,9 @@ export default function LeaderboardPage() {
           <div className="px-6 pt-10 pb-4 md:px-12 flex items-center justify-between">
             <div>
               <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter">
-                GALACTIC RANKS
+                Leaderboard
               </h1>
-              <p className="text-[9px] md:text-[10px] font-black text-[#1a5c2a] uppercase tracking-[0.3em] md:tracking-[0.5em] mt-1">Season 1: The Nebula Dawn</p>
+              <p className="text-[9px] md:text-[10px] font-black text-[#1a5c2a] uppercase tracking-[0.3em] md:tracking-[0.5em] mt-1">Study progress across the platform</p>
             </div>
 
             <div className="hidden md:flex items-center gap-4">
@@ -166,7 +166,7 @@ export default function LeaderboardPage() {
                           <div className="text-center w-36 md:w-40">
                             <p className="text-xl md:text-2xl font-black text-white tracking-tighter">{getName(top3[0].id, top3[0].full_name)}</p>
                             <div className="flex items-center justify-center gap-2 mt-1">
-                              <span className="px-2 py-0.5 bg-yellow-500/10 border border-yellow-500/30 rounded text-[9px] font-black text-yellow-500 uppercase">Grand Marshal</span>
+                              <span className="px-2 py-0.5 bg-yellow-500/10 border border-yellow-500/30 rounded text-[9px] font-black text-yellow-500 uppercase">Top learner</span>
                               <p className="text-sm text-[#1a5c2a] font-black">{top3[0].xp?.toLocaleString()} <span className="text-[10px]">FUEL</span></p>
                             </div>
                           </div>
@@ -221,13 +221,13 @@ export default function LeaderboardPage() {
                           onClick={() => setTimeframe('all')}
                           className={`px-8 py-2.5 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest ${timeframe === 'all' ? 'bg-[#1a5c2a] text-white shadow-lg shadow-[#1a5c2a]/20' : 'text-slate-500 hover:text-slate-300'}`}
                         >
-                          Eternity
+                          All time
                         </button>
                         <button
                           onClick={() => setTimeframe('weekly')}
                           className={`px-8 py-2.5 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest ${timeframe === 'weekly' ? 'bg-[#7c3aed] text-white shadow-lg shadow-[#7c3aed]/20' : 'text-slate-500 hover:text-slate-300'}`}
                         >
-                          Seven Suns
+                          This week
                         </button>
                       </div>
                     </div>

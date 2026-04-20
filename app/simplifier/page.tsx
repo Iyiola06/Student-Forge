@@ -1,7 +1,6 @@
 'use client';
 
-import Sidebar from '@/components/layout/Sidebar';
-import TopNavigation from '@/components/layout/TopNavigation';
+import AppShell from '@/components/layout/AppShell';
 import CreditStatusBanner from '@/components/billing/CreditStatusBanner';
 import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -178,13 +177,13 @@ export default function SimplifierPage() {
   };
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#0b0b10] flex flex-col md:flex-row antialiased min-h-screen">
-      <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden w-full max-w-[1440px] mx-auto">
-        <TopNavigation />
-
+    <AppShell
+      eyebrow="Labs"
+      title="Document simplifier"
+      description="Translate dense material into a clearer explanation level, format, and focus without changing the underlying study logic."
+    >
         {simplifiedOutput ? (
-          <div className="p-6 md:p-8 max-w-4xl mx-auto w-full flex-1 overflow-y-auto animate-in fade-in slide-in-from-bottom-4">
+          <div className="max-w-4xl w-full flex-1 overflow-y-auto animate-in fade-in slide-in-from-bottom-4">
             <button
               onClick={() => setSimplifiedOutput(null)}
               className="mb-8 flex items-center gap-2 text-slate-500 font-bold hover:text-[#1a5c2a] transition-colors"
@@ -236,14 +235,7 @@ export default function SimplifierPage() {
             </div>
           </div>
         ) : (
-          <main className="flex-1 md:overflow-y-auto px-6 pt-10 pb-6 md:px-8">
-            <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">
-              Document Simplifier
-            </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-lg mb-8 max-w-3xl">
-              Turn complex study materials into easy-to-understand summaries. Choose exactly how you want it explained.
-            </p>
-
+          <main className="flex-1 md:overflow-y-auto">
             <div className="flex flex-col xl:flex-row gap-8">
               {/* Left Column: Input Source */}
               <div className="flex-1 max-w-2xl space-y-6">
@@ -415,7 +407,6 @@ export default function SimplifierPage() {
             </div>
           </main>
         )}
-      </div>
-    </div>
+    </AppShell>
   );
 }

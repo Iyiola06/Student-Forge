@@ -52,7 +52,7 @@ function VerifyEmailContent() {
             <div className="relative size-8 flex items-center justify-center">
               <Image
                 src="/apple-touch-icon.png"
-                alt="Sulva's Studify crest"
+                alt="Sulva’s Studify crest"
                 width={32}
                 height={32}
                 className="object-contain rounded-full"
@@ -60,7 +60,7 @@ function VerifyEmailContent() {
               />
             </div>
             <h2 className="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">
-              Sulva&apos;s Studify
+              Sulva’s Studify
             </h2>
           </div>
         </header>

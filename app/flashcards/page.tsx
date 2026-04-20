@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import Sidebar from '@/components/layout/Sidebar';
+import AppShell from '@/components/layout/AppShell';
 import CreditStatusBanner from '@/components/billing/CreditStatusBanner';
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -206,20 +206,12 @@ export default function FlashcardsPage() {
     };
 
     return (
-        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
-            <Sidebar />
-            <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden min-w-0">
-                <div className="px-6 pt-10 pb-6 md:px-8 border-b border-slate-200 dark:border-[#2d2d3f] bg-white dark:bg-[#1a1a24] shrink-0">
-                    <div className="max-w-[1440px] mx-auto w-full">
-                        <h1 className="text-3xl font-black text-slate-900 dark:text-white flex items-center gap-3">
-                            <span className="material-symbols-outlined text-[#1a5c2a] bg-[#1a5c2a]/10 p-2 rounded-xl">style</span>
-                            Smart Flashcards
-                        </h1>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm mt-3 font-medium">Generate high-fidelity flashcards from any resource using AI synthesis.</p>
-                    </div>
-                </div>
-
-                <main className="flex-1 overflow-y-auto px-6 md:px-8 py-8 flex flex-col xl:flex-row gap-8 max-w-[1440px] mx-auto w-full pb-12">
+        <AppShell
+            eyebrow="Generate"
+            title="Flashcards studio"
+            description="Turn one resource or pasted notes into a cleaner flashcard set, then save it or move straight into review."
+        >
+                <main className="flex-1 overflow-y-auto flex flex-col xl:flex-row gap-8 pb-12">
 
                     {/* Left Panel: Configuration */}
                     {!isDrilling && (
@@ -235,7 +227,7 @@ export default function FlashcardsPage() {
                                             rocket_launch
                                         </span>
                                     </div>
-                                    Deck Architect
+                                    Deck Setup
                                 </h2>
 
                                 {error && (
@@ -263,7 +255,7 @@ export default function FlashcardsPage() {
                                                 }}
                                                 className="w-full relative rounded-xl border-2 border-slate-200/60 dark:border-[#2d2d3f]/60 bg-white/50 dark:bg-[#13131a]/50 p-3.5 text-sm font-bold focus:ring-[#1a5c2a] focus:border-[#1a5c2a] focus:outline-none dark:text-white transition-all backdrop-blur-md appearance-none"
                                             >
-                                                <option value="">-- Choose from vault --</option>
+                                                <option value="">-- Choose from library --</option>
                                                 {resources.map(r => (
                                                     <option key={r.id} value={r.id}>{r.title}</option>
                                                 ))}
@@ -279,7 +271,7 @@ export default function FlashcardsPage() {
                                             <div className="w-full border-t border-dashed border-slate-300 dark:border-[#2d2d3f] group-hover/divider:border-[#1a5c2a]/30 transition-colors"></div>
                                         </div>
                                         <div className="relative flex justify-center">
-                                            <span className="bg-white dark:bg-[#1a1a24] px-4 py-1 rounded-full text-[9px] font-black tracking-[0.3em] text-slate-400 uppercase shadow-sm border border-slate-100 dark:border-[#2d2d3f] group-hover/divider:text-[#1a5c2a] group-hover/divider:border-[#1a5c2a]/30 transition-all">Universal Input</span>
+                                            <span className="bg-white dark:bg-[#1a1a24] px-4 py-1 rounded-full text-[9px] font-black tracking-[0.3em] text-slate-400 uppercase shadow-sm border border-slate-100 dark:border-[#2d2d3f] group-hover/divider:text-[#1a5c2a] group-hover/divider:border-[#1a5c2a]/30 transition-all">Or paste notes</span>
                                         </div>
                                     </div>
 
@@ -332,7 +324,7 @@ export default function FlashcardsPage() {
                                         <span className="material-symbols-outlined text-4xl text-[#1a5c2a] animate-pulse">neurology</span>
                                     </div>
                                 </div>
-                                <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">AI Neural Synthesis</h3>
+                                <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">Building your cards</h3>
                                 <p className="text-slate-500 dark:text-slate-400 font-medium max-w-sm">Distilling your material into the most potent cognitive anchors...</p>
                             </div>
                         ) : displayCards && displayCards.length > 0 ? (
@@ -401,7 +393,7 @@ export default function FlashcardsPage() {
 
                                                 <div className="absolute top-10 left-1/2 -translate-x-1/2 bg-green-500/10 text-green-600 dark:text-green-400 px-6 py-2 rounded-full text-[9px] font-black uppercase tracking-[0.4em] border border-green-500/20 flex items-center gap-3 backdrop-blur-sm shadow-sm">
                                                     <span className="size-1.5 rounded-full bg-green-500 animate-[ping_1.5s_infinite]"></span>
-                                                    Neural Resolution
+                                                    Answer side
                                                     <span className="size-1.5 rounded-full bg-green-500 animate-[ping_1.5s_infinite]" style={{ animationDelay: '0.7s' }}></span>
                                                 </div>
 
@@ -441,7 +433,7 @@ export default function FlashcardsPage() {
                                             <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">AI Generated Deck</h2>
                                             <div className="flex items-center gap-2 mt-1">
                                                 <span className="bg-[#1a5c2a] text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">{displayCards.length} Integrated Cards</span>
-                                                <span className="text-slate-400 font-medium text-xs">Ready for neural formatting</span>
+                                                <span className="text-slate-400 font-medium text-xs">Ready for review</span>
                                             </div>
                                         </div>
                                         <div className="flex flex-wrap gap-3">
@@ -463,7 +455,7 @@ export default function FlashcardsPage() {
                                                     className="bg-slate-100 dark:bg-[#252535] hover:bg-slate-200 dark:hover:bg-[#2d2d3f] text-slate-700 dark:text-slate-300 disabled:opacity-50 px-6 py-3 rounded-xl text-xs font-black transition-all flex items-center gap-2 border border-slate-200 dark:border-[#2d2d3f]"
                                                 >
                                                     <span className="material-symbols-outlined text-[18px]">save</span>
-                                                    {isSaving ? 'Archiving...' : 'Secure to Vault'}
+                                                    {isSaving ? 'Saving...' : 'Save deck'}
                                                 </button>
                                             )}
                                             <button
@@ -513,9 +505,9 @@ export default function FlashcardsPage() {
                                         </div>
                                     </div>
 
-                                    <h3 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-4 tracking-tight relative z-10 title-glow">Forge Your Flashcards</h3>
+                                    <h3 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-4 tracking-tight relative z-10 title-glow">Build a flashcard set</h3>
                                     <p className="text-slate-500 dark:text-slate-400 font-medium max-w-xl mb-12 leading-relaxed text-base md:text-lg relative z-10">
-                                        Our AI architect aggressively synthesizes your study materials into high-potency cognitive blocks engineered for long-term retention.
+                                        Start with one resource or a pasted topic. Sulva’s Studify will shape it into a calmer deck built for steady recall.
                                     </p>
 
                                     <div className="flex flex-wrap items-center justify-center gap-4 relative z-10">
@@ -562,7 +554,7 @@ export default function FlashcardsPage() {
                                                 <div className="p-2 rounded-xl bg-[#1a5c2a]/10 text-[#1a5c2a]">
                                                     <span className="material-symbols-outlined">sd_storage</span>
                                                 </div>
-                                                Vaulted Decks
+                                                Saved decks
                                             </h3>
                                             <div className="bg-slate-100 dark:bg-[#13131a] px-4 py-1.5 rounded-full border border-slate-200 dark:border-[#2d2d3f] flex items-center gap-2">
                                                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Total Cards</span>
@@ -613,7 +605,6 @@ export default function FlashcardsPage() {
                         )}
                     </div>
                 </main>
-            </div>
 
             <style jsx global>{`
                 .aura-glow {
@@ -652,6 +643,6 @@ export default function FlashcardsPage() {
                     pointer-events: none;
                 }
             `}</style>
-        </div>
+        </AppShell>
     );
 }

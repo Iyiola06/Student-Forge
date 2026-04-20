@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import Sidebar from '@/components/layout/Sidebar';
+import AppShell from '@/components/layout/AppShell';
 import { useProfile } from '@/hooks/useProfile';
 import { BADGES } from '@/lib/constants/badges';
 import { createClient } from '@/lib/supabase/client';
@@ -50,11 +50,12 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
-      <Sidebar />
-      <div className="flex-1 flex flex-col min-h-screen">
-        {/* Main Content */}
-        <main className="flex flex-1 flex-col px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full">
+    <AppShell
+      eyebrow="Profile"
+      title="Profile"
+      description="Manage your identity, achievements, and presentation settings in one place."
+    >
+        <main className="flex flex-1 flex-col w-full">
           {/* Profile Header */}
           <div className="bg-white dark:bg-[#101022]/60 backdrop-blur-xl rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] overflow-hidden mb-8 shadow-xl dark:shadow-2xl relative">
             <div className="h-48 bg-gradient-to-r from-[#1a5c2a] via-purple-900 to-[#0c0c16] relative overflow-hidden">
@@ -83,7 +84,7 @@ export default function ProfilePage() {
                       )}
                     </h1>
                     <p className="text-[#38bdf8] font-bold uppercase tracking-[0.3em] text-[10px] md:text-xs">
-                      {profile?.role || 'Student'} • Fleet Rank {profile?.level || 1}
+                      {profile?.role || 'Student'} • Level {profile?.level || 1}
                     </p>
                   </div>
                 </div>
@@ -100,28 +101,28 @@ export default function ProfilePage() {
                   <span className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">
                     {profile?.resources_uploaded || 0}
                   </span>
-                  <span className="text-[9px] md:text-[10px] text-center font-black text-slate-500 uppercase tracking-widest mt-1 px-2">Planets Conquered</span>
+                  <span className="text-[9px] md:text-[10px] text-center font-black text-slate-500 uppercase tracking-widest mt-1 px-2">Resources Uploaded</span>
                 </div>
                 <div className="flex flex-col items-center md:border-r border-slate-100 dark:border-[#2d2d3f]">
                   <span className="material-symbols-outlined text-[#7c3aed] mb-2">military_tech</span>
                   <span className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">
                     {profile?.boss_wins || 0}
                   </span>
-                  <span className="text-[9px] md:text-[10px] text-center font-black text-slate-500 uppercase tracking-widest mt-1 px-2">Beasts Slayed</span>
+                  <span className="text-[9px] md:text-[10px] text-center font-black text-slate-500 uppercase tracking-widest mt-1 px-2">Challenges Completed</span>
                 </div>
                 <div className="flex flex-col items-center border-r border-slate-100 dark:border-[#2d2d3f] md:border-r-0 lg:border-r">
                   <span className="material-symbols-outlined text-[#38bdf8] mb-2">auto_stories</span>
                   <span className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">
                     {profile?.quizzes_taken || 0}
                   </span>
-                  <span className="text-[9px] md:text-[10px] text-center font-black text-slate-500 uppercase tracking-widest mt-1 px-2">Data Scans</span>
+                  <span className="text-[9px] md:text-[10px] text-center font-black text-slate-500 uppercase tracking-widest mt-1 px-2">Quizzes Taken</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <span className="material-symbols-outlined text-[#1a5c2a] mb-2">diamond</span>
                   <span className="text-2xl md:text-3xl font-black text-[#1a5c2a]">
                     {(profile?.xp || 0).toLocaleString()}
                   </span>
-                  <span className="text-[9px] md:text-[10px] text-center font-black text-slate-500 uppercase tracking-widest mt-1 px-2">Total Fuel</span>
+                  <span className="text-[9px] md:text-[10px] text-center font-black text-slate-500 uppercase tracking-widest mt-1 px-2">Total XP</span>
                 </div>
               </div>
             </div>
@@ -132,7 +133,7 @@ export default function ProfilePage() {
               {/* Badges Section */}
               <section className="bg-white dark:bg-[#101022]/40 backdrop-blur-xl border border-slate-200 dark:border-[#2d2d3f] rounded-[2rem] p-8 shadow-sm dark:shadow-none">
                 <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-widest uppercase">Ribbons & Commendations</h2>
+                  <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-widest uppercase">Badges & achievements</h2>
                   <span className="text-[10px] font-black text-[#38bdf8] uppercase tracking-[0.2em]">{profile?.badges?.length || 0} / {BADGES.length} UNLOCKED</span>
                 </div>
 
@@ -165,7 +166,7 @@ export default function ProfilePage() {
             <div className="space-y-8">
               {/* Customization Section */}
               <section className="bg-white dark:bg-[#101022]/40 backdrop-blur-xl border border-slate-200 dark:border-[#2d2d3f] rounded-[2rem] p-8 shadow-sm dark:shadow-none">
-                <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-widest uppercase mb-6">Galactic Identity</h2>
+                <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-widest uppercase mb-6">Profile customization</h2>
 
                 <div className="space-y-6">
                   <div>
@@ -187,7 +188,7 @@ export default function ProfilePage() {
 
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Fleet Theme</label>
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Theme</label>
                     </div>
                     <div className="grid grid-cols-3 gap-2">
                       {['Standard', 'Nebula', 'Eclipse', 'Void', 'Nova', 'Supernova'].map(t => (
@@ -214,7 +215,7 @@ export default function ProfilePage() {
                 <div className="absolute top-0 right-0 size-32 bg-[#1a5c2a]/5 rounded-full blur-3xl" />
                 <h2 className="text-xl font-black text-white tracking-widest uppercase mb-6 flex items-center gap-3">
                   <span className="material-symbols-outlined text-[#1a5c2a]">rocket</span>
-                  Vessel Status
+                  Study status
                 </h2>
                 <div className="space-y-4">
                   <div>
@@ -240,7 +241,6 @@ export default function ProfilePage() {
             </div>
           </div>
         </main>
-      </div>
-    </div>
+    </AppShell>
   );
 }

@@ -15,7 +15,7 @@ function AuthErrorContent() {
                 <div className="relative size-16 flex items-center justify-center mx-auto mb-6">
                     <Image
                         src="/apple-touch-icon.png"
-                        alt="Sulva's Studify crest"
+                        alt="Sulva’s Studify crest"
                         width={64}
                         height={64}
                         className="object-contain rounded-full"

@@ -16,7 +16,7 @@ const GRADING_MESSAGES = [
     "Analyzing ink contrast...",
     "Transcribing handwriting...",
     "Consulting source material...",
-    "Applying Sulva's Studify rubric...",
+    "Applying Sulva’s Studify rubric...",
     "Synthesizing tutor feedback..."
 ];
 

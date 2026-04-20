@@ -128,14 +128,14 @@ export default function PwaInstallPrompt() {
                     <div className="brand-mark-shell relative mb-4 size-20 overflow-hidden rounded-[22px] border border-black/6 shadow-lg dark:border-white/8">
                         <Image
                             src="/apple-touch-icon.png"
-                            alt="Sulva's Studify app icon"
+                            alt="Sulva’s Studify app icon"
                             fill
                             className="object-contain p-1"
                         />
                     </div>
 
                     <h3 className="mb-2 text-[22px] font-black tracking-tight text-slate-900 dark:text-white">
-                        Install Sulva&apos;s Studify
+                        Install Sulva’s Studify
                     </h3>
 
                     <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mb-6">

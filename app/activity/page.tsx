@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import Sidebar from '@/components/layout/Sidebar';
+import AppShell from '@/components/layout/AppShell';
 import { useProfile } from '@/hooks/useProfile';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -58,12 +58,12 @@ export default function ActivityPage() {
     };
 
     return (
-        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
-            <Sidebar />
-            <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden">
-
-                {/* Main Content */}
-                <main className="flex flex-1 flex-col px-4 sm:px-10 py-8 max-w-[1440px] mx-auto w-full overflow-y-auto">
+        <AppShell
+            eyebrow="Profile"
+            title="Activity"
+            description="A quick view of recent study actions, uploads, and XP movement."
+        >
+                <main className="flex flex-1 flex-col overflow-y-auto">
                     {/* Profile Header */}
                     <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] overflow-hidden mb-8 flex-shrink-0">
                         <div className="h-32 bg-gradient-to-r from-[#1a5c2a] to-purple-600"></div>
@@ -204,7 +204,6 @@ export default function ActivityPage() {
                         </div>
                     </div>
                 </main>
-            </div>
-        </div>
+        </AppShell>
     );
 }

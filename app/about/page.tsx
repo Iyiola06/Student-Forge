@@ -22,10 +22,10 @@ export default function AboutPage() {
         <section className="glass-panel app-panel">
           <p className="eyebrow">About</p>
           <h1 className="mt-2 text-[25px] leading-[1.05] font-black tracking-[-0.05em] text-slate-950 dark:text-white">
-            What Sulva&apos;s Studify is built to do
+            What Sulva’s Studify is built to do
           </h1>
           <p className="mt-3 max-w-[62ch] text-[15px] leading-7 text-slate-600 dark:text-slate-300">
-            Sulva&apos;s Studify helps students turn raw study materials into a reliable daily revision loop. Upload notes or handouts,
+            Sulva’s Studify helps students turn raw study materials into a reliable daily revision loop. Upload notes or handouts,
             check extraction quality, generate practice only when it adds value, and return to a review queue built around what
             is due and what is weak.
           </p>
@@ -50,7 +50,7 @@ export default function AboutPage() {
             <p className="eyebrow">Built at Venite University</p>
             <h2 className="panel-title mt-2">Who built it</h2>
             <p className="mt-3 text-[15px] leading-7 text-slate-600 dark:text-slate-300">
-              Sulva&apos;s Studify was developed within the Programming Entrepreneurship context at Venite University. It started from a
+              Sulva’s Studify was developed within the Programming Entrepreneurship context at Venite University. It started from a
               direct student problem: study tools were either too fragmented, too noisy, or too expensive to trust day after day.
             </p>
           </section>

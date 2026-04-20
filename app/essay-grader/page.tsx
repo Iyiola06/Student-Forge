@@ -1,6 +1,6 @@
 'use client';
 
-import Sidebar from '@/components/layout/Sidebar';
+import AppShell from '@/components/layout/AppShell';
 import CreditStatusBanner from '@/components/billing/CreditStatusBanner';
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -66,18 +66,12 @@ export default function EssayGraderPage() {
     };
 
     return (
-        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
-            <Sidebar />
-            <div className="flex-1 flex flex-col min-h-screen">
-                <div className="px-6 pt-8 pb-4 md:px-10">
-                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
-                        <span className="material-symbols-outlined text-[#1a5c2a] text-3xl">grading</span>
-                        AI Essay Grader
-                    </h1>
-                    <p className="text-slate-500 dark:text-[#9c9cba] text-base mt-2">Get instant, rubric-based feedback on your long-form answers and essays.</p>
-                </div>
-
-                <main className="flex-1 overflow-y-auto p-6 md:p-10 flex flex-col lg:flex-row gap-8 items-start">
+        <AppShell
+            eyebrow="Labs"
+            title="Essay grader"
+            description="Get clear, rubric-style feedback on longer answers without changing your grading flow or XP logic."
+        >
+                <main className="flex-1 overflow-y-auto flex flex-col lg:flex-row gap-8 items-start">
 
                     {/* Left Panel: Input Area */}
                     <div className="w-full lg:w-[600px] shrink-0 space-y-6">
@@ -252,7 +246,6 @@ export default function EssayGraderPage() {
                     </div>
 
                 </main>
-            </div>
-        </div>
+        </AppShell>
     );
 }

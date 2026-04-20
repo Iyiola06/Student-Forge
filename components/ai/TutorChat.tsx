@@ -129,7 +129,7 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                         <h2 className="font-black text-slate-900 dark:text-white text-lg tracking-tight">AI Tutor</h2>
                         <p className="text-[10px] font-bold text-green-500 uppercase tracking-widest flex items-center gap-1">
                             <span className="size-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                            Online • Gemini-Powered
+                            Ready for focused help
                         </p>
                     </div>
                     {resourceTitle && (
@@ -157,7 +157,7 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                             What do you want to learn?
                         </h3>
                         <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md mb-8">
-                            Ask me anything — from exam prep questions to concept explanations. I&apos;m here to help you master any subject.
+                            Ask about a concept, quiz yourself on a topic, or use one uploaded resource as the study context.
                         </p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
                             {SUGGESTED_PROMPTS.map((prompt, i) => (
@@ -254,13 +254,13 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                     <button
                         onClick={() => sendMessage()}
                         disabled={!input.trim() || isLoading}
-                        className="size-12 rounded-xl bg-[#1a5c2a] hover:bg-[#d04e0a] disabled:opacity-40 disabled:cursor-not-allowed text-white flex items-center justify-center transition-all shadow-lg shadow-[#1a5c2a]/20 hover:shadow-[#1a5c2a]/30 active:scale-95 shrink-0"
+                        className="size-12 rounded-xl bg-[#163f73] hover:bg-[#2563eb] disabled:opacity-40 disabled:cursor-not-allowed text-white flex items-center justify-center transition-all shadow-lg shadow-[#163f73]/20 hover:shadow-[#163f73]/30 active:scale-95 shrink-0"
                     >
                         <span className="material-symbols-outlined">send</span>
                     </button>
                 </div>
                 <p className="text-[10px] text-center text-slate-400 dark:text-slate-500 mt-2 font-medium">
-                    Press Enter to send • Shift+Enter for new line
+                    Press Enter to send. Shift+Enter for a new line.
                 </p>
             </div>
         </div>
