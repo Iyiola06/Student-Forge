@@ -29,9 +29,9 @@ export default function AppShell({
 
   return (
     <div className="main-bg min-h-screen">
-      <div className="app-shell flex-col md:flex-row">
+      <div className="app-shell lg:flex-row">
         <Sidebar />
-        <div className="min-w-0 flex-1 pb-24 md:pb-0">
+        <div className="min-w-0 flex-1 pb-28 lg:pb-0">
           <AppPageHeader
             eyebrow={eyebrow}
             title={title}

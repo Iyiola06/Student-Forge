@@ -73,17 +73,17 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="bg-[#050510] font-display min-h-screen flex flex-col md:flex-row antialiased relative overflow-hidden">
+    <div className="bg-[#050510] font-display min-h-screen flex flex-col lg:flex-row antialiased relative overflow-hidden">
       {/* Background Starfield */}
       <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: 'inset 0 0 100px rgba(0,0,0,0.5)', background: `radial-gradient(circle at center, #1e1b4b 0%, #050510 100%)` }}>
         <div className="stars-container absolute inset-0 opacity-40" style={{ boxShadow: '0 0 1px #fff, 0 0 2px #fff' }}></div>
       </div>
 
       <Sidebar />
-      <div className="flex-1 flex flex-col min-h-screen relative z-10">
+      <div className="relative z-10 flex min-h-screen flex-1 flex-col pb-28 lg:pb-0">
         {/* Main Content */}
         <div className="flex-1 flex flex-col w-full max-w-[1440px] mx-auto">
-          <div className="px-6 pt-10 pb-4 md:px-12 flex items-center justify-between">
+          <div className="flex flex-col gap-4 px-4 pb-4 pt-8 sm:px-6 md:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-12">
             <div>
               <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter">
                 Leaderboard
@@ -91,7 +91,7 @@ export default function LeaderboardPage() {
               <p className="text-[9px] md:text-[10px] font-black text-[#1a5c2a] uppercase tracking-[0.3em] md:tracking-[0.5em] mt-1">Study progress across the platform</p>
             </div>
 
-            <div className="hidden md:flex items-center gap-4">
+            <div className="hidden lg:flex items-center gap-4">
               <div className="flex items-center gap-3 bg-[#101022]/60 backdrop-blur-xl px-5 py-2.5 rounded-2xl border border-[#2d2d3f] shadow-2xl">
                 <span className="material-symbols-outlined text-[#1a5c2a]">military_tech</span>
                 <span className="text-sm font-black text-white">Lvl {profile?.level || 1}</span>
@@ -102,7 +102,7 @@ export default function LeaderboardPage() {
           </div>
 
           {/* Leaderboard Content */}
-          <main className="flex-1 overflow-y-auto p-6 md:p-8">
+          <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
             <div className="max-w-4xl mx-auto space-y-8">
               {isLoading ? (
                 <div className="py-20 flex justify-center items-center gap-3 text-slate-500 dark:text-[#9c9cba]">
@@ -216,16 +216,16 @@ export default function LeaderboardPage() {
                         </div>
                       </div>
 
-                      <div className="flex bg-[#0c0c16] p-1.5 rounded-2xl border border-[#2d2d3f]">
+                      <div className="grid w-full grid-cols-2 gap-1.5 rounded-2xl border border-[#2d2d3f] bg-[#0c0c16] p-1.5 sm:w-auto sm:flex">
                         <button
                           onClick={() => setTimeframe('all')}
-                          className={`px-8 py-2.5 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest ${timeframe === 'all' ? 'bg-[#1a5c2a] text-white shadow-lg shadow-[#1a5c2a]/20' : 'text-slate-500 hover:text-slate-300'}`}
+                          className={`px-4 py-2.5 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest sm:px-8 ${timeframe === 'all' ? 'bg-[#1a5c2a] text-white shadow-lg shadow-[#1a5c2a]/20' : 'text-slate-500 hover:text-slate-300'}`}
                         >
                           All time
                         </button>
                         <button
                           onClick={() => setTimeframe('weekly')}
-                          className={`px-8 py-2.5 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest ${timeframe === 'weekly' ? 'bg-[#7c3aed] text-white shadow-lg shadow-[#7c3aed]/20' : 'text-slate-500 hover:text-slate-300'}`}
+                          className={`px-4 py-2.5 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest sm:px-8 ${timeframe === 'weekly' ? 'bg-[#7c3aed] text-white shadow-lg shadow-[#7c3aed]/20' : 'text-slate-500 hover:text-slate-300'}`}
                         >
                           This week
                         </button>

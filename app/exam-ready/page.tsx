@@ -203,7 +203,7 @@ export default function ExamReadyPage() {
             title="Exam readiness snapshot"
             description="Pull out the high-yield facts, likely questions, and revision cues from one source before an exam push."
         >
-                <div className="flex-1 flex flex-col overflow-hidden w-full">
+                <div className="flex w-full flex-1 flex-col overflow-hidden">
                     {isGenerating ? (
                         <div className="flex-1 flex flex-col items-center justify-center text-center">
                             <div className="size-16 border-4 border-[#1a5c2a] border-t-transparent rounded-full animate-spin mb-6"></div>
@@ -212,7 +212,7 @@ export default function ExamReadyPage() {
                         </div>
                     ) : !snapshotData ? (
                         /* Input State */
-                        <div className="max-w-3xl mx-auto w-full mt-10">
+                        <div className="mx-auto mt-6 w-full max-w-3xl md:mt-10">
                             <div className="mb-6">
                                 <CreditStatusBanner featureLabel="Exam snapshot" creditCost={40} />
                             </div>
@@ -283,9 +283,9 @@ export default function ExamReadyPage() {
                         /* Dashboard View matching Screenshot 2 */
                         <div className="flex flex-col gap-6">
                             {/* Top Section */}
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                            <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
                                 {/* Readiness Score Card */}
-                                <div className="lg:col-span-8 bg-white dark:bg-[#1a1a24] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-6 lg:p-8 flex items-center gap-8 shadow-sm">
+                                <div className="flex flex-col gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:flex-row sm:items-center lg:p-8 xl:col-span-8 dark:border-[#2d2d3f] dark:bg-[#1a1a24]">
                                     <div className="relative size-32 shrink-0 flex items-center justify-center">
                                         {/* Mock Circular Progress */}
                                         <svg className="size-full -rotate-90 transform" viewBox="0 0 100 100">
@@ -299,7 +299,7 @@ export default function ExamReadyPage() {
                                     </div>
 
                                     <div className="flex-1">
-                                        <div className="flex items-start justify-between mb-2">
+                                        <div className="mb-2 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                                             <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Exam Readiness Score</h2>
                                             <span className="bg-[#1a3826] text-[#4ade80] text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1 border border-green-500/20">
                                                 +5% <span className="text-[10px] opacity-80">this week</span>
@@ -308,7 +308,7 @@ export default function ExamReadyPage() {
                                         <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-md leading-relaxed">
                                             You are on track for your Biology Finals. Keep pushing through the genetic variations module!
                                         </p>
-                                        <div className="flex gap-4">
+                                        <div className="grid gap-4 sm:grid-cols-3">
                                             <div className="bg-[#f5f5f8] dark:bg-[#13131a] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-4 flex-1 text-center">
                                                 <div className="text-xl font-black text-slate-900 dark:text-white mb-1">142</div>
                                                 <div className="text-[10px] font-bold text-slate-500 tracking-wider">CARDS MASTERED</div>
@@ -326,19 +326,19 @@ export default function ExamReadyPage() {
                                 </div>
 
                                 {/* Actions Right Side */}
-                                <div className="lg:col-span-4 flex flex-col gap-4">
-                                    <Link href="/flashcards" className="flex-1 bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 rounded-2xl flex flex-col items-center justify-center text-white transition-all shadow-[0_0_20px_rgba(59,59,250,0.3)] hover:scale-[1.02]">
+                                <div className="flex flex-col gap-4 xl:col-span-4">
+                                    <Link href="/flashcards" className="flex min-h-[180px] flex-col items-center justify-center rounded-2xl bg-[#1a5c2a] px-5 text-center text-white transition-all shadow-[0_0_20px_rgba(59,59,250,0.3)] hover:scale-[1.02] hover:bg-[#1a5c2a]/90">
                                         <span className="material-symbols-outlined text-3xl mb-2">shuffle</span>
                                         <span className="font-bold text-lg">Launch Shuffle Mode</span>
-                                        <span className="text-xs text-slate-900 dark:text-white/70 mt-1">Review 50 random active cards</span>
+                                        <span className="mt-1 text-xs text-white/80">Review 50 random active cards</span>
                                     </Link>
-                                    <div className="flex gap-4 h-24">
-                                        <button onClick={downloadPDF} className="flex-1 bg-white dark:bg-[#1a1a24] hover:bg-slate-100 dark:bg-[#252535] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] flex flex-col items-center justify-center text-slate-600 dark:text-slate-300 transition-all hover:text-white group">
-                                            <span className="material-symbols-outlined text-xl mb-1 text-slate-500 group-hover:text-white transition-colors">download</span>
+                                    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
+                                        <button onClick={downloadPDF} className="group flex min-h-24 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 transition-all hover:border-[#163f73]/20 hover:bg-slate-50 hover:text-slate-900 dark:border-[#2d2d3f] dark:bg-[#252535] dark:text-slate-300 dark:hover:border-white/10 dark:hover:bg-[#2d2d3f] dark:hover:text-white">
+                                            <span className="material-symbols-outlined mb-1 text-xl text-slate-500 transition-colors group-hover:text-slate-900 dark:group-hover:text-white">download</span>
                                             <span className="text-sm font-bold">Download PDF</span>
                                         </button>
-                                        <button onClick={() => setSnapshotData(null)} className="flex-1 bg-white dark:bg-[#1a1a24] hover:bg-slate-100 dark:bg-[#252535] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] flex flex-col items-center justify-center text-slate-600 dark:text-slate-300 transition-all hover:text-white group">
-                                            <span className="material-symbols-outlined text-xl mb-1 text-slate-500 group-hover:text-white transition-colors">add</span>
+                                        <button onClick={() => setSnapshotData(null)} className="group flex min-h-24 flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 transition-all hover:border-[#163f73]/20 hover:bg-slate-50 hover:text-slate-900 dark:border-[#2d2d3f] dark:bg-[#252535] dark:text-slate-300 dark:hover:border-white/10 dark:hover:bg-[#2d2d3f] dark:hover:text-white">
+                                            <span className="material-symbols-outlined mb-1 text-xl text-slate-500 transition-colors group-hover:text-slate-900 dark:group-hover:text-white">add</span>
                                             <span className="text-sm font-bold">New Snapshot</span>
                                         </button>
                                     </div>
@@ -354,7 +354,7 @@ export default function ExamReadyPage() {
                                             <span className="text-[#1a5c2a] font-black tracking-widest text-sm">&lt;&gt;</span>
                                             Abbreviations Decoder
                                         </h3>
-                                        <button className="text-slate-500 hover:text-white"><span className="material-symbols-outlined">more_horiz</span></button>
+                                        <button className="text-slate-500 transition-colors hover:text-slate-900 dark:hover:text-white"><span className="material-symbols-outlined">more_horiz</span></button>
                                     </div>
                                     <div className="flex items-center px-6 py-3 border-b border-slate-200 dark:border-[#2d2d3f]/50 bg-[#f5f5f8] dark:bg-[#13131a]/50">
                                         <span className="text-[10px] font-bold text-slate-500 tracking-wider flex-1">ABBREV</span>
@@ -388,7 +388,7 @@ export default function ExamReadyPage() {
                                             <span className="material-symbols-outlined text-yellow-500">lightbulb</span>
                                             Key Points Spotlight
                                         </h3>
-                                        <button className="text-slate-500 hover:text-white"><span className="material-symbols-outlined">filter_list</span></button>
+                                        <button className="text-slate-500 transition-colors hover:text-slate-900 dark:hover:text-white"><span className="material-symbols-outlined">filter_list</span></button>
                                     </div>
                                     <div className="p-6 space-y-4 overflow-y-auto max-h-[500px]">
                                         {snapshotData.key_points && snapshotData.key_points.length > 0 ? (
@@ -403,7 +403,7 @@ export default function ExamReadyPage() {
                                                     <div key={i} className={`p-5 rounded-xl bg-[#f5f5f8] dark:bg-[#13131a] border-l-2 ${typeObj.color} border-y border-r border-slate-200 dark:border-[#2d2d3f] hover:bg-white dark:bg-[#1a1a24] transition-colors group cursor-pointer`}>
                                                         <div className="flex justify-between items-center mb-3">
                                                             <span className={`text-[10px] font-black uppercase tracking-wider ${typeObj.textColor}`}>{kp.tag || typeObj.label}</span>
-                                                            <span className="material-symbols-outlined text-slate-600 text-[16px] group-hover:text-white transition-colors">{typeObj.icon}</span>
+                                                            <span className="material-symbols-outlined text-[16px] text-slate-600 transition-colors group-hover:text-slate-900 dark:group-hover:text-white">{typeObj.icon}</span>
                                                         </div>
                                                         <h4 className="font-bold text-slate-900 dark:text-white mb-2 line-clamp-2">{kp.point}</h4>
                                                         <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">
@@ -445,9 +445,9 @@ export default function ExamReadyPage() {
                                                                     {hl.difficulty}
                                                                 </span>
                                                             </div>
-                                                            <h4 className="text-sm font-bold text-white mb-1 leading-snug group-hover:text-[#5b5bfa] transition-colors">{hl.question}</h4>
+                                                            <h4 className="mb-1 text-sm font-bold leading-snug text-slate-900 transition-colors group-hover:text-[#5b5bfa] dark:text-white">{hl.question}</h4>
                                                         </div>
-                                                        <span className="material-symbols-outlined text-slate-600 group-hover:text-white transition-colors self-center">chevron_right</span>
+                                                        <span className="material-symbols-outlined self-center text-slate-600 transition-colors group-hover:text-slate-900 dark:group-hover:text-white">chevron_right</span>
                                                     </div>
                                                 )
                                             })

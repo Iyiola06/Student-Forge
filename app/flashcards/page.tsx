@@ -211,15 +211,15 @@ export default function FlashcardsPage() {
             title="Flashcards studio"
             description="Turn one resource or pasted notes into a cleaner flashcard set, then save it or move straight into review."
         >
-                <main className="flex-1 overflow-y-auto flex flex-col xl:flex-row gap-8 pb-12">
+                <main className="flex flex-1 flex-col gap-6 overflow-y-auto pb-12 xl:flex-row xl:items-start">
 
                     {/* Left Panel: Configuration */}
                     {!isDrilling && (
-                        <div className="w-full xl:w-[400px] shrink-0">
+                        <div className="w-full shrink-0 xl:w-[360px] 2xl:w-[400px]">
                             <div className="mb-6">
                                 <CreditStatusBanner featureLabel="Flashcard generation" creditCost={40} />
                             </div>
-                            <div className="bg-white/60 dark:bg-[#1a1a24]/60 backdrop-blur-2xl rounded-3xl border border-white/50 dark:border-[#1a5c2a]/20 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(26,92,42,0.05)] sticky top-0 transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:hover:shadow-[0_0_40px_rgba(26,92,42,0.15)] hover:border-[#1a5c2a]/30 group/panel">
+                            <div className="rounded-3xl border border-white/50 bg-white/60 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-500 group/panel backdrop-blur-2xl hover:border-[#1a5c2a]/30 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] xl:sticky xl:top-0 md:p-8 dark:border-[#1a5c2a]/20 dark:bg-[#1a1a24]/60 dark:shadow-[0_8px_30px_rgba(26,92,42,0.05)] dark:hover:shadow-[0_0_40px_rgba(26,92,42,0.15)]">
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/0 dark:from-white/5 dark:to-white/0 rounded-3xl pointer-events-none"></div>
                                 <h2 className="text-xl font-black text-slate-900 dark:text-white mb-8 flex items-center gap-3 relative z-10">
                                     <div className="size-10 rounded-xl bg-gradient-to-br from-[#1a5c2a] to-[#22762f] shadow-lg shadow-[#1a5c2a]/30 flex items-center justify-center text-white">
@@ -330,11 +330,11 @@ export default function FlashcardsPage() {
                         ) : displayCards && displayCards.length > 0 ? (
                             isDrilling ? (
                                 // Interactive Drill Mode
-                                <div className="flex-1 flex flex-col items-center justify-start py-4 w-full h-full max-w-5xl mx-auto relative">
+                                <div className="relative mx-auto flex h-full w-full max-w-5xl flex-1 flex-col items-center justify-start py-4">
                                     {/* Dynamic Aura Background */}
-                                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full aura-glow pointer-events-none z-0 ${isFlipped ? 'aura-highlight' : 'aura-base'}`}></div>
+                                    <div className={`absolute left-1/2 top-1/2 z-0 size-[min(88vw,600px)] -translate-x-1/2 -translate-y-1/2 rounded-full aura-glow pointer-events-none ${isFlipped ? 'aura-highlight' : 'aura-base'}`}></div>
 
-                                    <div className="w-full flex w-full max-w-3xl mx-auto flex-col sm:flex-row justify-between items-start sm:items-center mb-6 md:mb-12 bg-white/60 dark:bg-[#1a1a24]/60 backdrop-blur-2xl p-4 md:p-6 rounded-[2rem] border border-white/50 dark:border-white/5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.2)] relative z-10 gap-4">
+                                    <div className="relative z-10 mx-auto mb-6 flex w-full max-w-3xl flex-col items-start justify-between gap-4 rounded-[2rem] border border-white/50 bg-white/60 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-2xl sm:flex-row sm:items-center md:mb-12 md:p-6 dark:border-white/5 dark:bg-[#1a1a24]/60 dark:shadow-[0_8px_30px_rgba(0,0,0,0.2)]">
                                         <div className="flex items-center gap-4 md:gap-8 w-full sm:w-auto flex-1">
                                             <div className="relative group flex-1">
                                                 <div className="h-4 w-full bg-slate-100/50 dark:bg-[#13131a]/50 rounded-full overflow-hidden border border-slate-200/50 dark:border-white/5 shadow-inner backdrop-blur-sm">
@@ -361,7 +361,7 @@ export default function FlashcardsPage() {
 
                                     {/* 3D Flip Card */}
                                     <div
-                                        className="w-full max-w-3xl h-[400px] md:h-[550px] [perspective:2000px] group/card cursor-pointer relative z-10"
+                                        className="relative z-10 h-[min(60vh,550px)] min-h-[360px] w-full max-w-3xl cursor-pointer [perspective:2000px] group/card md:min-h-[420px]"
                                         onClick={() => setIsFlipped(!isFlipped)}
                                     >
                                         <div className={`relative w-full h-full transition-transform duration-[800ms] [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}>
@@ -428,7 +428,7 @@ export default function FlashcardsPage() {
                             ) : (
                                 // Deck Overview Mode
                                 <div className="bg-white dark:bg-[#1a1a24] rounded-3xl border border-slate-200 dark:border-[#2d2d3f] p-8 shadow-sm flex-1 overflow-y-auto">
-                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-8 border-b border-slate-100 dark:border-[#2d2d3f]">
+                                    <div className="mb-8 flex flex-col gap-4 border-b border-slate-100 pb-8 sm:flex-row sm:items-center sm:justify-between dark:border-[#2d2d3f]">
                                         <div>
                                             <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">AI Generated Deck</h2>
                                             <div className="flex items-center gap-2 mt-1">
@@ -548,8 +548,8 @@ export default function FlashcardsPage() {
                                 </div>
 
                                 {savedDecks.length > 0 && (
-                                    <div className="bg-white/50 dark:bg-[#1a1a24]/50 backdrop-blur-3xl rounded-[2.5rem] border border-white/50 dark:border-white/5 p-8 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.2)] flex-1 relative z-20">
-                                        <div className="flex items-center justify-between mb-8">
+                                    <div className="relative z-20 flex-1 rounded-[2.5rem] border border-white/50 bg-white/50 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-3xl md:p-10 dark:border-white/5 dark:bg-[#1a1a24]/50 dark:shadow-[0_8px_30px_rgba(0,0,0,0.2)]">
+                                        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                             <h3 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-3">
                                                 <div className="p-2 rounded-xl bg-[#1a5c2a]/10 text-[#1a5c2a]">
                                                     <span className="material-symbols-outlined">sd_storage</span>

@@ -9,6 +9,7 @@ import { useWallet } from '@/hooks/useWallet';
 import { createClient } from '@/lib/supabase/client';
 import { pushService } from '@/lib/pushService';
 import { formatNairaFromKobo, getCreditBundles } from '@/lib/billing/config';
+import { applyTheme, readThemeFromDom, THEME_CHANGE_EVENT } from '@/lib/theme';
 
 export default function SettingsPage() {
   const { profile, isLoading, mutate } = useProfile();
@@ -28,8 +29,12 @@ export default function SettingsPage() {
   const [pushNotifications, setPushNotifications] = useState(false);
 
   useEffect(() => {
-    const isDark = document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
-    setIsDarkMode(isDark);
+    const syncTheme = () => {
+      setIsDarkMode(readThemeFromDom() === 'dark');
+    };
+
+    syncTheme();
+    window.addEventListener(THEME_CHANGE_EVENT, syncTheme as EventListener);
 
     const notifs = localStorage.getItem('emailNotifications');
     if (notifs !== null) {
@@ -43,6 +48,10 @@ export default function SettingsPage() {
 
     checkPushStatus();
     pushService.registerServiceWorker();
+
+    return () => {
+      window.removeEventListener(THEME_CHANGE_EVENT, syncTheme as EventListener);
+    };
   }, []);
 
   useEffect(() => {
@@ -59,15 +68,8 @@ export default function SettingsPage() {
 
   const toggleTheme = () => {
     const nextDark = !isDarkMode;
+    applyTheme(nextDark ? 'dark' : 'light');
     setIsDarkMode(nextDark);
-
-    if (nextDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
   };
 
   const toggleNotifications = () => {

@@ -43,7 +43,7 @@ function AITutorContent() {
             description="Ask focused questions, unpack difficult topics, or study directly against one selected resource."
             contentClassName="h-full"
         >
-            <div className="h-[calc(100vh-13rem)] min-h-[640px] overflow-hidden rounded-[28px] border border-slate-200/80 bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)] dark:border-white/8 dark:bg-[#0f1724]">
+            <div className="h-[min(72vh,780px)] min-h-[520px] overflow-hidden rounded-[28px] border border-slate-200/80 bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)] lg:h-[calc(100vh-13rem)] lg:min-h-[640px] dark:border-white/8 dark:bg-[#0f1724]">
                 <TutorChat
                     resourceContext={resourceContext}
                     resourceTitle={resourceTitle}

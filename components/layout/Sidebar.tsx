@@ -37,10 +37,6 @@ export default function Sidebar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    setIsMenuOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
@@ -63,6 +59,7 @@ export default function Sidebar() {
       <Link
         key={link.href}
         href={link.href}
+        onClick={() => setIsMenuOpen(false)}
         className={cn(
           'group flex items-center gap-3 rounded-[20px] px-3 py-3 text-sm font-bold transition',
           active
@@ -87,7 +84,7 @@ export default function Sidebar() {
 
   return (
     <>
-      <div className="glass-panel sticky top-4 z-30 flex items-center justify-between px-4 py-3 md:hidden">
+      <div className="glass-panel sticky top-4 z-30 flex items-center justify-between px-4 py-3 lg:hidden">
         <BrandLogo compact subtitle={null} />
         <div className="flex items-center gap-2">
           <ThemeToggle />
@@ -95,6 +92,8 @@ export default function Sidebar() {
             onClick={() => setIsMenuOpen((value) => !value)}
             className="inline-flex size-10 items-center justify-center rounded-2xl border border-black/8 bg-white/70 text-slate-700 transition hover:border-[#163f73]/20 hover:text-[#163f73] dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:border-[#4f86c5]/20 dark:hover:text-[#93b7e7]"
             aria-label="Open navigation menu"
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-navigation"
           >
             <span className="material-symbols-outlined text-[20px]">{isMenuOpen ? 'close' : 'menu'}</span>
           </button>
@@ -102,9 +101,9 @@ export default function Sidebar() {
       </div>
 
       {isMenuOpen ? (
-        <div className="fixed inset-0 z-40 md:hidden">
+        <div className="fixed inset-0 z-40 lg:hidden">
           <button className="absolute inset-0 bg-black/45 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)} aria-label="Close menu" />
-          <div className="glass-panel absolute inset-x-4 top-20 p-4">
+          <div id="mobile-navigation" className="glass-panel absolute inset-x-4 top-20 max-h-[calc(100vh-6rem)] overflow-y-auto p-4">
             <div className="flex items-center justify-between pb-4">
               <BrandLogo compact />
               <ThemeToggle />
@@ -144,7 +143,7 @@ export default function Sidebar() {
         </div>
       ) : null}
 
-      <aside className="glass-panel sticky top-4 hidden h-[calc(100vh-2rem)] w-[288px] shrink-0 overflow-hidden md:flex md:flex-col">
+      <aside className="glass-panel sticky top-4 hidden h-[calc(100vh-2rem)] w-[288px] shrink-0 overflow-hidden lg:flex lg:flex-col">
         <div className="nvidia-line flex items-center justify-between px-4 py-4">
           <BrandLogo />
           <ThemeToggle />

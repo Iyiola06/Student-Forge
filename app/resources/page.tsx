@@ -261,7 +261,7 @@ export default function ResourcesPage() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search title, subject, or status"
-                className="w-full rounded-2xl border border-black/6 bg-white/70 px-4 py-2.5 text-sm outline-none md:w-[280px] dark:border-white/8 dark:bg-white/5"
+                className="w-full rounded-2xl border border-black/6 bg-white/70 px-4 py-2.5 text-sm outline-none lg:w-[280px] dark:border-white/8 dark:bg-white/5"
               />
             </div>
           }
@@ -291,7 +291,7 @@ export default function ResourcesPage() {
           title="Browse Google Books"
           description="Keep a secondary reference nearby when you want broader context around a topic."
           action={
-            <div className="flex w-full gap-2 md:w-[420px]">
+            <div className="flex w-full flex-col gap-2 sm:flex-row lg:w-[420px]">
               <input
                 value={bookQuery}
                 onChange={(event) => setBookQuery(event.target.value)}
@@ -311,7 +311,7 @@ export default function ResourcesPage() {
                   setHasBookSearched(true);
                   await searchBooks(bookQuery);
                 }}
-                className="secondary-button"
+                className="secondary-button sm:shrink-0"
               >
                 Search
               </button>

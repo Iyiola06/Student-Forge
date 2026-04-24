@@ -71,10 +71,10 @@ export default function EssayGraderPage() {
             title="Essay grader"
             description="Get clear, rubric-style feedback on longer answers without changing your grading flow or XP logic."
         >
-                <main className="flex-1 overflow-y-auto flex flex-col lg:flex-row gap-8 items-start">
+                <main className="flex flex-1 flex-col gap-6 overflow-y-auto xl:flex-row xl:items-start">
 
                     {/* Left Panel: Input Area */}
-                    <div className="w-full lg:w-[600px] shrink-0 space-y-6">
+                    <div className="w-full shrink-0 space-y-6 xl:w-[560px] 2xl:w-[600px]">
                         <CreditStatusBanner featureLabel="Essay grading" creditCost={25} />
                         <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm relative overflow-hidden">
                             <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
@@ -144,9 +144,9 @@ export default function EssayGraderPage() {
                     </div>
 
                     {/* Right Panel: Grading Results */}
-                    <div className="flex-1 w-full lg:w-auto">
+                    <div className="w-full flex-1">
                         {!result && !isGrading ? (
-                            <div className="bg-white/50 dark:bg-[#1b1b27]/30 border border-dashed border-slate-300 dark:border-[#2d2d3f] rounded-2xl h-full min-h-[300px] lg:min-h-[500px] flex flex-col items-center justify-center text-center p-6 md:p-10">
+                            <div className="flex h-full min-h-[300px] flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white/50 p-6 text-center md:p-10 xl:min-h-[500px] dark:border-[#2d2d3f] dark:bg-[#1b1b27]/30">
                                 <div className="bg-slate-200 dark:bg-[#252535] p-5 rounded-full mb-6 text-slate-500 dark:text-slate-400">
                                     <span className="material-symbols-outlined text-5xl">fact_check</span>
                                 </div>
@@ -156,7 +156,7 @@ export default function EssayGraderPage() {
                                 </p>
                             </div>
                         ) : isGrading ? (
-                            <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] h-full min-h-[300px] lg:min-h-[500px] flex flex-col items-center justify-center text-center p-6 md:p-10 shadow-sm">
+                            <div className="flex h-full min-h-[300px] flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm md:p-10 xl:min-h-[500px] dark:border-[#2d2d3f] dark:bg-[#1b1b27]">
                                 <div className="relative mb-8">
                                     <div className="size-20 border-4 border-slate-100 dark:border-[#252535] rounded-full"></div>
                                     <div className="absolute inset-0 size-20 border-4 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>

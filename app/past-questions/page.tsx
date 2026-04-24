@@ -347,13 +347,13 @@ function PastQuestionsContent() {
   );
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
+    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col lg:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
       <Sidebar />
-      <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden relative w-full max-w-[100vw]">
+      <div className="relative flex min-h-screen w-full max-w-[100vw] flex-1 flex-col pb-28 lg:h-screen lg:overflow-hidden lg:pb-0">
 
         <main className="flex flex-1 flex-col overflow-y-auto">
           {/* Header Area */}
-          <div className="bg-white dark:bg-[#1a1a24] border-b border-slate-200 dark:border-[#2d2d3f] px-6 py-10 shrink-0">
+          <div className="shrink-0 border-b border-slate-200 bg-white px-4 py-8 sm:px-6 lg:px-8 xl:px-10 dark:border-[#2d2d3f] dark:bg-[#1a1a24]">
             <div className="max-w-[1440px] mx-auto w-full">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                 <div>
@@ -415,32 +415,34 @@ function PastQuestionsContent() {
           </div>
 
           {/* Content Area */}
-          <div className="p-6 max-w-[1440px] mx-auto w-full flex-1 flex flex-col">
+          <div className="mx-auto flex w-full max-w-[1440px] flex-1 flex-col p-4 sm:p-6 lg:p-8">
 
             {/* Filters */}
-            <div className="flex flex-wrap gap-3 mb-8 bg-white dark:bg-[#1a1a24] p-2 rounded-xl border border-slate-200 dark:border-[#2d2d3f] sticky top-0 z-10 shadow-sm">
-              <select value={filterInstitution} onChange={e => setFilterInstitution(e.target.value)} className="h-9 px-3 rounded-lg bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none min-w-[140px]">
+            <div className="sticky top-0 z-10 mb-8 overflow-x-auto rounded-xl border border-slate-200 bg-white p-2 shadow-sm dark:border-[#2d2d3f] dark:bg-[#1a1a24]">
+              <div className="flex min-w-max flex-wrap gap-3 sm:min-w-0">
+              <select value={filterInstitution} onChange={e => setFilterInstitution(e.target.value)} className="h-9 min-w-[140px] rounded-lg border border-slate-200 bg-[#f5f5f8] px-3 text-sm text-slate-900 outline-none focus:border-[#1a5c2a] dark:border-[#2d2d3f] dark:bg-[#13131a] dark:text-white">
                 <option value="All">All Institutions</option>
                 {INSTITUTION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
-              <select value={filterSchool} onChange={e => setFilterSchool(e.target.value)} className="h-9 px-3 rounded-lg bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none min-w-[160px] max-w-[250px] truncate">
+              <select value={filterSchool} onChange={e => setFilterSchool(e.target.value)} className="h-9 min-w-[160px] max-w-[250px] rounded-lg border border-slate-200 bg-[#f5f5f8] px-3 text-sm text-slate-900 outline-none focus:border-[#1a5c2a] dark:border-[#2d2d3f] dark:bg-[#13131a] dark:text-white">
                 <option value="All">All Schools</option>
                 {schoolsList.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
-              <select value={filterSubject} onChange={e => setFilterSubject(e.target.value)} className="h-9 px-3 rounded-lg bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none min-w-[140px] max-w-[200px] truncate">
+              <select value={filterSubject} onChange={e => setFilterSubject(e.target.value)} className="h-9 min-w-[140px] max-w-[200px] rounded-lg border border-slate-200 bg-[#f5f5f8] px-3 text-sm text-slate-900 outline-none focus:border-[#1a5c2a] dark:border-[#2d2d3f] dark:bg-[#13131a] dark:text-white">
                 <option value="All">All Subjects</option>
                 {subjectsList.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
-              <select value={filterYear} onChange={e => setFilterYear(e.target.value)} className="h-9 px-3 rounded-lg bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none min-w-[100px]">
+              <select value={filterYear} onChange={e => setFilterYear(e.target.value)} className="h-9 min-w-[100px] rounded-lg border border-slate-200 bg-[#f5f5f8] px-3 text-sm text-slate-900 outline-none focus:border-[#1a5c2a] dark:border-[#2d2d3f] dark:bg-[#13131a] dark:text-white">
                 <option value="All">All Years</option>
                 {yearsList.map(y => <option key={y} value={y.toString()}>{y}</option>)}
               </select>
-              <div className="w-[1px] bg-[#2d2d3f] mx-1"></div>
-              <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="h-9 px-3 rounded-lg bg-transparent border-none text-sm font-bold text-[#1a5c2a] outline-none ml-auto cursor-pointer">
+              <div className="mx-1 hidden w-[1px] bg-[#2d2d3f] sm:block"></div>
+              <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="h-9 cursor-pointer rounded-lg border-none bg-transparent px-3 text-sm font-bold text-[#1a5c2a] outline-none sm:ml-auto">
                 <option value="Most Recent">Most Recent</option>
                 <option value="Most Downloaded">Most Downloaded</option>
                 <option value="Most Upvoted">Most Upvoted</option>
               </select>
+              </div>
             </div>
 
             {isLoading ? (
@@ -509,7 +511,7 @@ function PastQuestionsContent() {
               </div>
               <form onSubmit={submitQuestion} className="overflow-y-auto p-6 space-y-5">
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-4 md:grid-cols-2">
                   <div>
                     <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Institution Type *</label>
                     <select required value={formInstitutionType} onChange={(e) => setFormInstitutionType(e.target.value)} className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none">
@@ -530,7 +532,7 @@ function PastQuestionsContent() {
                   </datalist>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-4 md:grid-cols-2">
                   <div>
                     <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Subject *</label>
                     <input required value={formSubject} onChange={(e) => setFormSubject(e.target.value)} placeholder="e.g. Mathematics" className="w-full h-10 px-3 bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#1a5c2a] outline-none" />
