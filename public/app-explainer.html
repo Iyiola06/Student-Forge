@@ -495,8 +495,8 @@
         ctx.font = "800 28px Lexend, Segoe UI, Arial, sans-serif";
         ctx.fillText("VUI Studify", 52, 78);
       }
-      roundedRect(52, 118, 112, 30, 15, "rgba(255,255,255,0.10)");
-      ctx.fillStyle = slide.accent;
+      roundedRect(52, 118, 112, 30, 15, slide.accent);
+      ctx.fillStyle = "#ffffff";
       ctx.font = "800 14px Lexend, Segoe UI, Arial, sans-serif";
       ctx.fillText(slide.label, 74, 138);
       ctx.restore();
@@ -524,8 +524,8 @@
       let py = 520;
       slide.pills.forEach((pill) => {
         const width = ctx.measureText(pill).width + 34;
-        roundedRect(px, py, width, 38, 19, "rgba(255,255,255,0.08)");
-        ctx.fillStyle = slide.accent;
+        roundedRect(px, py, width, 38, 19, slide.accent);
+        ctx.fillStyle = "#ffffff";
         ctx.font = "700 15px Lexend, Segoe UI, Arial, sans-serif";
         ctx.fillText(pill, px + 18, py + 24);
         px += width + 12;
