@@ -40,7 +40,9 @@
 - Push persistent desktop sidebar behavior to larger breakpoints so tablets stay in the mobile navigation model.
 
 # Bugs Fixed
-- None yet.
+- `AppShell` desktop layout no longer relies on `lg:flex-row` overriding the custom `.app-shell` utility. The desktop row behavior now lives inside `.app-shell` itself, preventing the sidebar from taking the first viewport as a full-width row and causing main content to appear below/behind it.
+- `AppPageHeader` topbar is no longer sticky, so page headers scroll in normal document flow.
+- Material Symbols now use a shared inline-flex centering reset so sidebar and toolbar icons align consistently inside their icon containers.
 
 # Remaining Risks
 - Highly custom gamified screens may still need a second pass if they use isolated layout patterns.

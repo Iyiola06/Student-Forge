@@ -29,7 +29,7 @@ export default function AppShell({
 
   return (
     <div className="main-bg min-h-screen">
-      <div className="app-shell lg:flex-row">
+      <div className="app-shell">
         <Sidebar />
         <div className="min-w-0 flex-1 pb-28 lg:pb-0">
           <AppPageHeader
