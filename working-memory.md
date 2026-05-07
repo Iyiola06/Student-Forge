@@ -43,6 +43,7 @@
 - `AppShell` desktop layout no longer relies on `lg:flex-row` overriding the custom `.app-shell` utility. The desktop row behavior now lives inside `.app-shell` itself, preventing the sidebar from taking the first viewport as a full-width row and causing main content to appear below/behind it.
 - `AppPageHeader` topbar is no longer sticky, so page headers scroll in normal document flow.
 - Material Symbols now use a shared inline-flex centering reset so sidebar and toolbar icons align consistently inside their icon containers.
+- Dashboard hero no longer uses oversized editorial text or extra nested metric cards. The next-action panel is compact, uses smaller type, trims copy, and reserves a bounded right column so content cannot overlap at desktop widths.
 
 # Remaining Risks
 - Highly custom gamified screens may still need a second pass if they use isolated layout patterns.

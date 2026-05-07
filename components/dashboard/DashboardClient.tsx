@@ -163,7 +163,7 @@ export default function DashboardClient({
     <AppShell
       eyebrow="Dashboard"
       title={`Hello, ${firstName}`}
-      description="Your next study move, your weak spots, and your learning momentum are all organized here."
+      description="Your next study move and learning momentum are organized here."
       actions={
         <Link href="/resources" className="secondary-button hidden md:inline-flex">
           Open library
@@ -171,7 +171,7 @@ export default function DashboardClient({
       }
     >
       <div className="workspace-stack">
-        <section className="grid gap-5 xl:grid-cols-[minmax(0,1.22fr)_360px]">
+        <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
           <DashboardHeroCard
             dueTodayCount={dueTodayCount}
             overdueCount={overdueCount}
@@ -193,7 +193,6 @@ export default function DashboardClient({
           <AppSection
             eyebrow="Consistency"
             title={`${streakDays}-day streak`}
-            description="The best dashboards reduce hesitation. The best study habits reduce recovery time."
             variant="soft"
             bodyClassName="space-y-4"
           >
@@ -203,7 +202,7 @@ export default function DashboardClient({
                 <p className="mt-3 text-2xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">
                   {level} {'\u2022'} {xp}
                 </p>
-                <p className="mt-2 text-sm leading-7 text-slate-500 dark:text-slate-400">Progress compounds fastest when your next block starts on time.</p>
+                <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">Next block starts on time.</p>
               </div>
 
               <div className="dashboard-mini-surface">
@@ -212,7 +211,7 @@ export default function DashboardClient({
                   {dashboard.recentSessions.length ? Math.round((completedRecentSessions / dashboard.recentSessions.length) * 100) : 0}%
                 </p>
                 <p className="mt-2 text-sm leading-7 text-slate-500 dark:text-slate-400">
-                  {completedRecentSessions} of {dashboard.recentSessions.length || 0} recent sessions finished cleanly.
+                  {completedRecentSessions} of {dashboard.recentSessions.length || 0} sessions finished.
                 </p>
               </div>
             </div>
@@ -252,7 +251,6 @@ export default function DashboardClient({
           <AppSection
             eyebrow="Weak topics"
             title="Where confidence needs reinforcement"
-            description="These topics are most likely to create drag in your next review block."
             action={
               <Link href="/review" className="ghost-button !h-9 !px-0">
                 Open review
@@ -293,7 +291,6 @@ export default function DashboardClient({
           <AppSection
             eyebrow="Mastery"
             title="Progress that explains your next move"
-            description="A calmer view of readiness, completion quality, and how reliably materials become study-ready."
             variant="soft"
           >
             <DashboardProgressCluster
@@ -313,7 +310,6 @@ export default function DashboardClient({
           <AppSection
             eyebrow="Recent resources"
             title="Study material entering the system"
-            description="The latest uploads and whether they are already ready for flashcards, quizzes, and review."
             action={
               <Link href="/resources" className="ghost-button !h-9 !px-0">
                 Open library
@@ -358,7 +354,6 @@ export default function DashboardClient({
           <AppSection
             eyebrow="Recent practice"
             title="Flashcards and quizzes you touched last"
-            description="A compact record of the most recent review sessions across flashcards, quizzes, and mixed study runs."
             action={
               <Link href="/review" className="ghost-button !h-9 !px-0">
                 Continue
