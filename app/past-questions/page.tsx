@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import AppShell from '@/components/layout/AppShell';
+import AppStatCard from '@/components/app/AppStatCard';
 import { createClient } from '@/lib/supabase/client';
 import { useProfile } from '@/hooks/useProfile';
 import { awardXp } from '@/app/actions/gamifier';
@@ -363,36 +364,24 @@ function PastQuestionsContent() {
         <div className="max-w-[1440px] mx-auto w-full px-4 sm:px-6 lg:px-8">
           <div className="mt-8">
 
-              {/* Stats Pills */}
-              <div className="flex flex-wrap gap-4 mb-8">
-                <div className="bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] px-5 py-3 rounded-xl flex items-center gap-4 min-w-[160px]">
-                  <div className="bg-blue-500/10 text-blue-400 p-2 rounded-lg">
-                    <span className="material-symbols-outlined">description</span>
-                  </div>
-                  <div>
-                    <p className="text-2xl font-black text-slate-900 dark:text-white leading-none">{stats.total}</p>
-                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Submissions</p>
-                  </div>
-                </div>
-                <div className="bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] px-5 py-3 rounded-xl flex items-center gap-4 min-w-[160px]">
-                  <div className="bg-[#1a5c2a]/10 text-orange-400 p-2 rounded-lg">
-                    <span className="material-symbols-outlined">account_balance</span>
-                  </div>
-                  <div>
-                    <p className="text-2xl font-black text-slate-900 dark:text-white leading-none">{stats.schools}</p>
-                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Schools</p>
-                  </div>
-                </div>
-                <div className="bg-[#f5f5f8] dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] px-5 py-3 rounded-xl flex items-center gap-4 min-w-[160px]">
-                  <div className="bg-purple-500/10 text-purple-400 p-2 rounded-lg">
-                    <span className="material-symbols-outlined">menu_book</span>
-                  </div>
-                  <div>
-                    <p className="text-2xl font-black text-slate-900 dark:text-white leading-none">{stats.subjects}</p>
-                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Subjects</p>
-                  </div>
-                </div>
-              </div>
+              {/* Stats Grid */}
+              <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+                <AppStatCard
+                  label="Submissions"
+                  value={stats.total}
+                  detail="Total documents shared"
+                />
+                <AppStatCard
+                  label="Schools"
+                  value={stats.schools}
+                  detail="Institutions covered"
+                />
+                <AppStatCard
+                  label="Subjects"
+                  value={stats.subjects}
+                  detail="Unique courses available"
+                />
+              </section>
 
               {/* Tabs */}
               <div className="flex mb-4">
