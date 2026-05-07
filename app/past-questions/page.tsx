@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import Sidebar from '@/components/layout/Sidebar';
+import AppShell from '@/components/layout/AppShell';
 import { createClient } from '@/lib/supabase/client';
 import { useProfile } from '@/hooks/useProfile';
 import { awardXp } from '@/app/actions/gamifier';
@@ -346,29 +346,22 @@ function PastQuestionsContent() {
     </div>
   );
 
-  return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col lg:flex-row antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
-      <Sidebar />
-      <div className="relative flex min-h-screen w-full max-w-[100vw] flex-1 flex-col pb-28 lg:h-screen lg:overflow-hidden lg:pb-0">
+  const SubmitButton = (
+    <button onClick={() => setIsModalOpen(true)} className="bg-[#3b82f6] hover:bg-[#2563eb] text-slate-900 dark:text-white font-bold px-6 py-3 rounded-xl transition-colors shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 whitespace-nowrap shrink-0">
+      <span className="material-symbols-outlined text-[20px]">add</span>
+      Submit Past Question
+    </button>
+  );
 
-        <main className="flex flex-1 flex-col overflow-y-auto">
-          {/* Header Area */}
-          <div className="shrink-0 border-b border-slate-200 bg-white px-4 py-8 sm:px-6 lg:px-8 xl:px-10 dark:border-[#2d2d3f] dark:bg-[#1a1a24]">
-            <div className="max-w-[1440px] mx-auto w-full">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-                <div>
-                  <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">
-                    Community Past Questions Bank
-                  </h1>
-                  <p className="text-slate-500 dark:text-slate-400">
-                    Study smarter with past questions shared by students like you.
-                  </p>
-                </div>
-                <button onClick={() => setIsModalOpen(true)} className="bg-[#3b82f6] hover:bg-[#2563eb] text-slate-900 dark:text-white font-bold px-6 py-3 rounded-xl transition-colors shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 whitespace-nowrap shrink-0">
-                  <span className="material-symbols-outlined text-[20px]">add</span>
-                  Submit Past Question
-                </button>
-              </div>
+  return (
+    <AppShell
+      title="Community Past Questions Bank"
+      description="Study smarter with past questions shared by students like you."
+      actions={SubmitButton}
+    >
+      <div className="flex flex-col gap-6 w-full">
+        <div className="max-w-[1440px] mx-auto w-full px-4 sm:px-6 lg:px-8">
+          <div className="mt-8">
 
               {/* Stats Pills */}
               <div className="flex flex-wrap gap-4 mb-8">
@@ -402,7 +395,7 @@ function PastQuestionsContent() {
               </div>
 
               {/* Tabs */}
-              <div className="flex border-b border-slate-200 dark:border-[#2d2d3f]">
+              <div className="flex mb-4">
                 <button onClick={() => setActiveTab('all')} className={`px-6 py-3 font-bold text-sm border-b-2 transition-colors ${activeTab === 'all' ? 'border-[#3b82f6] text-[#3b82f6]' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-300'}`}>
                   All Questions
                 </button>
@@ -497,9 +490,11 @@ function PastQuestionsContent() {
               </div>
             )}
           </div>
-        </main>
+        </div>
 
-        {/* Submission Modal */}
+      {/* Submission Modal */}
+
+      {/* Submission Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 z-[100] bg-[#101022]/90 backdrop-blur-sm flex justify-center items-center p-4">
             <div className="bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] w-full max-w-xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-200">
@@ -597,8 +592,7 @@ function PastQuestionsContent() {
             </div>
           </div>
         )}
-      </div>
-    </div>
+    </AppShell>
   );
 }
 
