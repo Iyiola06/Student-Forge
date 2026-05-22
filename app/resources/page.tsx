@@ -246,8 +246,9 @@ export default function ResourcesPage() {
           title="Your files"
           description="Search, filter, and open the source that should drive your next study action."
           action={
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex w-full min-w-0 flex-wrap items-center justify-start gap-3 md:justify-end">
               <AppTabs
+                className="max-w-full"
                 items={[
                   { id: 'all', label: 'All', count: resources.length },
                   { id: 'ready', label: 'AI ready', count: readyCount },
@@ -261,7 +262,7 @@ export default function ResourcesPage() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search title, subject, or status"
-                className="w-full rounded-2xl border border-black/6 bg-white/70 px-4 py-2.5 text-sm outline-none lg:w-[280px] dark:border-white/8 dark:bg-white/5"
+                className="min-w-[min(100%,16rem)] flex-1 rounded-2xl border border-black/6 bg-white/70 px-4 py-2.5 text-sm outline-none lg:max-w-[320px] dark:border-white/8 dark:bg-white/5"
               />
             </div>
           }

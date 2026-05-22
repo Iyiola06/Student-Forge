@@ -18,12 +18,12 @@ export const trustItems: Array<{ label: string; icon: LucideIcon }> = [
 export const workflowItems: Array<{ title: string; body: string; icon: LucideIcon }> = [
   {
     title: 'Upload source material',
-    body: 'Securely upload notes, slides, scanned pages, or plain text without adding process friction.',
+    body: 'Bring in notes, slides, scanned pages, or pasted text without rebuilding your study setup.',
     icon: CloudUpload,
   },
   {
     title: 'Generate study aids',
-    body: 'Turn material into flashcards, quizzes, and clean summaries that are ready for repeat review.',
+    body: 'Turn source material into flashcards, quizzes, and summaries that are ready for active recall.',
     icon: Sparkles,
   },
   {
@@ -36,13 +36,13 @@ export const workflowItems: Array<{ title: string; body: string; icon: LucideIco
 export const featureShowcases = [
   {
     title: 'Smart flashcards and quizzes',
-    body: 'Move from uploaded material to active recall without rewriting your notes into another tool.',
+    body: 'Move from uploaded material to active recall without rewriting notes into another tool.',
     eyebrow: 'Practice',
     preview: 'quiz',
   },
   {
     title: 'AI tutor and explanation flow',
-    body: 'Ask for clarification, turn confusion into examples, and stay inside one quiet workspace while you study.',
+    body: 'Ask for clarification, turn confusion into examples, and stay inside one quiet workspace.',
     eyebrow: 'Support',
     preview: 'tutor',
   },

@@ -29,20 +29,20 @@ export default function DailyHabitSection() {
           <SectionHeading
             align="left"
             eyebrow="Daily review habit"
-            title="The homepage now leads into the habit, not just the tools."
-            body={'Sulva\u2019s Studify is most valuable when students return daily. This section keeps the focus on rhythm, memory, and clear next actions.'}
+            title="A small queue beats a giant dashboard."
+            body={'Sulva\u2019s Studify is built for the moment students come back tomorrow. The page now keeps the focus on rhythm, memory, and one obvious next action.'}
           />
 
           <div className="mt-10 space-y-4">
             {rhythmSteps.map((step, index) => (
-              <Panel key={step.title} variant="default" padding="sm" className="rounded-[26px]">
+              <Panel key={step.title} variant="default" padding="sm" className="rounded-[22px]">
                 <div className="flex items-start gap-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#eff6ff] text-sm font-black text-[#2563eb] dark:bg-white/8 dark:text-[#93b7e7]">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#eaf2fb] text-sm font-black text-[#2c5d92] dark:bg-white/8 dark:text-[#f6b252]">
                     {index + 1}
                   </span>
                   <div>
-                    <h3 className="text-lg font-black tracking-[-0.03em] text-slate-900 dark:text-white">{step.title}</h3>
-                    <p className="mt-2 text-sm leading-7 text-slate-500 dark:text-slate-300">{step.body}</p>
+                    <h3 className="text-lg font-black text-slate-950 dark:text-white">{step.title}</h3>
+                    <p className="mt-2 text-sm leading-7 text-slate-600 dark:text-slate-300">{step.body}</p>
                   </div>
                 </div>
               </Panel>
@@ -60,40 +60,40 @@ export default function DailyHabitSection() {
           </div>
         </div>
 
-        <Panel variant="spotlight" padding="lg" className="rounded-[36px]">
+        <Panel variant="spotlight" padding="lg" className="rounded-[32px]">
           <div className="grid gap-5 md:grid-cols-[1fr_0.92fr]">
             <div className="space-y-5">
-              <Panel variant="soft" padding="sm" className="rounded-[24px]">
+              <Panel variant="soft" padding="sm" className="rounded-[22px]">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <p className="text-sm font-black text-slate-900 dark:text-white">Review pulse</p>
-                    <p className="mt-2 text-5xl font-black tracking-[-0.05em] text-slate-900 dark:text-white">18</p>
+                    <p className="text-sm font-black text-slate-950 dark:text-white">Review pulse</p>
+                    <p className="mt-2 text-5xl font-black text-slate-950 dark:text-white">18</p>
                     <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Items due today</p>
                   </div>
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#eff6ff] text-[#2563eb] dark:bg-white/8 dark:text-[#93b7e7]">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#eaf2fb] text-[#2c5d92] dark:bg-white/8 dark:text-[#f6b252]">
                     <TimerReset className="h-7 w-7" />
                   </div>
                 </div>
               </Panel>
 
-              <Panel variant="default" padding="sm" className="rounded-[24px]">
+              <Panel variant="default" padding="sm" className="rounded-[22px]">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <p className="text-sm font-black text-slate-900 dark:text-white">Current streak</p>
-                    <p className="mt-2 text-4xl font-black tracking-[-0.05em] text-slate-900 dark:text-white">5 days</p>
+                    <p className="text-sm font-black text-slate-950 dark:text-white">Current streak</p>
+                    <p className="mt-2 text-4xl font-black text-slate-950 dark:text-white">5 days</p>
                   </div>
-                  <span className="inline-flex items-center gap-2 rounded-full bg-amber-100 px-3 py-1 text-xs font-black uppercase tracking-[0.18em] text-amber-700 dark:bg-amber-400/12 dark:text-amber-200">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-700 dark:bg-amber-400/12 dark:text-amber-200">
                     <Flame className="h-3.5 w-3.5" />
                     Active
                   </span>
                 </div>
               </Panel>
 
-              <Panel variant="default" padding="sm" className="rounded-[24px]">
-                <p className="text-sm font-black text-slate-900 dark:text-white">Next best action</p>
+              <Panel variant="default" padding="sm" className="rounded-[22px]">
+                <p className="text-sm font-black text-slate-950 dark:text-white">Next best action</p>
                 <div className="mt-4 space-y-3">
                   {['Review General Chemistry', 'Clear two flashcard sets', 'Finish today\u2019s quiz run'].map((task) => (
-                    <div key={task} className="flex items-center justify-between rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm font-medium text-slate-700 dark:border-white/8 dark:bg-white/5 dark:text-slate-200">
+                    <div key={task} className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm font-bold text-slate-700 dark:border-white/8 dark:bg-white/5 dark:text-slate-200">
                       <span>{task}</span>
                       <ArrowRight className="h-4 w-4 text-slate-400" />
                     </div>
@@ -102,9 +102,9 @@ export default function DailyHabitSection() {
               </Panel>
             </div>
 
-            <Panel variant="inset" padding="sm" className="rounded-[28px]">
-              <p className="text-sm font-black text-slate-900 dark:text-white">Mastery trend</p>
-              <div className="mt-6 flex h-[220px] items-end gap-3 rounded-[24px] border border-[#dbe8fb] bg-white/80 px-4 pb-4 pt-10 dark:border-white/8 dark:bg-white/5">
+            <Panel variant="inset" padding="sm" className="rounded-[24px]">
+              <p className="text-sm font-black text-slate-950 dark:text-white">Mastery trend</p>
+              <div className="mt-6 flex h-[220px] items-end gap-3 rounded-[20px] border border-[#dbe8fb] bg-white/80 px-4 pb-4 pt-10 dark:border-white/8 dark:bg-white/5">
                 {[
                   ['Mon', 'h-[36%]'],
                   ['Tue', 'h-[44%]'],
@@ -118,7 +118,7 @@ export default function DailyHabitSection() {
                     <div
                       className={cn(
                         'w-full rounded-t-[14px]',
-                        index === 6 ? 'bg-[linear-gradient(180deg,#3b82f6,#2563eb)]' : 'bg-[linear-gradient(180deg,#bfdbfe,#60a5fa)]',
+                        index === 6 ? 'bg-[linear-gradient(180deg,#2c5d92,#163f73)] dark:bg-[linear-gradient(180deg,#f6b252,#f39a2b)]' : 'bg-[linear-gradient(180deg,#bfdbfe,#60a5fa)] dark:bg-[linear-gradient(180deg,#334155,#475569)]',
                         height
                       )}
                     />
@@ -126,7 +126,7 @@ export default function DailyHabitSection() {
                   </div>
                 ))}
               </div>
-              <p className="mt-4 text-sm leading-7 text-slate-500 dark:text-slate-400">
+              <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-400">
                 Review consistency improves when the queue stays obvious, the workload stays finite, and progress feels visible.
               </p>
             </Panel>

@@ -7,6 +7,7 @@ import MarketingNavbar from '@/components/marketing/MarketingNavbar';
 import PremiumFooter from '@/components/marketing/PremiumFooter';
 import PricingTeaser from '@/components/marketing/PricingTeaser';
 import TrustProofStrip from '@/components/marketing/TrustProofStrip';
+import SystemThemeSync from '@/components/theme/SystemThemeSync';
 import { getCreditBundles } from '@/lib/billing/config';
 
 export default function LandingPage() {
@@ -14,6 +15,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-[#faf9f6] text-slate-900 dark:bg-[#0b1420] dark:text-white">
+      <SystemThemeSync />
       <MarketingNavbar />
       <main>
         <HeroSection />

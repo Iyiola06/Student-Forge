@@ -32,12 +32,12 @@ export default function AppSection({
     <Panel variant={variant} padding={padding} className={cn(className)}>
       {hasHeader ? (
         <div className="app-section-header">
-          <div className="min-w-0">
+          <div className="min-w-[min(100%,18rem)] flex-1">
             {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
             {title ? <h2 className={cn('panel-title', eyebrow ? 'mt-2' : '')}>{title}</h2> : null}
             {description ? <p className="app-section-copy">{description}</p> : null}
           </div>
-          {action ? <div className="flex shrink-0 flex-wrap items-center gap-2">{action}</div> : null}
+          {action ? <div className="flex w-full min-w-0 flex-wrap items-center gap-2 md:w-auto md:flex-[1_1_24rem] md:justify-end xl:flex-none">{action}</div> : null}
         </div>
       ) : null}
       <div className={cn(hasHeader ? 'mt-5' : '', bodyClassName)}>{children}</div>

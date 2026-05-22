@@ -10,9 +10,9 @@ type SectionWrapperProps = {
 };
 
 const toneClasses: Record<NonNullable<SectionWrapperProps['tone']>, string> = {
-  white: 'bg-white',
-  cream: 'bg-[#faf9f6]',
-  soft: 'bg-[#fcfbf8]',
+  white: 'bg-white dark:bg-[#0b1420]',
+  cream: 'bg-[#f7f4ed] dark:bg-[#0f1724]',
+  soft: 'bg-[#fcfbf8] dark:bg-[#111d2b]',
 };
 
 export default function SectionWrapper({ id, tone = 'white', className, innerClassName, children }: SectionWrapperProps) {

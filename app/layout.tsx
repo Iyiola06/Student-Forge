@@ -75,7 +75,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               (function() {
                 try {
                   var localTheme = localStorage.getItem('theme');
-                  var isDark = localTheme === 'dark' || (!localTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                  var publicSystemThemePath = window.location.pathname === '/' || window.location.pathname === '/login';
+                  var systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  var isDark = publicSystemThemePath ? systemPrefersDark : localTheme === 'dark' || (!localTheme && systemPrefersDark);
                   if (isDark) {
                     document.documentElement.classList.add('dark');
                     document.documentElement.style.colorScheme = 'dark';
