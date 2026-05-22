@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import BrandLogo from '@/components/ui/BrandLogo';
 import { buttonVariants } from '@/components/ui/Button';
+import ThemeToggle from '@/components/ui/ThemeToggle';
 import { marketingNavLinks } from '@/components/marketing/home-content';
 import { cn } from '@/lib/utils';
 
@@ -19,6 +20,7 @@ export default function MarketingNavbar() {
         </div>
 
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <Link href="/login" className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'hidden md:inline-flex')}>
             Log in
           </Link>
