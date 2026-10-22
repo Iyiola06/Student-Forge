@@ -1,47 +1,37 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { chatCompletion, isAIConfigured, toChatHistory } from '@/lib/ai/openrouter';
 import { requireCredits } from '@/lib/billing/server';
 import { finalizeAiUsage } from '@/lib/ai/usage';
 
-const apiKey = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey || '');
-
 export async function POST(request: Request) {
     try {
-        if (!apiKey) return NextResponse.json({ error: 'AI Service key missing' }, { status: 500 });
+        if (!isAIConfigured()) return NextResponse.json({ error: 'AI Service key missing' }, { status: 500 });
 
         const billing = await requireCredits(request, 'ai_chat');
         if (!billing.ok) return NextResponse.json(billing.body, { status: billing.status });
 
         const { userQuestion, title, content, fullText, history } = await request.json();
 
-        const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
-
-        const chat = model.startChat({
-            history: history || [],
-            generationConfig: {
-                maxOutputTokens: 1000,
-            },
-        });
-
         const contextPrompt = `
         You are a helpful AI study assistant. You are helping a student with a document titled "${title}".
         
         Document Snippet/Summary: ${content}
-        Full Text Context: ${fullText.substring(0, 20000)}
+        Full Text Context: ${String(fullText || '').substring(0, 20000)}
         
         Question: ${userQuestion}
         `;
 
-        const result = await chat.sendMessage(contextPrompt);
-        const response = result.response.text();
+        const { text: response, model } = await chatCompletion({
+            messages: [...toChatHistory(history), { role: 'user', content: contextPrompt }],
+            maxTokens: 1000,
+        });
 
         await finalizeAiUsage({
             supabase: billing.supabase,
             userId: billing.user.id,
             feature: 'ai_chat',
             source: 'ai_chat',
-            modelName: 'gemini-3-flash-preview',
+            modelName: model,
             inputSize: contextPrompt.length,
             outputSize: response.length,
             metadata: {

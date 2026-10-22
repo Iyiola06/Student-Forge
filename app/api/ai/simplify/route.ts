@@ -1,17 +1,15 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { chatCompletion, extractJson, isAIConfigured } from '@/lib/ai/openrouter';
 import { requireCredits } from '@/lib/billing/server';
 import { finalizeAiUsage } from '@/lib/ai/usage';
 
-const apiKey = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey || '');
 const MAX_CHARS = 25000;
 
 export async function POST(request: Request) {
     try {
-        if (!apiKey) {
+        if (!isAIConfigured()) {
             return NextResponse.json(
-                { error: 'Gemini API key is not configured' },
+                { error: 'AI service key is not configured' },
                 { status: 500 }
             );
         }
@@ -37,10 +35,6 @@ export async function POST(request: Request) {
         const trimmedContent = content.length > MAX_CHARS
             ? content.substring(0, MAX_CHARS) + '\n\n[CONTENT TRUNCATED FOR LENGTH LIMITS]'
             : content;
-
-        const model = genAI.getGenerativeModel({
-            model: "gemini-3-flash-preview",
-        });
 
         const levelInstruction = level === 'child' ? "Explain this like I am 5 years old, using very simple words and analogies."
             : level === 'beginner' ? "Explain this simply, for a beginner or high school student who is new to the topic."
@@ -72,15 +66,17 @@ Text to simplify:
 ${trimmedContent}
 """`;
 
-        const result = await model.generateContent(systemInstruction);
-        const responseText = result.response.text().trim();
+        const { text: responseText, model } = await chatCompletion({
+            messages: [{ role: 'user', content: systemInstruction }],
+            json: true,
+        });
 
         let parsedOutput;
         try {
-            parsedOutput = JSON.parse(responseText.replace(/^```json\s*/i, '').replace(/\s*```$/i, ''));
+            parsedOutput = extractJson(responseText) as { result?: string; youtube_topics?: string[] };
         } catch (e) {
             // Fallback in case the model failed to output valid JSON
-            console.error('Failed to parse Gemini output as JSON', responseText);
+            console.error('Failed to parse AI output as JSON', responseText);
             parsedOutput = {
                 result: responseText,
                 youtube_topics: []
@@ -92,7 +88,7 @@ ${trimmedContent}
             userId: billing.user.id,
             feature: 'ai_simplify',
             source: 'ai_simplify',
-            modelName: 'gemini-3-flash-preview',
+            modelName: model,
             inputSize: content.length,
             outputSize: parsedOutput.result?.length ?? 0,
             metadata: {

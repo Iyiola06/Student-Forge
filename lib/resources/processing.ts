@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { chatCompletion, imagePart, isAIConfigured, pdfPart, pdfPlugins } from '@/lib/ai/openrouter';
 import type { ResourceProcessingStatus } from '@/types/product';
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export function buildPreview(text: string) {
   return text.replace(/\s+/g, ' ').trim().slice(0, 240) || null;
@@ -125,24 +123,35 @@ export async function processQueuedResourceJob(params: {
       extractedText = nativeText.trim();
       if (extractedText.length < 50) {
         extractionMethod = 'ocr_pdf';
-        if (!process.env.GEMINI_API_KEY) throw new Error('AI extraction not configured');
-        const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
-        const result = await model.generateContent([
-          'Extract and transcribe all readable text from this PDF document. Preserve headings and important structure. Output only the extracted text.',
-          { inlineData: { data: Buffer.from(arrayBuffer).toString('base64'), mimeType: 'application/pdf' } },
-        ]);
-        extractedText = result.response.text().trim();
+        if (!isAIConfigured()) throw new Error('AI extraction not configured');
+        const { text } = await chatCompletion({
+          vision: true,
+          extra: pdfPlugins(),
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'text', text: 'Extract and transcribe all readable text from this PDF document. Preserve headings and important structure. Output only the extracted text.' },
+              pdfPart(Buffer.from(arrayBuffer).toString('base64'), fileName || 'document.pdf'),
+            ],
+          }],
+        });
+        extractedText = text.trim();
       }
     } else if (fileType.startsWith('image/')) {
       extractionMethod = 'ocr_image';
-      if (!process.env.GEMINI_API_KEY) throw new Error('OCR not configured');
-      const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
+      if (!isAIConfigured()) throw new Error('OCR not configured');
       const arrayBuffer = await fileData.arrayBuffer();
-      const result = await model.generateContent([
-        'Transcribe all readable text from this study material image. Format it cleanly and briefly describe any diagram labels if needed.',
-        { inlineData: { data: Buffer.from(arrayBuffer).toString('base64'), mimeType: fileType } },
-      ]);
-      extractedText = result.response.text().trim();
+      const { text } = await chatCompletion({
+        vision: true,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'text', text: 'Transcribe all readable text from this study material image. Format it cleanly and briefly describe any diagram labels if needed.' },
+            imagePart(Buffer.from(arrayBuffer).toString('base64'), fileType),
+          ],
+        }],
+      });
+      extractedText = text.trim();
     } else if (
       fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
       fileName.endsWith('.docx')

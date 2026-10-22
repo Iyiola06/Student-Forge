@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { generateObject, streamObject } from 'ai';
 import { z } from 'zod';
 import {
   buildAdminConfigFailure,
@@ -10,16 +8,12 @@ import {
 } from '@/lib/billing/server';
 import { trackServerEvent } from '@/lib/analytics/server';
 import { persistGeneratedStudyOutput } from '@/lib/ai/persistGenerated';
-
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY || '',
-});
+import { extractJson, generateJson, isAIConfigured, PRIMARY_MODEL, streamCompletion } from '@/lib/ai/openrouter';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 const MAX_CHARS = 25000;
-const MODEL_NAME = 'gemini-3-flash-preview';
 
 export async function POST(request: Request) {
   let billingUserId: string | null = null;
@@ -27,6 +21,10 @@ export async function POST(request: Request) {
   const adminAvailability = getAdminClientAvailability();
 
   try {
+    if (!isAIConfigured()) {
+      return NextResponse.json({ error: 'AI Service key missing' }, { status: 500 });
+    }
+
     if (!adminAvailability.enabled) {
       const failure = buildAdminConfigFailure('AI generation');
       return NextResponse.json(failure.body, { status: failure.status });
@@ -130,14 +128,14 @@ ${topic ? `Focus the topic specifically on: ${topic}.` : ''}`;
         source_type: resourceId ? 'resource' : 'pasted_text',
         output_type: type,
         status: stream ? 'processing' : 'queued',
-        model_name: MODEL_NAME,
+        model_name: PRIMARY_MODEL,
         difficulty: difficulty ?? null,
         requested_count: count ?? null,
         topic: topic ?? null,
         curriculum: curriculum ?? null,
         input_chars: trimmedContent.length,
         credits_charged: billing.cost,
-        estimated_provider_cost: 0.18,
+        estimated_provider_cost: 0,
         started_at: new Date().toISOString(),
       })
       .select('id')
@@ -156,22 +154,52 @@ ${topic ? `Focus the topic specifically on: ${topic}.` : ''}`;
       },
     });
 
+    const system = `${systemInstruction}
+
+Respond with only valid JSON (no markdown, no commentary) that matches this JSON Schema:
+${JSON.stringify(z.toJSONSchema(schema))}`;
     const prompt = `Target Source Text:\n${trimmedContent}`;
-    const model = google(MODEL_NAME);
+    const messages = [
+      { role: 'system' as const, content: system },
+      { role: 'user' as const, content: prompt },
+    ];
 
     if (stream) {
-      const streamResult = await streamObject({
-        model,
-        schema,
-        system: systemInstruction,
-        prompt,
-        onFinish: async ({ object }) => {
-          const outputItems = Array.isArray(object) ? object.length : object ? 1 : 0;
+      const streamResult = await streamCompletion({
+        messages,
+        jsonOnly: true,
+        onFinish: async ({ text, model }) => {
+          let object: any = null;
+          try {
+            const parsed = extractJson(text);
+            const validated = schema.safeParse(parsed);
+            object = validated.success ? validated.data : parsed;
+          } catch (parseError) {
+            console.error('Streamed generation was not valid JSON', parseError);
+          }
+
+          if (!object) {
+            if (jobId) {
+              await admin
+                .from('generation_jobs')
+                .update({
+                  status: 'failed',
+                  model_name: model,
+                  failure_message: 'Model returned invalid JSON',
+                  completed_at: new Date().toISOString(),
+                })
+                .eq('id', jobId);
+            }
+            return;
+          }
+
+          const outputItems = Array.isArray(object) ? object.length : 1;
           if (jobId) {
             await admin
               .from('generation_jobs')
               .update({
                 status: 'completed',
+                model_name: model,
                 output_items: outputItems,
                 response_payload: object,
                 completed_at: new Date().toISOString(),
@@ -194,10 +222,10 @@ ${topic ? `Focus the topic specifically on: ${topic}.` : ''}`;
             eventType: billing.eventType,
             source: 'ai_generate',
             amount: -billing.cost,
-            modelName: MODEL_NAME,
+            modelName: model,
             inputSize: trimmedContent.length,
             outputSize: outputItems,
-            estimatedProviderCost: 0.18,
+            estimatedProviderCost: 0,
             metadata: {
               type,
               resourceId: resourceId ?? null,
@@ -214,14 +242,16 @@ ${topic ? `Focus the topic specifically on: ${topic}.` : ''}`;
         },
       });
 
-      return streamResult.toTextStreamResponse();
+      return new Response(streamResult.stream, {
+        headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache' },
+      });
     }
 
-    const { object } = await generateObject({
-      model,
+    const { data: object, model } = await generateJson<any>({
+      messages,
       schema,
-      system: systemInstruction,
-      prompt,
+      // json_object mode requires a top-level object; array outputs rely on the prompt + validation.
+      json: type === 'exam_snapshot',
     });
 
     if (type === 'mcq' && Array.isArray(object)) {
@@ -250,6 +280,7 @@ ${topic ? `Focus the topic specifically on: ${topic}.` : ''}`;
         .from('generation_jobs')
         .update({
           status: 'completed',
+          model_name: model,
           output_items: outputItems,
           response_payload: object,
           completed_at: new Date().toISOString(),
@@ -263,10 +294,10 @@ ${topic ? `Focus the topic specifically on: ${topic}.` : ''}`;
       eventType: billing.eventType,
       source: 'ai_generate',
       amount: -billing.cost,
-      modelName: MODEL_NAME,
+      modelName: model,
       inputSize: trimmedContent.length,
       outputSize: outputItems,
-      estimatedProviderCost: 0.18,
+      estimatedProviderCost: 0,
       metadata: {
         type,
         resourceId: resourceId ?? null,

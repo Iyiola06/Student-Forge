@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 declare module 'pdfjs-dist/legacy/build/pdf.worker.mjs';
 
 import { createAuthedRouteClient } from '@/lib/supabase/routeAuth';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { chatCompletion, imagePart, isAIConfigured } from '@/lib/ai/openrouter';
 
 // Polyfill DOMMatrix for pdfjs-dist v5 in Node.js environment
 if (typeof global !== 'undefined' && !global.DOMMatrix) {
@@ -17,9 +17,6 @@ if (typeof global !== 'undefined' && !global.DOMMatrix) {
         }
     };
 }
-
-const apiKey = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey || '');
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -124,23 +121,23 @@ export async function POST(request: Request) {
             }
         } else if (fileType.startsWith('image/')) {
             try {
-                if (!apiKey) throw new Error('Gemini API key is not configured for OCR');
+                if (!isAIConfigured()) throw new Error('AI service key is not configured for OCR');
 
-                const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
                 const arrayBuffer = await fileData.arrayBuffer();
                 const base64Data = Buffer.from(arrayBuffer).toString('base64');
 
-                const result = await model.generateContent([
-                    "Transcribe all readable text from this study material image. Format it cleanly as text. If there are diagrams, describe them briefly.",
-                    {
-                        inlineData: {
-                            data: base64Data,
-                            mimeType: fileType
-                        }
-                    }
-                ]);
+                const { text } = await chatCompletion({
+                    vision: true,
+                    messages: [{
+                        role: 'user',
+                        content: [
+                            { type: 'text', text: "Transcribe all readable text from this study material image. Format it cleanly as text. If there are diagrams, describe them briefly." },
+                            imagePart(base64Data, fileType),
+                        ],
+                    }],
+                });
 
-                extractedText = result.response.text().trim();
+                extractedText = text.trim();
                 isExtractionSuccessful = extractedText.length > 10;
             } catch (imageError: any) {
                 console.error('Image OCR error:', imageError);

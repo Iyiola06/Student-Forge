@@ -1,14 +1,11 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { generateJson, imagePart, isAIConfigured, type ChatMessage } from '@/lib/ai/openrouter';
 import { requireCredits } from '@/lib/billing/server';
 import { finalizeAiUsage } from '@/lib/ai/usage';
 
-const apiKey = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey || '');
-
 export async function POST(request: Request) {
     try {
-        if (!apiKey) return NextResponse.json({ error: 'AI Service key missing' }, { status: 500 });
+        if (!isAIConfigured()) return NextResponse.json({ error: 'AI Service key missing' }, { status: 500 });
 
         const billing = await requireCredits(request, 'ai_grade');
         if (!billing.ok) return NextResponse.json(billing.body, { status: billing.status });
@@ -26,12 +23,7 @@ export async function POST(request: Request) {
             ? Math.max(1, Math.min(100, Number(maxScore)))
             : 100;
 
-        const model = genAI.getGenerativeModel({
-            model: "gemini-3-flash-preview",
-            generationConfig: { responseMimeType: "application/json" }
-        });
-
-        let promptTokens: any[] = [];
+        let message: ChatMessage;
         const promptText = `
         You are an expert examiner. Grade the student's answer to the question below.
 
@@ -60,24 +52,24 @@ export async function POST(request: Request) {
         }
         `;
 
-        if (type === 'handwritten' && imageData) {
-            // Remove data:image/png;base64, prefix if present
-            const base64Data = imageData.split(',')[1] || imageData;
-            promptTokens = [
-                {
-                    inlineData: {
-                        data: base64Data,
-                        mimeType: "image/png"
-                    }
-                },
-                `Analyze the handwritten answer in this image and grade it against the question: ${question}`
-            ];
+        const isHandwritten = type === 'handwritten' && Boolean(imageData);
+        if (isHandwritten) {
+            message = {
+                role: 'user',
+                content: [
+                    imagePart(imageData),
+                    { type: 'text', text: `Analyze the handwritten answer in this image and grade it against the question.\n\n${promptText}` },
+                ],
+            };
         } else {
-            promptTokens = [`Student Typed Answer: ${typedAnswer}\n\n${promptText}`];
+            message = { role: 'user', content: `Student Typed Answer: ${typedAnswer}\n\n${promptText}` };
         }
 
-        const result = await model.generateContent(promptTokens);
-        const parsed = JSON.parse(result.response.text());
+        const { data: parsed, model } = await generateJson({
+            messages: [message],
+            json: true,
+            vision: isHandwritten,
+        });
         const score = Math.max(0, Math.min(safeMaxScore, Number(parsed.score) || 0));
 
         const payload = {
@@ -97,7 +89,7 @@ export async function POST(request: Request) {
             userId: billing.user.id,
             feature: 'ai_grade',
             source: 'ai_grade',
-            modelName: 'gemini-3-flash-preview',
+            modelName: model,
             inputSize: `${question || ''}${context || ''}${typedAnswer || ''}`.length,
             outputSize: JSON.stringify(payload).length,
             metadata: {

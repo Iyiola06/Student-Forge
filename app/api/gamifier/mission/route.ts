@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { generateJson, isAIConfigured } from '@/lib/ai/openrouter';
 import { createAuthedRouteClient } from '@/lib/supabase/routeAuth';
 import {
     AdventureNode,
@@ -8,9 +8,6 @@ import {
     createInitialRunState,
     rewardCatalog,
 } from '@/lib/gamifier/adventure';
-
-const apiKey = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey || '');
 
 const requestSchema = z.object({
     resourceId: z.string().uuid().optional(),
@@ -37,14 +34,6 @@ const generatedSchema = z.object({
         explanation: z.string(),
     })).min(3).max(4),
 });
-
-function safeJsonParse<T>(value: string): T | null {
-    try {
-        return JSON.parse(value) as T;
-    } catch {
-        return null;
-    }
-}
 
 function buildFallbackPackage(subject: string, title: string, sourceLabel: string) {
     const promptBase = subject || title || 'General Study';
@@ -122,12 +111,11 @@ function buildFallbackPackage(subject: string, title: string, sourceLabel: strin
 }
 
 async function generateStoryPackage(context: string, subject: string, sourceLabel: string) {
-    if (!apiKey) {
+    if (!isAIConfigured()) {
         return buildFallbackPackage(subject, subject, sourceLabel);
     }
 
     try {
-        const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
         const prompt = `You are designing a short tactical study adventure for a student.
 Return valid JSON only with this structure:
 {
@@ -156,10 +144,12 @@ Source label: ${sourceLabel}
 Source context:
 ${context.slice(0, 12000)}`;
 
-        const result = await model.generateContent(prompt);
-        const parsed = safeJsonParse<z.infer<typeof generatedSchema>>(result.response.text().trim());
-        const validated = parsed ? generatedSchema.safeParse(parsed) : null;
-        if (validated?.success) return validated.data;
+        const { data } = await generateJson({
+            messages: [{ role: 'user', content: prompt }],
+            json: true,
+            schema: generatedSchema,
+        });
+        return data;
     } catch (error) {
         console.error('Failed to generate gamifier package:', error);
     }

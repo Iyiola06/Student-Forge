@@ -224,7 +224,7 @@ const QuizView: React.FC<QuizViewProps> = ({ quiz, sourceText, onRestart }) => {
                                     <div className="absolute inset-0 border-[6px] border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
                                 </div>
                                 <p className="text-2xl font-black text-slate-800 dark:text-white mb-2">{GRADING_MESSAGES[gradingStep]}</p>
-                                <p className="text-sm font-bold text-slate-400 uppercase tracking-[0.3em]">Gemini AI is Reviewing</p>
+                                <p className="text-sm font-bold text-slate-400 uppercase tracking-[0.3em]">AI is Reviewing</p>
                             </div>
                         )}
                     </div>

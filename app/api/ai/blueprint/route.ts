@@ -1,25 +1,17 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { generateJson, isAIConfigured } from '@/lib/ai/openrouter';
 import { requireCredits } from '@/lib/billing/server';
 import { finalizeAiUsage } from '@/lib/ai/usage';
 
-const apiKey = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey || '');
-
 export async function POST(request: Request) {
   try {
-    if (!apiKey) return NextResponse.json({ error: 'AI Service key missing' }, { status: 500 });
+    if (!isAIConfigured()) return NextResponse.json({ error: 'AI Service key missing' }, { status: 500 });
 
     const billing = await requireCredits(request, 'ai_blueprint');
     if (!billing.ok) return NextResponse.json(billing.body, { status: billing.status });
 
     const { sourceText } = await request.json();
     if (!sourceText) return NextResponse.json({ error: 'Source text required' }, { status: 400 });
-
-    const model = genAI.getGenerativeModel({
-      model: "gemini-3-flash-preview",
-      generationConfig: { responseMimeType: "application/json" }
-    });
 
     const prompt = `
         As a Master Academic Strategist, analyze the following text and generate a structured "Study Blueprint".
@@ -43,15 +35,17 @@ export async function POST(request: Request) {
         ${sourceText.substring(0, 30000)}
         `;
 
-    const result = await model.generateContent(prompt);
-    const payload = JSON.parse(result.response.text());
+    const { data: payload, model } = await generateJson({
+      messages: [{ role: 'user', content: prompt }],
+      json: true,
+    });
 
     await finalizeAiUsage({
       supabase: billing.supabase,
       userId: billing.user.id,
       feature: 'ai_blueprint',
       source: 'ai_blueprint',
-      modelName: 'gemini-3-flash-preview',
+      modelName: model,
       inputSize: sourceText.length,
       outputSize: JSON.stringify(payload).length,
       metadata: {

@@ -1,15 +1,13 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { generateJson, isAIConfigured } from '@/lib/ai/openrouter';
 import { requireCredits } from '@/lib/billing/server';
 import { finalizeAiUsage } from '@/lib/ai/usage';
 
-const apiKey = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey || '');
 const MAX_CHARS = 30000;
 
 export async function POST(request: Request) {
   try {
-    if (!apiKey) {
+    if (!isAIConfigured()) {
       return NextResponse.json({ error: 'AI Service key is missing' }, { status: 500 });
     }
 
@@ -18,11 +16,6 @@ export async function POST(request: Request) {
 
     const { sourceText, mode, count } = await request.json();
     if (!sourceText) return NextResponse.json({ error: 'Source text is required' }, { status: 400 });
-
-    const model = genAI.getGenerativeModel({
-      model: "gemini-3-flash-preview",
-      generationConfig: { responseMimeType: "application/json" }
-    });
 
     const prompt = `
         You are an expert academic tutor. Generate a high-quality study quiz based on the provided text.
@@ -47,8 +40,10 @@ export async function POST(request: Request) {
         ${sourceText.substring(0, MAX_CHARS)}
         `;
 
-    const result = await model.generateContent(prompt);
-    const parsedData = JSON.parse(result.response.text());
+    const { data: parsedData, model } = await generateJson({
+      messages: [{ role: 'user', content: prompt }],
+      json: true,
+    });
 
     if ((mode || 'mcq') === 'mcq' && parsedData.questions && Array.isArray(parsedData.questions)) {
       parsedData.questions.forEach((q: any) => {
@@ -66,7 +61,7 @@ export async function POST(request: Request) {
       userId: billing.user.id,
       feature: 'ai_quiz',
       source: 'ai_quiz',
-      modelName: 'gemini-3-flash-preview',
+      modelName: model,
       inputSize: sourceText.length,
       outputSize: Array.isArray(parsedData.questions) ? parsedData.questions.length : 0,
       metadata: {
