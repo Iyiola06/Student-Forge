@@ -92,6 +92,7 @@ begin
   if auth.uid() is distinct from p_user_id and auth.role() <> 'service_role' then
     raise exception 'Unauthorized';
   end if;
+  perform set_config('app.allow_critical_profile_updates', 'true', true);
   update public.profiles
   set streak_freezes = least(2, coalesce(streak_freezes, 0) + 1)
   where id = p_user_id
