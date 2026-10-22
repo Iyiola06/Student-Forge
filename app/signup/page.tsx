@@ -104,13 +104,13 @@ export default function SignupPage() {
           </p>
 
           <div className="auth-surface mt-8">
-            <div className="rounded-[24px] border border-[#4f86c5]/18 bg-[linear-gradient(180deg,rgba(79,134,197,0.12),rgba(255,255,255,0.82))] p-5 dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(79,134,197,0.16),rgba(255,255,255,0.04))]">
+            <div className="rounded-[24px] border border-[#4a9be8]/18 bg-[linear-gradient(180deg,rgba(79,134,197,0.12),rgba(255,255,255,0.82))] p-5 dark:border-white/10 dark:bg-[linear-gradient(180deg,rgba(79,134,197,0.16),rgba(255,255,255,0.04))]">
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="text-sm font-black text-slate-950 dark:text-white">Sulva’s Studify</p>
                   <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">A cleaner workspace for upload, generation, and daily review.</p>
                 </div>
-                <div className="flex size-16 items-center justify-center rounded-full border border-[#4f86c5]/20 bg-white/90 text-[#2c5d92] shadow-[0_12px_28px_rgba(79,134,197,0.14)] dark:border-white/10 dark:bg-white/10 dark:text-[#ffd493]">
+                <div className="flex size-16 items-center justify-center rounded-full border border-[#4a9be8]/20 bg-white/90 text-[#2f7fd3] shadow-[0_12px_28px_rgba(79,134,197,0.14)] dark:border-white/10 dark:bg-white/10 dark:text-[#ffd493]">
                   <span className="text-lg font-black">75%</span>
                 </div>
               </div>
@@ -186,7 +186,7 @@ export default function SignupPage() {
                 type="checkbox"
                 checked={termsAccepted}
                 onChange={(event) => setTermsAccepted(event.target.checked)}
-                className="mt-1 size-4 rounded border-black/10 text-[#163f73]"
+                className="mt-1 size-4 rounded border-black/10 text-[#2266ad]"
               />
               <span>
                 I agree to the{' '}

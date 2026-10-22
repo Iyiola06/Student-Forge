@@ -48,7 +48,7 @@ function BillingCallbackInner() {
   return (
     <main className="main-bg min-h-screen px-4 py-16 text-slate-950 dark:text-white">
       <div className="glass-panel mx-auto max-w-xl p-8 text-center md:p-10">
-        <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[#163f73]/8 text-[#163f73] dark:bg-white/8 dark:text-[#f6b252]">
+        <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[#2266ad]/8 text-[#2266ad] dark:bg-white/8 dark:text-[#f6b252]">
           <span className="material-symbols-outlined text-3xl">
             {status === 'error' ? 'error' : status === 'success' ? 'verified' : 'sync'}
           </span>
@@ -74,7 +74,7 @@ export default function BillingCallbackPage() {
       fallback={
         <main className="main-bg min-h-screen px-4 py-16 text-slate-950 dark:text-white">
           <div className="glass-panel mx-auto max-w-xl p-8 text-center md:p-10">
-            <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[#163f73]/8 text-[#163f73] dark:bg-white/8 dark:text-[#f6b252]">
+            <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-[#2266ad]/8 text-[#2266ad] dark:bg-white/8 dark:text-[#f6b252]">
               <span className="material-symbols-outlined text-3xl">sync</span>
             </div>
             <h1 className="mt-6 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">Wallet update</h1>

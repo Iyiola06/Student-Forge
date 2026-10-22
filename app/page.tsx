@@ -1,12 +1,6 @@
-import CTASection from '@/components/marketing/CTASection';
-import DailyHabitSection from '@/components/marketing/DailyHabitSection';
-import FeatureGrid from '@/components/marketing/FeatureGrid';
-import FeatureShowcase from '@/components/marketing/FeatureShowcase';
-import HeroSection from '@/components/marketing/HeroSection';
 import MarketingNavbar from '@/components/marketing/MarketingNavbar';
 import PremiumFooter from '@/components/marketing/PremiumFooter';
-import PricingTeaser from '@/components/marketing/PricingTeaser';
-import TrustProofStrip from '@/components/marketing/TrustProofStrip';
+import { ExamStrip, Faq, FinalCta, Hero, Mission, Pillars, Pricing, Statement, StudyLoop, Tools } from '@/components/marketing/Landing';
 import SystemThemeSync from '@/components/theme/SystemThemeSync';
 import { getCreditBundles } from '@/lib/billing/config';
 
@@ -14,17 +8,20 @@ export default function LandingPage() {
   const bundles = getCreditBundles().slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-[#faf9f6] text-slate-900 dark:bg-[#0b1420] dark:text-white">
+    <div className="min-h-screen overflow-x-hidden bg-white text-[var(--text-strong)] dark:bg-[#070d1a]">
       <SystemThemeSync />
       <MarketingNavbar />
       <main>
-        <HeroSection />
-        <TrustProofStrip />
-        <FeatureGrid />
-        <FeatureShowcase />
-        <DailyHabitSection />
-        <PricingTeaser bundles={bundles} />
-        <CTASection />
+        <Hero />
+        <ExamStrip />
+        <Statement />
+        <Pillars />
+        <StudyLoop />
+        <Tools />
+        <Mission />
+        <Pricing bundles={bundles} />
+        <Faq />
+        <FinalCta />
       </main>
       <PremiumFooter />
     </div>

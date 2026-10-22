@@ -59,21 +59,21 @@ export default function MissionBoard({
             <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
 
             {/* Modal */}
-            <div className="relative w-full max-w-2xl bg-[#101022] border border-[#2d2d3f] rounded-t-3xl sm:rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[80vh]">
+            <div className="relative w-full max-w-2xl bg-[#070d1a] border border-[#1d2a42] rounded-t-3xl sm:rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[80vh]">
 
                 {/* Header */}
-                <header className="p-5 md:p-8 border-b border-[#2d2d3f] bg-gradient-to-r from-[#101022] to-[#1a1a2e] flex justify-between items-center">
+                <header className="p-5 md:p-8 border-b border-[#1d2a42] bg-gradient-to-r from-[#070d1a] to-[#13203a] flex justify-between items-center">
                     <div>
                         <h2 className="text-xl md:text-3xl font-black text-white">MISSION BOARD</h2>
                         <p className="text-[9px] md:text-xs font-bold text-[#38bdf8] uppercase tracking-[0.2em] md:tracking-[0.3em] mt-1">Priority assignments</p>
                     </div>
-                    <button onClick={onClose} className="size-10 rounded-full border border-[#2d2d3f] flex items-center justify-center hover:bg-[#1b1b2f] transition-colors">
+                    <button onClick={onClose} className="size-10 rounded-full border border-[#1d2a42] flex items-center justify-center hover:bg-[#13203a] transition-colors">
                         <span className="material-symbols-outlined text-slate-400">close</span>
                     </button>
                 </header>
 
                 {/* Tabs */}
-                <div className="flex border-b border-[#2d2d3f] p-2 bg-[#0c0c16]">
+                <div className="flex border-b border-[#1d2a42] p-2 bg-[#070d1a]">
                     <button
                         onClick={() => setTab('daily')}
                         className={`flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${tab === 'daily' ? 'bg-[#ea580c] text-white shadow-lg shadow-[#ea580c]/20' : 'text-slate-500 hover:text-slate-300'}`}
@@ -95,8 +95,8 @@ export default function MissionBoard({
                         const pct = (m.progress / m.target) * 100;
 
                         return (
-                            <div key={m.id} className={`p-4 md:p-5 rounded-2xl border transition-all flex items-start md:items-center gap-3 md:gap-6 ${isComplete ? 'bg-[#050510]/50 border-green-500/30' : 'bg-[#1b1b2f]/50 border-[#2d2d3f] hover:border-slate-700'}`}>
-                                <div className={`size-10 md:size-12 rounded-xl flex items-center justify-center shrink-0 ${isComplete ? 'bg-green-500/20 text-green-500' : 'bg-[#0c0c16] text-[#38bdf8]'}`}>
+                            <div key={m.id} className={`p-4 md:p-5 rounded-2xl border transition-all flex items-start md:items-center gap-3 md:gap-6 ${isComplete ? 'bg-[#070d1a]/50 border-green-500/30' : 'bg-[#13203a]/50 border-[#1d2a42] hover:border-slate-700'}`}>
+                                <div className={`size-10 md:size-12 rounded-xl flex items-center justify-center shrink-0 ${isComplete ? 'bg-green-500/20 text-green-500' : 'bg-[#070d1a] text-[#38bdf8]'}`}>
                                     <span className="material-symbols-outlined text-xl md:text-2xl">
                                         {isComplete ? 'verified' : (m.type === 'daily' ? 'schedule' : 'stars')}
                                     </span>
@@ -113,7 +113,7 @@ export default function MissionBoard({
                                     <p className="text-xs text-slate-500 mb-3">{m.desc}</p>
 
                                     <div className="flex items-center gap-4">
-                                        <div className="flex-1 h-1.5 bg-[#0c0c16] rounded-full overflow-hidden">
+                                        <div className="flex-1 h-1.5 bg-[#070d1a] rounded-full overflow-hidden">
                                             <div
                                                 className={`h-full rounded-full transition-all duration-1000 ${isComplete ? 'bg-green-500' : (m.type === 'daily' ? 'bg-[#ea580c]' : 'bg-[#7c3aed]')}`}
                                                 style={{ width: `${pct}%` }}
@@ -139,7 +139,7 @@ export default function MissionBoard({
                 </main>
 
                 {/* Footer */}
-                <footer className="p-4 border-t border-[#2d2d3f] bg-[#0c0c16] text-center">
+                <footer className="p-4 border-t border-[#1d2a42] bg-[#070d1a] text-center">
                     <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">
                         {tab === 'daily' ? 'Next refresh at 00:00 local time' : 'Season ends in 4 days, 12 hours'}
                     </p>
@@ -154,7 +154,7 @@ export default function MissionBoard({
                     background: transparent;
                 }
                 .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: #2d2d3f;
+                    background: #1d2a42;
                     border-radius: 10px;
                 }
             `}</style>

@@ -105,6 +105,10 @@ export default function GeneratorPage() {
     const params = new URLSearchParams(window.location.search);
     const resourceId = params.get('resource');
     const outputType = params.get('type');
+    const focusTopic = params.get('topic');
+    if (focusTopic) {
+      setTopic(focusTopic);
+    }
     if (resourceId) {
       setSelectedResource(resourceId);
     }
@@ -228,8 +232,8 @@ export default function GeneratorPage() {
                   className={cn(
                     'rounded-[18px] border p-4 text-left transition-all',
                     type === option.id
-                      ? 'border-[#163f73]/20 bg-[#163f73]/8 dark:border-[#f39a2b]/20 dark:bg-[#f39a2b]/10'
-                      : 'border-black/8 bg-white/60 hover:border-[#163f73]/20 dark:border-white/10 dark:bg-white/5'
+                      ? 'border-[#2266ad]/20 bg-[#2266ad]/8 dark:border-[#f39a2b]/20 dark:bg-[#f39a2b]/10'
+                      : 'border-black/8 bg-white/60 hover:border-[#2266ad]/20 dark:border-white/10 dark:bg-white/5'
                   )}
                 >
                   <p className="text-sm font-black text-slate-950 dark:text-white">{option.label}</p>
@@ -249,7 +253,7 @@ export default function GeneratorPage() {
                       className={cn(
                         'rounded-2xl px-3 py-3 text-sm font-black capitalize transition-all',
                         difficulty === level
-                          ? 'bg-[#163f73] text-white'
+                          ? 'bg-[#2266ad] text-white'
                           : 'border border-black/8 bg-white/60 text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-white'
                       )}
                     >
@@ -261,7 +265,7 @@ export default function GeneratorPage() {
 
               <div>
                 <label className="mb-2 block text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">Item count</label>
-                <input type="range" min="4" max="20" value={count} onChange={(event) => setCount(Number(event.target.value))} className="mt-3 w-full accent-[#163f73]" />
+                <input type="range" min="4" max="20" value={count} onChange={(event) => setCount(Number(event.target.value))} className="mt-3 w-full accent-[#2266ad]" />
                 <p className="mt-2 text-sm font-black text-slate-700 dark:text-slate-200">{count} items</p>
               </div>
             </div>

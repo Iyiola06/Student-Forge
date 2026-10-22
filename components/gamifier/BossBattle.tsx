@@ -278,7 +278,7 @@ export default function BossBattle({
                         </div>
                     </div>
 
-                    <div className="w-full bg-[#101022]/80 backdrop-blur-md border border-[#2d2d3f] p-4 md:p-8 rounded-3xl relative overflow-y-auto flex-1 min-h-0 scrollbar-hide">
+                    <div className="w-full bg-[#070d1a]/80 backdrop-blur-md border border-[#1d2a42] p-4 md:p-8 rounded-3xl relative overflow-y-auto flex-1 min-h-0 scrollbar-hide">
                         {/* Question Badge */}
                         <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#7c3aed] px-3 md:px-4 py-1 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest whitespace-nowrap z-10">
                             Inquiry {currentIdx + 1} / 3
@@ -293,7 +293,7 @@ export default function BossBattle({
                                 const isThisSelected = selectedOption === option;
                                 const isThisCorrect = option === questions[currentIdx].answer;
 
-                                let style = "border-[#2d2d3f] text-slate-300 hover:border-[#7c3aed] hover:bg-[#1e1b4b]/50";
+                                let style = "border-[#1d2a42] text-slate-300 hover:border-[#7c3aed] hover:bg-[#1e1b4b]/50";
                                 if (isThisSelected) {
                                     style = isCorrect ? "border-green-500 bg-green-500/20 text-white" : "border-red-500 bg-red-500/20 text-white";
                                 } else if (selectedOption && isThisCorrect) {
@@ -308,7 +308,7 @@ export default function BossBattle({
                                         className={`p-3 md:p-5 rounded-2xl border-2 transition-all text-left font-medium relative group text-sm md:text-base ${style}`}
                                     >
                                         <div className="flex items-center gap-3 md:gap-4">
-                                            <div className={`size-6 md:size-8 text-xs md:text-base rounded-full border-2 flex items-center justify-center shrink-0 font-bold ${isThisSelected ? 'border-white' : 'border-[#2d2d3f] group-hover:border-[#7c3aed]'}`}>
+                                            <div className={`size-6 md:size-8 text-xs md:text-base rounded-full border-2 flex items-center justify-center shrink-0 font-bold ${isThisSelected ? 'border-white' : 'border-[#1d2a42] group-hover:border-[#7c3aed]'}`}>
                                                 {String.fromCharCode(65 + idx)}
                                             </div>
                                             <span className="flex-1">{option}</span>

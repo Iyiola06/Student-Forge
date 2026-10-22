@@ -125,13 +125,13 @@ export default function SessionPlay({ session, onPersist, onComplete, onAbort }:
     if (!currentRound) return null;
 
     return (
-        <div className="relative min-h-[100dvh] overflow-hidden bg-[#0a0c12] text-white">
+        <div className="relative min-h-[100dvh] overflow-hidden bg-[#070d1a] text-white">
             <div className={`absolute inset-0 bg-gradient-to-br ${theme.gradient}`} />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_28%),linear-gradient(180deg,rgba(10,12,18,0.05),rgba(10,12,18,0.96))]" />
 
             <div className="relative z-10 mx-auto max-w-7xl px-4 py-6 sm:px-8 sm:py-8">
                 <div className="grid gap-6 xl:grid-cols-[320px_1fr]">
-                    <aside className={`h-fit rounded-[2rem] border ${theme.border} bg-[#11141d]/78 p-6 backdrop-blur-xl xl:sticky xl:top-6`}>
+                    <aside className={`h-fit rounded-[2rem] border ${theme.border} bg-[#0f192c]/78 p-6 backdrop-blur-xl xl:sticky xl:top-6`}>
                         <div className="mb-3 text-xs font-black uppercase tracking-[0.35em] text-slate-300">{modeLabels[session.mode].title}</div>
                         <h1 className="text-3xl font-black leading-tight">{currentRound.topic}</h1>
                         <p className="mt-2 text-sm text-slate-400">{currentRound.subject}</p>
@@ -185,7 +185,7 @@ export default function SessionPlay({ session, onPersist, onComplete, onAbort }:
                         {isSaving && <div className="mt-3 text-xs text-slate-500">Saving session...</div>}
                     </aside>
 
-                    <main className="rounded-[2rem] border border-white/10 bg-[#11141d]/78 p-6 backdrop-blur-xl sm:p-8">
+                    <main className="rounded-[2rem] border border-white/10 bg-[#0f192c]/78 p-6 backdrop-blur-xl sm:p-8">
                         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                             <div>
                                 <div className={`mb-2 inline-flex rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.3em] ${theme.badge}`}>

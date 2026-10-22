@@ -26,7 +26,7 @@ export default function GameLobby({
     const theme = getTopicTheme(activeSession?.subject || featuredResources[0]?.subject || 'General Study');
 
     return (
-        <div className="relative min-h-[100dvh] overflow-hidden bg-[#0a0c12] text-white">
+        <div className="relative min-h-[100dvh] overflow-hidden bg-[#070d1a] text-white">
             <div className={`absolute inset-0 bg-gradient-to-br ${theme.gradient}`} />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_32%),linear-gradient(180deg,rgba(10,12,18,0.15),rgba(10,12,18,0.96))]" />
 
@@ -43,7 +43,7 @@ export default function GameLobby({
                         </p>
                     </div>
 
-                    <div className={`rounded-[2rem] border ${theme.border} bg-[#11141d]/75 p-6 backdrop-blur-xl ${theme.pulse}`}>
+                    <div className={`rounded-[2rem] border ${theme.border} bg-[#0f192c]/75 p-6 backdrop-blur-xl ${theme.pulse}`}>
                         <div className="mb-6 flex items-center gap-4">
                             <div
                                 className="size-16 rounded-2xl border border-white/15 bg-cover bg-center"
@@ -73,7 +73,7 @@ export default function GameLobby({
                         {activeSession ? (
                             <button
                                 onClick={onResumeSession}
-                                className="w-full rounded-2xl bg-white px-5 py-4 font-black text-[#0a0c12] transition hover:bg-slate-100"
+                                className="w-full rounded-2xl bg-white px-5 py-4 font-black text-[#070d1a] transition hover:bg-slate-100"
                             >
                                 Resume {modeLabels[activeSession.mode].title}
                             </button>
@@ -90,7 +90,7 @@ export default function GameLobby({
                 </div>
 
                 <div className="grid gap-8 xl:grid-cols-[1.3fr_0.9fr]">
-                    <div className="rounded-[2rem] border border-white/10 bg-[#11141d]/70 p-6 backdrop-blur-xl sm:p-8">
+                    <div className="rounded-[2rem] border border-white/10 bg-[#0f192c]/70 p-6 backdrop-blur-xl sm:p-8">
                         <div className="mb-6">
                             <h2 className="text-2xl font-black">Choose Your Mode</h2>
                             <p className="mt-1 text-sm text-slate-400">Two clicks to play. Topic stays visible the whole time.</p>
@@ -126,7 +126,7 @@ export default function GameLobby({
                                             key={resource.id}
                                             onClick={() => onStartSession('quick_recall', resource.id)}
                                             disabled={isLaunching}
-                                            className={`rounded-[1.4rem] border ${resourceTheme.border} bg-[#0f1219] p-5 text-left transition hover:-translate-y-1`}
+                                            className={`rounded-[1.4rem] border ${resourceTheme.border} bg-[#0f192c] p-5 text-left transition hover:-translate-y-1`}
                                         >
                                             <div className={`mb-3 inline-flex rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.25em] ${resourceTheme.badge}`}>
                                                 {resource.subject || 'General'}
@@ -138,7 +138,7 @@ export default function GameLobby({
                                         </button>
                                     );
                                 }) : (
-                                    <div className="rounded-[1.5rem] border border-white/10 bg-[#0f1219] p-5 text-sm text-slate-400 md:col-span-2 xl:col-span-3">
+                                    <div className="rounded-[1.5rem] border border-white/10 bg-[#0f192c] p-5 text-sm text-slate-400 md:col-span-2 xl:col-span-3">
                                         No uploaded resources yet. You can still play using saved quizzes, flashcards, and community fallbacks.
                                     </div>
                                 )}
@@ -147,7 +147,7 @@ export default function GameLobby({
                     </div>
 
                     <div className="space-y-6">
-                        <div className="rounded-[2rem] border border-white/10 bg-[#11141d]/70 p-6 backdrop-blur-xl">
+                        <div className="rounded-[2rem] border border-white/10 bg-[#0f192c]/70 p-6 backdrop-blur-xl">
                             <h3 className="mb-4 text-lg font-black">How It Feels</h3>
                             <div className="space-y-3 text-sm text-slate-300">
                                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">Short sessions: 2 to 5 minutes, built for “one more run.”</div>
@@ -157,7 +157,7 @@ export default function GameLobby({
                             </div>
                         </div>
 
-                        <div className="rounded-[2rem] border border-white/10 bg-[#11141d]/70 p-6 backdrop-blur-xl">
+                        <div className="rounded-[2rem] border border-white/10 bg-[#0f192c]/70 p-6 backdrop-blur-xl">
                             <h3 className="mb-4 text-lg font-black">What Powers The Rounds</h3>
                             <div className="grid gap-3">
                                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4">

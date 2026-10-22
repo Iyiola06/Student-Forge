@@ -226,9 +226,9 @@ export default function SpaceReader({
     const shipBottom = `${progressPct}%`;
 
     return (
-        <div className="flex flex-col h-[100dvh] w-full bg-[#050510] text-white font-display overflow-hidden selection:bg-[#ea580c]/30">
+        <div className="flex flex-col h-[100dvh] w-full bg-[#070d1a] text-white font-display overflow-hidden selection:bg-[#ea580c]/30">
             {/* Top Bar */}
-            <header className="h-14 border-b border-[#2d2d3f] bg-[#0c0c16]/90 backdrop-blur flex items-center justify-between px-3 md:px-6 shrink-0 z-40 relative shadow-md shadow-black/50">
+            <header className="h-14 border-b border-[#1d2a42] bg-[#070d1a]/90 backdrop-blur flex items-center justify-between px-3 md:px-6 shrink-0 z-40 relative shadow-md shadow-black/50">
                 <div className="flex items-center gap-2 min-w-0 flex-1">
                     <span className="material-symbols-outlined text-[#38bdf8] text-[20px] shrink-0">public</span>
                     <h2 className="font-bold text-xs md:text-sm truncate text-slate-200">{resource.title}</h2>
@@ -238,7 +238,7 @@ export default function SpaceReader({
                 <div className="flex items-center gap-2 md:gap-6 shrink-0">
                     <div className="flex gap-0.5 md:gap-1">
                         {[1, 2, 3].map(i => (
-                            <span key={i} className={`material-symbols-outlined text-xs md:text-sm ${i <= shields ? 'text-[#38bdf8] drop-shadow-[0_0_5px_#38bdf8]' : 'text-[#2d2d3f]'}`}>
+                            <span key={i} className={`material-symbols-outlined text-xs md:text-sm ${i <= shields ? 'text-[#38bdf8] drop-shadow-[0_0_5px_#38bdf8]' : 'text-[#1d2a42]'}`}>
                                 verified_user
                             </span>
                         ))}
@@ -251,7 +251,7 @@ export default function SpaceReader({
                 </div>
 
                 {/* Global Neon Progress Bar */}
-                <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#1a1a2e]">
+                <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#13203a]">
                     <div className="h-full bg-gradient-to-r from-blue-600 via-[#38bdf8] to-[#ea580c] transition-all duration-700 ease-out shadow-[0_0_10px_#38bdf8]"
                         style={{ width: `${progressPct}%` }} />
                     <div className="absolute top-1/2 left-[25%] -translate-y-1/2 w-[3px] h-[6px] bg-[#38bdf8]" />
@@ -266,7 +266,7 @@ export default function SpaceReader({
                 {/* Milestone Banner */}
                 {milestone && (
                     <div className="absolute top-6 md:top-10 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-top-10 fade-in zoom-in duration-500 w-[90%] md:w-auto max-w-md">
-                        <div className="bg-[#101022]/90 backdrop-blur-md border border-[#ea580c] px-6 md:px-10 py-3 md:py-4 rounded-2xl shadow-[0_0_40px_rgba(234,88,12,0.4)] text-center flex flex-col items-center">
+                        <div className="bg-[#070d1a]/90 backdrop-blur-md border border-[#ea580c] px-6 md:px-10 py-3 md:py-4 rounded-2xl shadow-[0_0_40px_rgba(234,88,12,0.4)] text-center flex flex-col items-center">
                             <span className="material-symbols-outlined text-3xl md:text-4xl text-[#ea580c] mb-1">workspace_premium</span>
                             <h2 className="text-lg md:text-2xl font-black text-white">{milestone.text}</h2>
                             <p className="text-xs md:text-sm font-bold text-[#ea580c] uppercase tracking-widest mt-1">Keep Pushing Forward!</p>
@@ -283,7 +283,7 @@ export default function SpaceReader({
                 ))}
 
                 {/* Left 68%: PDF Canvas or Text View */}
-                <main className="flex-1 lg:w-[68%] h-full bg-[#050510] relative flex flex-col border-r border-[#2d2d3f]">
+                <main className="flex-1 lg:w-[68%] h-full bg-[#070d1a] relative flex flex-col border-r border-[#1d2a42]">
                     {!isPdf && textPages.length === 0 && (
                         <div className="flex-1 flex flex-col items-center justify-center text-slate-500">
                             <div className="size-16 rounded-full border border-dashed border-[#ea580c] animate-spin border-t-transparent mx-auto mb-4" />
@@ -302,7 +302,7 @@ export default function SpaceReader({
                                 return (
                                     <div className="w-full flex flex-col rounded-2xl overflow-hidden shadow-2xl">
                                         {/* Slide Header */}
-                                        <div className="shrink-0 bg-gradient-to-r from-[#1e1b4b] to-[#0c0c16] border-b-4 border-[#7c3aed] px-6 md:px-10 py-4 md:py-6">
+                                        <div className="shrink-0 bg-gradient-to-r from-[#1e1b4b] to-[#070d1a] border-b-4 border-[#7c3aed] px-6 md:px-10 py-4 md:py-6">
                                             <div className="flex items-center gap-3 mb-2">
                                                 <span className="material-symbols-outlined text-[#7c3aed] text-base">slideshow</span>
                                                 <span className="text-[10px] font-bold uppercase tracking-widest text-[#7c3aed]">Slide {currentPage} / {numPages}</span>
@@ -312,7 +312,7 @@ export default function SpaceReader({
                                             </h2>
                                         </div>
                                         {/* Slide Body */}
-                                        <div className="bg-[#101022]/90 border border-t-0 border-[#2d2d3f] px-6 md:px-10 py-6">
+                                        <div className="bg-[#070d1a]/90 border border-t-0 border-[#1d2a42] px-6 md:px-10 py-6">
                                             {bodyLines.length > 0 ? (
                                                 <ul className="space-y-3">
                                                     {bodyLines.map((line, i) => (
@@ -341,8 +341,8 @@ export default function SpaceReader({
                                     </div>
                                 </div>
                             ) : (
-                                <div className="bg-[#101022]/80 backdrop-blur-xl border border-[#2d2d3f] rounded-2xl w-full shadow-2xl overflow-hidden">
-                                    <div className="bg-[#0c0c16]/90 border-b border-[#2d2d3f] px-6 py-3 flex items-center gap-2">
+                                <div className="bg-[#070d1a]/80 backdrop-blur-xl border border-[#1d2a42] rounded-2xl w-full shadow-2xl overflow-hidden">
+                                    <div className="bg-[#070d1a]/90 border-b border-[#1d2a42] px-6 py-3 flex items-center gap-2">
                                         <span className="material-symbols-outlined text-[#38bdf8] text-base">article</span>
                                         <span className="text-[10px] font-black text-[#38bdf8] uppercase tracking-[0.3em] opacity-70">Sector {currentPage} / {numPages}</span>
                                     </div>
@@ -358,11 +358,11 @@ export default function SpaceReader({
 
                     {/* Pinned Navigation Bar — always visible, never scrolls */}
                     {numPages > 0 && (
-                        <div className="shrink-0 border-t border-[#2d2d3f] bg-[#0c0c16]/90 backdrop-blur px-4 md:px-8 pb-24 pt-3 lg:py-3 flex items-center justify-between gap-4 z-30">
+                        <div className="shrink-0 border-t border-[#1d2a42] bg-[#070d1a]/90 backdrop-blur px-4 md:px-8 pb-24 pt-3 lg:py-3 flex items-center justify-between gap-4 z-30">
                             <button
                                 onClick={() => handleTurn(-1)}
                                 disabled={currentPage <= 1}
-                                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#2d2d3f] bg-[#101022] hover:bg-[#1b1b2f] hover:border-[#38bdf8] text-slate-400 hover:text-[#38bdf8] transition-all disabled:opacity-20 disabled:cursor-not-allowed group text-sm font-bold"
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#1d2a42] bg-[#070d1a] hover:bg-[#13203a] hover:border-[#38bdf8] text-slate-400 hover:text-[#38bdf8] transition-all disabled:opacity-20 disabled:cursor-not-allowed group text-sm font-bold"
                             >
                                 <span className="material-symbols-outlined text-[20px]">chevron_left</span>
                                 <span className="hidden sm:inline">Previous</span>
@@ -377,7 +377,7 @@ export default function SpaceReader({
                             <button
                                 onClick={() => handleTurn(1)}
                                 disabled={currentPage >= numPages}
-                                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#2d2d3f] bg-[#101022] hover:bg-[#1b1b2f] hover:border-[#ea580c] text-slate-400 hover:text-[#ea580c] transition-all disabled:opacity-20 disabled:cursor-not-allowed group text-sm font-bold shadow-[0_0_15px_rgba(234,88,12,0.05)] hover:shadow-[0_0_20px_rgba(234,88,12,0.3)]"
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#1d2a42] bg-[#070d1a] hover:bg-[#13203a] hover:border-[#ea580c] text-slate-400 hover:text-[#ea580c] transition-all disabled:opacity-20 disabled:cursor-not-allowed group text-sm font-bold shadow-[0_0_15px_rgba(234,88,12,0.05)] hover:shadow-[0_0_20px_rgba(234,88,12,0.3)]"
                             >
                                 <span className="hidden sm:inline">Next</span>
                                 <span className="material-symbols-outlined text-[20px]">chevron_right</span>
@@ -388,22 +388,22 @@ export default function SpaceReader({
 
 
                 {/* Right 32%: Mission Control (Desktop only) */}
-                <aside className="hidden lg:flex w-[32%] h-full bg-[radial-gradient(ellipse_at_top,#141423,#050510)] p-8 flex-col relative z-10 overflow-y-auto shrink-0 [scrollbar-width:thin] [scrollbar-color:#2d2d3f_transparent]">
+                <aside className="hidden lg:flex w-[32%] h-full bg-[radial-gradient(ellipse_at_top,#141423,#070d1a)] p-8 flex-col relative z-10 overflow-y-auto shrink-0 [scrollbar-width:thin] [scrollbar-color:#1d2a42_transparent]">
                     <h3 className="text-xs font-bold uppercase tracking-widest text-[#38bdf8] mb-8 flex items-center gap-2">
                         <span className="material-symbols-outlined text-[14px]">display_settings</span>
                         Mission Control
                     </h3>
 
                     <div className="flex-1 relative flex">
-                        <div className="absolute left-6 top-6 bottom-6 w-1 bg-[#1a1a2e] rounded-full">
+                        <div className="absolute left-6 top-6 bottom-6 w-1 bg-[#13203a] rounded-full">
                             <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-blue-600 via-[#38bdf8] to-[#ea580c] transition-all duration-700 shadow-[0_0_10px_#38bdf8] rounded-full"
                                 style={{ height: shipBottom }} />
-                            <div className="absolute -top-4 -left-[14px] size-8 rounded-full bg-[#1b1b2f] border-2 border-[#ea580c] shadow-[0_0_15px_rgba(234,88,12,0.5)] flex items-center justify-center text-xs">🪐</div>
+                            <div className="absolute -top-4 -left-[14px] size-8 rounded-full bg-[#13203a] border-2 border-[#ea580c] shadow-[0_0_15px_rgba(234,88,12,0.5)] flex items-center justify-center text-xs">🪐</div>
                             {[25, 50, 75].map(pct => (
                                 <div key={pct} className="absolute w-[18px] h-[4px] bg-[#38bdf8] -left-[8px] rounded-full shadow-[0_0_5px_#38bdf8]" style={{ bottom: `${pct}%` }} />
                             ))}
                             <div className="absolute -left-[18px] transition-all duration-700 ease-out z-20" style={{ bottom: shipBottom, transform: 'translateY(50%)' }}>
-                                <div className="bg-[#101022] border border-[#38bdf8] rounded-full p-2 shadow-[0_0_15px_rgba(56,189,248,0.5)] relative">
+                                <div className="bg-[#070d1a] border border-[#38bdf8] rounded-full p-2 shadow-[0_0_15px_rgba(56,189,248,0.5)] relative">
                                     <span className="material-symbols-outlined text-[#38bdf8] text-sm -rotate-90">rocket_launch</span>
                                     <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-2 h-8 bg-gradient-to-t from-transparent to-[#ea580c] blur-sm opacity-60" />
                                 </div>
@@ -419,7 +419,7 @@ export default function SpaceReader({
                                 <div className="text-[10px] uppercase font-bold text-slate-500 mb-1">Target Trajectory</div>
                                 <div className="text-3xl font-black text-[#38bdf8] drop-shadow-[0_0_8px_rgba(56,189,248,0.4)]">{Math.round(progressPct)}%</div>
                             </div>
-                            <div className="mt-12 bg-gradient-to-br from-[#1e1b4b] to-[#0c0c16] border border-[#ea580c]/30 p-6 rounded-2xl shadow-xl shadow-[#ea580c]/10 relative group overflow-hidden">
+                            <div className="mt-12 bg-gradient-to-br from-[#1e1b4b] to-[#070d1a] border border-[#ea580c]/30 p-6 rounded-2xl shadow-xl shadow-[#ea580c]/10 relative group overflow-hidden">
                                 <h4 className="text-[#ea580c] font-black text-xs uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
                                     <span className="material-symbols-outlined text-[14px]">warning</span>
                                     Sector Anomaly Detected
@@ -439,7 +439,7 @@ export default function SpaceReader({
                                         }
                                         if (readContent.length < 300) readContent = resource.content || '';
                                         onBossEncounter('Final Arena', readContent);
-                                    }} className="w-full py-3 bg-[#ea580c] hover:bg-[#f97316] text-[#0c0c16] font-black text-[10px] uppercase tracking-widest rounded-xl transition-all active:scale-95">
+                                    }} className="w-full py-3 bg-[#ea580c] hover:bg-[#f97316] text-[#070d1a] font-black text-[10px] uppercase tracking-widest rounded-xl transition-all active:scale-95">
                                         <span className="flex items-center justify-center gap-2">Engage Target <span className="material-symbols-outlined text-[16px]">rocket_launch</span></span>
                                     </button>
                                 ) : resource.processing_status === 'error' ? (
@@ -456,7 +456,7 @@ export default function SpaceReader({
                                     </div>
                                 )}
                             </div>
-                            <div className="bg-[#101022]/60 border border-[#2d2d3f] rounded-xl p-4 mt-auto mb-10 w-full relative overflow-hidden group">
+                            <div className="bg-[#070d1a]/60 border border-[#1d2a42] rounded-xl p-4 mt-auto mb-10 w-full relative overflow-hidden group">
                                 <div className="text-[10px] uppercase font-bold text-slate-500 flex items-center gap-1 mb-2">
                                     <span className="material-symbols-outlined text-[12px] text-red-500">warning</span>
                                     Next Waypoint
@@ -470,7 +470,7 @@ export default function SpaceReader({
                 </aside>
 
                 {/* Mobile Bottom HUD */}
-                <div className="lg:hidden absolute bottom-4 left-1/2 -translate-x-1/2 w-[90%] bg-[#101022]/90 backdrop-blur-md border border-[#2d2d3f] rounded-2xl p-4 flex items-center justify-between shadow-2xl shadow-black/50 z-40">
+                <div className="lg:hidden absolute bottom-4 left-1/2 -translate-x-1/2 w-[90%] bg-[#070d1a]/90 backdrop-blur-md border border-[#1d2a42] rounded-2xl p-4 flex items-center justify-between shadow-2xl shadow-black/50 z-40">
                     <div className="flex items-center gap-3">
                         <span className="material-symbols-outlined text-[#38bdf8] text-2xl">rocket_launch</span>
                         <div>
@@ -478,7 +478,7 @@ export default function SpaceReader({
                             <div className="text-lg font-black text-white">{Math.round(progressPct)}%</div>
                         </div>
                     </div>
-                    <div className="w-px h-8 bg-[#2d2d3f]" />
+                    <div className="w-px h-8 bg-[#1d2a42]" />
                     <div className="flex items-center gap-2">
                         <span className="material-symbols-outlined text-[#ea580c]">diamond</span>
                         <div className="text-lg font-black text-[#ea580c]">+{xpEarned}</div>

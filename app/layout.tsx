@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Lexend } from 'next/font/google';
+import { Inter, Lexend } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './globals.css'; // Global styles
@@ -14,10 +14,19 @@ const lexend = Lexend({
   display: 'swap',
 });
 
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
 const BRAND_NAME = 'Sulva\u2019s Studify';
 
 export const viewport: Viewport = {
-  themeColor: '#163f73',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#c6e3fb' },
+    { media: '(prefers-color-scheme: dark)', color: '#070d1a' },
+  ],
 };
 
 export const metadata: Metadata = {
@@ -63,7 +72,7 @@ import { Analytics } from '@vercel/analytics/react';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${lexend.variable}`}>
+    <html lang="en" className={`${lexend.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
@@ -93,7 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body suppressHydrationWarning className="font-display antialiased main-bg">
+      <body suppressHydrationWarning className="font-body antialiased main-bg">
         <PwaRegistration />
         <PwaInstallPrompt />
         <PushNotificationProvider />
@@ -110,7 +119,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             pauseOnFocusLoss
             draggable
             pauseOnHover
-            theme="colored"
+            theme="light"
           />
         </UploadProgressProvider>
       </body>

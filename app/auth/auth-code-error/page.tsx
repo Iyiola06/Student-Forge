@@ -27,12 +27,12 @@ function AuthErrorContent() {
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
                     Authentication Error
                 </h2>
-                <p className="text-sm text-slate-500 dark:text-[#9c9cba] mb-8">
+                <p className="text-sm text-slate-500 dark:text-[#9aa7bc] mb-8">
                     {errorMsg}
                 </p>
                 <Link
                     href="/login"
-                    className="inline-flex items-center justify-center h-12 px-6 bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 text-white font-medium rounded-lg transition-colors shadow-lg shadow-[#1a5c2a]/25"
+                    className="inline-flex items-center justify-center h-12 px-6 bg-[#2f7fd3] hover:bg-[#2f7fd3]/90 text-white font-medium rounded-lg transition-colors shadow-lg shadow-[#2f7fd3]/25"
                 >
                     Back to Login
                 </Link>

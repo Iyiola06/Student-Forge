@@ -36,7 +36,7 @@ export default function AboutPage() {
               'Turn study material into quizzes, flashcards, and recurring review sessions.',
             ].map((item) => (
               <div key={item} className="app-list-row">
-                <div className="flex size-9 items-center justify-center rounded-2xl bg-[#163f73]/8 text-[#163f73] dark:bg-white/6 dark:text-[#f6b252]">
+                <div className="flex size-9 items-center justify-center rounded-2xl bg-[#2266ad]/8 text-[#2266ad] dark:bg-white/6 dark:text-[#f6b252]">
                   <span className="material-symbols-outlined text-[18px]">check</span>
                 </div>
                 <p className="min-w-0 flex-1 text-[14px] leading-6 text-slate-700 dark:text-slate-200">{item}</p>

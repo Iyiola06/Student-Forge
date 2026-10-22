@@ -1,8 +1,10 @@
 'use client';
 
-import Link from 'next/link';
 import Image from 'next/image';
 import AppShell from '@/components/layout/AppShell';
+import AppEmptyState from '@/components/app/AppEmptyState';
+import Icon3D from '@/components/ui/Icon3D';
+import { cn } from '@/lib/utils';
 import { useProfile } from '@/hooks/useProfile';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -72,218 +74,104 @@ export default function LeaderboardPage() {
     return name || 'Student';
   };
 
+  const tabs = (
+    <div className="app-tabs">
+      <button className="app-tab" data-active={timeframe === 'all'} onClick={() => setTimeframe('all')}>
+        All time
+      </button>
+      <button className="app-tab" data-active={timeframe === 'weekly'} onClick={() => setTimeframe('weekly')}>
+        This week
+      </button>
+    </div>
+  );
+
+  const podium = [
+    { user: top3[1], place: 2, medal: 'medal' as const, height: 'h-24 md:h-32', tone: 'pastel-sky' },
+    { user: top3[0], place: 1, medal: 'first-place' as const, height: 'h-32 md:h-44', tone: 'pastel-butter' },
+    { user: top3[2], place: 3, medal: 'medal' as const, height: 'h-20 md:h-24', tone: 'pastel-peach' },
+  ];
+
   return (
-    <AppShell
-      title="Leaderboard"
-      description="Study progress across the platform"
-    >
-      <div className="workspace-stack max-w-4xl mx-auto">
-        {/* Leaderboard Content */}
-        <main className="flex-1">
-          <div className="space-y-8">
-            {isLoading ? (
-                <div className="py-20 flex justify-center items-center gap-3 text-slate-500 dark:text-[#9c9cba]">
-                  <div className="size-6 border-4 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
-                  Fetching real-time rankings...
+    <AppShell title="Leaderboard" eyebrow="Community" description="Earn XP by reviewing, practising and finishing sessions. Consistency beats cramming." actions={tabs}>
+      <div className="workspace-stack mx-auto max-w-4xl">
+        {isLoading ? (
+          <div className="flex items-center justify-center gap-3 py-20 text-[var(--text-soft)]">
+            <div className="size-6 animate-spin rounded-full border-4 border-[#4a9be8] border-t-transparent" />
+            Loading rankings...
+          </div>
+        ) : (
+          <>
+            {top3.length > 0 ? (
+              <section className="dashboard-hero-panel px-4 pt-10 sm:px-10">
+                <div className="grid grid-cols-3 items-end gap-3 sm:gap-6">
+                  {podium.map(({ user, place, medal, height, tone }) =>
+                    user ? (
+                      <div key={user.id} className="flex flex-col items-center text-center">
+                        {place === 1 ? <Icon3D name="crown" size={44} className="mb-1 animate-float" /> : null}
+                        <div className={cn('relative overflow-hidden rounded-full border-4 border-white bg-[var(--accent-soft)] shadow-[var(--shadow-md)] dark:border-white/10', place === 1 ? 'size-24 md:size-28' : 'size-16 md:size-20')}>
+                          <Image src={getAvatar(user.avatar_url)} alt="" fill className="object-cover" unoptimized />
+                        </div>
+                        <p className="mt-3 max-w-full truncate font-display text-[15px] font-semibold text-[var(--text-strong)] md:text-[17px]">
+                          {getName(user.id, user.full_name)}
+                        </p>
+                        <p className="text-[12.5px] text-[var(--text-soft)]">{user.xp?.toLocaleString()} XP</p>
+                        <div className={cn('mt-3 flex w-full items-start justify-center rounded-t-[24px] border border-b-0 border-[var(--line)] pt-3', height, tone)}>
+                          <Icon3D name={medal} size={place === 1 ? 44 : 34} />
+                        </div>
+                      </div>
+                    ) : (
+                      <div key={place} />
+                    )
+                  )}
+                </div>
+              </section>
+            ) : null}
+
+            <section className="glass-panel overflow-hidden">
+              {others.length > 0 ? (
+                <div>
+                  {others.map((user, index) => {
+                    const rank = index + 4;
+                    const isMe = user.id === profile?.id;
+                    return (
+                      <div
+                        key={user.id}
+                        className={cn(
+                          'flex items-center gap-3 border-b border-[var(--line)] px-4 py-3.5 last:border-0 md:gap-5 md:px-6',
+                          isMe ? 'bg-[var(--accent-soft)]' : 'hover:bg-[var(--accent-softer)]'
+                        )}
+                      >
+                        <span className="w-7 text-center font-display text-[15px] font-semibold tabular-nums text-[var(--text-soft)]">{rank}</span>
+                        <div className="relative size-11 shrink-0 overflow-hidden rounded-full bg-[var(--accent-soft)]">
+                          <Image src={getAvatar(user.avatar_url)} alt="" fill className="object-cover" unoptimized />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-[14.5px] font-medium text-[var(--text-strong)]">{getName(user.id, user.full_name)}</p>
+                          <p className="text-[12px] text-[var(--text-soft)]">Level {user.level || 1}</p>
+                        </div>
+                        <span className="font-display text-[16px] font-semibold tabular-nums text-[var(--text-strong)]">
+                          {user.xp?.toLocaleString()} <span className="text-[11px] font-normal text-[var(--text-soft)]">XP</span>
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               ) : (
-                <>
-                  {/* Top 3 Podium */}
-                  {top3.length > 0 && (
-                    <div className="flex flex-col md:flex-row justify-center items-center md:items-end gap-6 md:gap-8 mb-10 md:mb-16 pt-8 md:pt-16 relative">
-                      {/* 2nd Place */}
-                      {top3[1] ? (
-                        <div className="flex flex-col items-center group order-2 md:order-1">
-                          <div className="relative mb-6">
-                            <div className="size-20 md:size-24 rounded-3xl border-4 border-slate-400/50 overflow-hidden bg-[#101022] rotate-3 group-hover:rotate-0 transition-transform duration-500 shadow-[0_0_30px_rgba(148,163,184,0.2)]">
-                              <Image
-                                src={getAvatar(top3[1].avatar_url)}
-                                alt="Rank 2"
-                                fill
-                                className="object-cover scale-110"
-                                unoptimized
-                              />
-                            </div>
-                            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-slate-400 text-[#050510] text-[10px] font-black px-4 py-1 rounded-full shadow-xl">
-                              RANK 02
-                            </div>
-                          </div>
-                          <div className="text-center w-28 md:w-32">
-                            <p className="font-black text-white truncate text-base md:text-lg tracking-tighter">{getName(top3[1].id, top3[1].full_name)}</p>
-                            <p className="text-[10px] md:text-xs text-slate-400 font-bold uppercase tracking-widest">{top3[1].xp?.toLocaleString()} fuel</p>
-                          </div>
-                          <div className="h-12 md:h-32 w-20 md:w-28 bg-gradient-to-b from-slate-400/20 to-transparent border-t-4 border-slate-400 rounded-t-3xl mt-4 opacity-40 group-hover:opacity-100 transition-opacity"></div>
-                        </div>
-                      ) : (
-                        <div className="w-20 md:w-28"></div>
-                      )}
-
-                      {/* 1st Place */}
-                      {top3[0] && (
-                        <div className="flex flex-col items-center z-10 group -mt-10 md:mt-0 order-1 md:order-2">
-                          <div className="relative mb-8">
-                            {/* Crown/Apex Ring */}
-                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 flex flex-col items-center">
-                              <span className="material-symbols-outlined text-6xl text-yellow-500 animate-pulse drop-shadow-[0_0_15px_rgba(234,179,8,0.6)]">workspace_premium</span>
-                            </div>
-
-                            <div className="size-28 md:size-36 rounded-[2.5rem] border-4 border-yellow-500 overflow-hidden bg-[#101022] shadow-[0_0_60px_rgba(234,179,8,0.3)] group-hover:scale-110 transition-transform duration-700">
-                              <Image
-                                src={getAvatar(top3[0].avatar_url)}
-                                alt="Rank 1"
-                                fill
-                                className="object-cover"
-                                unoptimized
-                              />
-                            </div>
-                            <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-yellow-500 text-yellow-950 text-xs font-black px-6 py-1.5 rounded-full shadow-2xl tracking-[0.2em]">
-                              APEX
-                            </div>
-                          </div>
-                          <div className="text-center w-36 md:w-40">
-                            <p className="text-xl md:text-2xl font-black text-white tracking-tighter">{getName(top3[0].id, top3[0].full_name)}</p>
-                            <div className="flex items-center justify-center gap-2 mt-1">
-                              <span className="px-2 py-0.5 bg-yellow-500/10 border border-yellow-500/30 rounded text-[9px] font-black text-yellow-500 uppercase">Top learner</span>
-                              <p className="text-sm text-[#1a5c2a] font-black">{top3[0].xp?.toLocaleString()} <span className="text-[10px]">FUEL</span></p>
-                            </div>
-                          </div>
-                          <div className="h-20 md:h-52 w-28 md:w-36 bg-gradient-to-b from-yellow-500/30 via-yellow-500/5 to-transparent border-t-4 border-yellow-500 rounded-t-[3rem] mt-6 shadow-[0_-20px_40px_rgba(234,179,8,0.1)]"></div>
-                        </div>
-                      )}
-
-                      {/* 3rd Place */}
-                      {top3[2] ? (
-                        <div className="flex flex-col items-center group order-3">
-                          <div className="relative mb-6">
-                            <div className="size-20 md:size-24 rounded-3xl border-4 border-orange-600/50 overflow-hidden bg-[#101022] -rotate-3 group-hover:rotate-0 transition-transform duration-500 shadow-[0_0_30px_rgba(234,88,12,0.2)]">
-                              <Image
-                                src={getAvatar(top3[2].avatar_url)}
-                                alt="Rank 3"
-                                fill
-                                className="object-cover scale-110"
-                                unoptimized
-                              />
-                            </div>
-                            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-[#144823] text-white text-[10px] font-black px-4 py-1 rounded-full shadow-xl">
-                              RANK 03
-                            </div>
-                          </div>
-                          <div className="text-center w-28 md:w-32">
-                            <p className="font-black text-white truncate text-base md:text-lg tracking-tighter">{getName(top3[2].id, top3[2].full_name)}</p>
-                            <p className="text-[10px] md:text-xs text-slate-400 font-bold uppercase tracking-widest">{top3[2].xp?.toLocaleString()} fuel</p>
-                          </div>
-                          <div className="h-16 md:h-24 w-20 md:w-28 bg-gradient-to-b from-orange-600/20 to-transparent border-t-4 border-orange-600 rounded-t-3xl mt-4 opacity-40 group-hover:opacity-100 transition-opacity"></div>
-                        </div>
-                      ) : (
-                        <div className="w-20 md:w-28"></div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* List */}
-                  <div className="bg-[#101022]/40 backdrop-blur-xl rounded-2xl md:rounded-[2rem] border border-[#2d2d3f] overflow-hidden shadow-2xl">
-                    <div className="p-4 md:p-8 border-b border-[#2d2d3f] flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
-                      <div className="flex items-center gap-3">
-                        <div className="size-10 rounded-full bg-[#1a5c2a]/10 border border-[#1a5c2a]/30 flex items-center justify-center">
-                          <span className="material-symbols-outlined text-[#1a5c2a]">rocket_launch</span>
-                        </div>
-                        <div>
-                          <h3 className="font-black text-white text-xl tracking-tight uppercase">Galaxy Core</h3>
-                          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Global Synchronization Active</p>
-                        </div>
-                      </div>
-
-                      <div className="grid w-full grid-cols-2 gap-1.5 rounded-2xl border border-[#2d2d3f] bg-[#0c0c16] p-1.5 sm:w-auto sm:flex">
-                        <button
-                          onClick={() => setTimeframe('all')}
-                          className={`px-4 py-2.5 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest sm:px-8 ${timeframe === 'all' ? 'bg-[#1a5c2a] text-white shadow-lg shadow-[#1a5c2a]/20' : 'text-slate-500 hover:text-slate-300'}`}
-                        >
-                          All time
-                        </button>
-                        <button
-                          onClick={() => setTimeframe('weekly')}
-                          className={`px-4 py-2.5 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest sm:px-8 ${timeframe === 'weekly' ? 'bg-[#7c3aed] text-white shadow-lg shadow-[#7c3aed]/20' : 'text-slate-500 hover:text-slate-300'}`}
-                        >
-                          This week
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="divide-y divide-[#2d2d3f]">
-                      {others.length > 0 ? others.map((user, index) => {
-                        const rank = index + 4;
-                        const isMe = user.id === profile?.id;
-                        return (
-                          <div key={user.id} className={`flex items-center gap-3 md:gap-6 p-4 md:p-6 transition-all group ${isMe ? 'bg-[#1a5c2a]/10 relative' : 'hover:bg-white/5'}`}>
-                            {isMe && <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#1a5c2a]"></div>}
-
-                            <span className={`w-6 md:w-8 text-center font-black text-base md:text-xl tabular-nums ${isMe ? 'text-[#1a5c2a]' : (rank < 10 ? 'text-slate-500' : 'text-slate-700')}`}>{rank}</span>
-
-                            <div className="size-10 md:size-14 rounded-xl md:rounded-2xl bg-[#0c0c16] overflow-hidden relative border border-[#2d2d3f] group-hover:border-[#38bdf8] transition-colors shrink-0">
-                              <Image
-                                src={getAvatar(user.avatar_url)}
-                                alt="User avatar"
-                                fill
-                                className="object-cover group-hover:scale-110 transition-transform"
-                                unoptimized
-                              />
-                            </div>
-
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5 min-w-0">
-                                <p className="font-black text-white text-sm md:text-lg tracking-tight truncate">{getName(user.id, user.full_name)}</p>
-                                {rank < 10 && <span className="material-symbols-outlined text-[#38bdf8] text-xs md:text-sm shrink-0">verified</span>}
-                              </div>
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <span className="text-[9px] md:text-[10px] font-black text-[#1a5c2a] uppercase">Lvl {user.level || 1}</span>
-                                <span className="text-[9px] md:text-[10px] text-slate-600 font-bold hidden xs:inline">•</span>
-                                <span className="text-[9px] md:text-[10px] text-slate-500 font-bold uppercase tracking-widest truncate">{rank < 20 ? 'Elite Pilot' : 'Cadet'}</span>
-                              </div>
-                            </div>
-
-                            <div className="text-right shrink-0">
-                              <span className={`text-base md:text-xl font-black tabular-nums transition-colors ${isMe ? 'text-[#1a5c2a]' : 'text-white'}`}>
-                                {user.xp?.toLocaleString()}
-                              </span>
-                              <div className="text-[8px] md:text-[9px] font-black text-slate-500 uppercase tracking-widest mt-0.5">FUEL</div>
-                            </div>
-                          </div>
-                        );
-                      }) : (
-                        <div className="p-20 text-center text-slate-500">
-                          <span className="material-symbols-outlined text-5xl mb-4 text-[#2d2d3f] block mx-auto">search_off</span>
-                          <p className="text-xs font-black uppercase tracking-[0.3em]">No Cosmic Signals Detected</p>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Pagination Controls */}
-                    {hasMore && others.length > 0 && (
-                      <div className="p-6 border-t border-[#2d2d3f] flex justify-center bg-black/20">
-                        <button
-                          onClick={() => setPage(p => p + 1)}
-                          disabled={isLoadingMore}
-                          className="px-8 py-3 bg-[#1a5c2a]/20 hover:bg-[#1a5c2a]/40 text-[#1a5c2a] border border-[#1a5c2a]/50 rounded-xl font-black uppercase tracking-widest text-xs transition-all flex items-center gap-3 disabled:opacity-50"
-                        >
-                          {isLoadingMore ? (
-                            <>
-                              <div className="size-4 border-2 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
-                              Scanning Cosmos...
-                            </>
-                          ) : (
-                            <>
-                              <span className="material-symbols-outlined text-lg">public</span>
-                              Load More Pilots
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </>
+                <div className="p-8">
+                  <AppEmptyState icon="trophy" title="The race is wide open" description="Only a few learners have ranked so far. Finish a review session to climb the board." />
+                </div>
               )}
-          </div>
-        </main>
+
+              {hasMore && others.length > 0 ? (
+                <div className="flex justify-center border-t border-[var(--line)] p-5">
+                  <button onClick={() => setPage((p) => p + 1)} disabled={isLoadingMore} className="secondary-button">
+                    {isLoadingMore ? 'Loading...' : 'Load more'}
+                  </button>
+                </div>
+              ) : null}
+            </section>
+          </>
+        )}
       </div>
     </AppShell>
   );

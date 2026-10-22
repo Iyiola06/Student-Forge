@@ -28,7 +28,7 @@ export default function GalaxyMap({
     const totalPagesRead = profile?.pages_read || 0; // if tracked globally, otherwise 0 for now
 
     return (
-        <div className="relative w-full h-screen bg-[#050510] overflow-hidden flex flex-col font-display selection:bg-[#ea580c]/30">
+        <div className="relative w-full h-screen bg-[#070d1a] overflow-hidden flex flex-col font-display selection:bg-[#ea580c]/30">
             {/* Deep Space Background */}
             <div className="absolute inset-0 pointer-events-none">
                 <div
@@ -44,7 +44,7 @@ export default function GalaxyMap({
             {/* HUD: Top Bar */}
             <header className="relative z-20 flex flex-col md:flex-row items-center md:items-start justify-between p-4 md:p-6 gap-4 pointer-events-none">
                 {/* Top Left: Commander Profile */}
-                <div className="flex items-center gap-4 bg-[#101022]/80 backdrop-blur-md border border-[#2d2d3f] p-3 pl-4 pr-6 rounded-2xl pointer-events-auto shadow-2xl shadow-[#ea580c]/10 w-full md:w-auto">
+                <div className="flex items-center gap-4 bg-[#070d1a]/80 backdrop-blur-md border border-[#1d2a42] p-3 pl-4 pr-6 rounded-2xl pointer-events-auto shadow-2xl shadow-[#ea580c]/10 w-full md:w-auto">
                     <div className="relative">
                         <div className="size-12 md:size-14 rounded-full bg-cover bg-center border-2 border-[#ea580c] relative z-10"
                             style={{ backgroundImage: `url("${profile?.avatar_url || 'https://api.dicebear.com/7.x/avataaars/svg?seed=fallback'}")` }}
@@ -56,7 +56,7 @@ export default function GalaxyMap({
                         <div className="text-[9px] md:text-xs font-bold text-[#ea580c] uppercase tracking-widest mb-1.5 md:mb-2 line-clamp-1">{getActiveTitle(profile)}</div>
 
                         {/* XP Fuel Gauge */}
-                        <div className="w-full md:w-32 bg-[#1b1b27] rounded-full h-1.5 overflow-hidden mb-1">
+                        <div className="w-full md:w-32 bg-[#0f192c] rounded-full h-1.5 overflow-hidden mb-1">
                             <div className="bg-gradient-to-r from-orange-600 via-orange-500 to-amber-400 h-full rounded-full transition-all duration-1000 relative"
                                 style={{ width: `${progressPercent}%` }}>
                                 <div className="absolute top-0 right-0 bottom-0 w-2 bg-white/40 blur-[1px]" />
@@ -67,7 +67,7 @@ export default function GalaxyMap({
                             <span>{userXp}/{targetXp} XP</span>
                         </div>
                     </div>
-                    <div className="ml-2 md:ml-4 pl-2 md:pl-4 border-l border-[#2d2d3f] flex flex-col items-center justify-center">
+                    <div className="ml-2 md:ml-4 pl-2 md:pl-4 border-l border-[#1d2a42] flex flex-col items-center justify-center">
                         <span className="text-lg md:text-xl">🔥</span>
                         <span className="text-[10px] md:text-xs font-bold text-slate-400">{profile?.streak_days || 0}</span>
                     </div>
@@ -80,7 +80,7 @@ export default function GalaxyMap({
                         { label: 'Pages', value: totalPagesRead, icon: 'auto_stories', mobile: false },
                         { label: 'Total XP', value: userXp, icon: 'diamond', mobile: true }
                     ].map((s, i) => (
-                        <div key={i} className={`bg-[#101022]/80 backdrop-blur-md border border-[#2d2d3f] px-4 py-2 rounded-xl flex items-center gap-3 shrink-0 ${!s.mobile && 'hidden sm:flex'}`}>
+                        <div key={i} className={`bg-[#070d1a]/80 backdrop-blur-md border border-[#1d2a42] px-4 py-2 rounded-xl flex items-center gap-3 shrink-0 ${!s.mobile && 'hidden sm:flex'}`}>
                             <span className="material-symbols-outlined text-[#38bdf8] opacity-70 text-sm md:text-base">{s.icon}</span>
                             <div>
                                 <div className="text-xs md:text-sm font-black text-white">{s.value.toLocaleString()}</div>
@@ -91,7 +91,7 @@ export default function GalaxyMap({
 
                     <button
                         onClick={() => setShowMissions(true)}
-                        className="bg-[#101022]/80 backdrop-blur-md border border-[#2d2d3f] hover:border-[#ea580c] px-4 py-2 rounded-xl flex items-center gap-2 transition-colors group shrink-0"
+                        className="bg-[#070d1a]/80 backdrop-blur-md border border-[#1d2a42] hover:border-[#ea580c] px-4 py-2 rounded-xl flex items-center gap-2 transition-colors group shrink-0"
                     >
                         <span className="material-symbols-outlined text-purple-400 group-hover:text-[#ea580c] text-sm md:text-base">assignment</span>
                         <span className="text-[9px] md:text-xs font-bold text-white uppercase tracking-wider">Missions</span>
@@ -176,7 +176,7 @@ export default function GalaxyMap({
                                         </div>
 
                                         {/* Hover Tooltip / Label */}
-                                        <div className={`absolute top-full mt-6 left-1/2 -translate-x-1/2 bg-[#101022]/90 backdrop-blur-md border border-[#2d2d3f] px-4 py-2 rounded-xl text-center min-w-[140px] pointer-events-none transition-all duration-300 ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}>
+                                        <div className={`absolute top-full mt-6 left-1/2 -translate-x-1/2 bg-[#070d1a]/90 backdrop-blur-md border border-[#1d2a42] px-4 py-2 rounded-xl text-center min-w-[140px] pointer-events-none transition-all duration-300 ${isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}>
                                             <div className="text-white font-bold text-sm truncate max-w-[200px]">{res.title}</div>
                                             <div className="text-[10px] uppercase font-bold tracking-widest mt-1 text-slate-400">
                                                 {isComplete ? (

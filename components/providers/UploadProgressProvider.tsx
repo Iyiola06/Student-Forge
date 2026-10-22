@@ -269,7 +269,7 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
           ) : (
             <div className="h-1.5 w-full bg-slate-200 dark:bg-white/8">
               <div
-                className={uploadState === 'extracting' ? 'h-full bg-[#1a5c2a] transition-all animate-pulse' : 'h-full bg-[#1a5c2a] transition-all'}
+                className={uploadState === 'extracting' ? 'h-full bg-[#2f7fd3] transition-all animate-pulse' : 'h-full bg-[#2f7fd3] transition-all'}
                 style={{ width: `${Math.max(progress, uploadState === 'extracting' ? 92 : 12)}%` }}
               />
             </div>

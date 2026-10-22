@@ -76,7 +76,7 @@ export default function EssayGraderPage() {
                     {/* Left Panel: Input Area */}
                     <div className="w-full shrink-0 space-y-6 xl:w-[560px] 2xl:w-[600px]">
                         <CreditStatusBanner featureLabel="Essay grading" creditCost={25} />
-                        <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm relative overflow-hidden">
+                        <div className="bg-white dark:bg-[#0f192c] rounded-2xl border border-slate-200 dark:border-[#1d2a42] p-6 shadow-sm relative overflow-hidden">
                             <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
                                 <span className="material-symbols-outlined text-8xl">keyboard</span>
                             </div>
@@ -96,7 +96,7 @@ export default function EssayGraderPage() {
                                     <textarea
                                         value={question}
                                         onChange={(e) => setQuestion(e.target.value)}
-                                        className="w-full h-24 rounded-xl border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-4 text-sm focus:ring-2 focus:ring-[#1a5c2a] focus:outline-none dark:text-white transition-shadow resize-none"
+                                        className="w-full h-24 rounded-xl border border-slate-300 dark:border-[#1d2a42] bg-slate-50 dark:bg-[#0f192c] p-4 text-sm focus:ring-2 focus:ring-[#2f7fd3] focus:outline-none dark:text-white transition-shadow resize-none"
                                         placeholder="e.g. Explain the impact of the Industrial Revolution on European society."
                                     ></textarea>
                                 </div>
@@ -110,7 +110,7 @@ export default function EssayGraderPage() {
                                         type="text"
                                         value={context}
                                         onChange={(e) => setContext(e.target.value)}
-                                        className="w-full rounded-xl border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-3 pl-4 text-sm focus:ring-2 focus:ring-[#1a5c2a] focus:outline-none dark:text-white transition-shadow"
+                                        className="w-full rounded-xl border border-slate-300 dark:border-[#1d2a42] bg-slate-50 dark:bg-[#0f192c] p-3 pl-4 text-sm focus:ring-2 focus:ring-[#2f7fd3] focus:outline-none dark:text-white transition-shadow"
                                         placeholder="e.g. 19th Century European History"
                                     />
                                 </div>
@@ -122,7 +122,7 @@ export default function EssayGraderPage() {
                                     <textarea
                                         value={typedAnswer}
                                         onChange={(e) => setTypedAnswer(e.target.value)}
-                                        className="w-full h-64 rounded-xl border border-slate-300 dark:border-[#2d2d3f] bg-slate-50 dark:bg-[#111118] p-4 text-sm focus:ring-2 focus:ring-[#1a5c2a] focus:outline-none dark:text-white transition-shadow leading-relaxed"
+                                        className="w-full h-64 rounded-xl border border-slate-300 dark:border-[#1d2a42] bg-slate-50 dark:bg-[#0f192c] p-4 text-sm focus:ring-2 focus:ring-[#2f7fd3] focus:outline-none dark:text-white transition-shadow leading-relaxed"
                                         placeholder="Paste your essay or paragraph here..."
                                     ></textarea>
                                 </div>
@@ -131,7 +131,7 @@ export default function EssayGraderPage() {
                             <button
                                 onClick={handleGrade}
                                 disabled={isGrading}
-                                className="w-full mt-6 bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 disabled:opacity-70 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-[#1a5c2a]/25 transition-all flex items-center justify-center gap-2 text-[15px] relative z-10"
+                                className="w-full mt-6 bg-[#2f7fd3] hover:bg-[#2f7fd3]/90 disabled:opacity-70 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-[#2f7fd3]/25 transition-all flex items-center justify-center gap-2 text-[15px] relative z-10"
                             >
                                 {isGrading ? (
                                     <div className="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -146,37 +146,37 @@ export default function EssayGraderPage() {
                     {/* Right Panel: Grading Results */}
                     <div className="w-full flex-1">
                         {!result && !isGrading ? (
-                            <div className="flex h-full min-h-[300px] flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white/50 p-6 text-center md:p-10 xl:min-h-[500px] dark:border-[#2d2d3f] dark:bg-[#1b1b27]/30">
-                                <div className="bg-slate-200 dark:bg-[#252535] p-5 rounded-full mb-6 text-slate-500 dark:text-slate-400">
+                            <div className="flex h-full min-h-[300px] flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white/50 p-6 text-center md:p-10 xl:min-h-[500px] dark:border-[#1d2a42] dark:bg-[#0f192c]/30">
+                                <div className="bg-slate-200 dark:bg-[#13203a] p-5 rounded-full mb-6 text-slate-500 dark:text-slate-400">
                                     <span className="material-symbols-outlined text-5xl">fact_check</span>
                                 </div>
                                 <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">Awaiting Submission</h3>
-                                <p className="text-slate-500 dark:text-[#9c9cba] max-w-sm text-sm leading-relaxed">
+                                <p className="text-slate-500 dark:text-[#9aa7bc] max-w-sm text-sm leading-relaxed">
                                     Provide a prompt and your answer on the left. Our AI will analyze your structure, content, and accuracy to give you actionable feedback.
                                 </p>
                             </div>
                         ) : isGrading ? (
-                            <div className="flex h-full min-h-[300px] flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm md:p-10 xl:min-h-[500px] dark:border-[#2d2d3f] dark:bg-[#1b1b27]">
+                            <div className="flex h-full min-h-[300px] flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm md:p-10 xl:min-h-[500px] dark:border-[#1d2a42] dark:bg-[#0f192c]">
                                 <div className="relative mb-8">
-                                    <div className="size-20 border-4 border-slate-100 dark:border-[#252535] rounded-full"></div>
-                                    <div className="absolute inset-0 size-20 border-4 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
-                                    <span className="absolute inset-0 flex items-center justify-center material-symbols-outlined text-[#1a5c2a] text-3xl animate-pulse">
+                                    <div className="size-20 border-4 border-slate-100 dark:border-[#13203a] rounded-full"></div>
+                                    <div className="absolute inset-0 size-20 border-4 border-[#2f7fd3] border-t-transparent rounded-full animate-spin"></div>
+                                    <span className="absolute inset-0 flex items-center justify-center material-symbols-outlined text-[#2f7fd3] text-3xl animate-pulse">
                                         psychology
                                     </span>
                                 </div>
                                 <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Evaluating Answer</h3>
-                                <p className="text-slate-500 dark:text-[#9c9cba] animate-pulse">Running advanced heuristics and cross-referencing context...</p>
+                                <p className="text-slate-500 dark:text-[#9aa7bc] animate-pulse">Running advanced heuristics and cross-referencing context...</p>
                             </div>
                         ) : result ? (
                             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 {/* Score Header */}
-                                <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-8 shadow-sm flex flex-col sm:flex-row items-center gap-8 relative overflow-hidden">
+                                <div className="bg-white dark:bg-[#0f192c] rounded-2xl border border-slate-200 dark:border-[#1d2a42] p-8 shadow-sm flex flex-col sm:flex-row items-center gap-8 relative overflow-hidden">
                                     <div className={`absolute top-0 right-0 w-32 h-32 blur-3xl rounded-full opacity-20 -mr-10 -mt-10 ${result.score >= 80 ? 'bg-green-500' : result.score >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
 
                                     <div className="relative shrink-0 flex items-center justify-center size-36">
                                         <svg className="w-full h-full transform -rotate-90">
                                             <circle
-                                                className="text-slate-100 dark:text-[#252535]"
+                                                className="text-slate-100 dark:text-[#13203a]"
                                                 cx="72"
                                                 cy="72"
                                                 fill="transparent"
@@ -205,7 +205,7 @@ export default function EssayGraderPage() {
                                     </div>
 
                                     <div className="flex-1 text-center sm:text-left z-10">
-                                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 dark:bg-[#252535] rounded-full text-xs font-bold text-slate-500 dark:text-[#9c9cba] uppercase tracking-wider mb-3">
+                                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 dark:bg-[#13203a] rounded-full text-xs font-bold text-slate-500 dark:text-[#9aa7bc] uppercase tracking-wider mb-3">
                                             <span className="material-symbols-outlined text-[14px]">
                                                 {result.score >= 80 ? 'rewarded_ads' : result.score >= 50 ? 'warning' : 'dangerous'}
                                             </span>
@@ -214,16 +214,16 @@ export default function EssayGraderPage() {
                                         <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 leading-tight">
                                             {result.score >= 80 ? "Great job! You've grasped the core concepts." : result.score >= 50 ? "You're getting there, but there are some gaps." : "Review the material and try again."}
                                         </h3>
-                                        <p className="text-slate-500 dark:text-[#9c9cba] text-sm leading-relaxed">
+                                        <p className="text-slate-500 dark:text-[#9aa7bc] text-sm leading-relaxed">
                                             Your answer was analyzed for factual accuracy, comprehensiveness, and relevance to the prompt.
                                         </p>
                                     </div>
                                 </div>
 
                                 {/* Detailed Feedback */}
-                                <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-8 shadow-sm">
-                                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2 pb-4 border-b border-slate-100 dark:border-[#2d2d3f]">
-                                        <span className="material-symbols-outlined text-[#1a5c2a] bg-[#1a5c2a]/10 p-1.5 rounded-lg">rate_review</span>
+                                <div className="bg-white dark:bg-[#0f192c] rounded-2xl border border-slate-200 dark:border-[#1d2a42] p-8 shadow-sm">
+                                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2 pb-4 border-b border-slate-100 dark:border-[#1d2a42]">
+                                        <span className="material-symbols-outlined text-[#2f7fd3] bg-[#2f7fd3]/10 p-1.5 rounded-lg">rate_review</span>
                                         Examiner's Feedback
                                     </h3>
                                     <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap text-[15px]">

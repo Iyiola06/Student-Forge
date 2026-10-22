@@ -389,8 +389,8 @@ export default function AdventureRun({ run, onPersist, onComplete, onAbort }: Ad
 
     if (battleResult === 'lost') {
         return (
-            <div className="min-h-[100dvh] bg-[#050510] text-white flex items-center justify-center p-6">
-                <div className="max-w-lg w-full rounded-[2rem] border border-red-500/20 bg-[#101022] p-8 text-center">
+            <div className="min-h-[100dvh] bg-[#070d1a] text-white flex items-center justify-center p-6">
+                <div className="max-w-lg w-full rounded-[2rem] border border-red-500/20 bg-[#070d1a] p-8 text-center">
                     <div className="text-red-400 text-xs font-black uppercase tracking-[0.4em] mb-4">Mission Failed</div>
                     <h2 className="text-4xl font-black mb-4">The Examiner Broke Your Line</h2>
                     <p className="text-slate-400 mb-8 leading-relaxed">
@@ -408,10 +408,10 @@ export default function AdventureRun({ run, onPersist, onComplete, onAbort }: Ad
     }
 
     return (
-        <div className="min-h-[100dvh] bg-[#050510] text-white">
+        <div className="min-h-[100dvh] bg-[#070d1a] text-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-8">
                 <div className="grid grid-cols-1 xl:grid-cols-[320px_1fr] gap-6">
-                    <aside className="bg-[#101022]/85 backdrop-blur-xl border border-[#2d2d3f] rounded-[2rem] p-6 h-fit xl:sticky xl:top-6">
+                    <aside className="bg-[#070d1a]/85 backdrop-blur-xl border border-[#1d2a42] rounded-[2rem] p-6 h-fit xl:sticky xl:top-6">
                         <div className="text-xs font-black uppercase tracking-[0.35em] text-cyan-400 mb-3">Mission Control</div>
                         <h2 className="text-3xl font-black leading-tight mb-2">{state.missionTitle}</h2>
                         <p className="text-sm text-slate-400 mb-6">{state.objective}</p>
@@ -422,7 +422,7 @@ export default function AdventureRun({ run, onPersist, onComplete, onAbort }: Ad
                                     <span>Health</span>
                                     <span>{state.health}%</span>
                                 </div>
-                                <div className="h-3 rounded-full bg-[#1c1c2f] overflow-hidden">
+                                <div className="h-3 rounded-full bg-[#13203a] overflow-hidden">
                                     <div className="h-full bg-gradient-to-r from-red-500 to-orange-500" style={{ width: `${state.health}%` }} />
                                 </div>
                             </div>
@@ -431,33 +431,33 @@ export default function AdventureRun({ run, onPersist, onComplete, onAbort }: Ad
                                     <span>Shields</span>
                                     <span>{state.shields}%</span>
                                 </div>
-                                <div className="h-3 rounded-full bg-[#1c1c2f] overflow-hidden">
+                                <div className="h-3 rounded-full bg-[#13203a] overflow-hidden">
                                     <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-500" style={{ width: `${state.shields}%` }} />
                                 </div>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-3 gap-3 mb-6">
-                            <div className="rounded-2xl bg-[#161625] border border-[#2d2d3f] p-3 text-center">
+                            <div className="rounded-2xl bg-[#0f192c] border border-[#1d2a42] p-3 text-center">
                                 <div className="text-xl font-black text-[#ea580c]">{state.energy}</div>
                                 <div className="text-[10px] uppercase tracking-widest text-slate-500">Energy</div>
                             </div>
-                            <div className="rounded-2xl bg-[#161625] border border-[#2d2d3f] p-3 text-center">
+                            <div className="rounded-2xl bg-[#0f192c] border border-[#1d2a42] p-3 text-center">
                                 <div className="text-xl font-black text-cyan-400">{state.maxStreak}</div>
                                 <div className="text-[10px] uppercase tracking-widest text-slate-500">Best Streak</div>
                             </div>
-                            <div className="rounded-2xl bg-[#161625] border border-[#2d2d3f] p-3 text-center">
+                            <div className="rounded-2xl bg-[#0f192c] border border-[#1d2a42] p-3 text-center">
                                 <div className="text-xl font-black text-violet-400">{state.xpBank}</div>
                                 <div className="text-[10px] uppercase tracking-widest text-slate-500">Run XP</div>
                             </div>
                         </div>
 
-                        <div className="rounded-2xl bg-[#161625] border border-[#2d2d3f] p-4 mb-6">
+                        <div className="rounded-2xl bg-[#0f192c] border border-[#1d2a42] p-4 mb-6">
                             <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500 mb-2">Next Potential</div>
                             <div className="text-sm font-bold">{getNextNodeLabel(run.nodes, currentNode.id)}</div>
                         </div>
 
-                        <div className="rounded-2xl bg-[#161625] border border-[#2d2d3f] p-4 mb-6">
+                        <div className="rounded-2xl bg-[#0f192c] border border-[#1d2a42] p-4 mb-6">
                             <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500 mb-3">Unlocked Rewards</div>
                             <div className="flex flex-wrap gap-2">
                                 {state.unlockedRewards.length > 0 ? state.unlockedRewards.map((rewardId) => (
@@ -472,21 +472,21 @@ export default function AdventureRun({ run, onPersist, onComplete, onAbort }: Ad
 
                         <button
                             onClick={() => void saveAndExit()}
-                            className="w-full rounded-2xl border border-[#2d2d3f] bg-[#161625] hover:bg-[#1d1d31] text-slate-300 font-bold px-5 py-4 transition-colors"
+                            className="w-full rounded-2xl border border-[#1d2a42] bg-[#0f192c] hover:bg-[#1d1d31] text-slate-300 font-bold px-5 py-4 transition-colors"
                         >
                             Save And Exit
                         </button>
                         {isSaving && <div className="text-xs text-slate-500 mt-3">Saving mission state...</div>}
                     </aside>
 
-                    <main className="bg-[#101022]/85 backdrop-blur-xl border border-[#2d2d3f] rounded-[2rem] p-6 sm:p-8 min-h-[70vh]">
+                    <main className="bg-[#070d1a]/85 backdrop-blur-xl border border-[#1d2a42] rounded-[2rem] p-6 sm:p-8 min-h-[70vh]">
                         <div className="flex items-start justify-between gap-4 mb-6">
                             <div>
                                 <div className="text-xs font-black uppercase tracking-[0.35em] text-cyan-400 mb-2">{currentNode.nodeType}</div>
                                 <h1 className="text-3xl sm:text-4xl font-black leading-tight">{currentNode.title}</h1>
                                 {currentNode.subtitle && <p className="text-slate-400 mt-2">{currentNode.subtitle}</p>}
                             </div>
-                            <div className="rounded-2xl bg-[#161625] border border-[#2d2d3f] px-4 py-3 text-right">
+                            <div className="rounded-2xl bg-[#0f192c] border border-[#1d2a42] px-4 py-3 text-right">
                                 <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500 mb-1">Progress</div>
                                 <div className="text-lg font-black">{state.completedNodeIds.length}/{run.nodes.length}</div>
                             </div>
@@ -494,7 +494,7 @@ export default function AdventureRun({ run, onPersist, onComplete, onAbort }: Ad
 
                         {(currentNode.nodeType === 'lore' || currentNode.nodeType === 'mentor') && (
                             <div className="max-w-3xl">
-                                <div className="rounded-[1.75rem] bg-[linear-gradient(145deg,#15152a,#0f0f19)] border border-[#2d2d3f] p-6 sm:p-8 mb-6">
+                                <div className="rounded-[1.75rem] bg-[linear-gradient(145deg,#0f192c,#070d1a)] border border-[#1d2a42] p-6 sm:p-8 mb-6">
                                     <p className="text-lg leading-relaxed text-slate-200">{currentNode.payload.body}</p>
                                     {currentNode.payload.bonusText && (
                                         <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 text-sm font-bold text-emerald-400">
@@ -516,7 +516,7 @@ export default function AdventureRun({ run, onPersist, onComplete, onAbort }: Ad
                             <div className="max-w-3xl">
                                 <div className="grid grid-cols-1 gap-4 mb-6">
                                     {(currentNode.payload.facts as string[]).map((fact, index) => (
-                                        <div key={index} className="rounded-[1.5rem] bg-[linear-gradient(145deg,#15152a,#0f0f19)] border border-[#2d2d3f] p-5">
+                                        <div key={index} className="rounded-[1.5rem] bg-[linear-gradient(145deg,#0f192c,#070d1a)] border border-[#1d2a42] p-5">
                                             <div className="text-[10px] uppercase tracking-[0.3em] text-cyan-400 mb-2">Key Fact {index + 1}</div>
                                             <p className="text-slate-200 leading-relaxed">{fact}</p>
                                         </div>
@@ -539,7 +539,7 @@ export default function AdventureRun({ run, onPersist, onComplete, onAbort }: Ad
                                         <button
                                             key={reward.id}
                                             onClick={() => void chooseReward(reward.id)}
-                                            className="text-left rounded-[1.5rem] bg-[linear-gradient(145deg,#15152a,#0f0f19)] border border-[#2d2d3f] p-5 hover:border-[#ea580c]/40 hover:-translate-y-1 transition-all"
+                                            className="text-left rounded-[1.5rem] bg-[linear-gradient(145deg,#0f192c,#070d1a)] border border-[#1d2a42] p-5 hover:border-[#ea580c]/40 hover:-translate-y-1 transition-all"
                                         >
                                             <div className="text-lg font-black mb-2">{reward.title}</div>
                                             <p className="text-sm text-slate-400 leading-relaxed">{reward.description}</p>
@@ -557,7 +557,7 @@ export default function AdventureRun({ run, onPersist, onComplete, onAbort }: Ad
                                         <button
                                             key={option.id}
                                             onClick={() => void chooseBranch(option)}
-                                            className="text-left rounded-[1.75rem] bg-[linear-gradient(145deg,#15152a,#0f0f19)] border border-[#2d2d3f] p-6 hover:border-cyan-400/40 hover:-translate-y-1 transition-all"
+                                            className="text-left rounded-[1.75rem] bg-[linear-gradient(145deg,#0f192c,#070d1a)] border border-[#1d2a42] p-6 hover:border-cyan-400/40 hover:-translate-y-1 transition-all"
                                         >
                                             <div className="text-2xl font-black mb-2">{option.title}</div>
                                             <p className="text-slate-400 leading-relaxed mb-4">{option.description}</p>
@@ -573,7 +573,7 @@ export default function AdventureRun({ run, onPersist, onComplete, onAbort }: Ad
                         {(currentNode.nodeType === 'battle' || currentNode.nodeType === 'boss') && currentQuestion && (
                             <div className="max-w-5xl">
                                 <div className="flex flex-col lg:flex-row gap-6 mb-6">
-                                    <div className="flex-1 rounded-[1.75rem] bg-[linear-gradient(145deg,#15152a,#0f0f19)] border border-[#2d2d3f] p-6">
+                                    <div className="flex-1 rounded-[1.75rem] bg-[linear-gradient(145deg,#0f192c,#070d1a)] border border-[#1d2a42] p-6">
                                         <div className="flex items-center justify-between mb-4">
                                             <div>
                                                 <div className="text-[10px] uppercase tracking-[0.3em] text-red-400 mb-2">{currentNode.payload.enemyName}</div>
@@ -581,14 +581,14 @@ export default function AdventureRun({ run, onPersist, onComplete, onAbort }: Ad
                                             </div>
                                             <div className="text-3xl font-black text-red-400">{battleHealth}</div>
                                         </div>
-                                        <div className="h-3 rounded-full bg-[#1c1c2f] overflow-hidden">
+                                        <div className="h-3 rounded-full bg-[#13203a] overflow-hidden">
                                             <div
                                                 className="h-full bg-gradient-to-r from-red-500 to-orange-500"
                                                 style={{ width: `${Math.max(0, Math.min(100, battleHealth || 0))}%` }}
                                             />
                                         </div>
                                     </div>
-                                    <div className="w-full lg:w-[240px] rounded-[1.75rem] bg-[linear-gradient(145deg,#15152a,#0f0f19)] border border-[#2d2d3f] p-6">
+                                    <div className="w-full lg:w-[240px] rounded-[1.75rem] bg-[linear-gradient(145deg,#0f192c,#070d1a)] border border-[#1d2a42] p-6">
                                         <div className="text-[10px] uppercase tracking-[0.3em] text-cyan-400 mb-2">Timer</div>
                                         <div className={`text-5xl font-black ${timeLeft <= 5 ? 'text-red-400' : 'text-white'}`}>{timeLeft}</div>
                                         {currentNode.nodeType === 'boss' && (
@@ -597,7 +597,7 @@ export default function AdventureRun({ run, onPersist, onComplete, onAbort }: Ad
                                     </div>
                                 </div>
 
-                                <div className="rounded-[1.75rem] bg-[linear-gradient(145deg,#15152a,#0f0f19)] border border-[#2d2d3f] p-6 sm:p-8 mb-6">
+                                <div className="rounded-[1.75rem] bg-[linear-gradient(145deg,#0f192c,#070d1a)] border border-[#1d2a42] p-6 sm:p-8 mb-6">
                                     <h3 className="text-2xl font-black leading-tight mb-6">{currentQuestion.prompt}</h3>
 
                                     <div className="flex flex-wrap gap-3 mb-6">
@@ -637,7 +637,7 @@ export default function AdventureRun({ run, onPersist, onComplete, onAbort }: Ad
                                                         ? 'border-red-400 bg-red-500/10'
                                                         : selectedOption && isCorrect
                                                             ? 'border-emerald-400 bg-emerald-500/10'
-                                                            : 'border-[#2d2d3f] hover:border-cyan-400/50';
+                                                            : 'border-[#1d2a42] hover:border-cyan-400/50';
 
                                             return (
                                                 <button
@@ -654,7 +654,7 @@ export default function AdventureRun({ run, onPersist, onComplete, onAbort }: Ad
                                 </div>
 
                                 {feedback && (
-                                    <div className="rounded-[1.5rem] bg-[#161625] border border-[#2d2d3f] p-5 mb-6 text-slate-300 leading-relaxed">
+                                    <div className="rounded-[1.5rem] bg-[#0f192c] border border-[#1d2a42] p-5 mb-6 text-slate-300 leading-relaxed">
                                         {feedback}
                                     </div>
                                 )}

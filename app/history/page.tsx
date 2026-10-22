@@ -74,7 +74,7 @@ function formatItemInfo(item: HistoryItem) {
   }
   return {
     icon: 'history',
-    color: 'bg-slate-100 dark:bg-[#252535] text-slate-600 dark:text-slate-400',
+    color: 'bg-slate-100 dark:bg-[#13203a] text-slate-600 dark:text-slate-400',
     dot: 'bg-slate-400',
     title: item.action_type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
     subtitle: item.entity_type || 'Activity',
@@ -190,7 +190,7 @@ export default function HistoryPage() {
             <div className="relative flex-1">
               <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
               <input
-                className="w-full h-10 pl-10 pr-4 rounded-xl bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1a5c2a] transition"
+                className="w-full h-10 pl-10 pr-4 rounded-xl bg-white dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#2f7fd3] transition"
                 placeholder="Search history..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
@@ -203,8 +203,8 @@ export default function HistoryPage() {
                   key={f.value}
                   onClick={() => setActiveFilter(f.value)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all border ${activeFilter === f.value
-                      ? 'bg-[#1a5c2a] text-white border-[#1a5c2a]'
-                      : 'bg-white dark:bg-[#1b1b27] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#2d2d3f] hover:border-[#1a5c2a]'
+                      ? 'bg-[#2f7fd3] text-white border-[#2f7fd3]'
+                      : 'bg-white dark:bg-[#0f192c] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#1d2a42] hover:border-[#2f7fd3]'
                     }`}
                 >
                   {f.label}
@@ -216,12 +216,12 @@ export default function HistoryPage() {
           {/* Timeline */}
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-24 gap-4 text-slate-400">
-              <div className="size-8 border-2 border-[#1a5c2a] border-t-transparent rounded-full animate-spin" />
+              <div className="size-8 border-2 border-[#2f7fd3] border-t-transparent rounded-full animate-spin" />
               <span className="text-sm font-medium">Loading your history...</span>
             </div>
           ) : filteredItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 gap-3 text-center">
-              <div className="size-16 rounded-2xl bg-slate-100 dark:bg-[#1b1b27] flex items-center justify-center">
+              <div className="size-16 rounded-2xl bg-slate-100 dark:bg-[#0f192c] flex items-center justify-center">
                 <span className="material-symbols-outlined text-3xl text-slate-400">history_toggle_off</span>
               </div>
               <h3 className="font-bold text-slate-900 dark:text-white text-lg">No Activity Found</h3>
@@ -237,8 +237,8 @@ export default function HistoryPage() {
                 <div key={group.label}>
                   {/* Date Header */}
                   <div className="flex items-center gap-3 mb-4">
-                    <span className="text-xs font-extrabold uppercase tracking-widest text-[#1a5c2a]">{group.label}</span>
-                    <div className="flex-1 h-px bg-slate-200 dark:bg-[#2d2d3f]" />
+                    <span className="text-xs font-extrabold uppercase tracking-widest text-[#2f7fd3]">{group.label}</span>
+                    <div className="flex-1 h-px bg-slate-200 dark:bg-[#1d2a42]" />
                     <span className="text-xs text-slate-400">{group.items.length} {group.items.length === 1 ? 'entry' : 'entries'}</span>
                   </div>
 
@@ -249,7 +249,7 @@ export default function HistoryPage() {
                       return (
                         <div
                           key={item.id}
-                          className="flex items-start gap-4 bg-white dark:bg-[#161621] border border-slate-200 dark:border-[#2d2d3f] rounded-2xl p-4 hover:shadow-md dark:hover:border-[#3d3d5f] transition-all group"
+                          className="flex items-start gap-4 bg-white dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] rounded-2xl p-4 hover:shadow-md dark:hover:border-[#3d3d5f] transition-all group"
                         >
                           {/* Icon */}
                           <div className={`shrink-0 size-10 rounded-xl flex items-center justify-center ${info.color}`}>
@@ -286,10 +286,10 @@ export default function HistoryPage() {
                   <button
                     onClick={loadMore}
                     disabled={isLoadingMore}
-                    className="px-6 py-2.5 bg-white dark:bg-[#1b1b27] border border-slate-200 dark:border-[#2d2d3f] rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#252535] transition-colors disabled:opacity-50"
+                    className="px-6 py-2.5 bg-white dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#13203a] transition-colors disabled:opacity-50"
                   >
                     {isLoadingMore
-                      ? <span className="flex items-center gap-2"><span className="size-4 border-2 border-[#1a5c2a] border-t-transparent rounded-full animate-spin inline-block" /> Loading...</span>
+                      ? <span className="flex items-center gap-2"><span className="size-4 border-2 border-[#2f7fd3] border-t-transparent rounded-full animate-spin inline-block" /> Loading...</span>
                       : 'Load more'}
                   </button>
                 </div>

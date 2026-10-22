@@ -85,7 +85,7 @@ export default function TheoryAnswerEditor({ value, onChange, disabled = false }
           onChange={(event) => onChange(event.target.value)}
           disabled={disabled}
           placeholder="Write your answer here..."
-          className="w-full min-h-[180px] md:min-h-[224px] p-4 md:p-6 rounded-[2rem] bg-[#f5f5f8] dark:bg-[#13131a] border-2 border-slate-200 dark:border-[#2d2d3f] outline-none text-sm md:text-base font-medium text-slate-900 dark:text-white resize-none"
+          className="w-full min-h-[180px] md:min-h-[224px] p-4 md:p-6 rounded-[2rem] bg-[#f5f9fe] dark:bg-[#0f192c] border-2 border-slate-200 dark:border-[#1d2a42] outline-none text-sm md:text-base font-medium text-slate-900 dark:text-white resize-none"
         />
       </div>
     );
@@ -93,7 +93,7 @@ export default function TheoryAnswerEditor({ value, onChange, disabled = false }
 
   if (!editorParts) {
     return (
-      <div className="rounded-[2rem] border-2 border-slate-200 dark:border-[#2d2d3f] bg-white dark:bg-[#13131a] px-4 py-8 md:px-6 md:py-10 text-center text-sm font-medium text-slate-600 dark:text-slate-300">
+      <div className="rounded-[2rem] border-2 border-slate-200 dark:border-[#1d2a42] bg-white dark:bg-[#0f192c] px-4 py-8 md:px-6 md:py-10 text-center text-sm font-medium text-slate-600 dark:text-slate-300">
         Loading rich text editor...
       </div>
     );
@@ -113,7 +113,7 @@ export default function TheoryAnswerEditor({ value, onChange, disabled = false }
   } = editorParts;
 
   return (
-    <div className="rounded-[2rem] border-2 border-slate-200 dark:border-[#2d2d3f] overflow-hidden bg-white dark:bg-[#13131a] ckeditor-mobile-wrapper">
+    <div className="rounded-[2rem] border-2 border-slate-200 dark:border-[#1d2a42] overflow-hidden bg-white dark:bg-[#0f192c] ckeditor-mobile-wrapper">
       <CKEditor
         disabled={disabled}
         editor={ClassicEditor}

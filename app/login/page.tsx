@@ -103,7 +103,7 @@ export default function LoginPage() {
                     <p className="text-sm font-black">7-day streak</p>
                     <span className="material-symbols-outlined text-[20px]">local_fire_department</span>
                   </div>
-                  <p className="mt-8 text-sm font-medium text-slate-700/80">Small daily wins add up fastest.</p>
+                  <p className="mt-8 text-sm font-medium opacity-70">Small daily wins add up fastest.</p>
                 </div>
               </div>
 

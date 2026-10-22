@@ -14,6 +14,7 @@ type AppShellProps = {
   sidebar?: ReactNode;
   children: ReactNode;
   contentClassName?: string;
+  hideHeader?: boolean;
 };
 
 export default function AppShell({
@@ -24,6 +25,7 @@ export default function AppShell({
   sidebar,
   children,
   contentClassName,
+  hideHeader,
 }: AppShellProps) {
   const { profile } = useProfile();
 
@@ -32,15 +34,19 @@ export default function AppShell({
       <div className="app-shell">
         <Sidebar />
         <div className="min-w-0 flex-1 pb-28 lg:pb-0">
-          <AppPageHeader
-            eyebrow={eyebrow}
-            title={title}
-            description={description}
-            actions={actions}
-            walletBalance={profile?.credit_balance ?? 0}
-          />
+          {hideHeader ? (
+            <h1 className="sr-only">{title}</h1>
+          ) : (
+            <AppPageHeader
+              eyebrow={eyebrow}
+              title={title}
+              description={description}
+              actions={actions}
+              walletBalance={profile?.credit_balance ?? 0}
+            />
+          )}
 
-          <div className={cn('app-page-body', sidebar ? 'xl:grid-cols-[minmax(0,1fr)_320px]' : 'xl:grid-cols-1')}>
+          <div className={cn('app-page-body', hideHeader && 'mt-0 lg:mt-0', sidebar ? 'xl:grid-cols-[minmax(0,1fr)_320px]' : 'xl:grid-cols-1')}>
             <div className={cn('min-w-0', contentClassName)}>{children}</div>
             {sidebar ? <aside className="space-y-6">{sidebar}</aside> : null}
           </div>

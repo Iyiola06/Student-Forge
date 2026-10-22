@@ -26,7 +26,7 @@ export default function LabsPage() {
             <p className="eyebrow">Labs</p>
             <h3 className="panel-title mt-2">{tool.name}</h3>
             <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{tool.body}</p>
-            <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#1a5c2a]">
+            <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#2f7fd3]">
               Open tool
               <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
             </span>

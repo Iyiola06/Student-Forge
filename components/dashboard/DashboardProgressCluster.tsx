@@ -35,7 +35,7 @@ export default function DashboardProgressCluster({
 }: DashboardProgressClusterProps) {
   const orbitStyle = {
     '--progress': examReadinessScore,
-    '--orbit-color': '#2c5d92',
+    '--orbit-color': '#2f7fd3',
   } as CSSProperties;
 
   const values = {

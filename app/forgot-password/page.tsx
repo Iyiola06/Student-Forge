@@ -39,10 +39,10 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="main-bg font-display min-h-screen flex flex-col antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
+    <div className="main-bg font-display min-h-screen flex flex-col antialiased selection:bg-[#2f7fd3]/30 selection:text-[#2f7fd3]">
       <div className="layout-container flex h-full grow flex-col">
         {/* Header */}
-        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#3b3b54] px-4 sm:px-10 py-3 bg-white dark:bg-[#101022]/80 backdrop-blur-md sticky top-0 z-50">
+        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#24344f] px-4 sm:px-10 py-3 bg-white dark:bg-[#070d1a]/80 backdrop-blur-md sticky top-0 z-50">
           <div className="flex items-center gap-4 text-slate-900 dark:text-white">
             <div className="relative size-8 flex items-center justify-center">
               <Image
@@ -61,14 +61,14 @@ export default function ForgotPasswordPage() {
           <div className="hidden sm:flex flex-1 justify-end gap-8">
             <div className="flex items-center gap-9">
               <Link
-                className="text-slate-600 dark:text-slate-200 hover:text-[#1a5c2a] dark:hover:text-[#1a5c2a] transition-colors text-sm font-medium leading-normal"
+                className="text-slate-600 dark:text-slate-200 hover:text-[#2f7fd3] dark:hover:text-[#2f7fd3] transition-colors text-sm font-medium leading-normal"
                 href="/login"
               >
                 Log In
               </Link>
             </div>
             <Link href="/signup">
-              <button className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-[#1a5c2a] hover:bg-blue-700 text-white text-sm font-bold leading-normal tracking-[0.015em] transition-all shadow-lg shadow-[#1a5c2a]/20">
+              <button className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-[#2f7fd3] hover:bg-blue-700 text-white text-sm font-bold leading-normal tracking-[0.015em] transition-all shadow-lg shadow-[#2f7fd3]/20">
                 <span className="truncate">Sign Up</span>
               </button>
             </Link>
@@ -82,7 +82,7 @@ export default function ForgotPasswordPage() {
               <h1 className="text-slate-900 dark:text-white text-3xl sm:text-4xl font-black leading-tight tracking-[-0.033em]">
                 Forgot Password?
               </h1>
-              <p className="text-slate-500 dark:text-[#9c9cba] text-base font-normal leading-relaxed">
+              <p className="text-slate-500 dark:text-[#9aa7bc] text-base font-normal leading-relaxed">
                 No worries! Enter your email and we&apos;ll send you a link to reset
                 your password.
               </p>
@@ -112,7 +112,7 @@ export default function ForgotPasswordPage() {
                         </span>
                       </div>
                       <input
-                        className="block w-full rounded-lg border-0 py-3 pl-10 text-slate-900 dark:text-white ring-1 ring-inset ring-slate-300 dark:ring-[#3b3b54] placeholder:text-slate-400 dark:placeholder:text-[#9c9cba] focus:ring-2 focus:ring-inset focus:ring-[#1a5c2a] sm:text-sm sm:leading-6 bg-transparent dark:bg-[#101022]/50 disabled:opacity-50"
+                        className="block w-full rounded-lg border-0 py-3 pl-10 text-slate-900 dark:text-white ring-1 ring-inset ring-slate-300 dark:ring-[#24344f] placeholder:text-slate-400 dark:placeholder:text-[#9aa7bc] focus:ring-2 focus:ring-inset focus:ring-[#2f7fd3] sm:text-sm sm:leading-6 bg-transparent dark:bg-[#070d1a]/50 disabled:opacity-50"
                         id="email-address"
                         name="email"
                         placeholder="student@university.edu"
@@ -127,7 +127,7 @@ export default function ForgotPasswordPage() {
                 </div>
                 <div>
                   <button
-                    className="flex w-full justify-center rounded-lg bg-[#1a5c2a] px-3 py-3.5 text-sm font-bold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a5c2a] transition-all duration-200 disabled:opacity-70"
+                    className="flex w-full justify-center rounded-lg bg-[#2f7fd3] px-3 py-3.5 text-sm font-bold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7fd3] transition-all duration-200 disabled:opacity-70"
                     type="submit"
                     disabled={isLoading}
                   >
@@ -142,10 +142,10 @@ export default function ForgotPasswordPage() {
                 aria-hidden="true"
                 className="absolute inset-0 flex items-center"
               >
-                <div className="w-full border-t border-slate-200 dark:border-[#3b3b54]"></div>
+                <div className="w-full border-t border-slate-200 dark:border-[#24344f]"></div>
               </div>
               <div className="relative flex justify-center">
-                <span className="bg-white dark:bg-[#1b1b27] px-2 text-sm text-slate-400 dark:text-[#9c9cba]">
+                <span className="bg-white dark:bg-[#0f192c] px-2 text-sm text-slate-400 dark:text-[#9aa7bc]">
                   or
                 </span>
               </div>
@@ -153,7 +153,7 @@ export default function ForgotPasswordPage() {
             {/* Back to Login */}
             <div className="flex justify-center">
               <Link
-                className="group flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-[#1a5c2a] dark:hover:text-[#1a5c2a] transition-colors"
+                className="group flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-[#2f7fd3] dark:hover:text-[#2f7fd3] transition-colors"
                 href="/login"
               >
                 <span className="material-symbols-outlined text-lg transition-transform group-hover:-translate-x-1">
@@ -164,10 +164,10 @@ export default function ForgotPasswordPage() {
             </div>
           </div>
           {/* Helper / Support Link */}
-          <p className="mt-8 text-center text-sm text-slate-500 dark:text-[#9c9cba]">
+          <p className="mt-8 text-center text-sm text-slate-500 dark:text-[#9aa7bc]">
             Need help?{' '}
             <Link
-              className="font-semibold text-[#1a5c2a] hover:text-blue-400 transition-colors"
+              className="font-semibold text-[#2f7fd3] hover:text-blue-400 transition-colors"
               href="#"
             >
               Contact Support

@@ -3,21 +3,21 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 export const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#93b7e7] disabled:pointer-events-none disabled:opacity-60',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--ring-brand)] disabled:pointer-events-none disabled:opacity-55',
   {
     variants: {
       variant: {
         primary:
-          'bg-[#3b82f6] text-white shadow-[0_12px_32px_rgba(59,130,246,0.22)] hover:bg-[#2563eb] dark:bg-[#4f86c5] dark:hover:bg-[#3975ba]',
+          'bg-[var(--action)] text-[var(--action-ink)] shadow-[var(--shadow-action)] hover:-translate-y-px hover:bg-[var(--action-hover)]',
         secondary:
-          'border border-slate-200 bg-white text-slate-700 shadow-[0_4px_18px_rgba(15,23,42,0.06)] hover:bg-slate-50 dark:border-white/10 dark:bg-white/6 dark:text-slate-100 dark:hover:bg-white/10',
-        ghost:
-          'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/8',
+          'border border-[var(--line-strong)] bg-[var(--card)] text-[var(--text-strong)] hover:border-[var(--accent)] hover:text-[var(--accent-strong)]',
+        ghost: 'text-[var(--text-body)] hover:bg-[var(--accent-softer)] hover:text-[var(--text-strong)]',
+        sky: 'bg-[#4a9be8] text-white shadow-[0_10px_24px_rgba(74,155,232,0.32)] hover:-translate-y-px hover:bg-[#2f7fd3]',
       },
       size: {
         sm: 'h-10 px-4 text-sm',
         default: 'h-11 px-5 text-sm',
-        hero: 'h-12 rounded-2xl px-7 text-sm',
+        hero: 'h-12 px-7 text-[15px]',
       },
     },
     defaultVariants: {

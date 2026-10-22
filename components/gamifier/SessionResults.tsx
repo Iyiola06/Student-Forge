@@ -16,11 +16,11 @@ export default function SessionResults({ summary, onReturn, onReplay }: SessionR
         : 'quick_recall';
 
     return (
-        <div className="relative min-h-[100dvh] overflow-hidden bg-[#0a0c12] px-4 py-8 text-white">
+        <div className="relative min-h-[100dvh] overflow-hidden bg-[#070d1a] px-4 py-8 text-white">
             <div className={`absolute inset-0 bg-gradient-to-br ${theme.gradient}`} />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_32%),linear-gradient(180deg,rgba(10,12,18,0.12),rgba(10,12,18,0.96))]" />
 
-            <div className="relative z-10 mx-auto w-full max-w-5xl rounded-[2.5rem] border border-white/10 bg-[#11141d]/82 p-8 backdrop-blur-xl sm:p-10">
+            <div className="relative z-10 mx-auto w-full max-w-5xl rounded-[2.5rem] border border-white/10 bg-[#0f192c]/82 p-8 backdrop-blur-xl sm:p-10">
                 <div className="mb-10 text-center">
                     <div className={`mb-4 inline-flex rounded-full px-4 py-2 text-[10px] font-black uppercase tracking-[0.35em] ${theme.badge}`}>
                         {modeLabels[mode].title}
@@ -54,23 +54,23 @@ export default function SessionResults({ summary, onReturn, onReplay }: SessionR
                     <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6">
                         <h2 className="mb-5 text-2xl font-black">XP Breakdown</h2>
                         <div className="space-y-3 text-sm">
-                            <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#0f1219] px-4 py-3">
+                            <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#0f192c] px-4 py-3">
                                 <span className="text-slate-400">Session completion</span>
                                 <span className="font-black">{summary?.completionXp || 0}</span>
                             </div>
-                            <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#0f1219] px-4 py-3">
+                            <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#0f192c] px-4 py-3">
                                 <span className="text-slate-400">Accuracy bonus</span>
                                 <span className="font-black">{summary?.accuracyBonusXp || 0}</span>
                             </div>
-                            <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#0f1219] px-4 py-3">
+                            <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#0f192c] px-4 py-3">
                                 <span className="text-slate-400">Streak bonus</span>
                                 <span className="font-black">{summary?.streakBonusXp || 0}</span>
                             </div>
-                            <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#0f1219] px-4 py-3">
+                            <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#0f192c] px-4 py-3">
                                 <span className="text-slate-400">Weak spot bonus</span>
                                 <span className="font-black">{summary?.weakSpotBonusXp || 0}</span>
                             </div>
-                            <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#0f1219] px-4 py-3">
+                            <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#0f192c] px-4 py-3">
                                 <span className="text-slate-400">First run today</span>
                                 <span className="font-black">{summary?.dailyBonusXp || 0}</span>
                             </div>
@@ -82,13 +82,13 @@ export default function SessionResults({ summary, onReturn, onReplay }: SessionR
                         {weakConcepts.length > 0 ? (
                             <div className="space-y-3">
                                 {weakConcepts.map((concept: string) => (
-                                    <div key={concept} className="rounded-2xl border border-white/10 bg-[#0f1219] px-4 py-4 text-sm text-slate-300">
+                                    <div key={concept} className="rounded-2xl border border-white/10 bg-[#0f192c] px-4 py-4 text-sm text-slate-300">
                                         {concept}
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <div className="rounded-2xl border border-white/10 bg-[#0f1219] px-4 py-4 text-slate-400">
+                            <div className="rounded-2xl border border-white/10 bg-[#0f192c] px-4 py-4 text-slate-400">
                                 Clean run. No weak concepts were flagged this time.
                             </div>
                         )}

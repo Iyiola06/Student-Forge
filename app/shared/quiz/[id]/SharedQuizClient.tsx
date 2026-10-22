@@ -63,12 +63,12 @@ export default function SharedQuizClient({ quiz, questions }: SharedQuizClientPr
     };
 
     return (
-        <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col items-center justify-center p-6 antialiased selection:bg-[#1a5c2a]/30 selection:text-[#1a5c2a]">
+        <div className="bg-[#f5f9fe] dark:bg-[#070d1a] font-display min-h-screen flex flex-col items-center justify-center p-6 antialiased selection:bg-[#2f7fd3]/30 selection:text-[#2f7fd3]">
             <div className="w-full max-w-3xl">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <Link href="/" className="flex items-center gap-2 group">
-                        <div className="size-10 bg-[#1a5c2a]/10 text-[#1a5c2a] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div className="size-10 bg-[#2f7fd3]/10 text-[#2f7fd3] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                             <span className="material-symbols-outlined text-2xl">school</span>
                         </div>
                         <h2 className="text-slate-900 dark:text-white text-xl font-bold tracking-tight">
@@ -78,33 +78,33 @@ export default function SharedQuizClient({ quiz, questions }: SharedQuizClientPr
                 </div>
 
                 {!isQuizActive && !isFinished ? (
-                    <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-10 text-center shadow-lg">
-                        <span className="material-symbols-outlined text-6xl text-[#1a5c2a] mb-4 bg-[#1a5c2a]/10 p-4 rounded-full">
+                    <div className="bg-white dark:bg-[#0f192c] rounded-2xl border border-slate-200 dark:border-[#1d2a42] p-10 text-center shadow-lg">
+                        <span className="material-symbols-outlined text-6xl text-[#2f7fd3] mb-4 bg-[#2f7fd3]/10 p-4 rounded-full">
                             contact_support
                         </span>
                         <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{quiz.title}</h1>
-                        <p className="text-slate-500 dark:text-[#9c9cba] mb-8 text-lg">
+                        <p className="text-slate-500 dark:text-[#9aa7bc] mb-8 text-lg">
                             {quiz.subject || 'General'} • {questions.length} Questions • {quiz.difficulty}
                         </p>
                         <button
                             onClick={startQuiz}
-                            className="bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-[#1a5c2a]/25 transition-all w-full md:w-auto"
+                            className="bg-[#2f7fd3] hover:bg-[#2f7fd3]/90 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-[#2f7fd3]/25 transition-all w-full md:w-auto"
                         >
                             Start Quiz
                         </button>
                     </div>
                 ) : isQuizActive ? (
-                    <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-8 shadow-lg relative overflow-hidden">
+                    <div className="bg-white dark:bg-[#0f192c] rounded-2xl border border-slate-200 dark:border-[#1d2a42] p-8 shadow-lg relative overflow-hidden">
                         {/* Progress Bar */}
-                        <div className="absolute top-0 left-0 w-full h-1.5 bg-slate-100 dark:bg-[#252535]">
+                        <div className="absolute top-0 left-0 w-full h-1.5 bg-slate-100 dark:bg-[#13203a]">
                             <div
-                                className="h-full bg-gradient-to-r from-[#1a5c2a] to-amber-500 transition-all duration-300"
+                                className="h-full bg-gradient-to-r from-[#2f7fd3] to-amber-500 transition-all duration-300"
                                 style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
                             ></div>
                         </div>
 
                         <div className="flex justify-between items-center mb-6 pt-4">
-                            <span className="text-sm font-bold text-slate-500 dark:text-[#9c9cba]">
+                            <span className="text-sm font-bold text-slate-500 dark:text-[#9aa7bc]">
                                 Question {currentQuestionIndex + 1} of {questions.length}
                             </span>
                         </div>
@@ -122,15 +122,15 @@ export default function SharedQuizClient({ quiz, questions }: SharedQuizClientPr
 
                                 if (!showExplanation) {
                                     optionClass += isSelected
-                                        ? "border-[#1a5c2a] bg-[#1a5c2a]/5 text-[#1a5c2a] font-bold"
-                                        : "border-slate-200 dark:border-[#3b3b54] bg-white dark:bg-[#1b1b27] text-slate-700 dark:text-slate-300 hover:border-[#1a5c2a]/50";
+                                        ? "border-[#2f7fd3] bg-[#2f7fd3]/5 text-[#2f7fd3] font-bold"
+                                        : "border-slate-200 dark:border-[#24344f] bg-white dark:bg-[#0f192c] text-slate-700 dark:text-slate-300 hover:border-[#2f7fd3]/50";
                                 } else {
                                     if (isCorrectAnswer) {
                                         optionClass += "border-green-500 bg-green-50 dark:bg-green-900/10 text-green-700 dark:text-green-400 font-bold";
                                     } else if (isSelected && !isCorrectAnswer) {
                                         optionClass += "border-red-500 bg-red-50 dark:bg-red-900/10 text-red-700 dark:text-red-400 font-bold opacity-75";
                                     } else {
-                                        optionClass += "border-slate-200 dark:border-[#3b3b54] bg-slate-50 dark:bg-[#111118] text-slate-400 opacity-50";
+                                        optionClass += "border-slate-200 dark:border-[#24344f] bg-slate-50 dark:bg-[#0f192c] text-slate-400 opacity-50";
                                     }
                                 }
 
@@ -142,7 +142,7 @@ export default function SharedQuizClient({ quiz, questions }: SharedQuizClientPr
                                         className={optionClass}
                                     >
                                         <div className="flex items-start gap-3">
-                                            <div className={`shrink-0 mt-0.5 size-6 rounded-full border-2 flex items-center justify-center text-xs font-bold ${!showExplanation && isSelected ? 'border-[#1a5c2a] bg-[#1a5c2a] text-white' :
+                                            <div className={`shrink-0 mt-0.5 size-6 rounded-full border-2 flex items-center justify-center text-xs font-bold ${!showExplanation && isSelected ? 'border-[#2f7fd3] bg-[#2f7fd3] text-white' :
                                                     showExplanation && isCorrectAnswer ? 'border-green-500 bg-green-500 text-white' :
                                                         showExplanation && isSelected && !isCorrectAnswer ? 'border-red-500 bg-red-500 text-white' :
                                                             'border-slate-300 dark:border-[#4b4b66]'
@@ -172,12 +172,12 @@ export default function SharedQuizClient({ quiz, questions }: SharedQuizClientPr
                             </div>
                         )}
 
-                        <div className="flex justify-end pt-4 border-t border-slate-100 dark:border-[#2d2d3f]">
+                        <div className="flex justify-end pt-4 border-t border-slate-100 dark:border-[#1d2a42]">
                             {!showExplanation ? (
                                 <button
                                     onClick={handleCheckAnswer}
                                     disabled={!selectedOption}
-                                    className="bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 py-3 rounded-xl font-bold transition-all"
+                                    className="bg-[#2f7fd3] hover:bg-[#2f7fd3]/90 disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 py-3 rounded-xl font-bold transition-all"
                                 >
                                     Check Answer
                                 </button>
@@ -194,25 +194,25 @@ export default function SharedQuizClient({ quiz, questions }: SharedQuizClientPr
                     </div>
                 ) : (
                     // Results View
-                    <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] p-10 text-center shadow-lg">
-                        <div className="inline-flex items-center justify-center p-4 bg-[#1a5c2a]/10 rounded-full mb-6">
-                            <span className="material-symbols-outlined text-5xl text-[#1a5c2a]">emoji_events</span>
+                    <div className="bg-white dark:bg-[#0f192c] rounded-2xl border border-slate-200 dark:border-[#1d2a42] p-10 text-center shadow-lg">
+                        <div className="inline-flex items-center justify-center p-4 bg-[#2f7fd3]/10 rounded-full mb-6">
+                            <span className="material-symbols-outlined text-5xl text-[#2f7fd3]">emoji_events</span>
                         </div>
                         <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Quiz Complete!</h2>
-                        <p className="text-slate-500 dark:text-[#9c9cba] mb-8 text-lg">
+                        <p className="text-slate-500 dark:text-[#9aa7bc] mb-8 text-lg">
                             You scored {score} out of {questions.length} questions correctly.
                         </p>
 
                         <div className="flex gap-4 justify-center">
                             <button
                                 onClick={startQuiz}
-                                className="bg-slate-100 dark:bg-[#252535] hover:bg-slate-200 dark:hover:bg-[#2d2d3f] text-slate-700 dark:text-slate-300 px-8 py-3 rounded-xl font-bold transition-all"
+                                className="bg-slate-100 dark:bg-[#13203a] hover:bg-slate-200 dark:hover:bg-[#1d2a42] text-slate-700 dark:text-slate-300 px-8 py-3 rounded-xl font-bold transition-all"
                             >
                                 Try Again
                             </button>
                             <Link
                                 href="/signup"
-                                className="bg-[#1a5c2a] hover:bg-[#1a5c2a]/90 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-[#1a5c2a]/25 transition-all"
+                                className="bg-[#2f7fd3] hover:bg-[#2f7fd3]/90 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-[#2f7fd3]/25 transition-all"
                             >
                                 Create Free Account
                             </Link>

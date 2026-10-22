@@ -29,7 +29,7 @@ export default function TopNavigation({ children }: { children?: React.ReactNode
     ];
 
     return (
-        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#3b3b54] px-4 sm:px-10 py-3 bg-white dark:bg-[#101022]/80 backdrop-blur-md sticky top-0 z-50">
+        <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#24344f] px-4 sm:px-10 py-3 bg-white dark:bg-[#070d1a]/80 backdrop-blur-md sticky top-0 z-50">
             <div className="flex items-center gap-4 text-slate-900 dark:text-white">
                 <BrandLogo compact subtitle={null} href="/dashboard" />
             </div>
@@ -42,8 +42,8 @@ export default function TopNavigation({ children }: { children?: React.ReactNode
                             href={link.href}
                             className={
                                 pathname === link.href
-                                    ? 'text-slate-900 dark:text-white font-bold text-sm leading-normal border-b-2 border-[#1a5c2a]'
-                                    : 'text-slate-600 dark:text-slate-400 hover:text-[#1a5c2a] dark:hover:text-white transition-colors text-sm font-medium leading-normal'
+                                    ? 'text-slate-900 dark:text-white font-bold text-sm leading-normal border-b-2 border-[#2f7fd3]'
+                                    : 'text-slate-600 dark:text-slate-400 hover:text-[#2f7fd3] dark:hover:text-white transition-colors text-sm font-medium leading-normal'
                             }
                         >
                             {link.name}
@@ -56,23 +56,23 @@ export default function TopNavigation({ children }: { children?: React.ReactNode
 
                     <Link
                         href="/settings"
-                        className="hidden rounded-full border border-[#1a5c2a]/20 bg-[#1a5c2a]/10 px-3 py-1.5 text-xs font-black uppercase tracking-[0.18em] text-[#1a5c2a] md:inline-flex"
+                        className="hidden rounded-full border border-[#2f7fd3]/20 bg-[#2f7fd3]/10 px-3 py-1.5 text-xs font-black uppercase tracking-[0.18em] text-[#2f7fd3] md:inline-flex"
                     >
                         {profile?.credit_balance ?? 0} Credits
                     </Link>
 
                     <ThemeToggle />
 
-                    <button className="bg-slate-100 dark:bg-[#252535] text-slate-900 dark:text-white p-2 rounded-full hover:bg-slate-200 dark:hover:bg-[#2d2d3f] transition-colors relative">
+                    <button className="bg-slate-100 dark:bg-[#13203a] text-slate-900 dark:text-white p-2 rounded-full hover:bg-slate-200 dark:hover:bg-[#1d2a42] transition-colors relative">
                         <span className="material-symbols-outlined text-[20px]">
                             notifications
                         </span>
-                        <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-[#1b1b27]"></span>
+                        <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-[#0f192c]"></span>
                     </button>
 
                     <div className="group relative">
                         <div
-                            className={`bg-cover bg-center bg-no-repeat rounded-full w-9 h-9 border-2 border-slate-200 dark:border-[#3b3b54] cursor-pointer ${isLoading ? 'animate-pulse bg-slate-200 dark:bg-slate-700' : ''
+                            className={`bg-cover bg-center bg-no-repeat rounded-full w-9 h-9 border-2 border-slate-200 dark:border-[#24344f] cursor-pointer ${isLoading ? 'animate-pulse bg-slate-200 dark:bg-slate-700' : ''
                                 }`}
                             style={{
                                 backgroundImage: profile?.avatar_url
@@ -82,17 +82,17 @@ export default function TopNavigation({ children }: { children?: React.ReactNode
                         ></div>
 
                         {/* Dropdown Menu */}
-                        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#1b1b27] rounded-xl shadow-lg border border-slate-200 dark:border-[#2d2d3f] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                            <div className="p-3 border-b border-slate-100 dark:border-[#2d2d3f]">
+                        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#0f192c] rounded-xl shadow-lg border border-slate-200 dark:border-[#1d2a42] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                            <div className="p-3 border-b border-slate-100 dark:border-[#1d2a42]">
                                 <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
                                     {profile?.full_name || 'Student'}
                                 </p>
-                                <p className="text-xs text-slate-500 dark:text-[#9c9cba]">
+                                <p className="text-xs text-slate-500 dark:text-[#9aa7bc]">
                                     Level {profile?.level || 1}
                                 </p>
                             </div>
                             <div className="p-1">
-                                <Link href="/settings" className="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-[#9c9cba] hover:bg-slate-50 dark:hover:bg-[#252535] rounded-lg w-full text-left">
+                                <Link href="/settings" className="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 dark:text-[#9aa7bc] hover:bg-slate-50 dark:hover:bg-[#13203a] rounded-lg w-full text-left">
                                     <span className="material-symbols-outlined text-lg">settings</span>
                                     Settings
                                 </Link>

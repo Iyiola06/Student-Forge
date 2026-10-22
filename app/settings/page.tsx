@@ -309,7 +309,7 @@ export default function SettingsPage() {
               <label className="block">
                 <span className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">First name</span>
                 <input
-                  className="h-11 w-full rounded-2xl border border-black/8 bg-white/72 px-4 text-sm outline-none focus:border-[#163f73]/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                  className="h-11 w-full rounded-2xl border border-black/8 bg-white/72 px-4 text-sm outline-none focus:border-[#2266ad]/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
                   value={formData.firstName}
                   onChange={(event) => setFormData({ ...formData, firstName: event.target.value })}
                   type="text"
@@ -319,7 +319,7 @@ export default function SettingsPage() {
               <label className="block">
                 <span className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Last name</span>
                 <input
-                  className="h-11 w-full rounded-2xl border border-black/8 bg-white/72 px-4 text-sm outline-none focus:border-[#163f73]/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                  className="h-11 w-full rounded-2xl border border-black/8 bg-white/72 px-4 text-sm outline-none focus:border-[#2266ad]/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
                   value={formData.lastName}
                   onChange={(event) => setFormData({ ...formData, lastName: event.target.value })}
                   type="text"
@@ -331,7 +331,7 @@ export default function SettingsPage() {
               <label className="block">
                 <span className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Examination date</span>
                 <input
-                  className="h-11 w-full rounded-2xl border border-black/8 bg-white/72 px-4 text-sm outline-none focus:border-[#163f73]/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                  className="h-11 w-full rounded-2xl border border-black/8 bg-white/72 px-4 text-sm outline-none focus:border-[#2266ad]/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
                   value={formData.examDate}
                   onChange={(event) => setFormData({ ...formData, examDate: event.target.value })}
                   type="date"
@@ -351,7 +351,7 @@ export default function SettingsPage() {
                   <button
                     key={url}
                     onClick={() => setFormData({ ...formData, avatarUrl: url })}
-                    className={`overflow-hidden rounded-full border-2 transition ${formData.avatarUrl === url ? 'border-[#163f73] shadow-[0_10px_24px_rgba(22,63,115,0.16)]' : 'border-transparent opacity-75 hover:opacity-100'}`}
+                    className={`overflow-hidden rounded-full border-2 transition ${formData.avatarUrl === url ? 'border-[#2266ad] shadow-[0_10px_24px_rgba(22,63,115,0.16)]' : 'border-transparent opacity-75 hover:opacity-100'}`}
                   >
                     <img src={url} alt={`Avatar option ${index + 1}`} className="size-12 object-cover" />
                   </button>
@@ -359,7 +359,7 @@ export default function SettingsPage() {
 
                 <label className="flex size-12 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-black/10 bg-white/55 transition hover:bg-white/80 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10">
                   {isUploadingAvatar ? (
-                    <span className="size-5 rounded-full border-2 border-[#163f73] border-t-transparent animate-spin" />
+                    <span className="size-5 rounded-full border-2 border-[#2266ad] border-t-transparent animate-spin" />
                   ) : (
                     <span className="material-symbols-outlined text-slate-400 dark:text-slate-500">add_a_photo</span>
                   )}

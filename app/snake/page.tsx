@@ -171,13 +171,13 @@ export default function SnakePage() {
       : 'Ready';
 
   return (
-    <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex flex-col md:flex-row antialiased">
+    <div className="bg-[#f5f9fe] dark:bg-[#070d1a] font-display min-h-screen flex flex-col md:flex-row antialiased">
       <Sidebar />
       <div className="flex-1 flex flex-col min-h-screen md:h-screen md:overflow-hidden min-w-0">
-        <div className="px-6 pt-10 pb-6 md:px-8 border-b border-slate-200 dark:border-[#2d2d3f] bg-white dark:bg-[#1a1a24] shrink-0">
+        <div className="px-6 pt-10 pb-6 md:px-8 border-b border-slate-200 dark:border-[#1d2a42] bg-white dark:bg-[#0f192c] shrink-0">
           <div className="max-w-[1440px] mx-auto w-full">
             <h1 className="text-3xl font-black text-slate-900 dark:text-white flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#1a5c2a] bg-[#1a5c2a]/10 p-2 rounded-xl">sports_esports</span>
+              <span className="material-symbols-outlined text-[#2f7fd3] bg-[#2f7fd3]/10 p-2 rounded-xl">sports_esports</span>
               Classic Snake
             </h1>
             <p className="text-slate-600 dark:text-slate-300 text-sm mt-3 font-medium">
@@ -189,19 +189,19 @@ export default function SnakePage() {
         <main className="flex-1 overflow-y-auto px-6 md:px-8 py-8 max-w-[1440px] mx-auto w-full pb-12">
           <div className="grid gap-8 xl:grid-cols-[360px_1fr]">
             <div className="space-y-6">
-              <div className="bg-white/70 dark:bg-[#1a1a24]/80 backdrop-blur-2xl rounded-3xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm">
+              <div className="bg-white/70 dark:bg-[#0f192c]/80 backdrop-blur-2xl rounded-3xl border border-slate-200 dark:border-[#1d2a42] p-6 shadow-sm">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="rounded-2xl bg-slate-50 dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] p-4">
+                  <div className="rounded-2xl bg-slate-50 dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] p-4">
                     <div className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500 dark:text-slate-300">Score</div>
-                    <div className="mt-2 text-3xl font-black text-[#1a5c2a]">{score}</div>
+                    <div className="mt-2 text-3xl font-black text-[#2f7fd3]">{score}</div>
                   </div>
-                  <div className="rounded-2xl bg-slate-50 dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] p-4">
+                  <div className="rounded-2xl bg-slate-50 dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] p-4">
                     <div className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500 dark:text-slate-300">Best</div>
                     <div className="mt-2 text-3xl font-black text-[#5b5bfa]">{bestScore}</div>
                   </div>
                 </div>
 
-                <div className="mt-4 rounded-2xl bg-slate-50 dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] p-4">
+                <div className="mt-4 rounded-2xl bg-slate-50 dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] p-4">
                   <div className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500 dark:text-slate-300">Status</div>
                   <div className="mt-2 text-xl font-black text-slate-900 dark:text-white">{statusText}</div>
                 </div>
@@ -212,38 +212,38 @@ export default function SnakePage() {
                       if (isGameOver) resetGame();
                       setIsRunning((prev) => !prev);
                     }}
-                    className="w-full rounded-2xl bg-[#1a5c2a] hover:bg-[#144823] text-white font-black py-3.5 transition-colors"
+                    className="w-full rounded-2xl bg-[#2f7fd3] hover:bg-[#2266ad] text-white font-black py-3.5 transition-colors"
                   >
                     {isGameOver ? 'Start Fresh' : isRunning ? 'Pause Game' : 'Start Game'}
                   </button>
                   <button
                     onClick={resetGame}
-                    className="w-full rounded-2xl bg-slate-100 dark:bg-[#252535] hover:bg-slate-200 dark:hover:bg-[#2d2d3f] text-slate-700 dark:text-white font-black py-3.5 transition-colors"
+                    className="w-full rounded-2xl bg-slate-100 dark:bg-[#13203a] hover:bg-slate-200 dark:hover:bg-[#1d2a42] text-slate-700 dark:text-white font-black py-3.5 transition-colors"
                   >
                     Reset Board
                   </button>
                 </div>
               </div>
 
-              <div className="bg-white/70 dark:bg-[#1a1a24]/80 backdrop-blur-2xl rounded-3xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm">
+              <div className="bg-white/70 dark:bg-[#0f192c]/80 backdrop-blur-2xl rounded-3xl border border-slate-200 dark:border-[#1d2a42] p-6 shadow-sm">
                 <h2 className="text-xl font-black text-slate-900 dark:text-white mb-4">Mobile Controls</h2>
                 <div className="grid grid-cols-3 gap-3 max-w-[240px]">
                   <div />
-                  <button onClick={() => handleDirection({ x: 0, y: -1 })} className="rounded-2xl bg-slate-100 dark:bg-[#252535] h-14 flex items-center justify-center text-slate-900 dark:text-white font-black">
+                  <button onClick={() => handleDirection({ x: 0, y: -1 })} className="rounded-2xl bg-slate-100 dark:bg-[#13203a] h-14 flex items-center justify-center text-slate-900 dark:text-white font-black">
                     Up
                   </button>
                   <div />
-                  <button onClick={() => handleDirection({ x: -1, y: 0 })} className="rounded-2xl bg-slate-100 dark:bg-[#252535] h-14 flex items-center justify-center text-slate-900 dark:text-white font-black">
+                  <button onClick={() => handleDirection({ x: -1, y: 0 })} className="rounded-2xl bg-slate-100 dark:bg-[#13203a] h-14 flex items-center justify-center text-slate-900 dark:text-white font-black">
                     Left
                   </button>
                   <button onClick={() => setIsRunning((prev) => !prev)} className="rounded-2xl bg-[#5b5bfa] h-14 flex items-center justify-center text-white font-black">
                     {isRunning ? 'II' : 'Go'}
                   </button>
-                  <button onClick={() => handleDirection({ x: 1, y: 0 })} className="rounded-2xl bg-slate-100 dark:bg-[#252535] h-14 flex items-center justify-center text-slate-900 dark:text-white font-black">
+                  <button onClick={() => handleDirection({ x: 1, y: 0 })} className="rounded-2xl bg-slate-100 dark:bg-[#13203a] h-14 flex items-center justify-center text-slate-900 dark:text-white font-black">
                     Right
                   </button>
                   <div />
-                  <button onClick={() => handleDirection({ x: 0, y: 1 })} className="rounded-2xl bg-slate-100 dark:bg-[#252535] h-14 flex items-center justify-center text-slate-900 dark:text-white font-black">
+                  <button onClick={() => handleDirection({ x: 0, y: 1 })} className="rounded-2xl bg-slate-100 dark:bg-[#13203a] h-14 flex items-center justify-center text-slate-900 dark:text-white font-black">
                     Down
                   </button>
                   <div />
@@ -251,7 +251,7 @@ export default function SnakePage() {
               </div>
             </div>
 
-            <div className="bg-white/70 dark:bg-[#1a1a24]/80 backdrop-blur-2xl rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] p-5 md:p-7 shadow-sm">
+            <div className="bg-white/70 dark:bg-[#0f192c]/80 backdrop-blur-2xl rounded-[2rem] border border-slate-200 dark:border-[#1d2a42] p-5 md:p-7 shadow-sm">
               <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <h2 className="text-2xl font-black text-slate-900 dark:text-white">Arena</h2>
@@ -259,12 +259,12 @@ export default function SnakePage() {
                     Eat the orange pellets, avoid the walls, and do not bite your tail.
                   </p>
                 </div>
-                <div className="rounded-full bg-slate-100 dark:bg-[#13131a] border border-slate-200 dark:border-[#2d2d3f] px-4 py-2 text-xs font-black uppercase tracking-[0.25em] text-slate-600 dark:text-slate-300">
+                <div className="rounded-full bg-slate-100 dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] px-4 py-2 text-xs font-black uppercase tracking-[0.25em] text-slate-600 dark:text-slate-300">
                   Speed {Math.round((200 - speed) / 5) + 1}
                 </div>
               </div>
 
-              <div className="aspect-square w-full max-w-[720px] mx-auto rounded-[1.5rem] border border-slate-200 dark:border-[#2d2d3f] bg-[#f8fafc] dark:bg-[#11131b] p-3">
+              <div className="aspect-square w-full max-w-[720px] mx-auto rounded-[1.5rem] border border-slate-200 dark:border-[#1d2a42] bg-[#f8fafc] dark:bg-[#11131b] p-3">
                 <div
                   className="grid h-full w-full gap-1"
                   style={{ gridTemplateColumns: `repeat(${BOARD_SIZE}, minmax(0, 1fr))` }}
@@ -278,9 +278,9 @@ export default function SnakePage() {
                         key={cell.key}
                         className={`rounded-[0.35rem] transition-colors ${
                           isHead
-                            ? 'bg-[#1a5c2a]'
+                            ? 'bg-[#2f7fd3]'
                             : isBody
-                              ? 'bg-[#22762f]'
+                              ? 'bg-[#4a9be8]'
                               : cell.isFood
                                 ? 'bg-orange-500'
                                 : 'bg-slate-200/70 dark:bg-[#1d2130]'

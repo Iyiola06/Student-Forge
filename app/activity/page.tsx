@@ -36,8 +36,8 @@ export default function ActivityPage() {
 
     if (isProfileLoading) {
         return (
-            <div className="bg-[#f5f5f8] dark:bg-[#101022] font-display min-h-screen flex items-center justify-center">
-                <div className="size-10 border-4 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
+            <div className="bg-[#f5f9fe] dark:bg-[#070d1a] font-display min-h-screen flex items-center justify-center">
+                <div className="size-10 border-4 border-[#2f7fd3] border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
     }
@@ -65,12 +65,12 @@ export default function ActivityPage() {
         >
                 <main className="flex flex-1 flex-col overflow-y-auto">
                     {/* Profile Header */}
-                    <div className="bg-white dark:bg-[#1b1b27] rounded-2xl border border-slate-200 dark:border-[#2d2d3f] overflow-hidden mb-8 flex-shrink-0">
-                        <div className="h-32 bg-gradient-to-r from-[#1a5c2a] to-purple-600"></div>
+                    <div className="bg-white dark:bg-[#0f192c] rounded-2xl border border-slate-200 dark:border-[#1d2a42] overflow-hidden mb-8 flex-shrink-0">
+                        <div className="sky-bg h-32"></div>
                         <div className="px-8 pb-8">
                             <div className="relative flex justify-between items-end -mt-12 mb-6">
                                 <div className="flex items-end gap-6">
-                                    <div className="size-32 rounded-full border-4 border-white dark:border-[#1b1b27] bg-white dark:bg-[#1b1b27] overflow-hidden shadow-lg relative">
+                                    <div className="size-32 rounded-full border-4 border-white dark:border-[#0f192c] bg-white dark:bg-[#0f192c] overflow-hidden shadow-lg relative">
                                         <Image
                                             alt="Profile"
                                             className="object-cover"
@@ -82,40 +82,40 @@ export default function ActivityPage() {
                                         <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
                                             {profile?.full_name || 'Student'}
                                         </h1>
-                                        <p className="text-slate-500 dark:text-[#9c9cba] capitalize">
+                                        <p className="text-slate-500 dark:text-[#9aa7bc] capitalize">
                                             {profile?.role || 'Student'} • Level {profile?.level || 1}
                                         </p>
                                     </div>
                                 </div>
                                 <Link href="/settings">
-                                    <button className="px-4 py-2 bg-white dark:bg-[#252535] border border-slate-200 dark:border-[#3b3b54] rounded-lg text-sm font-medium text-slate-700 dark:text-white hover:bg-slate-50 dark:hover:bg-[#2d2d3f] transition-colors shadow-sm">
+                                    <button className="px-4 py-2 bg-white dark:bg-[#13203a] border border-slate-200 dark:border-[#24344f] rounded-lg text-sm font-medium text-slate-700 dark:text-white hover:bg-slate-50 dark:hover:bg-[#1d2a42] transition-colors shadow-sm">
                                         Edit Profile
                                     </button>
                                 </Link>
                             </div>
                             {/* Stats Row */}
-                            <div className="grid grid-cols-3 gap-4 border-t border-slate-100 dark:border-[#2d2d3f] pt-6">
-                                <div className="text-center border-r border-slate-100 dark:border-[#2d2d3f]">
+                            <div className="grid grid-cols-3 gap-4 border-t border-slate-100 dark:border-[#1d2a42] pt-6">
+                                <div className="text-center border-r border-slate-100 dark:border-[#1d2a42]">
                                     <span className="block text-2xl font-bold text-slate-900 dark:text-white">
                                         {profile?.resources_uploaded !== undefined ? profile.resources_uploaded : 0}
                                     </span>
-                                    <span className="text-sm text-slate-500 dark:text-[#9c9cba]">
+                                    <span className="text-sm text-slate-500 dark:text-[#9aa7bc]">
                                         PDFs Uploaded
                                     </span>
                                 </div>
-                                <div className="text-center border-r border-slate-100 dark:border-[#2d2d3f]">
+                                <div className="text-center border-r border-slate-100 dark:border-[#1d2a42]">
                                     <span className="block text-2xl font-bold text-slate-900 dark:text-white">
                                         {profile?.quizzes_taken !== undefined ? profile.quizzes_taken : 0}
                                     </span>
-                                    <span className="text-sm text-slate-500 dark:text-[#9c9cba]">
+                                    <span className="text-sm text-slate-500 dark:text-[#9aa7bc]">
                                         Quizzes Taken
                                     </span>
                                 </div>
                                 <div className="text-center">
-                                    <span className="block text-2xl font-bold text-[#1a5c2a]">
+                                    <span className="block text-2xl font-bold text-[#2f7fd3]">
                                         {profile?.exam_readiness_score || 0}%
                                     </span>
-                                    <span className="text-sm text-slate-500 dark:text-[#9c9cba]">
+                                    <span className="text-sm text-slate-500 dark:text-[#9aa7bc]">
                                         Exam Ready Score
                                     </span>
                                 </div>
@@ -123,34 +123,34 @@ export default function ActivityPage() {
                         </div>
                     </div>
                     {/* Tabs */}
-                    <div className="border-b border-slate-200 dark:border-[#2d2d3f] mb-8 flex-shrink-0">
+                    <div className="border-b border-slate-200 dark:border-[#1d2a42] mb-8 flex-shrink-0">
                         <nav className="flex gap-8">
                             <Link
-                                className="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-slate-500 dark:text-[#9c9cba] hover:text-slate-700 dark:hover:text-white hover:border-slate-300 transition-all"
+                                className="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-slate-500 dark:text-[#9aa7bc] hover:text-slate-700 dark:hover:text-white hover:border-slate-300 transition-all"
                                 href="/profile"
                             >
                                 Badges & Achievements
                             </Link>
                             <Link
-                                className="border-b-2 border-[#1a5c2a] pb-4 px-1 text-sm font-bold text-[#1a5c2a]"
+                                className="border-b-2 border-[#2f7fd3] pb-4 px-1 text-sm font-bold text-[#2f7fd3]"
                                 href="/activity"
                             >
                                 Activity
                             </Link>
                             <Link
-                                className="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-slate-500 dark:text-[#9c9cba] hover:text-slate-700 dark:hover:text-white hover:border-slate-300 transition-all"
+                                className="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-slate-500 dark:text-[#9aa7bc] hover:text-slate-700 dark:hover:text-white hover:border-slate-300 transition-all"
                                 href="/past-questions?tab=my_submissions"
                             >
                                 My Uploads
                             </Link>
                             <Link
-                                className="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-slate-500 dark:text-[#9c9cba] hover:text-slate-700 dark:hover:text-white hover:border-slate-300 transition-all"
+                                className="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-slate-500 dark:text-[#9aa7bc] hover:text-slate-700 dark:hover:text-white hover:border-slate-300 transition-all"
                                 href="/history"
                             >
                                 Study History
                             </Link>
                             <Link
-                                className="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-slate-500 dark:text-[#9c9cba] hover:text-slate-700 dark:hover:text-white hover:border-slate-300 transition-all"
+                                className="border-b-2 border-transparent pb-4 px-1 text-sm font-medium text-slate-500 dark:text-[#9aa7bc] hover:text-slate-700 dark:hover:text-white hover:border-slate-300 transition-all"
                                 href="/settings"
                             >
                                 Settings
@@ -160,24 +160,24 @@ export default function ActivityPage() {
                     {/* Activity Feed */}
                     <div className="flex-1">
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Recent Activity</h2>
-                        <div className="bg-white dark:bg-[#1b1b27] rounded-xl border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm max-w-2xl">
+                        <div className="bg-white dark:bg-[#0f192c] rounded-xl border border-slate-200 dark:border-[#1d2a42] p-6 shadow-sm max-w-2xl">
                             {isLoading ? (
                                 <div className="flex justify-center items-center py-10">
-                                    <div className="size-6 border-2 border-[#1a5c2a] border-t-transparent rounded-full animate-spin"></div>
+                                    <div className="size-6 border-2 border-[#2f7fd3] border-t-transparent rounded-full animate-spin"></div>
                                 </div>
                             ) : activities.length === 0 ? (
                                 <div className="text-center py-10">
-                                    <span className="material-symbols-outlined text-4xl text-slate-300 dark:text-[#3b3b54] mb-2">
+                                    <span className="material-symbols-outlined text-4xl text-slate-300 dark:text-[#24344f] mb-2">
                                         notifications_off
                                     </span>
-                                    <p className="text-slate-500 dark:text-[#9c9cba]">No recent activity to show.</p>
+                                    <p className="text-slate-500 dark:text-[#9aa7bc]">No recent activity to show.</p>
                                 </div>
                             ) : (
                                 <div className="space-y-6">
                                     {activities.map((activity, idx) => (
                                         <div key={idx} className="flex gap-4">
                                             <div className="flex-shrink-0 mt-1">
-                                                <div className="size-10 rounded-full bg-[#1a5c2a]/10 dark:bg-[#1a5c2a]/20 flex items-center justify-center text-[#1a5c2a]">
+                                                <div className="size-10 rounded-full bg-[#2f7fd3]/10 dark:bg-[#2f7fd3]/20 flex items-center justify-center text-[#2f7fd3]">
                                                     <span className="material-symbols-outlined text-[20px]">
                                                         {activity.action_type.includes('upload') ? 'upload_file' : activity.action_type.includes('quiz') ? 'psychology' : 'history_toggle_off'}
                                                     </span>
@@ -193,7 +193,7 @@ export default function ActivityPage() {
                                                         +{activity.details.xp_earned} XP Earned
                                                     </p>
                                                 )}
-                                                <p className="text-xs text-slate-500 dark:text-[#9c9cba] mt-1">
+                                                <p className="text-xs text-slate-500 dark:text-[#9aa7bc] mt-1">
                                                     {getTimeAgo(activity.created_at)}
                                                 </p>
                                             </div>

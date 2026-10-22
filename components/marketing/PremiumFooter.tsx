@@ -1,24 +1,61 @@
 import Link from 'next/link';
 import BrandLogo from '@/components/ui/BrandLogo';
+import Icon3D from '@/components/ui/Icon3D';
 import { footerLinks } from '@/components/marketing/home-content';
+
+const productLinks = [
+  { label: 'Quiz Generator', href: '/generator' },
+  { label: 'Flashcards', href: '/flashcards' },
+  { label: 'AI Tutor', href: '/ai-tutor' },
+  { label: 'Simplifier', href: '/simplifier' },
+];
 
 export default function PremiumFooter() {
   return (
-    <footer className="border-t border-slate-200/70 bg-white px-4 py-12 md:px-6 dark:border-white/8 dark:bg-[#0b1420]">
-      <div className="mx-auto flex w-full max-w-[1240px] flex-col items-center justify-between gap-8 md:flex-row">
-        <div className="text-center md:text-left">
-          <BrandLogo href="/" subtitle="Daily study workspace" />
-          <p className="mt-4 max-w-[360px] text-sm leading-7 text-slate-600 dark:text-slate-400">
-            {'Sulva\u2019s Studify'} turns class material into practice, weak-topic focus, and a dependable daily review loop.
-          </p>
+    <footer className="bg-white px-5 pt-14 pb-10 dark:bg-[#070d1a]">
+      <div className="mx-auto max-w-[1180px]">
+        <div className="grid gap-10 border-b border-[var(--line)] pb-10 md:grid-cols-[1.4fr_1fr_1fr]">
+          <div>
+            <BrandLogo />
+            <p className="mt-4 max-w-[360px] text-[14px] leading-7 text-[var(--text-soft)]">
+              Turn class material into practice, focus on weak topics and keep a daily review habit that actually sticks.
+            </p>
+            <div className="mt-5 flex items-center gap-2">
+              {(['books', 'brain', 'trophy'] as const).map((icon) => (
+                <span key={icon} className="icon-tile size-11">
+                  <Icon3D name={icon} size={26} />
+                </span>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="text-[13px] font-medium text-[var(--text-strong)]">Product</p>
+            <ul className="mt-4 space-y-3 text-[14px] text-[var(--text-soft)]">
+              {productLinks.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="transition hover:text-[var(--text-strong)]">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className="text-[13px] font-medium text-[var(--text-strong)]">Company</p>
+            <ul className="mt-4 space-y-3 text-[14px] text-[var(--text-soft)]">
+              {footerLinks.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="transition hover:text-[var(--text-strong)]">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-
-        <div className="flex flex-wrap justify-center gap-8 text-sm font-bold text-slate-600 dark:text-slate-300">
-          {footerLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="transition hover:text-[#2c5d92] dark:hover:text-[#f6b252]">
-              {link.label}
-            </Link>
-          ))}
+        <div className="flex flex-col items-center justify-between gap-3 pt-6 text-[13px] text-[var(--text-faint)] sm:flex-row">
+          <p>&copy; {new Date().getFullYear()} Sulva&rsquo;s Studify. Built for students who want to understand.</p>
+          <p>Illustrations: Microsoft Fluent Emoji (MIT)</p>
         </div>
       </div>
     </footer>

@@ -30,7 +30,7 @@ export default function DashboardHeroCard({
   const hasDueWork = dueTodayCount > 0;
   const orbitStyle = {
     '--progress': readiness,
-    '--orbit-color': '#2c5d92',
+    '--orbit-color': '#2f7fd3',
   } as CSSProperties;
 
   return (

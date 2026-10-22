@@ -23,7 +23,7 @@ export default function MissionHub({
     const featuredResources = resources.slice(0, 3);
 
     return (
-        <div className="relative min-h-[100dvh] bg-[#050510] text-white overflow-hidden">
+        <div className="relative min-h-[100dvh] bg-[#070d1a] text-white overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#1d4ed820,transparent_35%),radial-gradient(circle_at_bottom_right,#ea580c20,transparent_30%)] pointer-events-none" />
 
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12">
@@ -39,7 +39,7 @@ export default function MissionHub({
                         </p>
                     </div>
 
-                    <div className="w-full lg:w-[340px] bg-[#101022]/80 backdrop-blur-xl border border-[#2d2d3f] rounded-[2rem] p-6 shadow-2xl">
+                    <div className="w-full lg:w-[340px] bg-[#070d1a]/80 backdrop-blur-xl border border-[#1d2a42] rounded-[2rem] p-6 shadow-2xl">
                         <div className="flex items-center gap-4 mb-6">
                             <div
                                 className="size-16 rounded-2xl border-2 border-[#ea580c] bg-cover bg-center"
@@ -52,15 +52,15 @@ export default function MissionHub({
                         </div>
 
                         <div className="grid grid-cols-3 gap-3 mb-6">
-                            <div className="rounded-2xl bg-[#161625] border border-[#2d2d3f] p-3 text-center">
+                            <div className="rounded-2xl bg-[#0f192c] border border-[#1d2a42] p-3 text-center">
                                 <div className="text-xl font-black text-[#ea580c]">{profile?.xp?.toLocaleString() || 0}</div>
                                 <div className="text-[10px] uppercase tracking-widest text-slate-500">XP</div>
                             </div>
-                            <div className="rounded-2xl bg-[#161625] border border-[#2d2d3f] p-3 text-center">
+                            <div className="rounded-2xl bg-[#0f192c] border border-[#1d2a42] p-3 text-center">
                                 <div className="text-xl font-black text-cyan-400">{profile?.streak_days || 0}</div>
                                 <div className="text-[10px] uppercase tracking-widest text-slate-500">Streak</div>
                             </div>
-                            <div className="rounded-2xl bg-[#161625] border border-[#2d2d3f] p-3 text-center">
+                            <div className="rounded-2xl bg-[#0f192c] border border-[#1d2a42] p-3 text-center">
                                 <div className="text-xl font-black text-violet-400">{resources.length}</div>
                                 <div className="text-[10px] uppercase tracking-widest text-slate-500">Sources</div>
                             </div>
@@ -86,7 +86,7 @@ export default function MissionHub({
                 </div>
 
                 <div className="grid grid-cols-1 xl:grid-cols-[1.3fr_0.9fr] gap-8">
-                    <div className="bg-[#101022]/70 backdrop-blur-xl border border-[#2d2d3f] rounded-[2rem] p-6 sm:p-8">
+                    <div className="bg-[#070d1a]/70 backdrop-blur-xl border border-[#1d2a42] rounded-[2rem] p-6 sm:p-8">
                         <div className="flex items-center justify-between mb-6">
                             <div>
                                 <h2 className="text-2xl font-black">Mission Seeds</h2>
@@ -103,7 +103,7 @@ export default function MissionHub({
                                     key={resource.id}
                                     onClick={() => onStartMission(resource.id)}
                                     disabled={isLaunching}
-                                    className="text-left rounded-[1.5rem] border border-[#2d2d3f] bg-[linear-gradient(145deg,#121225,#0b0b16)] p-5 hover:border-[#ea580c]/50 hover:-translate-y-1 transition-all"
+                                    className="text-left rounded-[1.5rem] border border-[#1d2a42] bg-[linear-gradient(145deg,#121225,#0b0b16)] p-5 hover:border-[#ea580c]/50 hover:-translate-y-1 transition-all"
                                 >
                                     <div className="flex items-start justify-between gap-4 mb-4">
                                         <div>
@@ -150,28 +150,28 @@ export default function MissionHub({
                     </div>
 
                     <div className="space-y-6">
-                        <div className="bg-[#101022]/70 backdrop-blur-xl border border-[#2d2d3f] rounded-[2rem] p-6">
+                        <div className="bg-[#070d1a]/70 backdrop-blur-xl border border-[#1d2a42] rounded-[2rem] p-6">
                             <h3 className="text-lg font-black mb-4">How The Run Works</h3>
                             <div className="space-y-3 text-sm text-slate-300">
-                                <div className="rounded-2xl bg-[#161625] border border-[#2d2d3f] p-4">1. Start with a mission seed from your notes or community topics.</div>
-                                <div className="rounded-2xl bg-[#161625] border border-[#2d2d3f] p-4">2. Win fast tactical battles by answering correctly and using energy abilities well.</div>
-                                <div className="rounded-2xl bg-[#161625] border border-[#2d2d3f] p-4">3. Choose rewards and routes that change the rest of the session.</div>
-                                <div className="rounded-2xl bg-[#161625] border border-[#2d2d3f] p-4">4. Beat the Final Examiner for mission XP and chapter unlocks.</div>
+                                <div className="rounded-2xl bg-[#0f192c] border border-[#1d2a42] p-4">1. Start with a mission seed from your notes or community topics.</div>
+                                <div className="rounded-2xl bg-[#0f192c] border border-[#1d2a42] p-4">2. Win fast tactical battles by answering correctly and using energy abilities well.</div>
+                                <div className="rounded-2xl bg-[#0f192c] border border-[#1d2a42] p-4">3. Choose rewards and routes that change the rest of the session.</div>
+                                <div className="rounded-2xl bg-[#0f192c] border border-[#1d2a42] p-4">4. Beat the Final Examiner for mission XP and chapter unlocks.</div>
                             </div>
                         </div>
 
-                        <div className="bg-[#101022]/70 backdrop-blur-xl border border-[#2d2d3f] rounded-[2rem] p-6">
+                        <div className="bg-[#070d1a]/70 backdrop-blur-xl border border-[#1d2a42] rounded-[2rem] p-6">
                             <h3 className="text-lg font-black mb-4">Tactical Kit</h3>
                             <div className="grid grid-cols-1 gap-3">
-                                <div className="rounded-2xl bg-[#161625] border border-[#2d2d3f] p-4">
+                                <div className="rounded-2xl bg-[#0f192c] border border-[#1d2a42] p-4">
                                     <div className="font-black text-cyan-400 mb-1">Scan</div>
                                     <div className="text-sm text-slate-400">Spend energy to eliminate one wrong option.</div>
                                 </div>
-                                <div className="rounded-2xl bg-[#161625] border border-[#2d2d3f] p-4">
+                                <div className="rounded-2xl bg-[#0f192c] border border-[#1d2a42] p-4">
                                     <div className="font-black text-emerald-400 mb-1">Guard</div>
                                     <div className="text-sm text-slate-400">Reduce the next wrong-answer hit and stabilize your run.</div>
                                 </div>
-                                <div className="rounded-2xl bg-[#161625] border border-[#2d2d3f] p-4">
+                                <div className="rounded-2xl bg-[#0f192c] border border-[#1d2a42] p-4">
                                     <div className="font-black text-[#ea580c] mb-1">Finisher</div>
                                     <div className="text-sm text-slate-400">Spend extra energy to turn one correct answer into a heavy strike.</div>
                                 </div>

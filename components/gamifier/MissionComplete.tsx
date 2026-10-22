@@ -56,7 +56,7 @@ export default function MissionComplete({
                         { label: 'PAGES ANALYZED', value: stats.pages, icon: 'auto_stories', color: 'text-[#38bdf8]' },
                         { label: 'MISSION DURATION', value: `${Math.floor(stats.time / 60)}m ${stats.time % 60}s`, icon: 'timer', color: 'text-white' }
                     ].map((s, i) => (
-                        <div key={i} className="bg-[#101022]/80 backdrop-blur border border-[#2d2d3f] p-6 rounded-3xl flex flex-col items-center gap-2 group hover:border-[#ea580c]/50 transition-colors">
+                        <div key={i} className="bg-[#070d1a]/80 backdrop-blur border border-[#1d2a42] p-6 rounded-3xl flex flex-col items-center gap-2 group hover:border-[#ea580c]/50 transition-colors">
                             <span className={`material-symbols-outlined text-3xl ${s.color}`}>{s.icon}</span>
                             <div className="text-3xl font-black">{s.value}</div>
                             <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">{s.label}</div>
@@ -73,7 +73,7 @@ export default function MissionComplete({
                     </button>
                     <Link
                         href={`/dashboard`}
-                        className="px-6 md:px-12 py-3 md:py-4 bg-[#101022] border border-[#2d2d3f] rounded-2xl font-black text-base md:text-lg hover:bg-[#1b1b2f] hover:border-[#38bdf8] transition-all"
+                        className="px-6 md:px-12 py-3 md:py-4 bg-[#070d1a] border border-[#1d2a42] rounded-2xl font-black text-base md:text-lg hover:bg-[#13203a] hover:border-[#38bdf8] transition-all"
                     >
                         VIEW MISSION REPORT
                     </Link>

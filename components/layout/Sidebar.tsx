@@ -8,26 +8,37 @@ import { useProfile } from '@/hooks/useProfile';
 import { cn } from '@/lib/utils';
 import BrandLogo from '@/components/ui/BrandLogo';
 import ThemeToggle from '@/components/ui/ThemeToggle';
+import Icon3D, { type Icon3DName } from '@/components/ui/Icon3D';
 
 type NavItem = {
   name: string;
+  short?: string;
   href: string;
-  icon: string;
+  icon: Icon3DName;
 };
 
 const primaryLinks: NavItem[] = [
-  { name: 'Dashboard', href: '/dashboard', icon: 'space_dashboard' },
-  { name: 'Library', href: '/resources', icon: 'folder_open' },
-  { name: 'Generate', href: '/generator', icon: 'auto_awesome' },
-  { name: 'Review', href: '/review', icon: 'timer' },
-  { name: 'Wallet', href: '/wallet', icon: 'account_balance_wallet' },
+  { name: 'Dashboard', short: 'Home', href: '/dashboard', icon: 'sun-cloud' },
+  { name: 'Library', href: '/resources', icon: 'books' },
+  { name: 'Generate', href: '/generator', icon: 'sparkles' },
+  { name: 'Review', href: '/review', icon: 'brain' },
+  { name: 'AI Tutor', short: 'Tutor', href: '/ai-tutor', icon: 'robot' },
 ];
 
-const secondaryLinks: NavItem[] = [
-  { name: 'Labs', href: '/labs', icon: 'science' },
-  { name: 'Ops', href: '/ops', icon: 'monitoring' },
-  { name: 'Settings', href: '/settings', icon: 'settings' },
-  { name: 'About', href: '/about', icon: 'info' },
+const toolLinks: NavItem[] = [
+  { name: 'Simplifier', href: '/simplifier', icon: 'bulb' },
+  { name: 'Exam Ready', href: '/exam-ready', icon: 'target' },
+  { name: 'Essay Grader', href: '/essay-grader', icon: 'pencil' },
+  { name: 'Past Questions', href: '/past-questions', icon: 'scroll' },
+  { name: 'Flashcards', href: '/flashcards', icon: 'card-index' },
+  { name: 'Quest Mode', href: '/gamifier', icon: 'joystick' },
+  { name: 'Leaderboard', href: '/leaderboard', icon: 'trophy' },
+];
+
+const accountLinks: NavItem[] = [
+  { name: 'Wallet', href: '/wallet', icon: 'coin' },
+  { name: 'Settings', href: '/settings', icon: 'gear' },
+  { name: 'About', href: '/about', icon: 'seedling' },
 ];
 
 export default function Sidebar() {
@@ -43,6 +54,10 @@ export default function Sidebar() {
     };
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
+
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -52,46 +67,84 @@ export default function Sidebar() {
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
-  const renderDesktopLink = (link: NavItem) => {
-    const active = isActive(link.href);
+  const renderLink = (link: NavItem) => (
+    <Link key={link.href} href={link.href} className="nav-link" data-active={isActive(link.href)}>
+      <span className="nav-link-icon">
+        <Icon3D name={link.icon} size={22} />
+      </span>
+      <span className="truncate">{link.name}</span>
+    </Link>
+  );
 
-    return (
-      <Link
-        key={link.href}
-        href={link.href}
-        onClick={() => setIsMenuOpen(false)}
-        className={cn(
-          'group flex items-center gap-3 rounded-[20px] px-3 py-3 text-sm font-bold transition',
-          active
-            ? 'border border-[#cfe0fb] bg-[linear-gradient(180deg,rgba(239,246,255,0.98),rgba(224,236,255,0.92))] text-[#163f73] shadow-[0_16px_32px_rgba(59,130,246,0.08)] dark:border-[#274770] dark:bg-[linear-gradient(180deg,rgba(27,48,76,0.96),rgba(19,34,54,0.92))] dark:text-white'
-            : 'text-slate-700 hover:bg-[#163f73]/5 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/6 dark:hover:text-white'
-        )}
-      >
-        <span
+  const profileCard = (
+    <div className="flex items-center gap-3 rounded-[22px] border border-[var(--line)] bg-[var(--card-2)] p-3">
+      <Link href="/profile" className="flex min-w-0 flex-1 items-center gap-3">
+        <div
           className={cn(
-            'material-symbols-outlined inline-flex size-9 items-center justify-center rounded-[14px] text-[18px] transition',
-            active
-              ? 'bg-[#3b82f6] text-white shadow-[0_10px_20px_rgba(59,130,246,0.16)] dark:bg-[#4f86c5] dark:text-white'
-              : 'bg-[#eff6ff] text-[#2563eb] group-hover:bg-[#dbeafe] dark:bg-white/5 dark:text-[#93b7e7]'
+            'relative size-11 shrink-0 overflow-hidden rounded-full bg-cover bg-center ring-2 ring-white dark:ring-white/10',
+            isLoading ? 'animate-pulse bg-[var(--line)]' : 'bg-[var(--accent-soft)]'
           )}
+          style={{ backgroundImage: profile?.avatar_url ? `url("${profile.avatar_url}")` : undefined }}
         >
-          {link.icon}
-        </span>
-        <span>{link.name}</span>
+          {!profile?.avatar_url && !isLoading ? (
+            <span className="absolute inset-0 flex items-center justify-center">
+              <Icon3D name="student-2" size={30} />
+            </span>
+          ) : null}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold text-[var(--text-strong)]">{profile?.full_name || 'Student'}</p>
+          <div className="mt-1 flex items-center gap-2 text-xs text-[var(--text-soft)]">
+            <span className="inline-flex items-center gap-1 font-medium text-[#e36a1c] dark:text-[#ffb27a]">
+              <Icon3D name="fire" size={14} />
+              {profile?.streak_days ?? 0}d
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Icon3D name="coin" size={14} />
+              {profile?.credit_balance ?? 0}
+            </span>
+          </div>
+        </div>
       </Link>
-    );
-  };
+      <button
+        onClick={handleLogout}
+        className="inline-flex size-9 shrink-0 items-center justify-center rounded-full text-[var(--text-soft)] transition hover:bg-[var(--danger-soft)] hover:text-[var(--danger)]"
+        aria-label="Log out"
+        title="Log out"
+      >
+        <span className="material-symbols-outlined text-[18px]">logout</span>
+      </button>
+    </div>
+  );
+
+  const navSections = (
+    <>
+      <div className="space-y-1">
+        <p className="nav-section-label pb-1">Learn</p>
+        {primaryLinks.map(renderLink)}
+      </div>
+      <div className="space-y-1">
+        <p className="nav-section-label pb-1">Study tools</p>
+        {toolLinks.map(renderLink)}
+      </div>
+      <div className="space-y-1">
+        <p className="nav-section-label pb-1">Account</p>
+        {accountLinks.map(renderLink)}
+      </div>
+    </>
+  );
 
   return (
     <>
-      <div className="glass-panel sticky top-4 z-30 flex items-center justify-between px-4 py-3 lg:hidden">
-        <BrandLogo compact subtitle={null} />
+      {/* Mobile / tablet top bar */}
+      <div className="sticky top-3 z-30 flex items-center justify-between rounded-full border border-[var(--line)] bg-[var(--card-glass)] py-2 pr-2 pl-4 shadow-[var(--shadow-md)] backdrop-blur-xl lg:hidden">
+        <BrandLogo compact href="/dashboard" />
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <button
             onClick={() => setIsMenuOpen((value) => !value)}
-            className="inline-flex size-10 items-center justify-center rounded-2xl border border-black/8 bg-white/70 text-slate-700 transition hover:border-[#163f73]/20 hover:text-[#163f73] dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:border-[#4f86c5]/20 dark:hover:text-[#93b7e7]"
-            aria-label="Open navigation menu"
+            className="inline-flex size-10 items-center justify-center rounded-full bg-[var(--action)] text-[var(--action-ink)] transition active:scale-95"
+            aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={isMenuOpen}
             aria-controls="mobile-navigation"
           >
@@ -102,101 +155,36 @@ export default function Sidebar() {
 
       {isMenuOpen ? (
         <div className="fixed inset-0 z-40 lg:hidden">
-          <button className="absolute inset-0 bg-black/45 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)} aria-label="Close menu" />
-          <div id="mobile-navigation" className="glass-panel absolute inset-x-4 top-20 max-h-[calc(100vh-6rem)] overflow-y-auto p-4">
-            <div className="flex items-center justify-between pb-4">
-              <BrandLogo compact />
-              <ThemeToggle />
-            </div>
-
-            <div className="space-y-2">
-              <p className="nav-section-label">Core</p>
-              {primaryLinks.map((link) => renderDesktopLink(link))}
-            </div>
-
-            <div className="mt-4 space-y-2">
-              <p className="nav-section-label">More</p>
-              {secondaryLinks.map((link) => renderDesktopLink(link))}
-            </div>
-
-            <div className="mt-5 rounded-[20px] border border-black/6 bg-white/60 p-3.5 dark:border-white/8 dark:bg-white/5">
-              <div className="flex items-center gap-3">
-                <div
-                  className={cn(
-                    'size-11 rounded-[18px] bg-cover bg-center',
-                    isLoading ? 'animate-pulse bg-slate-200 dark:bg-white/10' : 'bg-[#163f73]/10'
-                  )}
-                  style={{
-                    backgroundImage: profile?.avatar_url ? `url("${profile.avatar_url}")` : undefined,
-                  }}
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-black text-slate-950 dark:text-white">{profile?.full_name || 'Student'}</p>
-                  <p className="mt-1 truncate text-xs text-slate-500 dark:text-slate-400">{profile?.credit_balance ?? 0} credits</p>
-                </div>
-                <button onClick={handleLogout} className="secondary-button !h-9 !rounded-xl !px-3">
-                  Log out
-                </button>
-              </div>
-            </div>
+          <button className="absolute inset-0 bg-[#0b1220]/35 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)} aria-label="Close menu" />
+          <div
+            id="mobile-navigation"
+            className="glass-panel absolute inset-x-3 top-[4.75rem] max-h-[calc(100dvh-6rem)] space-y-5 overflow-y-auto p-4 animate-rise"
+          >
+            {navSections}
+            {profileCard}
           </div>
         </div>
       ) : null}
 
-      <aside className="glass-panel sticky top-4 hidden h-[calc(100vh-2rem)] w-[288px] shrink-0 overflow-hidden lg:flex lg:flex-col">
-        <div className="nvidia-line flex items-center justify-between px-4 py-4">
-          <BrandLogo />
+      {/* Desktop sidebar */}
+      <aside className="glass-panel sticky top-6 hidden h-[calc(100vh-3rem)] w-[272px] shrink-0 overflow-hidden lg:flex lg:flex-col">
+        <div className="flex items-center justify-between px-5 pt-5 pb-4">
+          <BrandLogo href="/dashboard" />
           <ThemeToggle />
         </div>
 
-        <div className="flex-1 space-y-6 overflow-y-auto px-3.5 py-4">
-          <div className="space-y-2">
-            <p className="nav-section-label">Core</p>
-            {primaryLinks.map(renderDesktopLink)}
-          </div>
+        <div className="flex-1 space-y-6 overflow-y-auto px-3 pb-4">{navSections}</div>
 
-          <div className="space-y-2">
-            <p className="nav-section-label">More</p>
-            {secondaryLinks.map(renderDesktopLink)}
-          </div>
-        </div>
-
-        <div className="nvidia-line px-3.5 py-3.5">
-          <div className="rounded-[20px] border border-black/6 bg-white/66 p-3.5 dark:border-white/8 dark:bg-white/5">
-            <div className="flex items-center gap-3">
-              <div
-                className={cn(
-                  'size-11 rounded-[18px] bg-cover bg-center',
-                  isLoading ? 'animate-pulse bg-slate-200 dark:bg-white/10' : 'bg-[#163f73]/10'
-                )}
-                style={{
-                  backgroundImage: profile?.avatar_url ? `url("${profile.avatar_url}")` : undefined,
-                }}
-              />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-black text-slate-950 dark:text-white">{profile?.full_name || 'Student'}</p>
-                <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-amber-700 dark:text-amber-200">
-                    <span className="material-symbols-outlined text-[13px]">local_fire_department</span>
-                    {profile?.streak_days ?? 0} day streak
-                  </span>
-                  <span>{profile?.credit_balance ?? 0} credits</span>
-                </div>
-              </div>
-              <button onClick={handleLogout} className="secondary-button !h-9 !rounded-xl !px-3">
-                <span className="material-symbols-outlined text-[18px]">logout</span>
-              </button>
-            </div>
-          </div>
-        </div>
+        <div className="p-3">{profileCard}</div>
       </aside>
 
-      <nav className="mobile-tabbar">
+      {/* Mobile dock */}
+      <nav className="mobile-tabbar" aria-label="Primary">
         <div className="flex items-center gap-1">
           {primaryLinks.map((link) => (
             <Link key={link.href} href={link.href} className="mobile-tab" data-active={isActive(link.href)}>
-              <span className="material-symbols-outlined text-[18px]">{link.icon}</span>
-              <span className="truncate">{link.name}</span>
+              <Icon3D name={link.icon} size={24} />
+              <span className="truncate">{link.short ?? link.name}</span>
             </Link>
           ))}
         </div>

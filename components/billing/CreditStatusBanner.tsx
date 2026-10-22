@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { useProfile } from '@/hooks/useProfile';
+import Icon3D from '@/components/ui/Icon3D';
+import { cn } from '@/lib/utils';
 
 export default function CreditStatusBanner({
   featureLabel,
@@ -14,34 +16,33 @@ export default function CreditStatusBanner({
   const balance = profile?.credit_balance ?? 0;
   const nextExpiry = profile?.next_credit_expiry;
   const isLowBalance = balance > 0 && balance <= creditCost * 3;
+  const isEmpty = balance < creditCost;
 
   return (
-    <div className="rounded-2xl border border-[#1a5c2a]/15 bg-gradient-to-r from-[#0f2314] via-[#12391d] to-[#1b4a2d] p-4 text-white shadow-[0_16px_50px_rgba(12,37,20,0.25)]">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div>
-          <p className="text-[11px] font-black uppercase tracking-[0.24em] text-emerald-200/80">
-            Credit Wallet
-          </p>
-          <h3 className="mt-1 text-lg font-black">
-            {featureLabel} costs {creditCost} credits
-          </h3>
-          <p className="mt-1 text-sm text-emerald-50/80">
-            Balance: <span className="font-bold text-white">{balance}</span>
-            {nextExpiry ? ` • next expiry ${new Date(nextExpiry).toLocaleDateString()}` : ''}
-          </p>
-        </div>
-        <Link
-          href="/wallet"
-          className="inline-flex h-11 items-center justify-center rounded-xl border border-white/15 bg-white/10 px-4 text-sm font-bold text-white transition hover:bg-white/20"
-        >
-          Buy Credits
-        </Link>
-      </div>
-      {isLowBalance && (
-        <p className="mt-3 text-sm text-amber-200">
-          You are running low. Top up before your next AI session is blocked.
-        </p>
+    <div
+      className={cn(
+        'flex items-center gap-3 rounded-[22px] border p-3 pr-3.5 sm:gap-4',
+        isEmpty || isLowBalance ? 'border-transparent bg-[var(--warning-soft)]' : 'border-[var(--line)] bg-[var(--card-glass)] backdrop-blur-md'
       )}
+    >
+      <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[var(--card)]">
+        <Icon3D name="coin" size={28} />
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="text-[14px] font-medium text-[var(--text-strong)]">
+          {featureLabel} costs {creditCost} credits
+        </p>
+        <p className="text-[12.5px] text-[var(--text-soft)]">
+          {isEmpty
+            ? `You have ${balance} credits. Top up to run this.`
+            : isLowBalance
+              ? `Running low: ${balance} credits left.`
+              : `Balance ${balance} credits${nextExpiry ? ` • next expiry ${new Date(nextExpiry).toLocaleDateString()}` : ''}`}
+        </p>
+      </div>
+      <Link href="/wallet" className={cn('!h-9 shrink-0 !px-4', isEmpty || isLowBalance ? 'primary-button' : 'secondary-button')}>
+        Top up
+      </Link>
     </div>
   );
 }

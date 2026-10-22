@@ -186,14 +186,14 @@ export default function SimplifierPage() {
           <div className="max-w-4xl w-full flex-1 overflow-y-auto animate-in fade-in slide-in-from-bottom-4">
             <button
               onClick={() => setSimplifiedOutput(null)}
-              className="mb-8 flex items-center gap-2 text-slate-500 font-bold hover:text-[#1a5c2a] transition-colors"
+              className="mb-8 flex items-center gap-2 text-slate-500 font-bold hover:text-[#2f7fd3] transition-colors"
             >
               <span className="material-symbols-outlined">arrow_back</span>
               Back to Simplifier
             </button>
-            <div className="bg-white dark:bg-[#161621] rounded-[2rem] p-8 md:p-12 shadow-sm border border-slate-200 dark:border-[#2d2d3f]">
+            <div className="bg-white dark:bg-[#0f192c] rounded-[2rem] p-8 md:p-12 shadow-sm border border-slate-200 dark:border-[#1d2a42]">
               <div className="flex items-center gap-4 mb-8">
-                <div className="w-12 h-12 bg-[#1a5c2a]/10 text-[#1a5c2a] rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-[#2f7fd3]/10 text-[#2f7fd3] rounded-xl flex items-center justify-center">
                   <span className="material-symbols-outlined text-2xl font-black">auto_stories</span>
                 </div>
                 <div>
@@ -207,7 +207,7 @@ export default function SimplifierPage() {
 
               {/* YouTube Recommendations Overlay */}
               {youtubeTopics.length > 0 && (
-                <div className="mt-12 pt-8 border-t border-slate-200 dark:border-[#2d2d3f]">
+                <div className="mt-12 pt-8 border-t border-slate-200 dark:border-[#1d2a42]">
                   <h3 className="text-lg font-black text-slate-900 dark:text-white mb-4 flex items-center gap-2">
                     <span className="material-symbols-outlined text-red-600">smart_display</span>
                     Watch Concept on YouTube
@@ -240,13 +240,13 @@ export default function SimplifierPage() {
               {/* Left Column: Input Source */}
               <div className="flex-1 max-w-2xl space-y-6">
                 {/* Upload Area */}
-                <div className="bg-white dark:bg-[#161621] rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm">
-                  <div className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center text-center transition-colors ${isUploading ? 'border-[#1a5c2a] bg-[#1a5c2a]/5' : 'border-slate-300 dark:border-[#3b3b54] hover:border-[#1a5c2a]/50'
+                <div className="bg-white dark:bg-[#0f192c] rounded-[2rem] border border-slate-200 dark:border-[#1d2a42] p-6 shadow-sm">
+                  <div className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center text-center transition-colors ${isUploading ? 'border-[#2f7fd3] bg-[#2f7fd3]/5' : 'border-slate-300 dark:border-[#24344f] hover:border-[#2f7fd3]/50'
                     }`}>
                     {isUploading ? (
-                      <div className="size-12 border-4 border-[#1a5c2a] border-t-transparent rounded-full animate-spin mb-4" />
+                      <div className="size-12 border-4 border-[#2f7fd3] border-t-transparent rounded-full animate-spin mb-4" />
                     ) : (
-                      <div className="w-16 h-16 bg-[#1a5c2a]/10 text-[#1a5c2a] rounded-2xl flex items-center justify-center mb-4">
+                      <div className="w-16 h-16 bg-[#2f7fd3]/10 text-[#2f7fd3] rounded-2xl flex items-center justify-center mb-4">
                         <span className="material-symbols-outlined text-3xl font-black">upload_file</span>
                       </div>
                     )}
@@ -255,19 +255,19 @@ export default function SimplifierPage() {
                     </h3>
                     <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-6">PDF, Word, PPT, or Image inputs</p>
                     <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.png,.txt" />
-                    <button onClick={() => fileInputRef.current?.click()} disabled={isUploading} className="px-8 py-3 bg-[#1a5c2a] text-white font-bold rounded-xl hover:bg-[#144823] transition-all disabled:opacity-50 active:scale-95 shadow-lg shadow-[#1a5c2a]/20">
+                    <button onClick={() => fileInputRef.current?.click()} disabled={isUploading} className="px-8 py-3 bg-[#2f7fd3] text-white font-bold rounded-xl hover:bg-[#2266ad] transition-all disabled:opacity-50 active:scale-95 shadow-lg shadow-[#2f7fd3]/20">
                       BROWSE FILES
                     </button>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-4">
-                  <div className="h-px bg-slate-200 dark:bg-[#2d2d3f] flex-1"></div>
+                  <div className="h-px bg-slate-200 dark:bg-[#1d2a42] flex-1"></div>
                   <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">OR</span>
-                  <div className="h-px bg-slate-200 dark:bg-[#2d2d3f] flex-1"></div>
+                  <div className="h-px bg-slate-200 dark:bg-[#1d2a42] flex-1"></div>
                 </div>
 
-                <div className="bg-white dark:bg-[#161621] rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm">
+                <div className="bg-white dark:bg-[#0f192c] rounded-[2rem] border border-slate-200 dark:border-[#1d2a42] p-6 shadow-sm">
                   <div className="mb-4">
                     <label className="text-sm font-bold text-slate-900 dark:text-white mb-1 block">Paste Text</label>
                     <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Directly paste an article, chapter, or notes.</p>
@@ -279,12 +279,12 @@ export default function SimplifierPage() {
                       setSelectedResource('');
                     }}
                     placeholder="Paste your content here..."
-                    className="w-full h-40 p-4 rounded-xl bg-[#f5f5f8] dark:bg-[#0b0b10] border-2 border-slate-200 dark:border-[#2d2d3f] text-slate-900 dark:text-white outline-none focus:border-[#1a5c2a] focus:ring-4 focus:ring-[#1a5c2a]/10 resize-none font-medium text-sm transition-all"
+                    className="w-full h-40 p-4 rounded-xl bg-[#f5f9fe] dark:bg-[#0b0b10] border-2 border-slate-200 dark:border-[#1d2a42] text-slate-900 dark:text-white outline-none focus:border-[#2f7fd3] focus:ring-4 focus:ring-[#2f7fd3]/10 resize-none font-medium text-sm transition-all"
                   />
                 </div>
 
                 {resources.length > 0 && (
-                  <div className="bg-white dark:bg-[#161621] rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm">
+                  <div className="bg-white dark:bg-[#0f192c] rounded-[2rem] border border-slate-200 dark:border-[#1d2a42] p-6 shadow-sm">
                     <h3 className="font-bold text-slate-900 dark:text-white mb-4">Or select a recent resource</h3>
                     <div className="grid gap-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                       {resources.map(res => (
@@ -295,14 +295,14 @@ export default function SimplifierPage() {
                             setPastedText('');
                           }}
                           className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left group ${selectedResource === res.id
-                            ? 'border-[#1a5c2a] bg-[#1a5c2a]/5 ring-2 ring-[#1a5c2a]/20'
-                            : 'border-slate-100 dark:border-[#2d2d3f] hover:border-[#1a5c2a]/30'
+                            ? 'border-[#2f7fd3] bg-[#2f7fd3]/5 ring-2 ring-[#2f7fd3]/20'
+                            : 'border-slate-100 dark:border-[#1d2a42] hover:border-[#2f7fd3]/30'
                             }`}
                         >
-                          <span className={`material-symbols-outlined ${selectedResource === res.id ? 'text-[#1a5c2a]' : 'text-slate-400 group-hover:text-[#1a5c2a]'}`}>
+                          <span className={`material-symbols-outlined ${selectedResource === res.id ? 'text-[#2f7fd3]' : 'text-slate-400 group-hover:text-[#2f7fd3]'}`}>
                             {res.processing_status === 'ready' ? 'check_circle' : 'hourglass_bottom'}
                           </span>
-                          <span className={`font-bold truncate text-sm flex-1 ${selectedResource === res.id ? 'text-[#1a5c2a]' : 'text-slate-700 dark:text-slate-300'}`}>
+                          <span className={`font-bold truncate text-sm flex-1 ${selectedResource === res.id ? 'text-[#2f7fd3]' : 'text-slate-700 dark:text-slate-300'}`}>
                             {res.title}
                           </span>
                         </button>
@@ -317,9 +317,9 @@ export default function SimplifierPage() {
                 <div className="mb-6">
                   <CreditStatusBanner featureLabel="Document simplifier" creditCost={30} />
                 </div>
-                <div className="bg-white dark:bg-[#161621] rounded-[2rem] border border-slate-200 dark:border-[#2d2d3f] p-6 shadow-sm sticky top-6">
+                <div className="bg-white dark:bg-[#0f192c] rounded-[2rem] border border-slate-200 dark:border-[#1d2a42] p-6 shadow-sm sticky top-6">
                   <h3 className="text-lg font-black text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[#1a5c2a]">tune</span>
+                    <span className="material-symbols-outlined text-[#2f7fd3]">tune</span>
                     Simplifier Settings
                   </h3>
 
@@ -336,7 +336,7 @@ export default function SimplifierPage() {
                           <button
                             key={opt.val}
                             onClick={() => setLevel(opt.val)}
-                            className={`flex items-center gap-2 p-3 border-2 rounded-xl text-sm font-bold transition-all ${level === opt.val ? 'border-[#1a5c2a] bg-[#1a5c2a] text-white' : 'border-slate-200 dark:border-[#2d2d3f] text-slate-600 dark:text-slate-400 hover:border-[#1a5c2a]/50'}`}
+                            className={`flex items-center gap-2 p-3 border-2 rounded-xl text-sm font-bold transition-all ${level === opt.val ? 'border-[#2f7fd3] bg-[#2f7fd3] text-white' : 'border-slate-200 dark:border-[#1d2a42] text-slate-600 dark:text-slate-400 hover:border-[#2f7fd3]/50'}`}
                           >
                             <span className="material-symbols-outlined text-[18px]">{opt.icon}</span>
                             {opt.label}
@@ -356,7 +356,7 @@ export default function SimplifierPage() {
                           <button
                             key={opt.val}
                             onClick={() => setFormat(opt.val)}
-                            className={`flex items-center justify-between p-3 border-2 rounded-xl text-sm font-bold transition-all ${format === opt.val ? 'border-[#1a5c2a] bg-[#1a5c2a]/5 text-[#1a5c2a]' : 'border-slate-200 dark:border-[#2d2d3f] text-slate-600 dark:text-slate-400 hover:border-[#1a5c2a]/50'}`}
+                            className={`flex items-center justify-between p-3 border-2 rounded-xl text-sm font-bold transition-all ${format === opt.val ? 'border-[#2f7fd3] bg-[#2f7fd3]/5 text-[#2f7fd3]' : 'border-slate-200 dark:border-[#1d2a42] text-slate-600 dark:text-slate-400 hover:border-[#2f7fd3]/50'}`}
                           >
                             <span>{opt.label}</span>
                             {format === opt.val && <span className="material-symbols-outlined text-[18px]">check_circle</span>}
@@ -372,12 +372,12 @@ export default function SimplifierPage() {
                         placeholder="e.g. Just the mathematical formulas"
                         value={focus}
                         onChange={(e) => setFocus(e.target.value)}
-                        className="w-full p-3 rounded-xl bg-[#f5f5f8] dark:bg-[#0b0b10] border-2 border-slate-200 dark:border-[#2d2d3f] text-sm font-medium text-slate-900 dark:text-white outline-none focus:border-[#1a5c2a] transition-all"
+                        className="w-full p-3 rounded-xl bg-[#f5f9fe] dark:bg-[#0b0b10] border-2 border-slate-200 dark:border-[#1d2a42] text-sm font-medium text-slate-900 dark:text-white outline-none focus:border-[#2f7fd3] transition-all"
                       />
                     </div>
                   </div>
 
-                  <div className="mt-8 pt-6 border-t border-slate-200 dark:border-[#2d2d3f]">
+                  <div className="mt-8 pt-6 border-t border-slate-200 dark:border-[#1d2a42]">
                     {error && (
                       <div className="mb-4 p-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl text-red-600 text-sm font-medium">
                         {error}
@@ -386,7 +386,7 @@ export default function SimplifierPage() {
                     <button
                       onClick={handleSimplify}
                       disabled={isSimplifying || isUploading || (!selectedResource && !pastedText.trim())}
-                      className="w-full h-14 bg-[#1a5c2a] disabled:bg-slate-300 dark:disabled:bg-slate-800 text-white font-black rounded-xl hover:bg-[#144823] transition-all shadow-xl shadow-[#1a5c2a]/20 flex items-center justify-center gap-2"
+                      className="w-full h-14 bg-[#2f7fd3] disabled:bg-slate-300 dark:disabled:bg-slate-800 text-white font-black rounded-xl hover:bg-[#2266ad] transition-all shadow-xl shadow-[#2f7fd3]/20 flex items-center justify-center gap-2"
                     >
                       {isSimplifying ? (
                         <>

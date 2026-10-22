@@ -143,7 +143,7 @@ function GamifierShell() {
 
   if (isLoading || !profile) {
     return (
-      <div className="min-h-[100dvh] bg-[#0a0c12] text-white flex items-center justify-center">
+      <div className="min-h-[100dvh] bg-[#070d1a] text-white flex items-center justify-center">
         <div className="text-center">
           <div className="size-16 rounded-full border border-dashed border-[#f97316] animate-spin border-t-transparent mx-auto mb-4" />
           <div className="text-xs uppercase tracking-widest font-bold text-[#f97316]">Loading Mastery Arena...</div>
@@ -188,7 +188,7 @@ function GamifierShell() {
 export default function GamifierPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-[100dvh] bg-[#0a0c12] flex items-center justify-center text-white">
+      <div className="min-h-[100dvh] bg-[#070d1a] flex items-center justify-center text-white">
         <div className="size-16 rounded-full border border-dashed border-[#f97316] animate-spin border-t-transparent" />
       </div>
     }>
