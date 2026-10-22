@@ -9,11 +9,22 @@ import {
 import { trackServerEvent } from '@/lib/analytics/server';
 import { persistGeneratedStudyOutput } from '@/lib/ai/persistGenerated';
 import { extractJson, generateJson, isAIConfigured, PRIMARY_MODEL, streamCompletion } from '@/lib/ai/openrouter';
+import { recordStudyActivity } from '@/lib/progress/server';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 const MAX_CHARS = 25000;
+
+function shuffleOptions(questions: any[]) {
+  for (const question of questions) {
+    if (!Array.isArray(question?.options)) continue;
+    for (let i = question.options.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [question.options[i], question.options[j]] = [question.options[j], question.options[i]];
+    }
+  }
+}
 
 export async function POST(request: Request) {
   let billingUserId: string | null = null;
@@ -35,7 +46,8 @@ export async function POST(request: Request) {
     billingUserId = billing.user.id;
 
     const body = await request.json();
-    const { content, type, difficulty, count, curriculum, topic, stream, resourceId } = body;
+    const { content, type, difficulty, count, curriculum, stream, resourceId } = body;
+    let topic: string | null = typeof body.topic === 'string' && body.topic.trim() ? body.topic.trim().slice(0, 120) : null;
 
     if (!content) {
       return NextResponse.json({ error: 'Content is required' }, { status: 400 });
@@ -65,6 +77,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Generation type is required' }, { status: 400 });
     }
 
+    // Tag practice with a real topic so weak-topic tracking is meaningful.
+    if (!topic && resourceId) {
+      const { data: resource } = await billing.supabase
+        .from('resources')
+        .select('title,subject')
+        .eq('id', resourceId)
+        .eq('user_id', billing.user.id)
+        .maybeSingle();
+      const subject = resource?.subject && resource.subject !== 'General' ? resource.subject : null;
+      topic = (subject || resource?.title || '').replace(/\.(pdf|docx?|pptx?|txt|png|jpe?g)$/i, '').slice(0, 80) || null;
+    }
+
     const trimmedContent =
       content.length > MAX_CHARS ? `${content.substring(0, MAX_CHARS)}\n\n[CONTENT TRUNCATED FOR LENGTH LIMITS]` : content;
 
@@ -73,7 +97,10 @@ export async function POST(request: Request) {
 
     switch (type) {
       case 'mcq':
-        systemInstruction = `You are an expert educator. Generate exactly ${count || 5} multiple-choice questions from the provided text. The difficulty should be ${difficulty || 'medium'}.
+        systemInstruction = `You are an expert examiner. Generate exactly ${count || 5} multiple-choice questions from the provided text. The difficulty should be ${difficulty || 'medium'}.
+Write questions that test understanding, not just recall of wording: mix definitions, application to a new example, cause and effect, and "which is NOT" items.
+Every distractor must be plausible and reflect a common misconception. Never use "all of the above" or "none of the above". Vary which option is correct.
+The explanation must say why the correct answer is right AND why the most tempting wrong option is wrong.
 ${curriculum ? `Align the questions to the ${curriculum} curriculum standards.` : ''}
 ${topic ? `Focus the questions heavily on the topic of: ${topic}.` : ''}`;
         schema = z.array(
@@ -86,7 +113,8 @@ ${topic ? `Focus the questions heavily on the topic of: ${topic}.` : ''}`;
         );
         break;
       case 'theory':
-        systemInstruction = `You are an expert educator. Generate exactly ${count || 3} theoretical or open-ended questions from the provided text. The difficulty should be ${difficulty || 'medium'}.
+        systemInstruction = `You are an expert examiner. Generate exactly ${count || 3} exam-style open-ended questions from the provided text. The difficulty should be ${difficulty || 'medium'}.
+Use command words students meet in real exams (explain, compare, evaluate, describe, calculate). The model answer should be what earns full marks, and key_points are the individual mark-worthy points.
 ${curriculum ? `Align the questions to the ${curriculum} curriculum standards.` : ''}
 ${topic ? `Focus the topic specifically on: ${topic}.` : ''}`;
         schema = z.array(
@@ -99,7 +127,9 @@ ${topic ? `Focus the topic specifically on: ${topic}.` : ''}`;
         );
         break;
       case 'flashcards':
-        systemInstruction = `You are an expert educator. Generate exactly ${count || 10} study flashcards from the most important concepts in the provided text.`;
+        systemInstruction = `You are an expert educator. Generate exactly ${count || 10} study flashcards from the most important concepts in the provided text.
+Follow the minimum-information principle: one idea per card. Phrase the front as a question or cue that forces recall (not a vague topic name).
+Keep the back short (under 30 words) and self-contained. Prefer "why" and "how" cards over pure definitions, and include key terms, processes and common exam traps.`;
         schema = z.array(
           z.object({
             front: z.string(),
@@ -178,6 +208,8 @@ ${JSON.stringify(z.toJSONSchema(schema))}`;
             console.error('Streamed generation was not valid JSON', parseError);
           }
 
+          if (type === 'mcq' && Array.isArray(object)) shuffleOptions(object);
+
           if (!object) {
             if (jobId) {
               await admin
@@ -239,6 +271,7 @@ ${JSON.stringify(z.toJSONSchema(schema))}`;
             idempotencyKey: `generation-completed:${jobId ?? `${billing.user.id}:${type}`}`,
             properties: { type, outputItems },
           });
+          await recordStudyActivity(billing.supabase, billing.user.id);
         },
       });
 
@@ -254,16 +287,7 @@ ${JSON.stringify(z.toJSONSchema(schema))}`;
       json: type === 'exam_snapshot',
     });
 
-    if (type === 'mcq' && Array.isArray(object)) {
-      object.forEach((question: any) => {
-        if (Array.isArray(question.options)) {
-          for (let i = question.options.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [question.options[i], question.options[j]] = [question.options[j], question.options[i]];
-          }
-        }
-      });
-    }
+    if (type === 'mcq' && Array.isArray(object)) shuffleOptions(object);
 
     const outputItems = Array.isArray(object) ? object.length : object ? 1 : 0;
     const persisted = await persistGeneratedStudyOutput({
@@ -311,6 +335,7 @@ ${JSON.stringify(z.toJSONSchema(schema))}`;
       idempotencyKey: `generation-completed:${jobId ?? `${billing.user.id}:${type}`}`,
       properties: { type, outputItems },
     });
+    await recordStudyActivity(billing.supabase, billing.user.id);
 
     return NextResponse.json({ success: true, data: object, jobId, persisted });
   } catch (error: any) {

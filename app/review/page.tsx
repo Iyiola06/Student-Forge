@@ -7,7 +7,7 @@ import AppSection from '@/components/app/AppSection';
 import AppStatCard from '@/components/app/AppStatCard';
 import AppStatusBadge from '@/components/app/AppStatusBadge';
 import AppShell from '@/components/layout/AppShell';
-import ReviewCardStage from '@/components/review/ReviewCardStage';
+import ReviewCardStage, { type ReviewSubmission } from '@/components/review/ReviewCardStage';
 import ReviewFocusHeader from '@/components/review/ReviewFocusHeader';
 import ReviewModeCard from '@/components/review/ReviewModeCard';
 import ReviewSessionSummary from '@/components/review/ReviewSessionSummary';
@@ -77,7 +77,7 @@ export default function ReviewPage() {
     }
   }
 
-  async function submitAnswer(result: 'correct' | 'incorrect') {
+  async function submitAnswer({ grade, result, responseTimeMs, submittedAnswer }: ReviewSubmission) {
     if (!queue || !currentItem) return;
 
     setIsSubmitting(true);
@@ -90,6 +90,9 @@ export default function ReviewPage() {
         reviewItemId: currentItem.id,
         reviewSessionId: queue.sessionId,
         result,
+        grade,
+        responseTimeMs,
+        submittedAnswer,
       }),
     });
 
@@ -128,7 +131,11 @@ export default function ReviewPage() {
         weakTopics: queue.weakTopics,
         durationSeconds: Math.max(10, Math.round((Date.now() - (sessionStartedAt || Date.now())) / 1000)),
       });
-      setStatusMessage('Session completed. Your queue and topic mastery are now updated.');
+      setStatusMessage(
+        completePayload.xpEarned
+          ? `Session complete. +${completePayload.xpEarned} XP, and every card is scheduled for the right moment.`
+          : 'Session complete. Every card is now scheduled for the right moment.'
+      );
       setQueue(null);
       setCurrentIndex(0);
       setShowAnswer(false);
@@ -181,7 +188,7 @@ export default function ReviewPage() {
                 showAnswer={showAnswer}
                 isSubmitting={isSubmitting}
                 onRevealToggle={() => setShowAnswer((value) => !value)}
-                onRate={submitAnswer}
+                onSubmit={submitAnswer}
               />
 
               <div className="space-y-5">

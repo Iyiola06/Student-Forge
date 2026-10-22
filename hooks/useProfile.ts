@@ -63,28 +63,14 @@ const fetcher = async () => {
     const todayDate = new Date();
     const todayStr = new Date(todayDate.getTime() - (todayDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
 
-    if (currentProfile.last_active_date !== todayStr) {
-        const yesterdayDate = new Date(todayDate);
-        yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-        const yesterdayStr = new Date(yesterdayDate.getTime() - (yesterdayDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
-
-        let newStreak = currentProfile.streak_days || 0;
-        if (currentProfile.last_active_date === yesterdayStr) {
-            newStreak += 1;
-        } else {
-            newStreak = 1;
-        }
-
-        currentProfile = {
-            ...currentProfile,
-            streak_days: newStreak,
-            last_active_date: todayStr
-        };
-
-        await supabase.from('profiles').update({
-            streak_days: newStreak,
-            last_active_date: todayStr
-        }).eq('id', user.id);
+    // Streaks are written on the server when the student actually studies
+    // (record_study_activity). Here we only show an expired streak as 0.
+    const yesterdayDate = new Date(todayDate);
+    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+    const yesterdayStr = new Date(yesterdayDate.getTime() - (yesterdayDate.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+    const lastActive = currentProfile.last_active_date?.slice(0, 10);
+    if (!lastActive || (lastActive !== todayStr && lastActive !== yesterdayStr)) {
+        currentProfile = { ...currentProfile, streak_days: 0 };
     }
 
     return { user, profile: currentProfile };

@@ -1,37 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ReviewSessionType } from '@/types/product';
-
-const DAY_MS = 24 * 60 * 60 * 1000;
+import { masteryFromStability, schedule, stateFromMastery, type Grade } from '@/lib/review/fsrs';
+import { recordStudyActivity } from '@/lib/progress/server';
 
 function slugifyTopic(value: string) {
   return value
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '') || 'general';
-}
-
-function addDays(days: number) {
-  return new Date(Date.now() + days * DAY_MS).toISOString();
-}
-
-function buildIntervals(stability: number, difficulty: number, correct: boolean) {
-  if (!correct) {
-    return {
-      stability: Math.max(0.25, stability * 0.55),
-      difficulty: Math.min(0.95, difficulty + 0.12),
-      nextDueAt: addDays(1),
-    };
-  }
-
-  const nextStability = Math.min(12, stability * 1.65 + 0.35);
-  const nextDifficulty = Math.max(0.2, difficulty - 0.05);
-  const intervalDays = Math.max(1, Math.round(nextStability * (1.9 - nextDifficulty)));
-
-  return {
-    stability: nextStability,
-    difficulty: nextDifficulty,
-    nextDueAt: addDays(intervalDays),
-  };
 }
 
 export async function syncLegacyReviewItems(supabase: any, userId: string) {
@@ -231,11 +207,12 @@ export async function applyReviewAnswer(params: {
   reviewItemId: string;
   reviewSessionId: string;
   result: 'correct' | 'incorrect';
+  grade?: Grade;
   responseTimeMs?: number;
   confidence?: number;
   submittedAnswer?: string;
 }) {
-  const { supabase, userId, reviewItemId, reviewSessionId, result, responseTimeMs, confidence, submittedAnswer } = params;
+  const { supabase, userId, reviewItemId, reviewSessionId, responseTimeMs, submittedAnswer } = params;
   const { data: item } = await supabase
     .from('review_items')
     .select('*')
@@ -247,13 +224,27 @@ export async function applyReviewAnswer(params: {
     throw new Error('Review item not found');
   }
 
+  // Graded recall (FSRS). Binary callers map to Good / Again.
+  const grade: Grade = params.grade ?? (params.result === 'correct' ? 3 : 1);
+  const result: 'correct' | 'incorrect' = grade >= 2 ? 'correct' : 'incorrect';
   const correct = result === 'correct';
-  const schedule = buildIntervals(Number(item.stability ?? 0.3), Number(item.difficulty ?? 0.5), correct);
-  const nextMastery = correct
-    ? Math.min(100, Number(item.mastery_score || 0) + (item.review_state === 'new' ? 18 : 10))
-    : Math.max(0, Number(item.mastery_score || 0) - 16);
-  const nextState =
-    nextMastery >= 92 ? 'mastered' : nextMastery >= 70 ? 'review' : nextMastery >= 35 ? 'learning' : 'new';
+  const now = new Date();
+  const wasDue = item.due_at <= now.toISOString();
+  const memory = schedule(
+    {
+      stability: Number(item.stability ?? 0.3),
+      difficulty: Number(item.difficulty ?? 0.5),
+      reviewsCount: Number(item.reviews_count || 0),
+      lastReviewedAt: item.last_reviewed_at,
+    },
+    grade,
+    now
+  );
+  const nextMastery = masteryFromStability(memory.stability);
+  const nextState = stateFromMastery(nextMastery, grade);
+  const schedule_ = { nextDueAt: memory.nextDueAt, stability: memory.stability, difficulty: memory.difficulty };
+  const newlyMastered = nextState === 'mastered' && item.review_state !== 'mastered';
+  const confidence = params.confidence ?? grade;
   const topicLabel = item.source_topic || 'General';
   const topicSlug = slugifyTopic(topicLabel);
 
@@ -266,11 +257,14 @@ export async function applyReviewAnswer(params: {
     expected_answer: item.content_payload?.answer ?? item.content_payload?.back ?? null,
     response_time_ms: responseTimeMs ?? null,
     confidence: confidence ?? null,
-    was_due: item.due_at <= new Date().toISOString(),
+    was_due: wasDue,
     source_type: item.item_type,
     source_id: item.source_id,
     metadata: {
       topic: topicLabel,
+      grade,
+      interval_days: memory.intervalDays,
+      retrievability: Math.round(memory.retrievability * 100) / 100,
     },
   });
 
@@ -279,15 +273,15 @@ export async function applyReviewAnswer(params: {
     .update({
       mastery_score: nextMastery,
       review_state: nextState,
-      due_at: schedule.nextDueAt,
+      due_at: schedule_.nextDueAt,
       last_reviewed_at: new Date().toISOString(),
       reviews_count: Number(item.reviews_count || 0) + 1,
       mistakes_count: Number(item.mistakes_count || 0) + (correct ? 0 : 1),
       consecutive_correct: correct ? Number(item.consecutive_correct || 0) + 1 : 0,
       lapse_count: Number(item.lapse_count || 0) + (correct ? 0 : 1),
-      overdue_count: item.due_at <= new Date().toISOString() ? Number(item.overdue_count || 0) + 1 : Number(item.overdue_count || 0),
-      stability: schedule.stability,
-      difficulty: schedule.difficulty,
+      overdue_count: wasDue ? Number(item.overdue_count || 0) + 1 : Number(item.overdue_count || 0),
+      stability: schedule_.stability,
+      difficulty: schedule_.difficulty,
     })
     .eq('id', item.id)
     .eq('user_id', userId);
@@ -304,12 +298,11 @@ export async function applyReviewAnswer(params: {
       .from('topic_mastery')
       .update({
         topic_label: topicLabel,
-        mastery_score: correct
-          ? Math.min(100, Number(topicMastery.mastery_score || 0) + 6)
-          : Math.max(0, Number(topicMastery.mastery_score || 0) - 8),
+        mastery_score: Math.min(100, Math.max(0, Number(topicMastery.mastery_score || 0) + ({ 1: -8, 2: 2, 3: 6, 4: 9 } as const)[grade])),
         mistakes_count: Number(topicMastery.mistakes_count || 0) + (correct ? 0 : 1),
         reviews_count: Number(topicMastery.reviews_count || 0) + 1,
-        due_count: Math.max(0, Number(topicMastery.due_count || 0) + (correct ? -1 : 1)),
+        // Only items that were due leave (or, on a miss, stay in) the due pile.
+        due_count: Math.max(0, Number(topicMastery.due_count || 0) + (correct ? (wasDue ? -1 : 0) : wasDue ? 0 : 1)),
         last_reviewed_at: new Date().toISOString(),
       })
       .eq('id', topicMastery.id);
@@ -344,4 +337,8 @@ export async function applyReviewAnswer(params: {
       .eq('id', reviewSessionId)
       .eq('user_id', userId);
   }
+
+  await recordStudyActivity(supabase, userId, newlyMastered ? 1 : 0);
+
+  return { grade, result, intervalDays: memory.intervalDays, nextDueAt: memory.nextDueAt, masteryScore: nextMastery, reviewState: nextState };
 }

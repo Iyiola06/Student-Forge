@@ -10,6 +10,7 @@ import { useUpload } from '@/components/providers/UploadProgressProvider';
 import { createClient } from '@/lib/supabase/client';
 import { getBillingErrorMessage } from '@/lib/billing/client';
 import { cn } from '@/lib/utils';
+import PracticeItem from '@/components/practice/PracticeItem';
 
 const mcqSchema = z.array(
   z.object({
@@ -62,6 +63,7 @@ export default function GeneratorPage() {
   const [topic, setTopic] = useState('');
   const [curriculum, setCurriculum] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [practiceScore, setPracticeScore] = useState({ answered: 0, correct: 0 });
 
   const schema = useMemo(() => {
     if (type === 'flashcards') return flashcardSchema;
@@ -133,6 +135,7 @@ export default function GeneratorPage() {
     }
 
     setError(null);
+    setPracticeScore({ answered: 0, correct: 0 });
     submit({
       content,
       type,
@@ -314,17 +317,23 @@ export default function GeneratorPage() {
 
             <div className="mt-4">
               {resultItems.length ? (
-                <div className="app-list">
+                <div className="space-y-3">
+                  {type === 'mcq' && !isLoading ? (
+                    <p className="text-[13px] text-[var(--text-soft)]">
+                      Answer each one before peeking. Score so far: <span className="font-semibold text-[var(--text-strong)]">{practiceScore.correct}/{practiceScore.answered}</span>.
+                      Every item is also saved to your spaced review queue.
+                    </p>
+                  ) : null}
                   {resultItems.map((item: any, index) => (
-                    <div key={index} className="app-list-row">
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">
-                          {type === 'flashcards' ? `Card ${index + 1}` : `Item ${index + 1}`}
-                        </p>
-                        <p className="mt-2 text-sm font-black leading-6 text-slate-950 dark:text-white">{item.question || item.front}</p>
-                        <p className="mt-2 text-[13px] leading-6 text-slate-500 dark:text-slate-400">{item.explanation || item.back || item.model_answer}</p>
-                      </div>
-                    </div>
+                    <PracticeItem
+                      key={`${index}-${item?.question ?? item?.front ?? ''}`}
+                      index={index}
+                      kind={type}
+                      item={item ?? {}}
+                      onAnswered={(wasCorrect) =>
+                        setPracticeScore((s) => ({ answered: s.answered + 1, correct: s.correct + (wasCorrect ? 1 : 0) }))
+                      }
+                    />
                   ))}
                 </div>
               ) : (

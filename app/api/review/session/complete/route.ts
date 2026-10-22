@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createAuthedRouteClient } from '@/lib/supabase/routeAuth';
 import { trackServerEvent } from '@/lib/analytics/server';
+import { awardXp, recordStudyActivity } from '@/lib/progress/server';
 
 export async function POST(request: Request) {
   try {
@@ -29,6 +30,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Review session not found' }, { status: 404 });
     }
 
+    // 2 XP per card reviewed, +3 per card recalled; finishing the session keeps the streak alive.
+    const completed = Number(session.completed_items || 0);
+    const correctItems = Number(session.correct_items || 0);
+    const xpEarned = Math.min(200, completed * 2 + correctItems * 3);
+    await Promise.all([awardXp(supabase, user.id, xpEarned, 'review_session'), recordStudyActivity(supabase, user.id)]);
+
     await trackServerEvent({
       userId: user.id,
       eventName: 'review_completed',
@@ -41,7 +48,7 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json({ success: true, session });
+    return NextResponse.json({ success: true, session, xpEarned });
   } catch (error: any) {
     return NextResponse.json({ error: error.message || 'Failed to complete review session' }, { status: 500 });
   }

@@ -272,9 +272,9 @@ export default function DashboardClient({
               </div>
             </div>
 
-            <div className="relative min-h-[230px]">
+            <div className="relative sm:min-h-[230px]">
               <Icon3D name={mission.icon} size={150} priority className="animate-float absolute top-0 right-6 hidden sm:block lg:right-10" />
-              <div className="dashboard-mini-surface absolute right-0 bottom-0 left-0 flex items-center gap-4 sm:left-auto sm:w-[300px]">
+              <div className="dashboard-mini-surface flex items-center gap-4 sm:absolute sm:right-0 sm:bottom-0 sm:w-[300px]">
                 <div className="dashboard-progress-orbit !w-[92px] shrink-0" style={{ '--progress': readiness } as CSSProperties}>
                   <div className="dashboard-progress-orbit-value">
                     <p className="font-display text-[24px] leading-none font-semibold text-[var(--text-strong)]">{readiness}</p>

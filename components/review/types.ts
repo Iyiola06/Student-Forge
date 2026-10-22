@@ -10,6 +10,9 @@ export type ReviewQueueItem = {
   masteryScore: number;
   reviewState: 'new' | 'learning' | 'review' | 'mastered';
   lastReviewedAt?: string | null;
+  stability?: number;
+  difficulty?: number;
+  reviewsCount?: number;
   contentPayload?: Record<string, any>;
 };
 

@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client';
 import { awardXp } from '@/app/actions/gamifier';
 import CreditStatusBanner from '@/components/billing/CreditStatusBanner';
 import { getBillingErrorMessage } from '@/lib/billing/client';
+import Icon3D from '@/components/ui/Icon3D';
 
 interface Message {
     id: string;
@@ -15,6 +16,29 @@ interface Message {
     content: string;
     timestamp: Date;
 }
+
+type TutorMode = 'explain' | 'socratic' | 'quiz';
+
+const MODES: Array<{ id: TutorMode; label: string; hint: string }> = [
+    { id: 'explain', label: 'Explain', hint: 'Clear explanations with examples' },
+    { id: 'socratic', label: 'Guide me', hint: 'Questions that lead you to the answer' },
+    { id: 'quiz', label: 'Quiz me', hint: 'One question at a time, with feedback' },
+];
+
+const MODE_PROMPTS: Record<Exclude<TutorMode, 'explain'>, string[]> = {
+    socratic: [
+        'Help me work out why the sky is blue',
+        'Guide me through solving 2x + 6 = 14',
+        'Help me reason about why inflation hurts savers',
+        'Lead me to understand how vaccines work',
+    ],
+    quiz: [
+        'Quiz me on cell biology',
+        'Quiz me on quadratic equations',
+        'Quiz me on the causes of World War I',
+        'Quiz me on my uploaded notes',
+    ],
+};
 
 const SUGGESTED_PROMPTS = [
     { icon: 'science', text: 'Explain photosynthesis in simple terms', color: 'text-green-500' },
@@ -35,6 +59,7 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [xpAwarded, setXpAwarded] = useState(false);
+    const [mode, setMode] = useState<TutorMode>('explain');
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -71,6 +96,7 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                     message: messageText,
                     history,
                     context: resourceContext || undefined,
+                    mode,
                 }),
             });
 
@@ -120,28 +146,35 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
     return (
         <div className="flex flex-col h-full">
             {/* Chat Header */}
-            <div className="shrink-0 px-6 py-4 border-b border-slate-200 dark:border-[#1d2a42] bg-white dark:bg-[#0f192c]">
-                <div className="flex items-center gap-3">
-                    <div className="size-10 rounded-xl bg-gradient-to-br from-[#2f7fd3] to-orange-600 flex items-center justify-center shadow-lg shadow-[#2f7fd3]/20">
-                        <span className="material-symbols-outlined text-white text-xl">psychology</span>
-                    </div>
-                    <div>
-                        <h2 className="font-black text-slate-900 dark:text-white text-lg tracking-tight">AI Tutor</h2>
-                        <p className="text-[10px] font-bold text-green-500 uppercase tracking-widest flex items-center gap-1">
-                            <span className="size-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                            Ready for focused help
+            <div className="shrink-0 border-b border-[var(--line)] px-4 py-4 sm:px-6">
+                <div className="flex flex-wrap items-center gap-3">
+                    <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-[var(--accent-soft)]">
+                        <Icon3D name="robot" size={30} />
+                    </span>
+                    <div className="min-w-0">
+                        <h2 className="font-display text-[17px] font-semibold text-[var(--text-strong)]">AI Tutor</h2>
+                        <p className="flex items-center gap-1.5 text-[12px] text-[var(--text-soft)]">
+                            <span className="size-1.5 animate-pulse rounded-full bg-[var(--success)]" />
+                            {MODES.find((m) => m.id === mode)?.hint}
                         </p>
                     </div>
+                    <div className="app-tabs ml-auto" role="tablist" aria-label="Tutor mode">
+                        {MODES.map((m) => (
+                            <button key={m.id} type="button" role="tab" aria-selected={mode === m.id} className="app-tab !h-8 !px-3 !text-[13px]" data-active={mode === m.id} onClick={() => setMode(m.id)}>
+                                {m.label}
+                            </button>
+                        ))}
+                    </div>
                     {resourceTitle && (
-                        <div className="ml-auto px-3 py-1.5 bg-[#2f7fd3]/10 border border-[#2f7fd3]/20 rounded-lg flex items-center gap-2">
-                            <span className="material-symbols-outlined text-[#2f7fd3] text-sm">description</span>
-                            <span className="text-xs font-bold text-[#2f7fd3] truncate max-w-[200px]">{resourceTitle}</span>
+                        <div className="flex w-full items-center gap-2 rounded-full bg-[var(--accent-softer)] px-3 py-1.5 sm:w-auto">
+                            <Icon3D name="open-book" size={16} />
+                            <span className="truncate text-xs font-medium text-[var(--accent-strong)] sm:max-w-[220px]">Studying: {resourceTitle}</span>
                         </div>
                     )}
                 </div>
             </div>
 
-            <div className="shrink-0 px-6 pt-4">
+            <div className="shrink-0 px-4 pt-4 sm:px-6">
                 <CreditStatusBanner featureLabel="AI tutor message" creditCost={15} />
             </div>
 
@@ -149,29 +182,26 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
                 {messages.length === 0 ? (
                     /* Empty State with Suggested Prompts */
-                    <div className="flex flex-col items-center justify-center h-full text-center px-4">
-                        <div className="size-20 rounded-full bg-gradient-to-br from-[#2f7fd3]/20 to-orange-500/10 border border-[#2f7fd3]/20 flex items-center justify-center mb-6">
-                            <span className="material-symbols-outlined text-[#2f7fd3] text-4xl">auto_awesome</span>
-                        </div>
-                        <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-2">
-                            What do you want to learn?
+                    <div className="flex h-full flex-col items-center justify-center px-2 text-center">
+                        <Icon3D name={mode === 'quiz' ? 'target' : mode === 'socratic' ? 'thinking' : 'robot'} size={88} className="mb-4 animate-float" />
+                        <h3 className="font-display text-[24px] font-semibold tracking-[-0.02em] text-[var(--text-strong)]">
+                            {mode === 'quiz' ? 'Ready to be quizzed?' : mode === 'socratic' ? 'Let\u2019s think it through together' : 'What do you want to learn?'}
                         </h3>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md mb-8">
-                            Ask about a concept, quiz yourself on a topic, or use one uploaded resource as the study context.
+                        <p className="mt-2 mb-7 max-w-md text-sm text-[var(--text-soft)]">
+                            {mode === 'quiz'
+                                ? 'I will ask one question at a time, wait for your answer, then explain what you got right and what to fix.'
+                                : mode === 'socratic'
+                                    ? 'Instead of handing you the answer, I will ask questions that lead you to it. You will remember it far longer.'
+                                    : 'Ask about any concept. I will explain it simply, with examples, then check that it clicked.'}
                         </p>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
-                            {SUGGESTED_PROMPTS.map((prompt, i) => (
+                        <div className="grid w-full max-w-xl grid-cols-1 gap-2.5 sm:grid-cols-2">
+                            {(mode === 'explain' ? SUGGESTED_PROMPTS.map((p) => p.text) : MODE_PROMPTS[mode]).map((text, i) => (
                                 <button
                                     key={i}
-                                    onClick={() => sendMessage(prompt.text)}
-                                    className="flex items-center gap-3 px-4 py-3.5 bg-white dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] rounded-xl hover:border-[#2f7fd3]/50 hover:shadow-lg hover:shadow-[#2f7fd3]/5 transition-all text-left group"
+                                    onClick={() => sendMessage(text)}
+                                    className="rounded-2xl border border-[var(--line)] bg-[var(--card)] px-4 py-3 text-left text-[13.5px] font-medium text-[var(--text-body)] transition hover:-translate-y-px hover:border-[var(--accent)] hover:text-[var(--text-strong)]"
                                 >
-                                    <span className={`material-symbols-outlined ${prompt.color} text-xl group-hover:scale-110 transition-transform`}>
-                                        {prompt.icon}
-                                    </span>
-                                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300 line-clamp-1">
-                                        {prompt.text}
-                                    </span>
+                                    {text}
                                 </button>
                             ))}
                         </div>
@@ -181,16 +211,16 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                     messages.map((msg) => (
                         <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                             <div className={`max-w-[85%] md:max-w-[70%] ${msg.role === 'user'
-                                ? 'bg-[#2f7fd3] text-white rounded-2xl rounded-br-md px-5 py-3.5 shadow-lg shadow-[#2f7fd3]/20'
-                                : 'bg-white dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] text-slate-800 dark:text-slate-200 rounded-2xl rounded-bl-md px-5 py-3.5 shadow-sm'
+                                ? 'bg-[var(--action)] text-[var(--action-ink)] rounded-[22px] rounded-br-md px-5 py-3.5 shadow-[var(--shadow-action)]'
+                                : 'bg-[var(--card)] border border-[var(--line)] text-[var(--text-body)] rounded-[22px] rounded-bl-md px-5 py-3.5 shadow-[var(--shadow-sm)]'
                                 }`}>
                                 {msg.role === 'assistant' && (
-                                    <div className="flex items-center gap-2 mb-2 pb-2 border-b border-slate-100 dark:border-[#1d2a42]">
-                                        <span className="material-symbols-outlined text-[#2f7fd3] text-sm">psychology</span>
-                                        <span className="text-[10px] font-black text-[#2f7fd3] uppercase tracking-widest">AI Tutor</span>
+                                    <div className="mb-2 flex items-center gap-2 border-b border-[var(--line)] pb-2">
+                                        <Icon3D name="robot" size={16} />
+                                        <span className="text-[11px] font-medium text-[var(--accent)]">AI Tutor</span>
                                     </div>
                                 )}
-                                <div className="text-sm leading-relaxed prose-sm dark:prose-invert max-w-none break-words">
+                                <div className="study-prose prose-sm max-w-none break-words text-[14.5px] leading-relaxed">
                                     <ReactMarkdown
                                         remarkPlugins={[remarkGfm]}
                                         components={{
@@ -219,9 +249,9 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                 {isLoading && (
                     <div className="flex justify-start">
                         <div className="bg-white dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] rounded-2xl rounded-bl-md px-5 py-4 shadow-sm">
-                            <div className="flex items-center gap-2 mb-2">
-                                <span className="material-symbols-outlined text-[#2f7fd3] text-sm">psychology</span>
-                                <span className="text-[10px] font-black text-[#2f7fd3] uppercase tracking-widest">AI Tutor</span>
+                            <div className="mb-2 flex items-center gap-2">
+                                <Icon3D name="robot" size={16} />
+                                <span className="text-[11px] font-medium text-[var(--accent)]">Thinking...</span>
                             </div>
                             <div className="flex items-center gap-1.5">
                                 <div className="size-2 bg-[#2f7fd3] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
@@ -236,7 +266,7 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
             </div>
 
             {/* Input Bar */}
-            <div className="shrink-0 p-4 border-t border-slate-200 dark:border-[#1d2a42] bg-white dark:bg-[#0f192c]">
+            <div className="shrink-0 border-t border-[var(--line)] p-4">
                 <div className="flex items-end gap-3 max-w-4xl mx-auto">
                     <div className="flex-1 relative">
                         <textarea
@@ -244,9 +274,9 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={handleKeyDown}
-                            placeholder="Ask me anything..."
+                            placeholder={mode === 'quiz' ? 'Type your answer, or name a topic to be quizzed on...' : mode === 'socratic' ? 'What are you trying to understand?' : 'Ask me anything...'}
                             rows={1}
-                            className="w-full resize-none rounded-xl border border-slate-200 dark:border-[#1d2a42] bg-[#f5f9fe] dark:bg-[#0f192c] px-4 py-3 pr-12 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-[#2f7fd3] focus:border-transparent outline-none transition-all"
+                            className="w-full resize-none rounded-[22px] border border-[var(--line-strong)] bg-[var(--card-2)] px-4 py-3 pr-12 text-sm text-[var(--text-strong)] outline-none transition-all placeholder:text-[var(--text-faint)] focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--ring-brand)]"
                             style={{ minHeight: '48px', maxHeight: '120px' }}
                             disabled={isLoading}
                         />
@@ -254,7 +284,8 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                     <button
                         onClick={() => sendMessage()}
                         disabled={!input.trim() || isLoading}
-                        className="size-12 rounded-xl bg-[#2266ad] hover:bg-[#2563eb] disabled:opacity-40 disabled:cursor-not-allowed text-white flex items-center justify-center transition-all shadow-lg shadow-[#2266ad]/20 hover:shadow-[#2266ad]/30 active:scale-95 shrink-0"
+                        className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[var(--action)] text-[var(--action-ink)] shadow-[var(--shadow-action)] transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        aria-label="Send"
                     >
                         <span className="material-symbols-outlined">send</span>
                     </button>

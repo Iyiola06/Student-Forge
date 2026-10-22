@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { experimental_useObject as useObject } from '@ai-sdk/react';
 import { z } from 'zod';
+import { toast } from 'react-toastify';
 import { getBillingErrorMessage } from '@/lib/billing/client';
 
 interface Resource {
@@ -109,7 +110,8 @@ export default function FlashcardsPage() {
                 content: contentToUse,
                 type: 'flashcards',
                 count: 10,
-                stream: true
+                stream: true,
+                resourceId: selectedResource || undefined,
             });
         } catch (err: any) {
             setError(err.message);
@@ -122,16 +124,23 @@ export default function FlashcardsPage() {
         setIsFlipped(false);
     };
 
-    const nextCard = () => {
+    const [drillTally, setDrillTally] = useState({ again: 0, known: 0 });
+
+    const nextCard = (knewIt: boolean) => {
         setIsFlipped(false);
+        const tally = { again: drillTally.again + (knewIt ? 0 : 1), known: drillTally.known + (knewIt ? 1 : 0) };
+        setDrillTally(tally);
         setTimeout(() => {
             if (currentIndex < flashcards.length - 1) {
                 setCurrentIndex(currentIndex + 1);
             } else {
-                // Finish drill
                 setIsDrilling(false);
-                alert("Drill completed! Great job.");
-                // Can award more XP here
+                setDrillTally({ again: 0, known: 0 });
+                toast.success(
+                    tally.again
+                        ? `Drill done: ${tally.known} known, ${tally.again} to revisit. These cards are already in your spaced review queue.`
+                        : `Perfect run: all ${tally.known} known! Spaced review will bring them back right before you forget.`
+                );
             }
         }, 300); // Wait for flip animation to finish
     };
@@ -146,36 +155,46 @@ export default function FlashcardsPage() {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error("Not authenticated");
 
-            const { data: deck, error: deckError } = await supabase
+            // Generation already saved this deck (and queued its cards for spaced review).
+            // Rename that deck instead of inserting a duplicate copy.
+            const since = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+            const { data: recent } = await supabase
                 .from('flashcards')
-                .insert({
-                    user_id: user.id,
-                    title,
-                    resource_id: selectedResource || null,
-                    subject: 'General'
-                })
-                .select().single();
+                .select('id')
+                .eq('user_id', user.id)
+                .gte('created_at', since)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .maybeSingle();
 
-            if (deckError) throw deckError;
+            let deck = recent;
+            if (deck?.id) {
+                const { error: renameError } = await supabase.from('flashcards').update({ title }).eq('id', deck.id).eq('user_id', user.id);
+                if (renameError) throw renameError;
+            } else {
+                const { data: created, error: deckError } = await supabase
+                    .from('flashcards')
+                    .insert({ user_id: user.id, title, resource_id: selectedResource || null, subject: 'General' })
+                    .select('id')
+                    .single();
+                if (deckError) throw deckError;
+                const { error: itemsError } = await supabase.from('flashcard_items').insert(
+                    flashcards.map((card) => ({
+                        deck_id: created.id,
+                        front_content: card.front,
+                        back_content: card.back,
+                        status: 'new',
+                        next_review_at: new Date().toISOString(),
+                    }))
+                );
+                if (itemsError) throw itemsError;
+                deck = created;
+            }
 
-            const itemsToInsert = flashcards.map(card => ({
-                deck_id: deck.id,
-                front_content: card.front,
-                back_content: card.back,
-                status: 'new',
-                next_review_at: new Date().toISOString()
-            }));
-
-            const { error: itemsError } = await supabase
-                .from('flashcard_items')
-                .insert(itemsToInsert);
-
-            if (itemsError) throw itemsError;
-
-            alert("Deck saved successfully!");
+            toast.success("Deck saved. Its cards are in your daily review queue.");
             setSavedDeckId(deck.id);
         } catch (err: any) {
-            alert("Error saving deck: " + err.message);
+            toast.error("Error saving deck: " + err.message);
         } finally {
             setIsSaving(false);
         }
@@ -412,16 +431,16 @@ export default function FlashcardsPage() {
 
                                     {/* Controls (visible when flipped) */}
                                     <div className={`mt-8 md:mt-12 flex flex-col sm:flex-row justify-center gap-4 md:gap-6 transition-all duration-700 transform relative z-10 w-full max-w-2xl ${isFlipped ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}>
-                                        <button onClick={(e) => { e.stopPropagation(); nextCard(); }} className="flex-1 px-8 py-5 md:py-6 rounded-2xl md:rounded-3xl bg-white/80 dark:bg-[#0f192c]/80 backdrop-blur-sm text-slate-700 dark:text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-slate-50 dark:hover:bg-[#1d2a42] transition-all duration-300 flex items-center justify-center gap-3 border border-slate-200 dark:border-white/5 shadow-sm hover:shadow-lg hover:-translate-y-1 group">
+                                        <button onClick={(e) => { e.stopPropagation(); nextCard(false); }} className="flex-1 px-8 py-5 md:py-6 rounded-2xl md:rounded-3xl bg-white/80 dark:bg-[#0f192c]/80 backdrop-blur-sm text-slate-700 dark:text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-slate-50 dark:hover:bg-[#1d2a42] transition-all duration-300 flex items-center justify-center gap-3 border border-slate-200 dark:border-white/5 shadow-sm hover:shadow-lg hover:-translate-y-1 group">
                                             <div className="size-8 rounded-full bg-slate-100 dark:bg-[#0f192c] flex items-center justify-center group-hover:bg-[#2f7fd3]/10 group-hover:text-[#2f7fd3] transition-colors">
                                                 <span className="material-symbols-outlined text-[18px]">retry</span>
                                             </div>
                                             Review Again
                                         </button>
-                                        <button onClick={(e) => { e.stopPropagation(); nextCard(); }} className="flex-1 px-8 py-5 md:py-6 rounded-2xl md:rounded-3xl bg-gradient-to-r from-green-500 to-[#2f7fd3] hover:from-green-400 hover:to-[#4a9be8] text-white font-black text-[11px] uppercase tracking-[0.2em] shadow-[0_20px_40px_-10px_rgba(26,92,42,0.4)] transition-all duration-300 flex items-center justify-center gap-3 hover:-translate-y-1 active:scale-95 group relative overflow-hidden">
+                                        <button onClick={(e) => { e.stopPropagation(); nextCard(true); }} className="flex-1 px-8 py-5 md:py-6 rounded-2xl md:rounded-3xl bg-gradient-to-r from-green-500 to-[#2f7fd3] hover:from-green-400 hover:to-[#4a9be8] text-white font-black text-[11px] uppercase tracking-[0.2em] shadow-[0_20px_40px_-10px_rgba(26,92,42,0.4)] transition-all duration-300 flex items-center justify-center gap-3 hover:-translate-y-1 active:scale-95 group relative overflow-hidden">
                                             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[150%] skew-x-[-20deg] group-hover:animate-[sheen_1.5s_infinite]"></div>
                                             <span className="material-symbols-outlined text-[24px] group-hover:rotate-12 transition-transform drop-shadow-md">verified_user</span>
-                                            Mark Mastered
+                                            I knew it
                                         </button>
                                     </div>
                                 </div>
