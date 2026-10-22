@@ -9,6 +9,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { awardXp } from '@/app/actions/gamifier';
 import { getBillingErrorMessage } from '@/lib/billing/client';
+import Icon3D, { type Icon3DName } from '@/components/ui/Icon3D';
+import { cn } from '@/lib/utils';
 
 interface Resource {
   id: string;
@@ -16,6 +18,19 @@ interface Resource {
   content: string;
   processing_status: string;
 }
+
+const LEVEL_OPTIONS: { val: string; label: string; hint: string; icon: Icon3DName; tone: string }[] = [
+  { val: 'child', label: 'Child (5 yo)', hint: 'Tiny words, stories', icon: 'seedling', tone: 'pastel-mint' },
+  { val: 'beginner', label: 'Beginner', hint: 'New to the topic', icon: 'student-1', tone: 'pastel-sky' },
+  { val: 'general', label: 'General', hint: 'Clear and everyday', icon: 'globe', tone: 'pastel-butter' },
+  { val: 'expert', label: 'Expert', hint: 'Keep the nuance', icon: 'teacher', tone: 'pastel-lavender' },
+];
+
+const FORMAT_OPTIONS: { val: string; label: string; hint: string; icon: Icon3DName }[] = [
+  { val: 'paragraphs', label: 'Structured paragraphs', hint: 'Headings with short sections', icon: 'open-book' },
+  { val: 'bullets', label: 'Bullet points only', hint: 'Fast to scan and revise', icon: 'clipboard' },
+  { val: 'analogy', label: 'Real-world analogies', hint: 'Explained through everyday things', icon: 'bulb' },
+];
 
 export default function SimplifierPage() {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -176,237 +191,334 @@ export default function SimplifierPage() {
     await awardXp(user.id, 20, 'simplifier_generation');
   };
 
+  const levelLabel = LEVEL_OPTIONS.find((o) => o.val === level)?.label ?? level;
+  const formatLabel = FORMAT_OPTIONS.find((o) => o.val === format)?.label ?? format;
+  const pastedWords = pastedText.trim() ? pastedText.trim().split(/\s+/).length : 0;
+
   return (
     <AppShell
       eyebrow="Study tools"
       title="Document simplifier"
       description="Translate dense material into a clearer explanation level, format, and focus without changing the underlying study logic."
     >
-        {simplifiedOutput ? (
-          <div className="max-w-4xl w-full flex-1 overflow-y-auto animate-in fade-in slide-in-from-bottom-4">
-            <button
-              onClick={() => setSimplifiedOutput(null)}
-              className="mb-8 flex items-center gap-2 text-slate-500 font-bold hover:text-[#2f7fd3] transition-colors"
-            >
-              <span className="material-symbols-outlined">arrow_back</span>
-              Back to Simplifier
+      {simplifiedOutput ? (
+        <div className="workspace-stack animate-rise">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <button onClick={() => setSimplifiedOutput(null)} className="secondary-button !h-10 !px-4">
+              <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+              Back to simplifier
             </button>
-            <div className="bg-white dark:bg-[#0f192c] rounded-[2rem] p-8 md:p-12 shadow-sm border border-slate-200 dark:border-[#1d2a42]">
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-12 h-12 bg-[#2f7fd3]/10 text-[#2f7fd3] rounded-xl flex items-center justify-center">
-                  <span className="material-symbols-outlined text-2xl font-black">auto_stories</span>
-                </div>
-                <div>
-                  <h2 className="text-2xl font-black text-slate-900 dark:text-white">Simplified Document</h2>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Level: {level} • Format: {format}</p>
+            <div className="flex flex-wrap gap-2">
+              <span className="metric-chip">
+                <Icon3D name={LEVEL_OPTIONS.find((o) => o.val === level)?.icon ?? 'student-1'} size={16} />
+                {levelLabel}
+              </span>
+              <span className="metric-chip">
+                <Icon3D name={FORMAT_OPTIONS.find((o) => o.val === format)?.icon ?? 'memo'} size={16} />
+                {formatLabel}
+              </span>
+            </div>
+          </div>
+
+          <article className="glass-panel overflow-hidden">
+            <div className="pastel-sky relative px-5 pt-6 pb-5 md:px-10 md:pt-9">
+              <div className="flex min-w-0 items-start gap-4">
+                <span className="icon-tile size-14 !rounded-[20px] bg-[var(--card)] md:size-16">
+                  <Icon3D name="open-book" size={36} />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="eyebrow">Simplified document</p>
+                  <h2 className="font-display mt-1 text-[24px] leading-tight font-semibold tracking-[-0.02em] text-[var(--text-strong)] md:text-[30px]">
+                    Here is the <span className="torn-mark">clear</span> version
+                  </h2>
+                  <p className="mt-1.5 text-[13.5px] text-[var(--text-soft)]">
+                    Written for {levelLabel.toLowerCase()} readers as {formatLabel.toLowerCase()}
+                    {focus.trim() ? `, focused on ${focus.trim()}` : ''}.
+                  </p>
                 </div>
               </div>
-              <div className="prose dark:prose-invert prose-emerald max-w-none">
+            </div>
+
+            <div className="px-5 pb-7 md:px-10 md:pb-10">
+              <div className="study-prose break-words">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{simplifiedOutput}</ReactMarkdown>
               </div>
 
-              {/* YouTube Recommendations Overlay */}
               {youtubeTopics.length > 0 && (
-                <div className="mt-12 pt-8 border-t border-slate-200 dark:border-[#1d2a42]">
-                  <h3 className="text-lg font-black text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-red-600">smart_display</span>
-                    Watch Concept on YouTube
-                  </h3>
-                  <div className="flex flex-wrap gap-3">
+                <div className="pastel-blush mt-10 rounded-[24px] border border-[var(--line)] p-5 md:p-6">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <span className="icon-tile size-11 bg-[var(--card)]">
+                      <Icon3D name="laptop" size={26} />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="eyebrow">Keep learning</p>
+                      <h3 className="panel-title !text-[17px]">Watch the concept on YouTube</h3>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-2">
                     {youtubeTopics.map((topic, i) => (
                       <a
                         key={i}
                         href={`https://www.youtube.com/results?search_query=${encodeURIComponent(topic)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-500/20 rounded-xl font-bold text-sm hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors"
+                        className="lift inline-flex max-w-full min-w-0 items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--card)] py-2 pr-3 pl-2.5 text-[13px] font-medium text-[var(--text-strong)] shadow-[var(--shadow-sm)]"
                       >
-                        <svg className="w-5 h-5 text-red-600 dark:text-red-500 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                        <svg className="size-4 shrink-0 text-[var(--danger)]" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                           <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
                         </svg>
-                        {topic}
-                        <span className="material-symbols-outlined text-[16px] opacity-50 ml-1">open_in_new</span>
+                        <span className="min-w-0 truncate">{topic}</span>
+                        <span className="material-symbols-outlined shrink-0 text-[15px] text-[var(--text-soft)]">open_in_new</span>
                       </a>
                     ))}
                   </div>
                 </div>
               )}
-
             </div>
-          </div>
-        ) : (
-          <main className="flex-1 md:overflow-y-auto">
-            <div className="flex flex-col xl:flex-row gap-8">
-              {/* Left Column: Input Source */}
-              <div className="flex-1 max-w-2xl space-y-6">
-                {/* Upload Area */}
-                <div className="bg-white dark:bg-[#0f192c] rounded-[2rem] border border-slate-200 dark:border-[#1d2a42] p-6 shadow-sm">
-                  <div className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center text-center transition-colors ${isUploading ? 'border-[#2f7fd3] bg-[#2f7fd3]/5' : 'border-slate-300 dark:border-[#24344f] hover:border-[#2f7fd3]/50'
-                    }`}>
-                    {isUploading ? (
-                      <div className="size-12 border-4 border-[#2f7fd3] border-t-transparent rounded-full animate-spin mb-4" />
-                    ) : (
-                      <div className="w-16 h-16 bg-[#2f7fd3]/10 text-[#2f7fd3] rounded-2xl flex items-center justify-center mb-4">
-                        <span className="material-symbols-outlined text-3xl font-black">upload_file</span>
-                      </div>
-                    )}
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-                      {isUploading ? 'Processing Document...' : 'Upload Study Material'}
-                    </h3>
-                    <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-6">PDF, Word, PPT, or Image inputs</p>
-                    <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.png,.txt" />
-                    <button onClick={() => fileInputRef.current?.click()} disabled={isUploading} className="px-8 py-3 bg-[#2f7fd3] text-white font-bold rounded-xl hover:bg-[#2266ad] transition-all disabled:opacity-50 active:scale-95 shadow-lg shadow-[#2f7fd3]/20">
-                      BROWSE FILES
-                    </button>
+          </article>
+        </div>
+      ) : (
+        <div className="workspace-stack">
+          <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px]">
+            {/* Left column: input source */}
+            <div className="min-w-0 space-y-5">
+              <div className="resource-dropzone flex flex-col items-center text-center" data-dragging={isUploading ? 'true' : undefined}>
+                {isUploading ? (
+                  <span className="mb-1 inline-flex size-[88px] items-center justify-center">
+                    <span className="size-12 animate-spin rounded-full border-4 border-[var(--accent)] border-t-transparent" />
+                  </span>
+                ) : (
+                  <Icon3D name="file-folder" size={88} className="animate-float" priority />
+                )}
+                <p className="eyebrow mt-3">{isUploading ? 'Hang tight' : 'Step 1 · Add your material'}</p>
+                <h2 className="font-display mt-1 text-[22px] leading-tight font-semibold tracking-[-0.02em] text-[var(--text-strong)] md:text-[26px]">
+                  {isUploading ? 'Reading your document...' : (
+                    <>
+                      Drop in something <span className="torn-mark" data-tone="white">dense</span>
+                    </>
+                  )}
+                </h2>
+                <p className="mt-2 max-w-[44ch] text-sm text-[var(--text-soft)]">
+                  {isUploading
+                    ? 'We are extracting the text. It will be selected automatically when it is ready.'
+                    : 'Lecture notes, a textbook chapter, or slides. We will rewrite it at the level you choose.'}
+                </p>
+                <div className="mt-4 flex flex-wrap justify-center gap-1.5">
+                  {['PDF', 'Word', 'PowerPoint', 'Image', 'Text'].map((t) => (
+                    <span key={t} className="pill-tag">{t}</span>
+                  ))}
+                </div>
+                <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.png,.txt" />
+                <button onClick={() => fileInputRef.current?.click()} disabled={isUploading} className="primary-button mt-5">
+                  <span className="material-symbols-outlined text-[18px]">upload</span>
+                  {isUploading ? 'Uploading...' : 'Browse files'}
+                </button>
+              </div>
+
+              <div className="auth-divider px-2">
+                <span className="auth-divider-line" />
+                <span className="auth-divider-label">or</span>
+                <span className="auth-divider-line" />
+              </div>
+
+              <div className="glass-panel app-panel">
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="icon-tile size-11">
+                    <Icon3D name="memo" size={26} />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="panel-title !text-[17px]">Paste text</h3>
+                    <p className="text-[13px] text-[var(--text-soft)]">An article, a chapter, or your own notes.</p>
                   </div>
                 </div>
+                <textarea
+                  value={pastedText}
+                  onChange={(e) => {
+                    setPastedText(e.target.value);
+                    setSelectedResource('');
+                  }}
+                  placeholder="Paste your content here..."
+                  className="mt-4 h-44 w-full min-w-0 resize-none rounded-2xl border border-[var(--line-strong)] bg-[var(--card)] p-4 text-sm leading-7 text-[var(--text-strong)] outline-none transition placeholder:text-[var(--text-faint)] focus:border-[var(--accent)] focus:shadow-[0_0_0_4px_var(--ring-brand)]"
+                />
+                <p className="mt-1 text-right text-[12px] text-[var(--text-soft)]">{pastedWords} words</p>
+              </div>
 
-                <div className="flex items-center gap-4">
-                  <div className="h-px bg-slate-200 dark:bg-[#1d2a42] flex-1"></div>
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">OR</span>
-                  <div className="h-px bg-slate-200 dark:bg-[#1d2a42] flex-1"></div>
-                </div>
-
-                <div className="bg-white dark:bg-[#0f192c] rounded-[2rem] border border-slate-200 dark:border-[#1d2a42] p-6 shadow-sm">
-                  <div className="mb-4">
-                    <label className="text-sm font-bold text-slate-900 dark:text-white mb-1 block">Paste Text</label>
-                    <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">Directly paste an article, chapter, or notes.</p>
+              {resources.length > 0 && (
+                <div className="glass-panel app-panel">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <span className="icon-tile size-11">
+                      <Icon3D name="books" size={26} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="panel-title !text-[17px]">Or pick a recent resource</h3>
+                      <p className="text-[13px] text-[var(--text-soft)]">From your library</p>
+                    </div>
                   </div>
-                  <textarea
-                    value={pastedText}
-                    onChange={(e) => {
-                      setPastedText(e.target.value);
-                      setSelectedResource('');
-                    }}
-                    placeholder="Paste your content here..."
-                    className="w-full h-40 p-4 rounded-xl bg-[#f5f9fe] dark:bg-[#0b0b10] border-2 border-slate-200 dark:border-[#1d2a42] text-slate-900 dark:text-white outline-none focus:border-[#2f7fd3] focus:ring-4 focus:ring-[#2f7fd3]/10 resize-none font-medium text-sm transition-all"
-                  />
-                </div>
-
-                {resources.length > 0 && (
-                  <div className="bg-white dark:bg-[#0f192c] rounded-[2rem] border border-slate-200 dark:border-[#1d2a42] p-6 shadow-sm">
-                    <h3 className="font-bold text-slate-900 dark:text-white mb-4">Or select a recent resource</h3>
-                    <div className="grid gap-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                      {resources.map(res => (
+                  <div className="custom-scrollbar mt-4 grid max-h-64 gap-1.5 overflow-y-auto pr-1">
+                    {resources.map((res) => {
+                      const active = selectedResource === res.id;
+                      const ready = res.processing_status === 'ready';
+                      return (
                         <button
                           key={res.id}
                           onClick={() => {
                             setSelectedResource(res.id);
                             setPastedText('');
                           }}
-                          className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left group ${selectedResource === res.id
-                            ? 'border-[#2f7fd3] bg-[#2f7fd3]/5 ring-2 ring-[#2f7fd3]/20'
-                            : 'border-slate-100 dark:border-[#1d2a42] hover:border-[#2f7fd3]/30'
-                            }`}
+                          className={cn(
+                            'flex w-full min-w-0 items-center gap-3 rounded-[18px] border p-2.5 text-left transition',
+                            active
+                              ? 'border-[var(--accent)] bg-[var(--accent-soft)] shadow-[0_0_0_3px_var(--ring-brand)]'
+                              : 'border-transparent hover:bg-[var(--accent-softer)]'
+                          )}
                         >
-                          <span className={`material-symbols-outlined ${selectedResource === res.id ? 'text-[#2f7fd3]' : 'text-slate-400 group-hover:text-[#2f7fd3]'}`}>
-                            {res.processing_status === 'ready' ? 'check_circle' : 'hourglass_bottom'}
+                          <span className="icon-tile size-10 bg-[var(--card)]">
+                            <Icon3D name={ready ? 'scroll' : 'hourglass'} size={22} />
                           </span>
-                          <span className={`font-bold truncate text-sm flex-1 ${selectedResource === res.id ? 'text-[#2f7fd3]' : 'text-slate-700 dark:text-slate-300'}`}>
-                            {res.title}
+                          <span className="min-w-0 flex-1">
+                            <span className="block truncate text-[14px] font-medium text-[var(--text-strong)]">{res.title}</span>
+                            <span className="text-[12px] text-[var(--text-soft)]">{ready ? 'Ready to simplify' : 'Still processing'}</span>
                           </span>
+                          {active ? (
+                            <span className="material-symbols-outlined shrink-0 text-[20px] text-[var(--accent-strong)]">check_circle</span>
+                          ) : null}
                         </button>
-                      ))}
-                    </div>
+                      );
+                    })}
                   </div>
-                )}
-              </div>
-
-              {/* Right Column: AI Config */}
-              <div className="xl:w-96 flex-shrink-0">
-                <div className="mb-6">
-                  <CreditStatusBanner featureLabel="Document simplifier" creditCost={30} />
                 </div>
-                <div className="bg-white dark:bg-[#0f192c] rounded-[2rem] border border-slate-200 dark:border-[#1d2a42] p-6 shadow-sm sticky top-6">
-                  <h3 className="text-lg font-black text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[#2f7fd3]">tune</span>
-                    Simplifier Settings
-                  </h3>
+              )}
+            </div>
 
-                  <div className="space-y-6">
-                    <div>
-                      <label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-3">Target Audience Level</label>
-                      <div className="grid grid-cols-2 gap-2">
-                        {[
-                          { val: 'child', label: 'Child (5 yo)', icon: 'child_care' },
-                          { val: 'beginner', label: 'Beginner', icon: 'school' },
-                          { val: 'general', label: 'General', icon: 'public' },
-                          { val: 'expert', label: 'Expert', icon: 'psychology' }
-                        ].map(opt => (
+            {/* Right column: settings */}
+            <div className="min-w-0 space-y-5">
+              <CreditStatusBanner featureLabel="Document simplifier" creditCost={30} />
+
+              <div className="glass-panel app-panel xl:sticky xl:top-6">
+                <p className="eyebrow">Step 2 · Tune it</p>
+                <h3 className="panel-title mt-1">Simplifier settings</h3>
+
+                <div className="mt-5 space-y-6">
+                  <div>
+                    <p className="auth-label">Who is it for?</p>
+                    <div className="grid grid-cols-2 gap-2.5">
+                      {LEVEL_OPTIONS.map((opt) => {
+                        const active = level === opt.val;
+                        return (
                           <button
                             key={opt.val}
                             onClick={() => setLevel(opt.val)}
-                            className={`flex items-center gap-2 p-3 border-2 rounded-xl text-sm font-bold transition-all ${level === opt.val ? 'border-[#2f7fd3] bg-[#2f7fd3] text-white' : 'border-slate-200 dark:border-[#1d2a42] text-slate-600 dark:text-slate-400 hover:border-[#2f7fd3]/50'}`}
+                            aria-pressed={active}
+                            className={cn(
+                              opt.tone,
+                              'relative flex min-w-0 flex-col items-start gap-2 rounded-[20px] border p-3 text-left transition',
+                              active
+                                ? 'border-[var(--accent)] shadow-[0_0_0_3px_var(--ring-brand)]'
+                                : 'border-[var(--line)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-sm)]'
+                            )}
                           >
-                            <span className="material-symbols-outlined text-[18px]">{opt.icon}</span>
-                            {opt.label}
+                            {active ? (
+                              <span className="absolute top-2.5 right-2.5 inline-flex size-5 items-center justify-center rounded-full bg-[var(--action)] text-[var(--action-ink)]">
+                                <span className="material-symbols-outlined text-[14px]">check</span>
+                              </span>
+                            ) : null}
+                            <Icon3D name={opt.icon} size={36} />
+                            <span className="min-w-0">
+                              <span className="block text-[14px] font-medium text-[var(--text-strong)]">{opt.label}</span>
+                              <span className="block text-[12px] leading-4 text-[var(--text-soft)]">{opt.hint}</span>
+                            </span>
                           </button>
-                        ))}
-                      </div>
+                        );
+                      })}
                     </div>
+                  </div>
 
-                    <div>
-                      <label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-3">Output Format</label>
-                      <div className="flex flex-col gap-2">
-                        {[
-                          { val: 'paragraphs', label: 'Structured Paragraphs' },
-                          { val: 'bullets', label: 'Bullet Points Only' },
-                          { val: 'analogy', label: 'Real-world Analogies' }
-                        ].map(opt => (
+                  <div>
+                    <p className="auth-label">Output format</p>
+                    <div className="space-y-2">
+                      {FORMAT_OPTIONS.map((opt) => {
+                        const active = format === opt.val;
+                        return (
                           <button
                             key={opt.val}
                             onClick={() => setFormat(opt.val)}
-                            className={`flex items-center justify-between p-3 border-2 rounded-xl text-sm font-bold transition-all ${format === opt.val ? 'border-[#2f7fd3] bg-[#2f7fd3]/5 text-[#2f7fd3]' : 'border-slate-200 dark:border-[#1d2a42] text-slate-600 dark:text-slate-400 hover:border-[#2f7fd3]/50'}`}
+                            aria-pressed={active}
+                            className={cn(
+                              'flex w-full min-w-0 items-center gap-3 rounded-[18px] border p-2.5 text-left transition',
+                              active
+                                ? 'border-[var(--accent)] bg-[var(--accent-soft)]'
+                                : 'border-[var(--line)] bg-[var(--card)] hover:bg-[var(--accent-softer)]'
+                            )}
                           >
-                            <span>{opt.label}</span>
-                            {format === opt.val && <span className="material-symbols-outlined text-[18px]">check_circle</span>}
+                            <span className="icon-tile size-10 bg-[var(--card)]">
+                              <Icon3D name={opt.icon} size={22} />
+                            </span>
+                            <span className="min-w-0 flex-1">
+                              <span className="block truncate text-[14px] font-medium text-[var(--text-strong)]">{opt.label}</span>
+                              <span className="block truncate text-[12px] text-[var(--text-soft)]">{opt.hint}</span>
+                            </span>
+                            <span
+                              className={cn(
+                                'inline-flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition',
+                                active ? 'border-[var(--action)] bg-[var(--action)]' : 'border-[var(--line-strong)]'
+                              )}
+                            >
+                              {active ? <span className="size-1.5 rounded-full bg-[var(--action-ink)]" /> : null}
+                            </span>
                           </button>
-                        ))}
-                      </div>
+                        );
+                      })}
                     </div>
+                  </div>
 
-                    <div>
-                      <label className="text-xs font-black text-slate-400 uppercase tracking-widest block mb-3">Specific Focus <span className="text-slate-400 font-medium normal-case">(Optional)</span></label>
+                  <div>
+                    <label htmlFor="simplifier-focus" className="auth-label">
+                      Specific focus <span className="text-[var(--text-faint)]">(optional)</span>
+                    </label>
+                    <div className="auth-input-wrap">
+                      <span className="auth-input-icon">
+                        <span className="material-symbols-outlined text-[18px]">center_focus_strong</span>
+                      </span>
                       <input
+                        id="simplifier-focus"
                         type="text"
                         placeholder="e.g. Just the mathematical formulas"
                         value={focus}
                         onChange={(e) => setFocus(e.target.value)}
-                        className="w-full p-3 rounded-xl bg-[#f5f9fe] dark:bg-[#0b0b10] border-2 border-slate-200 dark:border-[#1d2a42] text-sm font-medium text-slate-900 dark:text-white outline-none focus:border-[#2f7fd3] transition-all"
+                        className="auth-input auth-input-with-icon min-w-0"
                       />
                     </div>
                   </div>
+                </div>
 
-                  <div className="mt-8 pt-6 border-t border-slate-200 dark:border-[#1d2a42]">
-                    {error && (
-                      <div className="mb-4 p-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl text-red-600 text-sm font-medium">
-                        {error}
-                      </div>
+                <div className="mt-6 space-y-3 border-t border-[var(--line)] pt-5">
+                  {error && <div className="auth-alert" data-tone="error">{error}</div>}
+                  <button
+                    onClick={handleSimplify}
+                    disabled={isSimplifying || isUploading || (!selectedResource && !pastedText.trim())}
+                    className="primary-button !h-12 w-full"
+                  >
+                    {isSimplifying ? (
+                      <>
+                        <span className="size-4 animate-spin rounded-full border-2 border-[var(--action-ink)] border-t-transparent" />
+                        Simplifying...
+                      </>
+                    ) : (
+                      <>
+                        <Icon3D name="sparkles" size={18} />
+                        Simplify now
+                      </>
                     )}
-                    <button
-                      onClick={handleSimplify}
-                      disabled={isSimplifying || isUploading || (!selectedResource && !pastedText.trim())}
-                      className="w-full h-14 bg-[#2f7fd3] disabled:bg-slate-300 dark:disabled:bg-slate-800 text-white font-black rounded-xl hover:bg-[#2266ad] transition-all shadow-xl shadow-[#2f7fd3]/20 flex items-center justify-center gap-2"
-                    >
-                      {isSimplifying ? (
-                        <>
-                          <span className="size-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                          <span>SIMPLIFYING...</span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="material-symbols-outlined">auto_awesome</span>
-                          <span>SIMPLIFY NOW</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-
+                  </button>
+                  <p className="text-center text-[12px] text-[var(--text-soft)]">
+                    {selectedResource || pastedText.trim() ? 'Ready when you are. Earn 20 XP per run.' : 'Add a file, paste text, or pick a resource to start.'}
+                  </p>
                 </div>
               </div>
             </div>
-          </main>
-        )}
+          </section>
+        </div>
+      )}
     </AppShell>
   );
 }

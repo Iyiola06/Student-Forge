@@ -5,6 +5,10 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import AppShell from '@/components/layout/AppShell';
 import AppStatCard from '@/components/app/AppStatCard';
+import AppEmptyState from '@/components/app/AppEmptyState';
+import { AppTabs } from '@/components/app/AppTabs';
+import Icon3D from '@/components/ui/Icon3D';
+import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
 import { useProfile } from '@/hooks/useProfile';
 import { awardXp } from '@/app/actions/gamifier';
@@ -36,6 +40,13 @@ interface PastQuestion {
 }
 
 const INSTITUTION_TYPES = ['Secondary School', 'University', 'Polytechnic', 'College of Education'];
+
+const INSTITUTION_TONES: Record<string, string> = {
+  'Secondary School': 'pastel-mint',
+  University: 'pastel-sky',
+  Polytechnic: 'pastel-peach',
+  'College of Education': 'pastel-lavender',
+};
 
 function PastQuestionsContent() {
   const { profile, mutate: mutateProfile } = useProfile();
@@ -274,320 +285,348 @@ function PastQuestionsContent() {
     });
   }
 
-  const renderCard = (q: PastQuestion) => (
-    <div key={q.id} className="bg-white dark:bg-[#0f192c] rounded-xl border border-slate-200 dark:border-[#1d2a42] p-5 hover:shadow-lg transition-all group flex flex-col relative h-full">
-      {q.user_id === profile?.id && (
-        <button onClick={() => handleDelete(q.id)} className="absolute top-4 right-4 text-slate-500 dark:text-slate-400 hover:text-red-500 transition-colors z-10 p-1">
-          <span className="material-symbols-outlined text-sm">delete</span>
-        </button>
-      )}
+  const mySubmissionCount = profile ? questions.filter(q => q.user_id === profile.id).length : undefined;
 
-      <div className="flex items-center gap-3 mb-4 pr-6">
-        <div className="w-8 h-8 rounded-full bg-slate-200 overflow-hidden shrink-0 border border-slate-300 dark:border-slate-700">
-          {q.is_anonymous ? (
-            /* eslint-disable-next-line @next/next/no-img-element */
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=anonymous&backgroundColor=cbd5e1" alt="Anonymous" className="w-full h-full object-cover opacity-80" />
-          ) : (
-            /* eslint-disable-next-line @next/next/no-img-element */
-            q.profiles?.avatar_url && <img src={q.profiles.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-          )}
-        </div>
-        <div className="min-w-0 flex flex-col justify-center">
-          <div className="flex items-center gap-1.5">
-            <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
-              {q.is_anonymous ? 'Anonymous Student' : (q.profiles?.full_name || 'Student')}
-            </p>
-            {q.user_id === profile?.id && q.is_anonymous && (
-              <span className="material-symbols-outlined text-[10px] text-[#2f7fd3] shrink-0" title="This is your anonymous post">visibility_off</span>
+  const renderCard = (q: PastQuestion) => {
+    const upvoted = userUpvotes.has(q.id);
+    const isMine = q.user_id === profile?.id;
+    return (
+      <article key={q.id} className="lift relative flex h-full min-w-0 flex-col overflow-hidden rounded-[24px] border border-[var(--line)] bg-[var(--card)] shadow-[var(--shadow-sm)]">
+        <div className={cn(INSTITUTION_TONES[q.institution_type] ?? 'pastel-sky', 'px-4 pt-4 pb-3')}>
+          <div className="flex min-w-0 items-start gap-3">
+            <span className="icon-tile size-11 bg-[var(--card)]">
+              <Icon3D name={q.file_type === 'Image' ? 'camera' : 'scroll'} size={26} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="pill-tag !px-2.5 !py-0.5 !text-[11px]">{q.institution_type}</span>
+                <span className="pill-tag !px-2.5 !py-0.5 !text-[11px]">{q.year}</span>
+              </div>
+              <p className="mt-1.5 line-clamp-2 text-[12.5px] leading-5 text-[var(--text-body)]">{q.school_name}</p>
+            </div>
+            {isMine && (
+              <button
+                onClick={() => handleDelete(q.id)}
+                aria-label="Delete submission"
+                className="-mt-1 -mr-1 inline-flex size-8 shrink-0 items-center justify-center rounded-full text-[var(--text-soft)] transition hover:bg-[var(--danger-soft)] hover:text-[var(--danger)]"
+              >
+                <span className="material-symbols-outlined text-[18px]">delete</span>
+              </button>
             )}
           </div>
-          <p className="text-[10px] text-slate-500 truncate">{new Date(q.created_at).toLocaleDateString()}</p>
         </div>
-      </div>
 
-      <div className="mb-3">
-        <span className="inline-block px-2 text-[10px] uppercase font-bold tracking-wider rounded bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 mb-1">
-          {q.institution_type}
-        </span>
-        <h3 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-2 leading-tight">
-          {q.school_name}
-        </h3>
-      </div>
+        <div className="flex flex-1 flex-col px-4 pb-4">
+          <h3 className="font-display line-clamp-2 text-[16px] leading-snug font-semibold tracking-[-0.01em] break-words text-[var(--text-strong)]">
+            {q.subject}
+            {q.course_code && <span className="ml-1.5 font-normal text-[var(--text-soft)]">{q.course_code}</span>}
+          </h3>
+          {q.semester && <p className="mt-0.5 text-[12.5px] text-[var(--text-soft)]">{q.semester}</p>}
+          {q.description && (
+            <div className="mt-2 rounded-2xl bg-[var(--card-2)] px-3 py-2">
+              <p className="line-clamp-2 text-[12.5px] leading-5 break-words text-[var(--text-body)]">&ldquo;{q.description}&rdquo;</p>
+            </div>
+          )}
 
-      <div className="bg-slate-50 dark:bg-[#0f192c] p-3 rounded-lg mb-4 flex-1 border border-slate-100 dark:border-[#13203a]">
-        <div className="flex justify-between items-start mb-1 gap-2">
-          <h4 className="font-bold text-[#2f7fd3] dark:text-[#2f7fd3] text-sm line-clamp-1 flex-1">{q.subject} {q.course_code && <span className="opacity-70 font-normal">({q.course_code})</span>}</h4>
-          <span className="text-xs font-bold text-slate-500 bg-slate-200 dark:bg-[#13203a] px-1.5 py-0.5 rounded shrink-0">{q.year}</span>
-        </div>
-        {q.semester && <p className="text-xs text-slate-500 mb-2">{q.semester}</p>}
-        {q.description && (
-          <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 italic">"{q.description}"</p>
-        )}
-      </div>
+          <div className="mt-4 flex min-w-0 items-center gap-2.5">
+            <span className="inline-flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[var(--line)] bg-[var(--accent-soft)]">
+              {q.is_anonymous ? (
+                <Icon3D name="man-tipping" size={22} />
+              ) : q.profiles?.avatar_url ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img src={q.profiles.avatar_url} alt="Avatar" className="size-full object-cover" />
+              ) : (
+                <Icon3D name="student-1" size={22} />
+              )}
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="flex min-w-0 items-center gap-1">
+                <p className="truncate text-[13px] font-medium text-[var(--text-strong)]">
+                  {q.is_anonymous ? 'Anonymous Student' : (q.profiles?.full_name || 'Student')}
+                </p>
+                {isMine && q.is_anonymous && (
+                  <span className="material-symbols-outlined shrink-0 text-[14px] text-[var(--accent)]" title="This is your anonymous post">visibility_off</span>
+                )}
+              </div>
+              <p className="truncate text-[11.5px] text-[var(--text-soft)]">
+                {new Date(q.created_at).toLocaleDateString()} · {q.file_type} · {q.file_size}
+              </p>
+            </div>
+          </div>
 
-      <div className="flex items-center justify-between mt-auto">
-        <div className="flex items-center gap-3">
-          <button onClick={() => handleUpvote(q.id)} className={`flex items-center gap-1 text-xs font-bold transition-colors ${userUpvotes.has(q.id) ? 'text-[#3b82f6]' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>
-            <span className={`material-symbols-outlined text-[16px] ${userUpvotes.has(q.id) && 'fill-current'}`}>thumb_up</span>
-            {q.upvotes}
-          </button>
-          <div className="flex items-center gap-1 text-xs text-slate-500 font-medium font-mono">
-            <span className="material-symbols-outlined text-[16px]">download</span>
-            {q.downloads}
+          <div className="mt-auto pt-4">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--line)] pt-3">
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => handleUpvote(q.id)}
+                aria-pressed={upvoted}
+                className={cn(
+                  'inline-flex h-8 items-center gap-1 rounded-full border px-2.5 text-[12.5px] font-medium transition',
+                  upvoted
+                    ? 'border-transparent bg-[var(--accent-soft)] text-[var(--accent-strong)]'
+                    : 'border-[var(--line)] text-[var(--text-body)] hover:bg-[var(--accent-softer)]'
+                )}
+              >
+                <span className="material-symbols-outlined text-[16px]" style={upvoted ? { fontVariationSettings: "'FILL' 1" } : undefined}>thumb_up</span>
+                {q.upvotes}
+              </button>
+              <span className="inline-flex h-8 items-center gap-1 px-1.5 text-[12.5px] text-[var(--text-soft)]">
+                <span className="material-symbols-outlined text-[16px]">download</span>
+                {q.downloads}
+              </span>
+            </div>
+            <button onClick={() => handleDownload(q.id, q.file_url)} className="primary-button !h-9 !px-4 !text-[13px]">
+              <span className="material-symbols-outlined text-[17px]">file_download</span>
+              Download
+            </button>
+          </div>
           </div>
         </div>
-
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400">{q.file_type} • {q.file_size}</span>
-          <button onClick={() => handleDownload(q.id, q.file_url)} className="bg-[#2f7fd3] text-white hover:bg-[#d04e0a] p-1.5 rounded-lg transition-colors">
-            <span className="material-symbols-outlined text-[18px]">file_download</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+      </article>
+    );
+  };
 
   const SubmitButton = (
-    <button onClick={() => setIsModalOpen(true)} className="bg-[#3b82f6] hover:bg-[#2563eb] text-slate-900 dark:text-white font-bold px-6 py-3 rounded-xl transition-colors shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 whitespace-nowrap shrink-0">
+    <button onClick={() => setIsModalOpen(true)} className="primary-button">
       <span className="material-symbols-outlined text-[20px]">add</span>
-      Submit Past Question
+      Submit past question
     </button>
   );
 
+  const fieldClass =
+    'h-11 w-full min-w-0 rounded-2xl border border-[var(--line-strong)] bg-[var(--card)] px-4 text-sm text-[var(--text-strong)] outline-none transition placeholder:text-[var(--text-faint)] focus:border-[var(--accent)] focus:shadow-[0_0_0_4px_var(--ring-brand)]';
+  const filterClass =
+    'h-10 w-full min-w-0 truncate rounded-full border border-[var(--line-strong)] bg-[var(--card)] px-4 text-[13px] text-[var(--text-strong)] outline-none transition focus:border-[var(--accent)]';
+
   return (
     <AppShell
+      eyebrow="Community"
       title="Community Past Questions Bank"
       description="Study smarter with past questions shared by students like you."
       actions={SubmitButton}
     >
-      <div className="flex flex-col gap-6 w-full">
-        <div className="max-w-[1440px] mx-auto w-full px-4 sm:px-6 lg:px-8">
-          <div className="mt-8">
+      <div className="workspace-stack">
+        {/* Stats */}
+        <section className="stat-trio">
+          <AppStatCard label="Submissions" value={stats.total} detail="Total documents shared" icon="scroll" />
+          <AppStatCard label="Schools" value={stats.schools} detail="Institutions covered" icon="grad-cap" />
+          <AppStatCard label="Subjects" value={stats.subjects} detail="Unique courses available" icon="books" />
+        </section>
 
-              {/* Stats Grid */}
-              <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-8">
-                <AppStatCard
-                  label="Submissions"
-                  value={stats.total}
-                  detail="Total documents shared"
-                />
-                <AppStatCard
-                  label="Schools"
-                  value={stats.schools}
-                  detail="Institutions covered"
-                />
-                <AppStatCard
-                  label="Subjects"
-                  value={stats.subjects}
-                  detail="Unique courses available"
-                />
-              </section>
-
-              {/* Tabs */}
-              <div className="flex mb-4">
-                <button onClick={() => setActiveTab('all')} className={`px-6 py-3 font-bold text-sm border-b-2 transition-colors ${activeTab === 'all' ? 'border-[#3b82f6] text-[#3b82f6]' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-300'}`}>
-                  All Questions
-                </button>
-                <button onClick={() => setActiveTab('my_submissions')} className={`px-6 py-3 font-bold text-sm border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'my_submissions' ? 'border-[#3b82f6] text-[#3b82f6]' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-300'}`}>
-                  My Submissions
-                  {profile && <span className="bg-[#1d2a42] border border-slate-600 text-white text-[10px] px-2 py-0.5 rounded-full">{questions.filter(q => q.user_id === profile.id).length}</span>}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Content Area */}
-          <div className="mx-auto flex w-full max-w-[1440px] flex-1 flex-col p-4 sm:p-6 lg:p-8">
-
-            {/* Filters */}
-            <div className="sticky top-0 z-10 mb-8 overflow-x-auto rounded-xl border border-slate-200 bg-white p-2 shadow-sm dark:border-[#1d2a42] dark:bg-[#0f192c]">
-              <div className="flex min-w-max flex-wrap gap-3 sm:min-w-0">
-              <select value={filterInstitution} onChange={e => setFilterInstitution(e.target.value)} className="h-9 min-w-[140px] rounded-lg border border-slate-200 bg-[#f5f9fe] px-3 text-sm text-slate-900 outline-none focus:border-[#2f7fd3] dark:border-[#1d2a42] dark:bg-[#0f192c] dark:text-white">
-                <option value="All">All Institutions</option>
-                {INSTITUTION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-              </select>
-              <select value={filterSchool} onChange={e => setFilterSchool(e.target.value)} className="h-9 min-w-[160px] max-w-[250px] rounded-lg border border-slate-200 bg-[#f5f9fe] px-3 text-sm text-slate-900 outline-none focus:border-[#2f7fd3] dark:border-[#1d2a42] dark:bg-[#0f192c] dark:text-white">
-                <option value="All">All Schools</option>
-                {schoolsList.map(s => <option key={s} value={s}>{s}</option>)}
-              </select>
-              <select value={filterSubject} onChange={e => setFilterSubject(e.target.value)} className="h-9 min-w-[140px] max-w-[200px] rounded-lg border border-slate-200 bg-[#f5f9fe] px-3 text-sm text-slate-900 outline-none focus:border-[#2f7fd3] dark:border-[#1d2a42] dark:bg-[#0f192c] dark:text-white">
-                <option value="All">All Subjects</option>
-                {subjectsList.map(s => <option key={s} value={s}>{s}</option>)}
-              </select>
-              <select value={filterYear} onChange={e => setFilterYear(e.target.value)} className="h-9 min-w-[100px] rounded-lg border border-slate-200 bg-[#f5f9fe] px-3 text-sm text-slate-900 outline-none focus:border-[#2f7fd3] dark:border-[#1d2a42] dark:bg-[#0f192c] dark:text-white">
-                <option value="All">All Years</option>
-                {yearsList.map(y => <option key={y} value={y.toString()}>{y}</option>)}
-              </select>
-              <div className="mx-1 hidden w-[1px] bg-[#1d2a42] sm:block"></div>
-              <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="h-9 cursor-pointer rounded-lg border-none bg-transparent px-3 text-sm font-bold text-[#2f7fd3] outline-none sm:ml-auto">
+        {/* Tabs + filters */}
+        <section className="glass-panel app-panel-tight space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <AppTabs
+              items={[
+                { id: 'all', label: 'All questions' },
+                { id: 'my_submissions', label: 'My submissions', count: mySubmissionCount },
+              ]}
+              value={activeTab}
+              onChange={(v) => setActiveTab(v as 'all' | 'my_submissions')}
+            />
+            <label className="flex min-w-0 items-center gap-2 text-[13px] text-[var(--text-soft)]">
+              <span className="shrink-0">Sort by</span>
+              <select value={sortBy} onChange={e => setSortBy(e.target.value)} className={cn(filterClass, '!w-auto cursor-pointer font-medium')}>
                 <option value="Most Recent">Most Recent</option>
                 <option value="Most Downloaded">Most Downloaded</option>
                 <option value="Most Upvoted">Most Upvoted</option>
               </select>
-              </div>
-            </div>
-
-            {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-pulse">
-                {[1, 2, 3, 4, 5, 6].map(i => (
-                  <div key={i} className="h-64 bg-white dark:bg-[#0f192c] rounded-xl border border-slate-200 dark:border-[#1d2a42]"></div>
-                ))}
-              </div>
-            ) : filtered.length === 0 ? (
-              <div className="flex-1 flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-24 h-24 bg-white dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] rounded-full flex items-center justify-center mb-6 shadow-inner">
-                  <span className="material-symbols-outlined text-5xl text-slate-600">travel_explore</span>
-                </div>
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">No past questions found</h2>
-                <p className="text-slate-500 mb-6 max-w-sm">
-                  {activeTab === 'my_submissions'
-                    ? "You haven't uploaded any past questions yet. Start contributing to help the community!"
-                    : "We couldn't find any submissions matching your filters. Be the first to contribute!"}
-                </p>
-                <button onClick={() => setIsModalOpen(true)} className="bg-transparent border border-[#3b82f6] text-[#3b82f6] hover:bg-[#3b82f6]/10 font-bold px-6 py-2.5 rounded-xl transition-colors">
-                  Submit One Now
-                </button>
-              </div>
-            ) : (!isFiltering && activeTab === 'all') ? (
-              <div className="space-y-12 pb-20">
-                {Object.keys(grouped).sort().map(school => (
-                  <div key={school} className="space-y-6">
-                    <div className="flex items-center gap-3 border-b border-slate-200 dark:border-[#1d2a42] pb-2">
-                      <h2 className="text-xl font-black text-slate-900 dark:text-white">{school}</h2>
-                      <span className="bg-white dark:bg-[#0f192c] text-slate-500 dark:text-slate-400 text-xs font-bold px-2 py-0.5 rounded border border-slate-200 dark:border-[#1d2a42]">
-                        {Object.values(grouped[school]).flat().length} submissions
-                      </span>
-                    </div>
-                    <div className="space-y-8 pl-4 border-l-2 border-[#0f192c]">
-                      {Object.keys(grouped[school]).sort().map(subj => (
-                        <div key={subj}>
-                          <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2 before:w-4 before:h-[1px] before:bg-slate-700">
-                            {subj}
-                          </h3>
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pl-6">
-                            {grouped[school][subj].map(renderCard)}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-20">
-                {filtered.map(renderCard)}
-              </div>
-            )}
+            </label>
           </div>
-        </div>
+          <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+            <select aria-label="Institution type" value={filterInstitution} onChange={e => setFilterInstitution(e.target.value)} className={filterClass}>
+              <option value="All">All Institutions</option>
+              {INSTITUTION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+            <select aria-label="School" value={filterSchool} onChange={e => setFilterSchool(e.target.value)} className={filterClass}>
+              <option value="All">All Schools</option>
+              {schoolsList.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+            <select aria-label="Subject" value={filterSubject} onChange={e => setFilterSubject(e.target.value)} className={filterClass}>
+              <option value="All">All Subjects</option>
+              {subjectsList.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+            <select aria-label="Year" value={filterYear} onChange={e => setFilterYear(e.target.value)} className={filterClass}>
+              <option value="All">All Years</option>
+              {yearsList.map(y => <option key={y} value={y.toString()}>{y}</option>)}
+            </select>
+          </div>
+        </section>
 
-      {/* Submission Modal */}
-
-      {/* Submission Modal */}
-        {isModalOpen && (
-          <div className="fixed inset-0 z-[100] bg-[#070d1a]/90 backdrop-blur-sm flex justify-center items-center p-4">
-            <div className="bg-white dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] w-full max-w-xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-200">
-              <div className="p-6 border-b border-slate-200 dark:border-[#1d2a42] flex justify-between items-center bg-white dark:bg-[#0f192c]">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white">Submit a Past Question</h2>
-                <button onClick={() => setIsModalOpen(false)} className="text-slate-500 dark:text-slate-400 hover:text-[#2f7fd3] transition-colors">
-                  <span className="material-symbols-outlined">close</span>
-                </button>
-              </div>
-              <form onSubmit={submitQuestion} className="overflow-y-auto p-6 space-y-5">
-
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Institution Type *</label>
-                    <select required value={formInstitutionType} onChange={(e) => setFormInstitutionType(e.target.value)} className="w-full h-10 px-3 bg-[#f5f9fe] dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#2f7fd3] outline-none">
-                      {INSTITUTION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Year *</label>
-                    <input required type="number" min="1990" max="2030" value={formYear} onChange={(e) => setFormYear(parseInt(e.target.value))} className="w-full h-10 px-3 bg-[#f5f9fe] dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#2f7fd3] outline-none" />
+        {/* Content */}
+        {isLoading ? (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+            {[1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i} className="h-64 animate-pulse rounded-[24px] border border-[var(--line)] bg-[var(--card)]" />
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
+          <AppEmptyState
+            icon={activeTab === 'my_submissions' ? 'inbox' : 'magnifier'}
+            title="No past questions found"
+            description={activeTab === 'my_submissions'
+              ? "You haven't uploaded any past questions yet. Start contributing to help the community!"
+              : "We couldn't find any submissions matching your filters. Be the first to contribute!"}
+            action={
+              <button onClick={() => setIsModalOpen(true)} className="primary-button">
+                Submit one now
+              </button>
+            }
+            className="py-12"
+          />
+        ) : (!isFiltering && activeTab === 'all') ? (
+          <div className="space-y-6">
+            {Object.keys(grouped).sort().map(school => (
+              <section key={school} className="glass-panel app-panel">
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="icon-tile size-12">
+                    <Icon3D name="grad-cap" size={30} />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <h2 className="panel-title break-words">{school}</h2>
+                    <p className="text-[13px] text-[var(--text-soft)]">
+                      {Object.values(grouped[school]).flat().length} submissions · {Object.keys(grouped[school]).length} subjects
+                    </p>
                   </div>
                 </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">School Name *</label>
-                  <input required list="school-list" value={formSchoolName} onChange={(e) => setFormSchoolName(e.target.value)} placeholder="e.g. University of Lagos" className="w-full h-10 px-3 bg-[#f5f9fe] dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#2f7fd3] outline-none" />
-                  <datalist id="school-list">
-                    {schoolsList.map(s => <option key={s} value={s} />)}
-                  </datalist>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Subject *</label>
-                    <input required value={formSubject} onChange={(e) => setFormSubject(e.target.value)} placeholder="e.g. Mathematics" className="w-full h-10 px-3 bg-[#f5f9fe] dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#2f7fd3] outline-none" />
-                  </div>
-                  {(formInstitutionType === 'University' || formInstitutionType === 'Polytechnic') && (
-                    <div>
-                      <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Course Code</label>
-                      <input value={formCourseCode} onChange={(e) => setFormCourseCode(e.target.value)} placeholder="e.g. MTH 101" className="w-full h-10 px-3 bg-[#f5f9fe] dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#2f7fd3] outline-none" />
+                <div className="mt-5 space-y-6">
+                  {Object.keys(grouped[school]).sort().map(subj => (
+                    <div key={subj} className="min-w-0">
+                      <div className="mb-3 flex min-w-0 items-center gap-2">
+                        <span className="eyebrow-pill min-w-0 !shadow-none !bg-[var(--accent-softer)]">
+                          <span className="truncate">{subj}</span>
+                          <span className="shrink-0 text-[var(--text-soft)]">{grouped[school][subj].length}</span>
+                        </span>
+                        <span className="h-px flex-1 bg-[var(--line)]" />
+                      </div>
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                        {grouped[school][subj].map(renderCard)}
+                      </div>
                     </div>
-                  )}
+                  ))}
                 </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Semester</label>
-                  <select value={formSemester} onChange={(e) => setFormSemester(e.target.value)} className="w-full h-10 px-3 bg-[#f5f9fe] dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#2f7fd3] outline-none">
-                    <option value="">None / Not Applicable</option>
-                    <option value="First Semester">First Semester</option>
-                    <option value="Second Semester">Second Semester</option>
-                    <option value="Annual / Full Year">Annual / Full Year</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Description / Context</label>
-                  <textarea value={formDescription} onChange={(e) => setFormDescription(e.target.value)} placeholder="Any context about this paper? e.g. which department, lecturer, or exam type" className="w-full h-20 p-3 bg-[#f5f9fe] dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] rounded-lg text-sm text-slate-900 dark:text-white focus:border-[#2f7fd3] outline-none resize-none" />
-                </div>
-
-                <div className="border-2 border-dashed border-slate-200 dark:border-[#1d2a42] hover:border-[#2f7fd3] transition-colors rounded-xl p-6 relative flex flex-col items-center justify-center text-center bg-[#f5f9fe] dark:bg-[#0f192c]/50">
-                  <input required onChange={handleFileUpload} accept=".pdf,image/png,image/jpeg,image/webp" type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-
-                  {formFile ? (
-                    <div className="flex flex-col items-center gap-2">
-                      <span className={`material-symbols-outlined text-4xl ${formFile.type.includes('pdf') ? 'text-red-400' : 'text-blue-400'}`}>
-                        {formFile.type.includes('pdf') ? 'picture_as_pdf' : 'image'}
-                      </span>
-                      <p className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-[200px]">{formFile.name}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">{(formFile.size / (1024 * 1024)).toFixed(2)} MB</p>
-                    </div>
-                  ) : (
-                    <>
-                      <span className="material-symbols-outlined text-4xl text-slate-500 mb-2">cloud_upload</span>
-                      <p className="text-sm font-bold text-slate-900 dark:text-white mb-1">Drag and drop or click to upload</p>
-                      <p className="text-xs text-slate-500">Supports PDF or Images (Max 20MB)</p>
-                    </>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-3 bg-[#f5f9fe] dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] p-4 rounded-xl cursor-pointer" onClick={() => setFormIsAnonymous(!formIsAnonymous)}>
-                  <input type="checkbox" id="anonUpload" checked={formIsAnonymous} readOnly className="w-5 h-5 rounded border-slate-300 text-[#2f7fd3] focus:ring-[#2f7fd3] cursor-pointer" />
-                  <label htmlFor="anonUpload" className="text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">
-                    Post Anonymously
-                    <span className="block text-xs font-normal text-slate-500 mt-0.5">Your name and profile image will be hidden from everyone else. You still earn XP!</span>
-                  </label>
-                </div>
-
-                <button disabled={isSubmitting} type="submit" className="w-full bg-[#3b82f6] hover:bg-[#2563eb] text-white font-bold h-12 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
-                  {isSubmitting ? (
-                    <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> Uploading...</>
-                  ) : 'Submit to Community'}
-                </button>
-              </form>
-            </div>
+              </section>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+            {filtered.map(renderCard)}
           </div>
         )}
+      </div>
+
+      {/* Submission Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/40 p-3 backdrop-blur-sm sm:items-center sm:p-4">
+          <div className="glass-panel flex max-h-[92vh] w-full max-w-xl min-w-0 flex-col overflow-hidden !shadow-[var(--shadow-lg)] animate-rise">
+            <div className="pastel-sky flex items-start gap-4 px-5 pt-5 pb-4 md:px-7 md:pt-6">
+              <Icon3D name="scroll" size={52} className="shrink-0" />
+              <div className="min-w-0 flex-1">
+                <p className="eyebrow">Earn 25 XP for sharing</p>
+                <h2 className="font-display mt-0.5 text-[21px] leading-tight font-semibold tracking-[-0.02em] text-[var(--text-strong)]">Submit a past question</h2>
+              </div>
+              <button onClick={() => setIsModalOpen(false)} aria-label="Close" className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-[var(--card)] text-[var(--text-soft)] shadow-[var(--shadow-sm)] transition hover:text-[var(--text-strong)]">
+                <span className="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
+            <form onSubmit={submitQuestion} className="space-y-4 overflow-y-auto px-5 pt-2 pb-5 md:px-7 md:pb-7">
+
+              <div className="grid grid-cols-[minmax(0,1fr)_112px] gap-3 sm:grid-cols-2 sm:gap-4">
+                <div className="min-w-0">
+                  <label className="auth-label">Institution type *</label>
+                  <select required value={formInstitutionType} onChange={(e) => setFormInstitutionType(e.target.value)} className={fieldClass}>
+                    {INSTITUTION_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div className="min-w-0">
+                  <label className="auth-label">Year *</label>
+                  <input required type="number" min="1990" max="2030" value={formYear} onChange={(e) => setFormYear(parseInt(e.target.value))} className={fieldClass} />
+                </div>
+              </div>
+
+              <div>
+                <label className="auth-label">School name *</label>
+                <input required list="school-list" value={formSchoolName} onChange={(e) => setFormSchoolName(e.target.value)} placeholder="e.g. University of Lagos" className={fieldClass} />
+                <datalist id="school-list">
+                  {schoolsList.map(s => <option key={s} value={s} />)}
+                </datalist>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="min-w-0">
+                  <label className="auth-label">Subject *</label>
+                  <input required value={formSubject} onChange={(e) => setFormSubject(e.target.value)} placeholder="e.g. Mathematics" className={fieldClass} />
+                </div>
+                {(formInstitutionType === 'University' || formInstitutionType === 'Polytechnic') && (
+                  <div className="min-w-0">
+                    <label className="auth-label">Course code</label>
+                    <input value={formCourseCode} onChange={(e) => setFormCourseCode(e.target.value)} placeholder="e.g. MTH 101" className={fieldClass} />
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="auth-label">Semester</label>
+                <select value={formSemester} onChange={(e) => setFormSemester(e.target.value)} className={fieldClass}>
+                  <option value="">None / Not Applicable</option>
+                  <option value="First Semester">First Semester</option>
+                  <option value="Second Semester">Second Semester</option>
+                  <option value="Annual / Full Year">Annual / Full Year</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="auth-label">Description / context</label>
+                <textarea value={formDescription} onChange={(e) => setFormDescription(e.target.value)} placeholder="Any context about this paper? e.g. which department, lecturer, or exam type" className={cn(fieldClass, 'h-20 resize-none py-3')} />
+              </div>
+
+              <div className="resource-dropzone relative flex flex-col items-center !rounded-[24px] !p-5 text-center" data-dragging={formFile ? 'true' : undefined}>
+                <input required onChange={handleFileUpload} accept=".pdf,image/png,image/jpeg,image/webp" type="file" className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0" />
+                {formFile ? (
+                  <>
+                    <Icon3D name={formFile.type.includes('pdf') ? 'scroll' : 'camera'} size={48} />
+                    <p className="mt-2 max-w-full truncate text-sm font-medium text-[var(--text-strong)]">{formFile.name}</p>
+                    <p className="text-[12px] text-[var(--text-soft)]">{(formFile.size / (1024 * 1024)).toFixed(2)} MB · tap to replace</p>
+                  </>
+                ) : (
+                  <>
+                    <Icon3D name="file-folder" size={52} />
+                    <p className="mt-2 text-sm font-medium text-[var(--text-strong)]">Drag and drop or click to upload</p>
+                    <p className="text-[12px] text-[var(--text-soft)]">Supports PDF or Images (Max 20MB)</p>
+                  </>
+                )}
+              </div>
+
+              <div
+                className={cn(
+                  'flex cursor-pointer items-start gap-3 rounded-[20px] border p-4 transition',
+                  formIsAnonymous ? 'border-[var(--accent)] bg-[var(--accent-soft)]' : 'border-[var(--line)] bg-[var(--card-2)]'
+                )}
+                onClick={() => setFormIsAnonymous(!formIsAnonymous)}
+              >
+                <input type="checkbox" id="anonUpload" checked={formIsAnonymous} readOnly className="mt-0.5 size-5 shrink-0 cursor-pointer accent-[var(--action)]" />
+                <label htmlFor="anonUpload" className="min-w-0 cursor-pointer text-sm font-medium text-[var(--text-strong)] select-none">
+                  Post anonymously
+                  <span className="mt-0.5 block text-[12.5px] font-normal text-[var(--text-soft)]">Your name and profile image will be hidden from everyone else. You still earn XP!</span>
+                </label>
+              </div>
+
+              <button disabled={isSubmitting} type="submit" className="primary-button !h-12 w-full">
+                {isSubmitting ? (
+                  <><span className="size-4 animate-spin rounded-full border-2 border-[var(--action-ink)] border-t-transparent" /> Uploading...</>
+                ) : 'Submit to community'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </AppShell>
   );
 }
 
 export default function PastQuestionsPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#070d1a] flex items-center justify-center"><div className="size-10 border-4 border-[#2f7fd3] border-t-transparent rounded-full animate-spin"></div></div>}>
+    <Suspense fallback={<div className="main-bg flex min-h-screen items-center justify-center"><div className="size-10 animate-spin rounded-full border-4 border-[var(--accent)] border-t-transparent"></div></div>}>
       <PastQuestionsContent />
     </Suspense>
   );
