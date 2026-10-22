@@ -251,7 +251,7 @@ export default function StudyStudioPage() {
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <div>
                   <label className="mb-2 block text-[12px] text-[var(--text-soft)]">Difficulty</label>
-                  <div className="app-tabs w-full">
+                  <div className="app-tabs w-full !flex-nowrap">
                     {(['easy', 'medium', 'hard'] as const).map((level) => (
                       <button key={level} onClick={() => setDifficulty(level)} data-active={difficulty === level} className="app-tab flex-1 capitalize">
                         {level}

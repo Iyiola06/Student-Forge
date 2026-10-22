@@ -62,7 +62,7 @@ export default async function DashboardPage() {
     if (filter) query = filter(query);
     return query.then((res: { count: number | null }) => res.count ?? 0);
   };
-  const weekAhead = new Date(Date.now() + 7 * 86_400_000).toISOString();
+  const weekAhead = new Date(new Date(today).getTime() + 7 * 86_400_000).toISOString();
   const [totalCards, masteredCards, unseenCards, dueThisWeek] = await Promise.all([
     countItems(),
     countItems((q) => q.eq('review_state', 'mastered')),

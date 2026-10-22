@@ -142,7 +142,7 @@ export default function LearningSettings() {
             </p>
             <p className="mt-1 text-[12.5px] text-[var(--text-soft)]">A push at 6pm when cards are due and you have not studied yet. Needs push notifications on.</p>
           </div>
-          <button className={state.reminders ? 'secondary-button !h-9' : 'primary-button !h-9'} onClick={toggleReminders}>
+          <button className={state.reminders ? 'secondary-button !h-9 shrink-0 whitespace-nowrap' : 'primary-button !h-9 shrink-0 whitespace-nowrap'} onClick={toggleReminders}>
             {state.reminders ? 'Turn off' : 'Turn on'}
           </button>
         </div>
