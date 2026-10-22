@@ -50,18 +50,105 @@ const SUGGESTED_PROMPTS = [
 ];
 
 interface TutorChatProps {
-    resourceContext?: string | null;
-    resourceTitle?: string | null;
+    initialResourceId?: string | null;
+    initialConversationId?: string | null;
 }
 
-export default function TutorChat({ resourceContext, resourceTitle }: TutorChatProps) {
+type ResourceOption = { id: string; title: string };
+type ConversationSummary = { id: string; title: string; mode: TutorMode; updated_at: string };
+
+export default function TutorChat({ initialResourceId, initialConversationId }: TutorChatProps) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [xpAwarded, setXpAwarded] = useState(false);
     const [mode, setMode] = useState<TutorMode>('explain');
+    const [resources, setResources] = useState<ResourceOption[]>([]);
+    const [resourceId, setResourceId] = useState<string>(initialResourceId ?? '');
+    const [conversationId, setConversationId] = useState<string | null>(initialConversationId ?? null);
+    const [conversations, setConversations] = useState<ConversationSummary[]>([]);
+    const [showHistory, setShowHistory] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
+    const resourceTitle = resources.find((r) => r.id === resourceId)?.title ?? null;
+
+    const loadConversations = async () => {
+        const supabase = createClient();
+        const { data } = await supabase
+            .from('tutor_conversations')
+            .select('id,title,mode,updated_at')
+            .order('updated_at', { ascending: false })
+            .limit(20);
+        setConversations((data as ConversationSummary[]) ?? []);
+    };
+
+    useEffect(() => {
+        (async () => {
+            const supabase = createClient();
+            const { data } = await supabase
+                .from('resources')
+                .select('id,title')
+                .eq('processing_status', 'ready')
+                .order('created_at', { ascending: false })
+                .limit(50);
+            setResources((data as ResourceOption[]) ?? []);
+            await loadConversations();
+            if (initialConversationId) {
+                const { data: convo } = await supabase
+                    .from('tutor_conversations')
+                    .select('id,mode,resource_id,messages')
+                    .eq('id', initialConversationId)
+                    .maybeSingle();
+                if (convo) {
+                    setMode((convo.mode as TutorMode) || 'explain');
+                    if (convo.resource_id) setResourceId(convo.resource_id);
+                    setMessages(
+                        (Array.isArray(convo.messages) ? convo.messages : []).map((m: { role: 'user' | 'assistant'; content: string; at?: string }, i: number) => ({
+                            id: `${m.role}-${i}`,
+                            role: m.role,
+                            content: m.content,
+                            timestamp: m.at ? new Date(m.at) : new Date(),
+                        }))
+                    );
+                }
+            }
+        })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    /** Saves the conversation so the student can come back to it (and the tutor remembers). */
+    const persist = async (all: Message[]) => {
+        try {
+            const supabase = createClient();
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+            const firstQuestion = all.find((m) => m.role === 'user')?.content ?? 'New conversation';
+            const row = {
+                user_id: user.id,
+                title: firstQuestion.slice(0, 80),
+                mode,
+                resource_id: resourceId || null,
+                messages: all.slice(-60).map((m) => ({ role: m.role, content: m.content, at: m.timestamp.toISOString() })),
+                updated_at: new Date().toISOString(),
+            };
+            if (conversationId) {
+                await supabase.from('tutor_conversations').update(row).eq('id', conversationId);
+            } else {
+                const { data } = await supabase.from('tutor_conversations').insert(row).select('id').single();
+                if (data?.id) setConversationId(data.id);
+            }
+            loadConversations();
+        } catch {
+            /* saving is best-effort */
+        }
+    };
+
+    const startNewChat = () => {
+        setMessages([]);
+        setConversationId(null);
+        setShowHistory(false);
+        window.history.replaceState(null, '', '/ai-tutor');
+    };
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -95,7 +182,7 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                 body: JSON.stringify({
                     message: messageText,
                     history,
-                    context: resourceContext || undefined,
+                    resourceId: resourceId || undefined,
                     mode,
                 }),
             });
@@ -113,7 +200,9 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                 timestamp: new Date(),
             };
 
-            setMessages(prev => [...prev, aiMessage]);
+            const updated = [...messages, userMessage, aiMessage];
+            setMessages(updated);
+            persist(updated);
 
             // Award XP for the first interaction in this session
             if (!xpAwarded) {
@@ -165,13 +254,48 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                             </button>
                         ))}
                     </div>
-                    {resourceTitle && (
-                        <div className="flex w-full items-center gap-2 rounded-full bg-[var(--accent-softer)] px-3 py-1.5 sm:w-auto">
-                            <Icon3D name="open-book" size={16} />
-                            <span className="truncate text-xs font-medium text-[var(--accent-strong)] sm:max-w-[220px]">Studying: {resourceTitle}</span>
-                        </div>
-                    )}
                 </div>
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <select
+                        value={resourceId}
+                        onChange={(e) => setResourceId(e.target.value)}
+                        className="h-9 max-w-full flex-1 rounded-full border border-[var(--line-strong)] bg-[var(--card)] px-3 text-[13px] text-[var(--text-strong)] sm:max-w-[320px]"
+                        aria-label="Study material for the tutor"
+                    >
+                        <option value="">No material: general knowledge</option>
+                        {resources.map((r) => (
+                            <option key={r.id} value={r.id}>
+                                Study: {r.title}
+                            </option>
+                        ))}
+                    </select>
+                    <button type="button" className="secondary-button !h-9 !px-3 !text-[13px]" onClick={() => setShowHistory((v) => !v)}>
+                        Recent chats{conversations.length ? ` (${conversations.length})` : ''}
+                    </button>
+                    <button type="button" className="ghost-button !h-9 !px-3 !text-[13px]" onClick={startNewChat}>
+                        New chat
+                    </button>
+                </div>
+                {showHistory ? (
+                    <div className="mt-3 max-h-56 space-y-1 overflow-y-auto rounded-[20px] border border-[var(--line)] bg-[var(--card-2)] p-2">
+                        {conversations.length ? (
+                            conversations.map((c) => (
+                                <a
+                                    key={c.id}
+                                    href={`/ai-tutor?conversation=${c.id}`}
+                                    className="flex items-center justify-between gap-3 rounded-2xl px-3 py-2 text-[13px] hover:bg-[var(--accent-softer)]"
+                                >
+                                    <span className="truncate text-[var(--text-strong)]">{c.title}</span>
+                                    <span className="shrink-0 text-[11.5px] text-[var(--text-soft)]">
+                                        {MODES.find((m) => m.id === c.mode)?.label} &middot; {new Date(c.updated_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                    </span>
+                                </a>
+                            ))
+                        ) : (
+                            <p className="px-3 py-2 text-[13px] text-[var(--text-soft)]">Your saved conversations will appear here.</p>
+                        )}
+                    </div>
+                ) : null}
             </div>
 
             <div className="shrink-0 px-4 pt-4 sm:px-6">
@@ -187,6 +311,11 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
                         <h3 className="font-display text-[24px] font-semibold tracking-[-0.02em] text-[var(--text-strong)]">
                             {mode === 'quiz' ? 'Ready to be quizzed?' : mode === 'socratic' ? 'Let\u2019s think it through together' : 'What do you want to learn?'}
                         </h3>
+                        {resourceTitle ? (
+                            <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-softer)] px-3 py-1 text-[12.5px] text-[var(--accent-strong)]">
+                                <Icon3D name="open-book" size={14} /> Using: {resourceTitle}
+                            </p>
+                        ) : null}
                         <p className="mt-2 mb-7 max-w-md text-sm text-[var(--text-soft)]">
                             {mode === 'quiz'
                                 ? 'I will ask one question at a time, wait for your answer, then explain what you got right and what to fix.'

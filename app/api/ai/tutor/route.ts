@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { after, NextResponse } from 'next/server';
 import { chatCompletion, isAIConfigured, toChatHistory } from '@/lib/ai/openrouter';
 import { requireCredits } from '@/lib/billing/server';
 import { finalizeAiUsage } from '@/lib/ai/usage';
@@ -47,21 +47,45 @@ export async function POST(request: Request) {
     const billing = await requireCredits(request, 'ai_tutor');
     if (!billing.ok) return NextResponse.json(billing.body, { status: billing.status });
 
-    const { message, history, context, mode } = await request.json();
+    const { message, history, context, mode, resourceId } = await request.json();
     const modeInstruction = MODE_INSTRUCTIONS[typeof mode === 'string' ? mode : 'explain'] ?? '';
 
     if (!message?.trim()) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
 
+    const supabase = billing.supabase;
+    const userId = billing.user.id;
+
+    // Study material: loaded on the server from the student's own library.
+    let material: string | null = context ? String(context) : null;
+    if (!material && typeof resourceId === 'string' && resourceId) {
+      const { data: resource } = await supabase.from('resources').select('title,content').eq('id', resourceId).eq('user_id', userId).maybeSingle();
+      if (resource?.content) material = `Title: ${resource.title}\n\n${resource.content}`;
+    }
+
+    // What the tutor remembers about this student, plus where they are weakest right now.
+    const [{ data: memory }, { data: weakTopics }] = await Promise.all([
+      supabase.from('learner_memory').select('notes').eq('user_id', userId).maybeSingle(),
+      supabase.from('topic_mastery').select('topic_label,mastery_score').eq('user_id', userId).order('mastery_score', { ascending: true }).limit(3),
+    ]);
+    const memoryNotes = String(memory?.notes || '').trim();
+    const weakList = (weakTopics ?? []).filter((t: any) => t.mastery_score < 70).map((t: any) => `${t.topic_label} (${t.mastery_score}%)`);
+    const learnerContext = [
+      memoryNotes ? `What you remember about this student from earlier sessions:\n${memoryNotes}` : '',
+      weakList.length ? `Their weakest topics right now: ${weakList.join(', ')}. Weave these in when relevant.` : '',
+    ]
+      .filter(Boolean)
+      .join('\n\n');
+
     let fullMessage = message;
-    if (context) {
-      fullMessage = `[The student has the following study material loaded as context]\n\n${String(context).substring(0, 15000)}\n\n---\n\nStudent's question: ${message}`;
+    if (material) {
+      fullMessage = `[The student has the following study material loaded as context]\n\n${material.substring(0, 15000)}\n\n---\n\nStudent's question: ${message}`;
     }
 
     const { text: reply, model } = await chatCompletion({
       messages: [
-        { role: 'system', content: modeInstruction ? `${TUTOR_SYSTEM_INSTRUCTION}\n\n${modeInstruction}` : TUTOR_SYSTEM_INSTRUCTION },
+        { role: 'system', content: [TUTOR_SYSTEM_INSTRUCTION, modeInstruction, learnerContext].filter(Boolean).join('\n\n') },
         ...toChatHistory(history),
         { role: 'user', content: fullMessage },
       ],
@@ -79,11 +103,40 @@ export async function POST(request: Request) {
       outputSize: reply.length,
       metadata: {
         historyCount: Array.isArray(history) ? history.length : 0,
-        hasContext: Boolean(context),
+        hasContext: Boolean(material),
         mode: typeof mode === 'string' ? mode : 'explain',
       },
     });
-    await recordStudyActivity(billing.supabase, billing.user.id);
+    await recordStudyActivity(supabase, userId);
+
+    // Every few exchanges, refresh the tutor's notes about the student in the background.
+    const turns = Array.isArray(history) ? history.length : 0;
+    if (turns >= 4 && turns % 6 === 4) {
+      after(async () => {
+        try {
+          const transcript = [...toChatHistory(history).slice(-8), { role: 'user', content: message }, { role: 'assistant', content: reply }]
+            .map((m) => `${m.role === 'user' ? 'Student' : 'Tutor'}: ${String(m.content).slice(0, 600)}`)
+            .join('\n');
+          const { text: notes } = await chatCompletion({
+            maxTokens: 300,
+            temperature: 0.2,
+            messages: [
+              {
+                role: 'system',
+                content:
+                  'You maintain short private notes a tutor keeps about one student. Merge the existing notes with what this conversation reveals. ' +
+                  'Keep: subjects and exams they are preparing for, concepts they have mastered, misconceptions and recurring mistakes, and how they like to learn. ' +
+                  'Max 120 words, plain bullet points, no greetings. Never store personal data beyond study needs.',
+              },
+              { role: 'user', content: `Existing notes:\n${memoryNotes || '(none)'}\n\nRecent conversation:\n${transcript}\n\nUpdated notes:` },
+            ],
+          });
+          await supabase.from('learner_memory').upsert({ user_id: userId, notes: notes.slice(0, 1500), updated_at: new Date().toISOString() });
+        } catch (memoryError) {
+          console.warn('[tutor] memory update skipped', memoryError);
+        }
+      });
+    }
 
     return NextResponse.json({ reply });
   } catch (error: any) {

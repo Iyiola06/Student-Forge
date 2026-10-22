@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import DashboardClient from '@/components/dashboard/DashboardClient';
@@ -56,6 +57,19 @@ export default async function DashboardPage() {
       .limit(20),
   ]);
 
+  const countItems = (filter?: (q: any) => any) => {
+    let query: any = supabase.from('review_items').select('id', { count: 'exact', head: true }).eq('user_id', user.id);
+    if (filter) query = filter(query);
+    return query.then((res: { count: number | null }) => res.count ?? 0);
+  };
+  const weekAhead = new Date(Date.now() + 7 * 86_400_000).toISOString();
+  const [totalCards, masteredCards, unseenCards, dueThisWeek] = await Promise.all([
+    countItems(),
+    countItems((q) => q.eq('review_state', 'mastered')),
+    countItems((q) => q.eq('reviews_count', 0)),
+    countItems((q) => q.lte('due_at', weekAhead).neq('review_state', 'mastered')),
+  ]);
+
   const reviewItems = reviewItemsRes.data ?? [];
   const dueToday = reviewItems.filter((item) => item.due_at <= today && item.review_state !== 'mastered');
   const overdue = reviewItems.filter((item) => item.due_at < today && item.review_state !== 'mastered');
@@ -88,6 +102,7 @@ export default async function DashboardPage() {
           reviewCompletionRate,
           firstReadyRate,
           failedResources,
+          cardCounts: { total: totalCards, mastered: masteredCards, unseen: unseenCards, dueThisWeek },
         },
       }}
     />

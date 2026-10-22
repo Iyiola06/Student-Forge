@@ -2,10 +2,8 @@
 
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import AppShell from '@/components/layout/AppShell';
 import TutorChat from '@/components/ai/TutorChat';
-import { createClient } from '@/lib/supabase/client';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,41 +11,17 @@ export const dynamic = 'force-dynamic';
 function AITutorContent() {
     const searchParams = useSearchParams();
     const resourceId = searchParams.get('resourceId');
-    const [resourceContext, setResourceContext] = useState<string | null>(null);
-    const [resourceTitle, setResourceTitle] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (!resourceId) return;
-
-        async function loadResource() {
-            const supabase = createClient();
-            const { data } = await supabase
-                .from('resources')
-                .select('title, content')
-                .eq('id', resourceId)
-                .single();
-
-            if (data) {
-                setResourceContext(data.content || null);
-                setResourceTitle(data.title || null);
-            }
-        }
-
-        loadResource();
-    }, [resourceId]);
+    const conversationId = searchParams.get('conversation');
 
     return (
         <AppShell
             eyebrow="Learn"
             title="AI tutor"
-            description="Ask focused questions, unpack difficult topics, or study directly against one selected resource."
+            description="Explain, guide or quiz, on any topic or on your own notes. Chats are saved and the tutor remembers how you learn."
             contentClassName="h-full"
         >
-            <div className="h-[min(72vh,780px)] min-h-[520px] overflow-hidden rounded-[28px] border border-slate-200/80 bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)] lg:h-[calc(100vh-13rem)] lg:min-h-[640px] dark:border-white/8 dark:bg-[#0f1724]">
-                <TutorChat
-                    resourceContext={resourceContext}
-                    resourceTitle={resourceTitle}
-                />
+            <div className="h-[min(76vh,820px)] min-h-[560px] overflow-hidden rounded-[28px] border border-[var(--line)] bg-[var(--card)] shadow-[var(--shadow-md)] lg:h-[calc(100vh-13rem)] lg:min-h-[660px]">
+                <TutorChat key={conversationId ?? 'new'} initialResourceId={resourceId} initialConversationId={conversationId} />
             </div>
         </AppShell>
     );

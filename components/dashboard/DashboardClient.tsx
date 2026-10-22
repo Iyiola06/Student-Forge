@@ -10,6 +10,7 @@ import AppShell from '@/components/layout/AppShell';
 import Icon3D, { type Icon3DName } from '@/components/ui/Icon3D';
 import { useProfile, type Profile } from '@/hooks/useProfile';
 import { cn } from '@/lib/utils';
+import ExamPlan, { type CardCounts } from '@/components/dashboard/ExamPlan';
 
 type DashboardData = {
   dueToday: Array<{
@@ -56,6 +57,7 @@ type DashboardData = {
   reviewCompletionRate: number;
   firstReadyRate: number;
   failedResources: number;
+  cardCounts?: CardCounts;
 };
 
 function toneForProcessingStatus(status?: string | null) {
@@ -177,6 +179,7 @@ export default function DashboardClient({
   const overdueCount = dashboard.overdue.length;
   const topWeakTopic = dashboard.weakTopics[0];
   const streakDays = profile?.streak_days ?? 0;
+  const streakFreezes = Number((profile as { streak_freezes?: number } | null)?.streak_freezes ?? 0);
   const cardsMastered = profile?.cards_mastered ?? 0;
   const level = profile?.level ?? 1;
   const xp = profile?.xp ?? 0;
@@ -224,7 +227,12 @@ export default function DashboardClient({
 
   const stats: Array<{ label: string; value: string; detail: string; icon: Icon3DName }> = [
     { label: 'Due today', value: `${dueTodayCount}`, detail: overdueCount ? `${overdueCount} overdue` : 'Queue under control', icon: 'alarm' },
-    { label: 'Streak', value: `${streakDays} day${streakDays === 1 ? '' : 's'}`, detail: streakDays ? 'Show up again today' : 'Start one today', icon: 'fire' },
+    {
+      label: 'Streak',
+      value: `${streakDays} day${streakDays === 1 ? '' : 's'}`,
+      detail: `${streakDays ? 'Show up again today' : 'Start one today'}${streakFreezes ? ` \u2022 ${streakFreezes} freeze${streakFreezes === 1 ? '' : 's'}` : ''}`,
+      icon: 'fire',
+    },
     {
       label: 'Recall accuracy',
       value: accuracyRate === null ? '--' : `${accuracyRate}%`,
@@ -313,6 +321,9 @@ export default function DashboardClient({
             </div>
           ))}
         </section>
+
+        {/* Exam plan */}
+        <ExamPlan examDays={examDays} counts={dashboard.cardCounts ?? { total: 0, mastered: 0, unseen: 0, dueThisWeek: 0 }} />
 
         {/* Weak topics + week */}
         <section className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">

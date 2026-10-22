@@ -95,10 +95,6 @@ export default function StudyStudioPage() {
   });
 
   useEffect(() => {
-    if (aiError) setError(getBillingErrorMessage({ error: aiError.message }, aiError.message));
-  }, [aiError]);
-
-  useEffect(() => {
     (async () => {
       const supabase = createClient();
       const {
@@ -126,6 +122,7 @@ export default function StudyStudioPage() {
     /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
+  const shownError = error ?? (aiError ? getBillingErrorMessage({ error: aiError.message }, aiError.message) : null);
   const selectedResourceRecord = resources.find((resource) => resource.id === selectedResource) ?? null;
   const sourceTitle = selectedResourceRecord?.title?.replace(/\.(pdf|docx?|pptx?|txt|png|jpe?g)$/i, '') || topic || 'My notes';
 
@@ -248,7 +245,7 @@ export default function StudyStudioPage() {
           <div className="glass-panel app-panel">
             <p className="eyebrow">Options</p>
             <h2 className="panel-title mt-1">Shape the {outputOptions.find((o) => o.id === type)?.label.toLowerCase()}</h2>
-            {error ? <div className="auth-alert mt-4" data-tone="error">{error}</div> : null}
+            {shownError ? <div className="auth-alert mt-4" data-tone="error">{shownError}</div> : null}
 
             {type !== 'exam_snapshot' ? (
               <div className="mt-4 grid gap-4 sm:grid-cols-2">

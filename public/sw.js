@@ -123,8 +123,8 @@ self.addEventListener('push', (event) => {
     const title = data.title || 'Study Reminder';
     const options = {
         body: data.body || 'Time for your daily study session!',
-        icon: '/logo.png', // Fallback to a logo if available
-        badge: '/logo.png',
+        icon: '/icon-192.png',
+        badge: '/favicon.png',
         data: {
             url: data.url || '/'
         }
