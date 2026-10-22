@@ -43,6 +43,12 @@ export async function updateSession(request: NextRequest) {
         '/leaderboard',
         '/past-questions',
         '/resources',
+        '/review',
+        '/ai-tutor',
+        '/groups',
+        '/essay-grader',
+        '/simplifier',
+        '/wallet',
     ];
 
     // Routes that logged-in users should NOT access
