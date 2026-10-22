@@ -8,6 +8,22 @@ import GameLobby from '@/components/gamifier/GameLobby';
 import SessionPlay from '@/components/gamifier/SessionPlay';
 import SessionResults from '@/components/gamifier/SessionResults';
 import { GameMode, GameSessionRecord } from '@/lib/gamifier/masteryArena';
+import Icon3D from '@/components/ui/Icon3D';
+
+function QuestLoading({ label }: { label?: string }) {
+  return (
+    <div className="main-bg flex min-h-[100dvh] items-center justify-center px-4">
+      <div className="glass-panel flex w-full max-w-[300px] flex-col items-center px-6 py-8 text-center">
+        <Icon3D name="joystick" size={72} float priority />
+        <div className="mt-5 h-2 w-32 overflow-hidden rounded-full bg-[var(--line)]">
+          <div className="h-full w-1/2 animate-pulse rounded-full bg-[var(--accent)]" />
+        </div>
+        {label ? <p className="mt-4 font-display text-[15px] font-semibold text-[var(--text-strong)]">{label}</p> : null}
+        <p className="mt-1 text-[13px] text-[var(--text-soft)]">Warming up your rounds</p>
+      </div>
+    </div>
+  );
+}
 
 function GamifierShell() {
   const searchParams = useSearchParams();
@@ -143,12 +159,7 @@ function GamifierShell() {
 
   if (isLoading || !profile) {
     return (
-      <div className="min-h-[100dvh] bg-[#070d1a] text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="size-16 rounded-full border border-dashed border-[#f97316] animate-spin border-t-transparent mx-auto mb-4" />
-          <div className="text-xs uppercase tracking-widest font-bold text-[#f97316]">Loading Mastery Arena...</div>
-        </div>
-      </div>
+      <QuestLoading label="Loading Quest Mode..." />
     );
   }
 
@@ -188,9 +199,7 @@ function GamifierShell() {
 export default function GamifierPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-[100dvh] bg-[#070d1a] flex items-center justify-center text-white">
-        <div className="size-16 rounded-full border border-dashed border-[#f97316] animate-spin border-t-transparent" />
-      </div>
+      <QuestLoading />
     }>
       <GamifierShell />
     </Suspense>

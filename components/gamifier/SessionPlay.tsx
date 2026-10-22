@@ -1,13 +1,23 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
+import Icon3D, { type Icon3DName } from '@/components/ui/Icon3D';
+import { modeVisuals } from '@/components/gamifier/GameLobby';
 import {
+    ChallengeType,
     GameSessionRecord,
     GameSessionState,
-    getTopicTheme,
     modeLabels,
     scoreRound,
 } from '@/lib/gamifier/masteryArena';
+
+const challengeLabels: Record<ChallengeType, { label: string; icon: Icon3DName }> = {
+    flash: { label: 'Flash recall', icon: 'bolt' },
+    mcq: { label: 'Multiple choice', icon: 'thinking' },
+    gap: { label: 'Fill the gap', icon: 'puzzle' },
+    recap: { label: 'Recap', icon: 'memo' },
+    boss: { label: 'Boss round', icon: 'crown' },
+};
 
 interface SessionPlayProps {
     session: GameSessionRecord;
@@ -34,7 +44,6 @@ export default function SessionPlay({ session, onPersist, onComplete, onAbort }:
 
     const rounds = session.rounds || [];
     const currentRound = useMemo(() => rounds[roundIndex] || rounds[rounds.length - 1], [roundIndex, rounds]);
-    const theme = getTopicTheme(currentRound?.subject || session.subject);
     const bestStreak = Math.max(session.best_streak || 0, state.streak);
 
     useEffect(() => {
@@ -124,128 +133,202 @@ export default function SessionPlay({ session, onPersist, onComplete, onAbort }:
 
     if (!currentRound) return null;
 
+    const challenge = challengeLabels[currentRound.challengeType] || { label: currentRound.challengeType, icon: 'bolt' as Icon3DName };
+    const maxShields = Math.max(3, state.shields);
+    const answeredCorrectly = selectedOption !== null && selectedOption === currentRound.payload.answer;
+    const timedOut = selectedOption === '__timeout__';
+    const isLowTime = timeLeft <= 5;
+
+    const shieldRow = (
+        <div className="flex items-center gap-0.5" aria-label={`${state.shields} shields left`}>
+            {Array.from({ length: maxShields }).map((_, i) => (
+                <Icon3D
+                    key={i}
+                    name="heart"
+                    size={22}
+                    className={i < state.shields ? 'transition' : 'opacity-25 grayscale transition'}
+                />
+            ))}
+        </div>
+    );
+
     return (
-        <div className="relative min-h-[100dvh] overflow-hidden bg-[#070d1a] text-white">
-            <div className={`absolute inset-0 bg-gradient-to-br ${theme.gradient}`} />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_28%),linear-gradient(180deg,rgba(10,12,18,0.05),rgba(10,12,18,0.96))]" />
-
-            <div className="relative z-10 mx-auto max-w-7xl px-4 py-6 sm:px-8 sm:py-8">
-                <div className="grid gap-6 xl:grid-cols-[320px_1fr]">
-                    <aside className={`h-fit rounded-[2rem] border ${theme.border} bg-[#0f192c]/78 p-6 backdrop-blur-xl xl:sticky xl:top-6`}>
-                        <div className="mb-3 text-xs font-black uppercase tracking-[0.35em] text-slate-300">{modeLabels[session.mode].title}</div>
-                        <h1 className="text-3xl font-black leading-tight">{currentRound.topic}</h1>
-                        <p className="mt-2 text-sm text-slate-400">{currentRound.subject}</p>
-
-                        <div className="mt-6 space-y-4">
-                            <div>
-                                <div className="mb-2 flex items-center justify-between text-xs uppercase tracking-widest text-slate-500">
-                                    <span>Progress</span>
-                                    <span>{roundIndex + 1}/{rounds.length}</span>
-                                </div>
-                                <div className="h-3 overflow-hidden rounded-full bg-white/5">
-                                    <div className="h-full rounded-full bg-gradient-to-r from-[#f97316] to-[#fb7185]" style={{ width: `${progress}%` }} />
+        <div className="main-bg">
+            <div className="review-focus-shell">
+                <div className="review-focus-frame">
+                    <header className="review-topbar">
+                        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                            <div className="flex min-w-0 items-center gap-3">
+                                <span className={`icon-tile size-14 ${modeVisuals[session.mode].tone}`}>
+                                    <Icon3D name={modeVisuals[session.mode].icon} size={38} />
+                                </span>
+                                <div className="min-w-0">
+                                    <p className="eyebrow">{modeLabels[session.mode].title} · {currentRound.subject}</p>
+                                    <h1 className="mt-0.5 line-clamp-2 font-display text-[20px] font-semibold leading-tight tracking-[-0.02em] text-[var(--text-strong)] sm:text-[24px]">
+                                        {currentRound.topic}
+                                    </h1>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                                    <div className="text-[10px] uppercase tracking-[0.25em] text-slate-500">Score</div>
-                                    <div className="mt-2 text-2xl font-black text-orange-300">{state.score}</div>
-                                </div>
-                                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                                    <div className="text-[10px] uppercase tracking-[0.25em] text-slate-500">Streak</div>
-                                    <div className={`mt-2 text-2xl font-black ${state.streak >= 3 ? theme.accent : 'text-white'}`}>{state.streak}</div>
-                                </div>
-                                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                                    <div className="text-[10px] uppercase tracking-[0.25em] text-slate-500">Multiplier</div>
-                                    <div className="mt-2 text-2xl font-black text-sky-300">x{state.multiplier}</div>
-                                </div>
-                                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                                    <div className="text-[10px] uppercase tracking-[0.25em] text-slate-500">Shields</div>
-                                    <div className="mt-2 text-2xl font-black text-emerald-300">{state.shields}</div>
-                                </div>
-                            </div>
-                            <div>
-                                <div className="mb-2 flex items-center justify-between text-xs uppercase tracking-widest text-slate-500">
-                                    <span>Focus</span>
-                                    <span>{state.focus}%</span>
-                                </div>
-                                <div className="h-3 overflow-hidden rounded-full bg-white/5">
-                                    <div className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-lime-400" style={{ width: `${state.focus}%` }} />
-                                </div>
-                                <p className="mt-2 text-xs text-slate-500">High focus can save one shield once per run.</p>
+
+                            <div className="flex flex-wrap items-center gap-2">
+                                <span className="app-toolbar-chip !py-1.5">{shieldRow}</span>
+                                <span className="app-toolbar-chip">
+                                    <Icon3D name="gem" size={18} />
+                                    <span className="font-display text-sm font-semibold text-[var(--text-strong)]">{state.score}</span>
+                                </span>
+                                <span className="app-toolbar-chip">
+                                    <Icon3D name="fire" size={18} />
+                                    <span className="font-display text-sm font-semibold text-[var(--text-strong)]">{state.streak}</span>
+                                </span>
+                                <button onClick={() => void saveAndExit()} className="secondary-button !h-9 !px-4">
+                                    Save and exit
+                                </button>
                             </div>
                         </div>
 
-                        <button
-                            onClick={() => void saveAndExit()}
-                            className="mt-6 w-full rounded-2xl border border-white/10 bg-white/5 px-5 py-4 font-bold text-slate-200 transition hover:bg-white/10"
-                        >
-                            Save And Exit
-                        </button>
-                        {isSaving && <div className="mt-3 text-xs text-slate-500">Saving session...</div>}
-                    </aside>
-
-                    <main className="rounded-[2rem] border border-white/10 bg-[#0f192c]/78 p-6 backdrop-blur-xl sm:p-8">
-                        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                            <div>
-                                <div className={`mb-2 inline-flex rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.3em] ${theme.badge}`}>
-                                    {currentRound.challengeType}
-                                </div>
-                                <h2 className="text-3xl font-black leading-tight sm:text-4xl">{currentRound.payload.prompt}</h2>
-                                <p className="mt-3 text-sm text-slate-400">
-                                    Topic: {currentRound.topic} • Source: {currentRound.payload.sourceLabel || currentRound.sourceType}
-                                </p>
+                        <div>
+                            <div className="flex items-center justify-between gap-3 text-[12.5px] text-[var(--text-soft)]">
+                                <span>Round {roundIndex + 1} of {rounds.length}</span>
+                                <span>{isSaving ? 'Saving...' : `${Math.round(progress)}% through`}</span>
                             </div>
-
-                            <div className="rounded-[1.5rem] border border-white/10 bg-white/5 px-5 py-4 text-center">
-                                <div className="text-[10px] uppercase tracking-[0.3em] text-slate-500">Timer</div>
-                                <div className={`mt-1 text-5xl font-black ${timeLeft <= 5 ? 'text-rose-300' : theme.accent}`}>{timeLeft}</div>
+                            <div className="mt-2 review-progress-track">
+                                <div className="review-progress-fill" style={{ '--value': progress } as CSSProperties} />
                             </div>
                         </div>
+                    </header>
 
-                        {currentRound.payload.content && (
-                            <div className="mb-6 rounded-[1.5rem] border border-white/10 bg-white/5 p-5 text-sm leading-relaxed text-slate-300">
-                                {currentRound.payload.content}
-                            </div>
-                        )}
+                    <div className="review-focus-layout">
+                        <main className="review-stage !min-h-0 gap-6">
+                            <div className="flex flex-col gap-5">
+                                <div className="flex items-start justify-between gap-4">
+                                    <div className="min-w-0">
+                                        <span className="pill-tag">
+                                            <Icon3D name={challenge.icon} size={16} />
+                                            {challenge.label}
+                                        </span>
+                                        <p className="mt-3 text-[12.5px] text-[var(--text-soft)]">
+                                            Source: {currentRound.payload.sourceLabel || currentRound.sourceType}
+                                        </p>
+                                    </div>
 
-                        <div className="grid gap-4 md:grid-cols-2">
-                            {currentRound.payload.options.map((option) => {
-                                const isPicked = selectedOption === option;
-                                const isCorrect = option === currentRound.payload.answer;
-                                const stateClass = selectedOption
-                                    ? isCorrect
-                                        ? 'border-emerald-400 bg-emerald-500/10'
-                                        : isPicked
-                                            ? 'border-rose-400 bg-rose-500/10'
-                                            : 'border-white/10 bg-white/5 opacity-60'
-                                    : 'border-white/10 bg-white/5 hover:border-white/30 hover:-translate-y-0.5';
-
-                                return (
-                                    <button
-                                        key={option}
-                                        disabled={selectedOption !== null}
-                                        onClick={() => void handleAnswer(option)}
-                                        className={`rounded-[1.35rem] border px-5 py-5 text-left transition ${stateClass}`}
+                                    <div
+                                        className={`flex shrink-0 items-center gap-2 rounded-[22px] border px-3 py-2 shadow-[var(--shadow-sm)] transition sm:px-4 ${isLowTime ? 'border-[var(--danger)] bg-[var(--danger-soft)]' : 'border-[var(--line)] bg-[var(--card)]'}`}
+                                        aria-label={`${timeLeft} seconds left`}
                                     >
-                                        <div className="text-base font-bold leading-relaxed">{option}</div>
-                                    </button>
-                                );
-                            })}
-                        </div>
+                                        <Icon3D name="stopwatch" size={30} className={isLowTime ? 'animate-pulse' : undefined} />
+                                        <span className={`font-display text-[32px] font-semibold leading-none tabular-nums sm:text-[40px] ${isLowTime ? 'text-[var(--danger)]' : 'text-[var(--text-strong)]'}`}>
+                                            {timeLeft}
+                                        </span>
+                                    </div>
+                                </div>
 
-                        {feedback && (
-                            <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/5 p-5 text-slate-300">
-                                {feedback}
+                                <h2 className="font-display text-[22px] font-semibold leading-snug tracking-[-0.02em] text-[var(--text-strong)] break-words sm:text-[30px]">
+                                    {currentRound.payload.prompt}
+                                </h2>
+
+                                {currentRound.payload.content && (
+                                    <div className="rounded-[22px] border border-[var(--line)] bg-[var(--card-2)] p-4 text-sm leading-7 text-[var(--text-body)] break-words sm:p-5">
+                                        {currentRound.payload.content}
+                                    </div>
+                                )}
+
+                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                    {currentRound.payload.options.map((option, index) => {
+                                        const isPicked = selectedOption === option;
+                                        const isCorrect = option === currentRound.payload.answer;
+                                        const stateClass = selectedOption
+                                            ? isCorrect
+                                                ? 'border-[var(--success)] bg-[var(--success-soft)]'
+                                                : isPicked
+                                                    ? 'border-[var(--danger)] bg-[var(--danger-soft)]'
+                                                    : 'border-[var(--line)] bg-[var(--card)] opacity-55'
+                                            : 'border-[var(--line)] bg-[var(--card)] shadow-[var(--shadow-sm)] hover:-translate-y-0.5 hover:border-[var(--accent)] hover:shadow-[var(--shadow-md)]';
+                                        const badgeClass = selectedOption && isCorrect
+                                            ? 'bg-[var(--success)] text-[var(--action-ink)]'
+                                            : selectedOption && isPicked
+                                                ? 'bg-[var(--danger)] text-[var(--action-ink)]'
+                                                : 'bg-[var(--accent-soft)] text-[var(--accent-strong)]';
+
+                                        return (
+                                            <button
+                                                key={option}
+                                                disabled={selectedOption !== null}
+                                                onClick={() => void handleAnswer(option)}
+                                                className={`flex min-w-0 items-start gap-3 rounded-[22px] border px-4 py-4 text-left transition ${stateClass}`}
+                                            >
+                                                <span className={`inline-flex size-8 shrink-0 items-center justify-center rounded-full font-display text-sm font-semibold ${badgeClass}`}>
+                                                    {String.fromCharCode(65 + index)}
+                                                </span>
+                                                <span className="min-w-0 flex-1 pt-1 text-[15px] font-medium leading-6 text-[var(--text-strong)] break-words">{option}</span>
+                                                {selectedOption && isCorrect ? <Icon3D name="check" size={24} className="shrink-0" /> : null}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+
+                                {feedback && (
+                                    <div className={`flex items-start gap-3 rounded-[22px] p-4 sm:p-5 ${answeredCorrectly ? 'bg-[var(--success-soft)]' : 'bg-[var(--warning-soft)]'}`}>
+                                        <Icon3D name={answeredCorrectly ? 'party' : timedOut ? 'hourglass' : 'bulb'} size={36} className="shrink-0" />
+                                        <div className="min-w-0">
+                                            <p className="font-display text-[15px] font-semibold text-[var(--text-strong)]">
+                                                {answeredCorrectly ? 'Nice one!' : timedOut ? 'Time is up' : 'Not quite'}
+                                            </p>
+                                            <p className="mt-1 text-sm leading-6 text-[var(--text-body)] break-words">{feedback}</p>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
-                        )}
 
-                        <div className="mt-8 flex flex-wrap items-center gap-3 text-sm text-slate-400">
-                            <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2">Correct: {state.correctAnswers}</span>
-                            <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2">Misses: {state.wrongAnswers}</span>
-                            <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2">Best streak: {bestStreak}</span>
-                        </div>
-                    </main>
+                            <div className="flex flex-wrap items-center gap-2">
+                                <span className="metric-chip">
+                                    <Icon3D name="check" size={16} />
+                                    Correct: {state.correctAnswers}
+                                </span>
+                                <span className="metric-chip">
+                                    <Icon3D name="thinking" size={16} />
+                                    Misses: {state.wrongAnswers}
+                                </span>
+                                <span className="metric-chip">
+                                    <Icon3D name="fire" size={16} />
+                                    Best streak: {bestStreak}
+                                </span>
+                            </div>
+                        </main>
+
+                        <aside className="space-y-5">
+                            <section className="glass-panel app-panel-tight">
+                                <p className="eyebrow">Your run</p>
+                                <div className="mt-3 grid grid-cols-2 gap-3">
+                                    {[
+                                        { label: 'Score', value: state.score, icon: 'gem' as const, tone: 'pastel-sky' },
+                                        { label: 'Streak', value: state.streak, icon: 'fire' as const, tone: 'pastel-peach' },
+                                        { label: 'Multiplier', value: `x${state.multiplier}`, icon: 'bolt' as const, tone: 'pastel-butter' },
+                                        { label: 'Shields', value: state.shields, icon: 'heart' as const, tone: 'pastel-blush' },
+                                    ].map((stat) => (
+                                        <div key={stat.label} className={`relative min-w-0 overflow-hidden rounded-[20px] border border-[var(--line)] p-3 ${stat.tone}`}>
+                                            <Icon3D name={stat.icon} size={28} className="absolute top-2.5 right-2.5" />
+                                            <p className="text-[12px] text-[var(--text-soft)]">{stat.label}</p>
+                                            <p className="mt-3 truncate font-display text-[24px] font-semibold leading-none text-[var(--text-strong)]">{stat.value}</p>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="mt-4 rounded-[20px] border border-[var(--line)] bg-[var(--card-2)] p-3">
+                                    <div className="flex items-center justify-between gap-3 text-[12.5px]">
+                                        <span className="inline-flex items-center gap-1.5 font-medium text-[var(--text-strong)]">
+                                            <Icon3D name="brain" size={18} />
+                                            Focus meter
+                                        </span>
+                                        <span className="text-[var(--text-soft)]">{state.focus}%</span>
+                                    </div>
+                                    <div className="mt-2 dashboard-progress-track">
+                                        <div className="dashboard-progress-fill" data-tone="success" style={{ '--value': state.focus } as CSSProperties} />
+                                    </div>
+                                    <p className="mt-2 text-[12px] leading-5 text-[var(--text-soft)]">High focus can save one shield once per run.</p>
+                                </div>
+                            </section>
+                        </aside>
+                    </div>
                 </div>
             </div>
         </div>
