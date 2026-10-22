@@ -19,6 +19,11 @@ export async function POST(request: Request) {
       sessionType: effectiveSessionType,
     });
     const queue = sessionState.queue ?? (await getReviewQueueForUser(supabase, user.id, effectiveSessionType));
+    const { data: learner } = await supabase
+      .from('profiles')
+      .select('exam_date,desired_retention,fsrs_params')
+      .eq('id', user.id)
+      .maybeSingle();
 
     await trackServerEvent({
       userId: user.id,
@@ -50,6 +55,11 @@ export async function POST(request: Request) {
         reviewsCount: Number(item.reviews_count ?? 0),
         contentPayload: item.content_payload,
       })),
+      scheduleOptions: {
+        retention: learner?.desired_retention ? Number(learner.desired_retention) : undefined,
+        params: learner?.fsrs_params ?? null,
+        examDate: learner?.exam_date ?? null,
+      },
       dueCount: queue.totals.dueCount,
       weakTopicCount: queue.totals.weakTopicCount,
       weakTopics: queue.weakTopics,

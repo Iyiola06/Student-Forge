@@ -18,6 +18,7 @@ export type ReviewQueueItem = {
 
 export type ReviewQueueResponse = {
   sessionId: string;
+  scheduleOptions?: import('@/lib/review/fsrs').ScheduleOptions;
   sessionType: ReviewSessionType;
   resumed?: boolean;
   items: ReviewQueueItem[];

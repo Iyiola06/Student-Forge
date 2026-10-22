@@ -20,10 +20,21 @@ type PracticeItemProps = {
   onAnswered?: (correct: boolean) => void;
 };
 
+function reportToReview(question: string | undefined, correct: boolean, submittedAnswer?: string) {
+  if (!question) return;
+  // Fire and forget: practice results feed the spaced-repetition queue.
+  fetch('/api/review/practice', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question, correct, submittedAnswer }),
+  }).catch(() => undefined);
+}
+
 /** One generated item, practised actively: commit to an answer before seeing it. */
 export default function PracticeItem({ index, kind, item, onAnswered }: PracticeItemProps) {
   const [picked, setPicked] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
+  const [selfRated, setSelfRated] = useState<boolean | null>(null);
   const options = useMemo(() => {
     const list = Array.isArray(item.options) ? item.options.filter(Boolean) : [];
     // Stable shuffle once the question has fully streamed, so the answer is not always first.
@@ -44,7 +55,9 @@ export default function PracticeItem({ index, kind, item, onAnswered }: Practice
   const pick = (option: string) => {
     if (picked !== null || !item.answer) return;
     setPicked(option);
-    onAnswered?.(option.trim() === String(item.answer).trim());
+    const wasCorrect = option.trim() === String(item.answer).trim();
+    onAnswered?.(wasCorrect);
+    reportToReview(item.question, wasCorrect, option);
   };
 
   return (
@@ -102,6 +115,29 @@ export default function PracticeItem({ index, kind, item, onAnswered }: Practice
               </ul>
             ) : null}
             {item.explanation && kind === 'theory' ? <p className="mt-2 text-[13px] text-[var(--text-soft)]">{item.explanation}</p> : null}
+            {selfRated === null ? (
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span className="text-[12.5px] text-[var(--text-soft)]">Did you get it?</span>
+                {[true, false].map((knew) => (
+                  <button
+                    key={String(knew)}
+                    type="button"
+                    onClick={() => {
+                      setSelfRated(knew);
+                      onAnswered?.(knew);
+                      reportToReview(item.question || item.front, knew);
+                    }}
+                    className={cn('!h-8 !px-3 !text-[12.5px]', knew ? 'primary-button' : 'secondary-button')}
+                  >
+                    {knew ? 'Yes, I knew it' : 'Not yet'}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-3 text-[12.5px] text-[var(--text-soft)]">
+                {selfRated ? 'Nice. It will come back later to lock it in.' : 'No problem. It is scheduled to come back soon.'}
+              </p>
+            )}
           </div>
         ) : (
           <button type="button" onClick={() => setRevealed(true)} className="secondary-button mt-3 !h-9 !px-4">

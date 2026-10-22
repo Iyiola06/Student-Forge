@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ReviewSessionType } from '@/types/product';
-import { masteryFromStability, schedule, stateFromMastery, type Grade } from '@/lib/review/fsrs';
+import { masteryFromStability, schedule, stateFromMastery, type FsrsParams, type Grade } from '@/lib/review/fsrs';
+import { fitPersonalParams, MIN_OBSERVATIONS } from '@/lib/review/optimizer';
+import { createAdminClient } from '@/lib/billing/server';
 import { recordStudyActivity } from '@/lib/progress/server';
 
 function slugifyTopic(value: string) {
@@ -205,14 +207,17 @@ export async function applyReviewAnswer(params: {
   supabase: any;
   userId: string;
   reviewItemId: string;
-  reviewSessionId: string;
+  reviewSessionId?: string | null;
   result: 'correct' | 'incorrect';
   grade?: Grade;
+  /** Where the answer came from when it was not a review session (quest mode, practice). */
+  origin?: 'review' | 'practice' | 'quest';
   responseTimeMs?: number;
   confidence?: number;
   submittedAnswer?: string;
 }) {
-  const { supabase, userId, reviewItemId, reviewSessionId, responseTimeMs, submittedAnswer } = params;
+  const { supabase, userId, reviewItemId, responseTimeMs, submittedAnswer } = params;
+  const reviewSessionId = params.reviewSessionId ?? null;
   const { data: item } = await supabase
     .from('review_items')
     .select('*')
@@ -230,15 +235,27 @@ export async function applyReviewAnswer(params: {
   const correct = result === 'correct';
   const now = new Date();
   const wasDue = item.due_at <= now.toISOString();
+  const { data: learner } = await supabase
+    .from('profiles')
+    .select('exam_date,desired_retention,fsrs_params')
+    .eq('id', userId)
+    .maybeSingle();
+  const stabilityBefore = Number(item.stability ?? 0.3);
+  const elapsedDays = item.last_reviewed_at ? Math.max(0, (now.getTime() - new Date(item.last_reviewed_at).getTime()) / 86_400_000) : 0;
   const memory = schedule(
     {
-      stability: Number(item.stability ?? 0.3),
+      stability: stabilityBefore,
       difficulty: Number(item.difficulty ?? 0.5),
       reviewsCount: Number(item.reviews_count || 0),
       lastReviewedAt: item.last_reviewed_at,
     },
     grade,
-    now
+    now,
+    {
+      retention: learner?.desired_retention ? Number(learner.desired_retention) : undefined,
+      params: (learner?.fsrs_params as FsrsParams | null) ?? null,
+      examDate: learner?.exam_date ?? null,
+    }
   );
   const nextMastery = masteryFromStability(memory.stability);
   const nextState = stateFromMastery(nextMastery, grade);
@@ -263,8 +280,11 @@ export async function applyReviewAnswer(params: {
     metadata: {
       topic: topicLabel,
       grade,
+      origin: params.origin ?? 'review',
       interval_days: memory.intervalDays,
       retrievability: Math.round(memory.retrievability * 100) / 100,
+      stability_before: Number(item.reviews_count || 0) ? stabilityBefore : null,
+      elapsed_days: Math.round(elapsedDays * 100) / 100,
     },
   });
 
@@ -320,12 +340,14 @@ export async function applyReviewAnswer(params: {
     });
   }
 
-  const { data: session } = await supabase
-    .from('review_sessions')
-    .select('completed_items,correct_items,total_items')
-    .eq('id', reviewSessionId)
-    .eq('user_id', userId)
-    .single();
+  const { data: session } = reviewSessionId
+    ? await supabase
+        .from('review_sessions')
+        .select('completed_items,correct_items,total_items')
+        .eq('id', reviewSessionId)
+        .eq('user_id', userId)
+        .single()
+    : { data: null };
 
   if (session) {
     await supabase
@@ -341,4 +363,102 @@ export async function applyReviewAnswer(params: {
   await recordStudyActivity(supabase, userId, newlyMastered ? 1 : 0);
 
   return { grade, result, intervalDays: memory.intervalDays, nextDueAt: memory.nextDueAt, masteryScore: nextMastery, reviewState: nextState };
+}
+
+/**
+ * Routes an answer given outside the review queue (practice in the studio, quest mode) into
+ * the same memory model, so mistakes anywhere are scheduled for review.
+ */
+export async function recordExternalAnswer(params: {
+  supabase: any;
+  userId: string;
+  correct: boolean;
+  origin: 'practice' | 'quest';
+  reviewItemId?: string | null;
+  sourceId?: string | null;
+  question?: string | null;
+  submittedAnswer?: string;
+}) {
+  const { supabase, userId } = params;
+  let reviewItemId = params.reviewItemId ?? null;
+
+  if (!reviewItemId && params.sourceId) {
+    const { data } = await supabase
+      .from('review_items')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('source_id', params.sourceId)
+      .limit(1)
+      .maybeSingle();
+    reviewItemId = data?.id ?? null;
+  }
+
+  if (!reviewItemId && params.question) {
+    const since = new Date(Date.now() - 2 * 86_400_000).toISOString();
+    const { data } = await supabase
+      .from('review_items')
+      .select('id')
+      .eq('user_id', userId)
+      .gte('created_at', since)
+      .eq('content_payload->>question', params.question)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    reviewItemId = data?.id ?? null;
+  }
+
+  if (!reviewItemId) return null;
+
+  return applyReviewAnswer({
+    supabase,
+    userId,
+    reviewItemId,
+    reviewSessionId: null,
+    result: params.correct ? 'correct' : 'incorrect',
+    grade: params.correct ? 3 : 1,
+    origin: params.origin,
+    submittedAnswer: params.submittedAnswer,
+  });
+}
+
+/** Refits the personal memory model once enough new reviews have accumulated. */
+export async function maybeRefitMemoryModel(supabase: any, userId: string) {
+  try {
+    const { data: profile } = await supabase.from('profiles').select('fsrs_params').eq('id', userId).maybeSingle();
+    const fittedOn = Number((profile?.fsrs_params as FsrsParams | null)?.fittedOn || 0);
+    const { count } = await supabase
+      .from('review_attempts')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', userId);
+    if (!count || count < MIN_OBSERVATIONS || count < fittedOn + MIN_OBSERVATIONS) return null;
+
+    const { data: attempts } = await supabase
+      .from('review_attempts')
+      .select('confidence,result,metadata')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(5000);
+
+    const fitted = fitPersonalParams(
+      (attempts ?? [])
+        .filter((a: any) => a.metadata?.stability_before != null && a.metadata?.elapsed_days != null)
+        .map((a: any) => ({
+          stability: Number(a.metadata.stability_before),
+          elapsedDays: Number(a.metadata.elapsed_days),
+          recalled: a.result === 'correct',
+        }))
+    );
+    if (!fitted) return null;
+
+    // fsrs_params is protected from client writes; store with the service role.
+    const admin = createAdminClient();
+    await admin
+      .from('profiles')
+      .update({ fsrs_params: { stabilityScale: fitted.stabilityScale, fittedOn: count, fittedAt: fitted.fittedAt } })
+      .eq('id', userId);
+    return fitted;
+  } catch (error) {
+    console.warn('[review] memory model refit skipped', error);
+    return null;
+  }
 }

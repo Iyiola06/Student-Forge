@@ -21,7 +21,7 @@ import type {
 const sessionModes: Array<{ id: ReviewSessionType; label: string; body: string }> = [
   { id: 'quick_review', label: 'Quick Review', body: 'Shortest path through what is already due.' },
   { id: 'exam_prep', label: 'Exam Prep', body: 'Due work plus weak-topic reinforcement in one longer block.' },
-  { id: 'streak_saver', label: 'Streak Saver', body: 'Minimal queue designed to keep habit continuity alive.' },
+  { id: 'streak_saver', label: 'Streak Saver', body: '3 quick cards. Finishing banks a streak freeze that forgives one missed day.' },
 ];
 
 export default function ReviewPage() {
@@ -131,11 +131,12 @@ export default function ReviewPage() {
         weakTopics: queue.weakTopics,
         durationSeconds: Math.max(10, Math.round((Date.now() - (sessionStartedAt || Date.now())) / 1000)),
       });
-      setStatusMessage(
-        completePayload.xpEarned
-          ? `Session complete. +${completePayload.xpEarned} XP, and every card is scheduled for the right moment.`
-          : 'Session complete. Every card is now scheduled for the right moment.'
-      );
+      const notes = [
+        completePayload.xpEarned ? `+${completePayload.xpEarned} XP` : null,
+        typeof completePayload.streakFreezes === 'number' ? `streak freezes banked: ${completePayload.streakFreezes}/2` : null,
+        completePayload.memoryModelUpdated ? 'your memory model was re-tuned from your history' : null,
+      ].filter(Boolean);
+      setStatusMessage(`Session complete${notes.length ? ` (${notes.join(', ')})` : ''}. Every card is scheduled for the right moment.`);
       setQueue(null);
       setCurrentIndex(0);
       setShowAnswer(false);
@@ -186,6 +187,7 @@ export default function ReviewPage() {
               <ReviewCardStage
                 key={currentItem.id}
                 item={currentItem}
+                scheduleOptions={queue?.scheduleOptions}
                 showAnswer={showAnswer}
                 isSubmitting={isSubmitting}
                 onRevealToggle={() => setShowAnswer((value) => !value)}

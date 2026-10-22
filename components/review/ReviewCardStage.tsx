@@ -6,7 +6,7 @@ import AppStatusBadge from '@/components/app/AppStatusBadge';
 import Icon3D from '@/components/ui/Icon3D';
 import type { ReviewQueueItem } from '@/components/review/types';
 import { getReviewAnswer, getReviewExplanation, getReviewOptions, getReviewPrompt } from '@/components/review/review-utils';
-import { GRADE_LABELS, previewIntervals, type Grade } from '@/lib/review/fsrs';
+import { GRADE_LABELS, previewIntervals, type Grade, type ScheduleOptions } from '@/lib/review/fsrs';
 import { cn } from '@/lib/utils';
 
 export type ReviewSubmission = {
@@ -22,6 +22,7 @@ type ReviewCardStageProps = {
   isSubmitting: boolean;
   onRevealToggle: () => void;
   onSubmit: (submission: ReviewSubmission) => void;
+  scheduleOptions?: ScheduleOptions;
 };
 
 const GRADE_HINTS: Record<Grade, string> = {
@@ -42,7 +43,7 @@ function normalise(value: string) {
   return value.trim().toLowerCase().replace(/^[a-d][.)]\s*/, '').replace(/\s+/g, ' ');
 }
 
-export default function ReviewCardStage({ item, showAnswer, isSubmitting, onRevealToggle, onSubmit }: ReviewCardStageProps) {
+export default function ReviewCardStage({ item, showAnswer, isSubmitting, onRevealToggle, onSubmit, scheduleOptions }: ReviewCardStageProps) {
   const prompt = getReviewPrompt(item);
   const answer = getReviewAnswer(item);
   const explanation = getReviewExplanation(item);
@@ -63,8 +64,8 @@ export default function ReviewCardStage({ item, showAnswer, isSubmitting, onReve
         difficulty: item.difficulty ?? 0.5,
         reviewsCount: item.reviewsCount ?? 0,
         lastReviewedAt: item.lastReviewedAt,
-      }),
-    [item]
+      }, new Date(), scheduleOptions),
+    [item, scheduleOptions]
   );
 
   const pickedCorrect = picked !== null && normalise(picked) === normalise(String(answer));

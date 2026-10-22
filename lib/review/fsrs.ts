@@ -50,6 +50,21 @@ function normaliseState(state: MemoryState) {
   };
 }
 
+/** Personal tuning fitted from the student's own review history (see optimizer.ts). */
+export type FsrsParams = {
+  /** Multiplies model stability: >1 means this student forgets more slowly than average. */
+  stabilityScale?: number;
+  fittedOn?: number;
+  fittedAt?: string;
+};
+
+export type ScheduleOptions = {
+  retention?: number;
+  params?: FsrsParams | null;
+  /** If set, reviews are pulled forward so the card is seen again just before the exam. */
+  examDate?: string | null;
+};
+
 export type ScheduleResult = {
   stability: number;
   difficulty: number;
@@ -58,10 +73,12 @@ export type ScheduleResult = {
   retrievability: number;
 };
 
-export function schedule(state: MemoryState, grade: Grade, now = new Date()): ScheduleResult {
+export function schedule(state: MemoryState, grade: Grade, now = new Date(), options: ScheduleOptions = {}): ScheduleResult {
   const current = normaliseState(state);
-  const elapsedDays = state.lastReviewedAt ? (now.getTime() - new Date(state.lastReviewedAt).getTime()) / DAY_MS : 0;
-  const r = current.isNew ? 1 : retrievability(elapsedDays, current.stability);
+  const scale = clamp(Number(options.params?.stabilityScale) || 1, 0.3, 3);
+  const retention = clamp(Number(options.retention) || TARGET_RETENTION, 0.75, 0.97);
+  const elapsedDays = state.lastReviewedAt ? Math.max(0, (now.getTime() - new Date(state.lastReviewedAt).getTime()) / DAY_MS) : 0;
+  const r = current.isNew ? 1 : retrievability(elapsedDays, current.stability * scale);
 
   let stability: number;
   let difficulty: number;
@@ -96,10 +113,21 @@ export function schedule(state: MemoryState, grade: Grade, now = new Date()): Sc
     nextDueAt = new Date(now.getTime() + RELEARN_MINUTES * 60_000);
   } else {
     // Interval where predicted recall equals the target retention.
-    const ideal = (stability / FACTOR) * (Math.pow(TARGET_RETENTION, 1 / DECAY) - 1);
+    const ideal = ((stability * scale) / FACTOR) * (Math.pow(retention, 1 / DECAY) - 1);
     intervalDays = clamp(Math.round(ideal), 1, MAX_INTERVAL_DAYS);
     if (grade === 2) intervalDays = Math.max(1, Math.min(intervalDays, Math.round(ideal * 0.8) || 1));
     nextDueAt = new Date(now.getTime() + intervalDays * DAY_MS);
+
+    // Exam mode: never schedule past the exam; aim for a final look 1-2 days before it.
+    if (options.examDate) {
+      const exam = new Date(`${options.examDate.slice(0, 10)}T08:00:00`);
+      const finalReview = new Date(exam.getTime() - 2 * DAY_MS);
+      if (Number.isFinite(exam.getTime()) && exam > now && nextDueAt > finalReview) {
+        const target = finalReview > now ? finalReview : new Date(Math.min(exam.getTime(), now.getTime() + DAY_MS));
+        nextDueAt = target;
+        intervalDays = Math.max(1, Math.round((target.getTime() - now.getTime()) / DAY_MS));
+      }
+    }
   }
 
   return {
@@ -131,11 +159,11 @@ export function formatInterval(days: number) {
   return `${Math.round((days / 365) * 10) / 10} yr`;
 }
 
-export function previewIntervals(state: MemoryState, now = new Date()): Record<Grade, string> {
+export function previewIntervals(state: MemoryState, now = new Date(), options: ScheduleOptions = {}): Record<Grade, string> {
   return {
-    1: formatInterval(schedule(state, 1, now).intervalDays),
-    2: formatInterval(schedule(state, 2, now).intervalDays),
-    3: formatInterval(schedule(state, 3, now).intervalDays),
-    4: formatInterval(schedule(state, 4, now).intervalDays),
+    1: formatInterval(schedule(state, 1, now, options).intervalDays),
+    2: formatInterval(schedule(state, 2, now, options).intervalDays),
+    3: formatInterval(schedule(state, 3, now, options).intervalDays),
+    4: formatInterval(schedule(state, 4, now, options).intervalDays),
   };
 }
