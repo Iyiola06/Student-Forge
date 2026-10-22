@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import AppShell from '@/components/layout/AppShell';
+import LearningSettings from '@/components/settings/LearningSettings';
 import { useProfile } from '@/hooks/useProfile';
 import { useWallet } from '@/hooks/useWallet';
 import { createClient } from '@/lib/supabase/client';
@@ -415,6 +416,8 @@ export default function SettingsPage() {
             </div>
           </section>
         </section>
+
+        <LearningSettings />
 
         <section className="grid gap-5 lg:grid-cols-[1fr_1fr]">
           <section className="glass-panel app-panel">

@@ -46,8 +46,8 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onCancel }) =>
             const ctx = canvas.getContext('2d');
             if (ctx) {
                 ctx.drawImage(video, 0, 0);
-                // Using high quality for OCR
-                const dataUrl = canvas.toDataURL('image/png', 1.0);
+                // JPEG keeps handwriting legible while staying well under request size limits
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
                 onCapture(dataUrl);
                 if (stream) {
                     stream.getTracks().forEach(track => track.stop());

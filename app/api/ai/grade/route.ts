@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { generateJson, imagePart, isAIConfigured, type ChatMessage } from '@/lib/ai/openrouter';
 import { requireCredits } from '@/lib/billing/server';
 import { finalizeAiUsage } from '@/lib/ai/usage';
+import { recordStudyActivity } from '@/lib/progress/server';
 
 export async function POST(request: Request) {
     try {
@@ -99,7 +100,30 @@ export async function POST(request: Request) {
             },
         });
 
-        return NextResponse.json(payload);
+        // Keep a history of graded answers so students can see their writing improve.
+        const { data: saved } = await billing.supabase
+            .from('essay_submissions')
+            .insert({
+                user_id: billing.user.id,
+                question: String(question || '').slice(0, 2000),
+                context: context ? String(context).slice(0, 500) : null,
+                answer_text: typedAnswer ? String(typedAnswer).slice(0, 20000) : null,
+                was_handwritten: type === 'handwritten' && Boolean(imageData),
+                score,
+                max_score: safeMaxScore,
+                feedback: {
+                    feedback: payload.feedback,
+                    correctAnswer: payload.correctAnswer,
+                    improvements: payload.improvements,
+                    strengths: payload.strengths,
+                    isCorrect: payload.isCorrect,
+                },
+            })
+            .select('id')
+            .maybeSingle();
+        await recordStudyActivity(billing.supabase, billing.user.id);
+
+        return NextResponse.json({ ...payload, submissionId: saved?.id ?? null });
 
     } catch (error: any) {
         console.error('Grading Route Error:', error);
