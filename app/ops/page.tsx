@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import AppShell from '@/components/layout/AppShell';
+import AppStatCard from '@/components/app/AppStatCard';
 import { createClient } from '@/lib/supabase/server';
 import { getAdminClientAvailability } from '@/lib/billing/server';
 
@@ -26,14 +27,14 @@ export default async function OpsPage() {
         <section className="glass-panel app-panel">
           <p className="eyebrow">Config health</p>
           <h2 className="panel-title mt-2">Admin services are unavailable</h2>
-          <p className="mt-3 text-[14px] leading-6 text-slate-600 dark:text-slate-300">
+          <p className="mt-3 text-[14px] leading-6 text-[var(--text-body)]">
             Operator surfaces, referral automation, billing confirmation, and generation job persistence need the missing keys below.
           </p>
           <div className="mt-4 app-list">
             {adminAvailability.missingKeys.map((key) => (
               <div key={key} className="app-list-row">
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-black text-slate-950 dark:text-white">{key}</p>
+                  <p className="text-sm font-semibold text-[var(--text-strong)]">{key}</p>
                 </div>
               </div>
             ))}
@@ -82,17 +83,15 @@ export default async function OpsPage() {
     <AppShell eyebrow="Ops" title="Operator dashboard">
       <div className="workspace-stack">
         <section className="metric-strip">
-          {[
-            ['Processing', `${processingSuccessRate}%`, 'Recent extraction success'],
-            ['Generation', `${generationSuccessRate}%`, 'Recent generation success'],
-            ['Review', `${reviewCompletionRate}%`, 'Session completion rate'],
-            ['Wallet burn', `${walletBurn}`, 'Recent credits consumed'],
-          ].map(([label, value, detail]) => (
-            <div key={label} className="glass-panel app-panel-tight">
-              <p className="eyebrow">{label}</p>
-              <p className="mt-2 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">{value}</p>
-              <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">{detail}</p>
-            </div>
+          {(
+            [
+              ['Processing', `${processingSuccessRate}%`, 'Recent extraction success', 'gear'],
+              ['Generation', `${generationSuccessRate}%`, 'Recent generation success', 'sparkles'],
+              ['Review', `${reviewCompletionRate}%`, 'Session completion rate', 'brain'],
+              ['Wallet burn', `${walletBurn}`, 'Recent credits consumed', 'coin'],
+            ] as const
+          ).map(([label, value, detail, icon]) => (
+            <AppStatCard key={label} label={label} value={value} detail={detail} icon={icon} />
           ))}
         </section>
 
@@ -109,8 +108,8 @@ export default async function OpsPage() {
                     .map((job, index) => (
                       <div key={`${job.created_at}-${index}`} className="app-list-row">
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-black text-slate-950 dark:text-white">{job.failure_code || 'EXTRACTION_FAILED'}</p>
-                          <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">{new Date(job.created_at).toLocaleString()}</p>
+                          <p className="text-sm font-semibold text-[var(--text-strong)]">{job.failure_code || 'EXTRACTION_FAILED'}</p>
+                          <p className="mt-1 text-[13px] text-[var(--text-soft)]">{new Date(job.created_at).toLocaleString()}</p>
                         </div>
                       </div>
                     ))}
@@ -128,8 +127,8 @@ export default async function OpsPage() {
               {generationList.slice(0, 8).map((job, index) => (
                 <div key={`${job.created_at}-${index}`} className="app-list-row">
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-black capitalize text-slate-950 dark:text-white">{job.status}</p>
-                    <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
+                    <p className="text-sm font-semibold capitalize text-[var(--text-strong)]">{job.status}</p>
+                    <p className="mt-1 text-[13px] text-[var(--text-soft)]">
                       {job.credits_charged} credits • est. cost {job.estimated_provider_cost}
                     </p>
                   </div>
@@ -147,8 +146,8 @@ export default async function OpsPage() {
               {reviewList.slice(0, 8).map((session, index) => (
                 <div key={`${session.started_at}-${index}`} className="app-list-row">
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-black capitalize text-slate-950 dark:text-white">{session.status}</p>
-                    <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
+                    <p className="text-sm font-semibold capitalize text-[var(--text-strong)]">{session.status}</p>
+                    <p className="mt-1 text-[13px] text-[var(--text-soft)]">
                       {session.completed_items}/{session.total_items} items • {new Date(session.started_at).toLocaleString()}
                     </p>
                   </div>
@@ -166,11 +165,11 @@ export default async function OpsPage() {
                   {referralList.slice(0, 8).map((referral, index) => (
                     <div key={`${referral.created_at}-${index}`} className="app-list-row">
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-black text-slate-950 dark:text-white">
+                        <p className="text-sm font-semibold text-[var(--text-strong)]">
                           {referral.status}
                           {referral.suspicious ? ' • flagged' : ''}
                         </p>
-                        <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
+                        <p className="mt-1 text-[13px] text-[var(--text-soft)]">
                           {referral.suspicious_reason || 'No suspicion reason'} • {new Date(referral.created_at).toLocaleString()}
                         </p>
                       </div>

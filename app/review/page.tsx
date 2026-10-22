@@ -12,6 +12,7 @@ import ReviewFocusHeader from '@/components/review/ReviewFocusHeader';
 import ReviewModeCard from '@/components/review/ReviewModeCard';
 import ReviewSessionSummary from '@/components/review/ReviewSessionSummary';
 import { formatSessionType } from '@/components/review/review-utils';
+import Icon3D from '@/components/ui/Icon3D';
 import type {
   ReviewQueueResponse,
   ReviewSessionSummary as ReviewSessionSummaryType,
@@ -204,21 +205,21 @@ export default function ReviewPage() {
                   <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
                     <div className="app-meta-tile">
                       <p className="dashboard-mini-label">Current block</p>
-                      <p className="mt-2 text-xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">
+                      <p className="mt-2 text-xl font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">
                         {formatSessionType(queue.sessionType)}
                       </p>
                     </div>
                     <div className="app-meta-tile">
                       <p className="dashboard-mini-label">Remaining</p>
-                      <p className="mt-2 text-xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">{remainingCount}</p>
+                      <p className="mt-2 text-xl font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">{remainingCount}</p>
                     </div>
                     <div className="app-meta-tile">
                       <p className="dashboard-mini-label">Due pressure</p>
-                      <p className="mt-2 text-xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">{queue.dueCount}</p>
+                      <p className="mt-2 text-xl font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">{queue.dueCount}</p>
                     </div>
                     <div className="app-meta-tile">
                       <p className="dashboard-mini-label">Weak topics</p>
-                      <p className="mt-2 text-xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">{queue.weakTopicCount}</p>
+                      <p className="mt-2 text-xl font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">{queue.weakTopicCount}</p>
                     </div>
                   </div>
                 </AppSection>
@@ -234,10 +235,10 @@ export default function ReviewPage() {
                         <div key={topic.topic} className="app-list-row">
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center justify-between gap-3">
-                              <p className="text-sm font-black text-slate-950 dark:text-white">{topic.topic}</p>
-                              <span className="text-sm font-black text-amber-600 dark:text-amber-300">{topic.masteryScore}%</span>
+                              <p className="text-sm font-semibold text-[var(--text-strong)]">{topic.topic}</p>
+                              <span className="text-sm font-semibold text-amber-600 dark:text-amber-300">{topic.masteryScore}%</span>
                             </div>
-                            <p className="mt-1 text-[13px] leading-6 text-slate-500 dark:text-slate-400">
+                            <p className="mt-1 text-[13px] leading-6 text-[var(--text-soft)]">
                               {topic.dueCount} due items {'\u2022'} {topic.mistakesCount} mistakes
                             </p>
                           </div>
@@ -262,7 +263,7 @@ export default function ReviewPage() {
       title="Daily review queue"
       description="Choose a focus block and let the next study action become the only thing on screen."
       actions={
-        <Link href="/generator?type=flashcards" className="secondary-button hidden md:inline-flex">
+        <Link href="/generator?type=flashcards" className="secondary-button !hidden md:!inline-flex">
           Open flashcards
         </Link>
       }
@@ -280,10 +281,10 @@ export default function ReviewPage() {
           </div>
         ) : null}
 
-        <section className="grid gap-4 md:grid-cols-3">
-          <AppStatCard label="Session types" value={sessionModes.length} detail="Quick review, exam prep, and streak saver." />
-          <AppStatCard label="Focus style" value="1" detail="One central card, one decision, one obvious next move." />
-          <AppStatCard label="Fallback" value="Ready" detail="You can always open existing flashcards if you want a lighter pass." />
+        <section className="stat-trio">
+          <AppStatCard label="Session types" icon="calendar" value={sessionModes.length} detail="Quick review, exam prep, and streak saver." />
+          <AppStatCard label="Focus style" icon="target" value="1" detail="One central card, one decision, one obvious next move." />
+          <AppStatCard label="Fallback" icon="card-box" value="Ready" detail="You can always open existing flashcards if you want a lighter pass." />
         </section>
 
         <AppSection
@@ -312,26 +313,35 @@ export default function ReviewPage() {
           description="The session stays visually quiet, but the engine is still updating the important learning signals underneath."
         >
           <div className="app-list">
-            <div className="app-list-row">
+            <div className="app-list-row items-start gap-4">
+              <span className="icon-tile size-11 shrink-0">
+                <Icon3D name="brain" size={26} />
+              </span>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-black text-slate-950 dark:text-white">Spaced repetition</p>
-                <p className="mt-1 text-sm leading-7 text-slate-600 dark:text-slate-300">
+                <p className="text-sm font-semibold text-[var(--text-strong)]">Spaced repetition</p>
+                <p className="mt-1 text-sm leading-7 text-[var(--text-body)]">
                   Every rating updates next due date, mastery score, and the review state for that item.
                 </p>
               </div>
             </div>
-            <div className="app-list-row">
+            <div className="app-list-row items-start gap-4">
+              <span className="icon-tile size-11 shrink-0">
+                <Icon3D name="chart-up" size={26} />
+              </span>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-black text-slate-950 dark:text-white">Weak-topic adaptation</p>
-                <p className="mt-1 text-sm leading-7 text-slate-600 dark:text-slate-300">
+                <p className="text-sm font-semibold text-[var(--text-strong)]">Weak-topic adaptation</p>
+                <p className="mt-1 text-sm leading-7 text-[var(--text-body)]">
                   Risk signals tighten around real mistakes and overdue pressure instead of static assumptions.
                 </p>
               </div>
             </div>
-            <div className="app-list-row">
+            <div className="app-list-row items-start gap-4">
+              <span className="icon-tile size-11 shrink-0">
+                <Icon3D name="card-index" size={26} />
+              </span>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-black text-slate-950 dark:text-white">Legacy sync</p>
-                <p className="mt-1 text-sm leading-7 text-slate-600 dark:text-slate-300">
+                <p className="text-sm font-semibold text-[var(--text-strong)]">Legacy sync</p>
+                <p className="mt-1 text-sm leading-7 text-[var(--text-body)]">
                   Existing flashcards and quiz questions continue to flow into the review engine automatically.
                 </p>
               </div>

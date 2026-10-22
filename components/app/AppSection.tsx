@@ -37,7 +37,7 @@ export default function AppSection({
             {title ? <h2 className={cn('panel-title', eyebrow ? 'mt-2' : '')}>{title}</h2> : null}
             {description ? <p className="app-section-copy">{description}</p> : null}
           </div>
-          {action ? <div className="flex w-full min-w-0 flex-wrap items-center gap-2 md:w-auto md:flex-[1_1_24rem] md:justify-end xl:flex-none">{action}</div> : null}
+          {action ? <div className="flex w-full min-w-0 flex-wrap items-center gap-2 md:w-auto md:flex-[1_1_24rem] md:justify-end xl:flex-initial">{action}</div> : null}
         </div>
       ) : null}
       <div className={cn(hasHeader ? 'mt-5' : '', bodyClassName)}>{children}</div>

@@ -74,7 +74,7 @@ export default function LoginPage() {
       <SystemThemeSync />
       <AuthShell
         headerAction={
-          <Link href="/signup" className="secondary-button hidden md:inline-flex">
+          <Link href="/signup" className="secondary-button !hidden md:!inline-flex">
             Create account
           </Link>
         }
@@ -91,16 +91,16 @@ export default function LoginPage() {
                 <div className="auth-stat">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-sm font-black text-slate-600 dark:text-slate-300">Due today</p>
-                      <p className="mt-3 text-4xl font-black tracking-[-0.04em] text-slate-950 dark:text-white">12</p>
+                      <p className="text-sm font-semibold text-[var(--text-body)]">Due today</p>
+                      <p className="mt-3 text-4xl font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">12</p>
                     </div>
-                    <span className="material-symbols-outlined text-slate-400 dark:text-slate-500">menu_book</span>
+                    <span className="material-symbols-outlined text-[var(--text-soft)]">menu_book</span>
                   </div>
                 </div>
 
                 <div className="auth-stat-highlight">
                   <div className="flex items-start justify-between gap-3">
-                    <p className="text-sm font-black">7-day streak</p>
+                    <p className="text-sm font-semibold">7-day streak</p>
                     <span className="material-symbols-outlined text-[20px]">local_fire_department</span>
                   </div>
                   <p className="mt-8 text-sm font-medium opacity-70">Small daily wins add up fastest.</p>
@@ -109,17 +109,17 @@ export default function LoginPage() {
 
               <div className="auth-stat mt-3">
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-black text-slate-700 dark:text-slate-200">Mastery progress</p>
-                  <span className="material-symbols-outlined text-slate-400 dark:text-slate-500">check_circle</span>
+                  <p className="text-sm font-semibold text-[var(--text-body)]">Mastery progress</p>
+                  <span className="material-symbols-outlined text-[var(--text-soft)]">check_circle</span>
                 </div>
                 <div className="auth-progress-track mt-4">
                   <div className="auth-progress-fill w-[75%]" />
                 </div>
-                <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">75% Advanced Physics</p>
+                <p className="mt-3 text-sm text-[var(--text-soft)]">75% Advanced Physics</p>
               </div>
 
-              <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
-                Next session: <span className="font-bold text-slate-700 dark:text-slate-200">Organic Chemistry review at 4:00 PM</span>
+              <p className="mt-4 text-sm text-[var(--text-soft)]">
+                Next session: <span className="font-bold text-[var(--text-body)]">Organic Chemistry review at 4:00 PM</span>
               </p>
             </div>
           </div>
@@ -127,8 +127,8 @@ export default function LoginPage() {
       >
         <div className="mx-auto w-full max-w-[420px]">
           <p className="auth-kicker">Account access</p>
-          <h2 className="mt-3 text-[29px] font-black tracking-[-0.04em] text-slate-950 dark:text-white">Return to your review queue</h2>
-          <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
+          <h2 className="mt-3 text-[29px] font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">Return to your review queue</h2>
+          <p className="mt-3 text-sm leading-7 text-[var(--text-body)]">
             Sign in to continue your daily review, revisit weak topics, and keep your study flow uninterrupted.
           </p>
 
@@ -172,7 +172,7 @@ export default function LoginPage() {
             </form>
           </div>
 
-          <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-6 text-center text-sm text-[var(--text-soft)]">
             Don&apos;t have an account?{' '}
             <Link href="/signup" className="auth-action-link">
               Sign up

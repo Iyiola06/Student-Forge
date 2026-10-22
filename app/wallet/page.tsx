@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import AppShell from '@/components/layout/AppShell';
+import AppStatCard from '@/components/app/AppStatCard';
 import { useProfile } from '@/hooks/useProfile';
 import { useWallet } from '@/hooks/useWallet';
 import { formatNairaFromKobo, getCreditBundles } from '@/lib/billing/config';
@@ -72,28 +73,10 @@ export default function WalletPage() {
         {walletMessage ? <div className="app-empty">{walletMessage}</div> : null}
 
         <section className="metric-strip">
-          <div className="glass-panel app-panel-tight">
-            <p className="eyebrow">Balance</p>
-            <p className="mt-2 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">{balance}</p>
-            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">Credits are used only for premium AI actions.</p>
-          </div>
-          <div className="glass-panel app-panel-tight">
-            <p className="eyebrow">Next expiry</p>
-            <p className="mt-2 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">
-              {nextExpiry ? new Date(nextExpiry).toLocaleDateString() : 'None'}
-            </p>
-            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">Unused grants and top-ups expire by lot.</p>
-          </div>
-          <div className="glass-panel app-panel-tight">
-            <p className="eyebrow">Referral code</p>
-            <p className="mt-2 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">{wallet?.referralCode || 'Pending'}</p>
-            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">Invite a friend and earn approved bonus credits.</p>
-          </div>
-          <div className="glass-panel app-panel-tight">
-            <p className="eyebrow">Notifications</p>
-            <p className="mt-2 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">{wallet?.notifications?.length ?? 0}</p>
-            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">Purchase, low-balance, and expiry updates live here.</p>
-          </div>
+          <AppStatCard label="Balance" icon="coin" value={balance} detail="Credits are used only for premium AI actions." />
+          <AppStatCard label="Next expiry" icon="hourglass" value={nextExpiry ? new Date(nextExpiry).toLocaleDateString() : 'None'} detail="Unused grants and top-ups expire by lot." />
+          <AppStatCard label="Referral code" icon="gift" value={wallet?.referralCode || 'Pending'} detail="Invite a friend and earn approved bonus credits." />
+          <AppStatCard label="Notifications" icon="bell" value={wallet?.notifications?.length ?? 0} detail="Purchase, low-balance, and expiry updates live here." />
         </section>
 
         <section className="glass-panel app-panel">
@@ -108,13 +91,13 @@ export default function WalletPage() {
             {bundles.map((bundle) => (
               <div key={bundle.id} className="app-list-row items-center">
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-black text-slate-950 dark:text-white">{bundle.name}</p>
-                  <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
+                  <p className="text-sm font-semibold text-[var(--text-strong)]">{bundle.name}</p>
+                  <p className="mt-1 text-[13px] text-[var(--text-soft)]">
                     {bundle.credits.toLocaleString()} credits • {bundle.tagline}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-black text-slate-950 dark:text-white">{formatNairaFromKobo(bundle.amountKobo)}</span>
+                  <span className="text-sm font-semibold text-[var(--text-strong)]">{formatNairaFromKobo(bundle.amountKobo)}</span>
                   <button onClick={() => handleBuyCredits(bundle.id)} className="primary-button !h-9 !rounded-xl !px-3">
                     Buy
                   </button>
@@ -130,9 +113,9 @@ export default function WalletPage() {
             <h2 className="panel-title mt-2">Invite friends, earn credits</h2>
 
             <div className="mt-4 rounded-[18px] border border-black/6 bg-white/58 px-4 py-4 dark:border-white/8 dark:bg-white/5">
-              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">Your code</p>
-              <p className="mt-2 text-base font-black text-slate-950 dark:text-white">{wallet?.referralCode || 'Generating...'}</p>
-              <p className="mt-2 text-[13px] text-slate-500 dark:text-slate-400">
+              <p className="text-[12px] font-medium text-[var(--text-soft)]">Your code</p>
+              <p className="mt-2 text-base font-semibold text-[var(--text-strong)]">{wallet?.referralCode || 'Generating...'}</p>
+              <p className="mt-2 text-[13px] text-[var(--text-soft)]">
                 Approved referrals grant 200 credits. Flagged redemptions stay in operator review until cleared.
               </p>
             </div>
@@ -149,7 +132,7 @@ export default function WalletPage() {
               </button>
             </div>
 
-            {referralMessage ? <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">{referralMessage}</p> : null}
+            {referralMessage ? <p className="mt-3 text-sm text-[var(--text-body)]">{referralMessage}</p> : null}
 
             <div className="mt-4">
               {wallet?.referralRedemptions?.length ? (
@@ -157,8 +140,8 @@ export default function WalletPage() {
                   {wallet.referralRedemptions.map((referral) => (
                     <div key={referral.id} className="app-list-row">
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-black capitalize text-slate-950 dark:text-white">{referral.status}</p>
-                        <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">{new Date(referral.created_at).toLocaleString()}</p>
+                        <p className="text-sm font-semibold capitalize text-[var(--text-strong)]">{referral.status}</p>
+                        <p className="mt-1 text-[13px] text-[var(--text-soft)]">{new Date(referral.created_at).toLocaleString()}</p>
                       </div>
                       <span className="metric-chip !px-2 !py-1 !text-[10px]">{referral.suspicious ? 'flagged' : 'clean'}</span>
                     </div>
@@ -180,8 +163,8 @@ export default function WalletPage() {
                   {wallet.grants.map((grant) => (
                     <div key={grant.id} className="app-list-row">
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-black text-slate-950 dark:text-white">{grant.credits_remaining} credits left</p>
-                        <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
+                        <p className="text-sm font-semibold text-[var(--text-strong)]">{grant.credits_remaining} credits left</p>
+                        <p className="mt-1 text-[13px] text-[var(--text-soft)]">
                           {grant.source.replace(/_/g, ' ')} • expires {new Date(grant.expires_at).toLocaleDateString()}
                         </p>
                       </div>
@@ -206,13 +189,13 @@ export default function WalletPage() {
                   {wallet.events.map((tx) => (
                     <div key={tx.id} className="app-list-row">
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-black text-slate-950 dark:text-white">{tx.event_type.replace(/_/g, ' ')}</p>
-                        <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
+                        <p className="text-sm font-semibold text-[var(--text-strong)]">{tx.event_type.replace(/_/g, ' ')}</p>
+                        <p className="mt-1 text-[13px] text-[var(--text-soft)]">
                           {new Date(tx.created_at).toLocaleString()}
                           {tx.model_name ? ` • ${tx.model_name}` : ''}
                         </p>
                       </div>
-                      <span className={tx.amount < 0 ? 'text-sm font-black text-amber-600 dark:text-amber-300' : 'text-sm font-black text-emerald-600 dark:text-emerald-300'}>
+                      <span className={tx.amount < 0 ? 'text-sm font-semibold text-amber-600 dark:text-amber-300' : 'text-sm font-semibold text-emerald-600 dark:text-emerald-300'}>
                         {tx.amount > 0 ? '+' : ''}
                         {tx.amount}
                       </span>
@@ -234,8 +217,8 @@ export default function WalletPage() {
                   {wallet.notifications.map((notification) => (
                     <div key={notification.id} className="app-list-row">
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-black text-slate-950 dark:text-white">{notification.notification_type.replace(/_/g, ' ')}</p>
-                        <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">{new Date(notification.created_at).toLocaleString()}</p>
+                        <p className="text-sm font-semibold text-[var(--text-strong)]">{notification.notification_type.replace(/_/g, ' ')}</p>
+                        <p className="mt-1 text-[13px] text-[var(--text-soft)]">{new Date(notification.created_at).toLocaleString()}</p>
                       </div>
                     </div>
                   ))}

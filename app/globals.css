@@ -178,6 +178,18 @@
     background: rgba(74, 155, 232, 0.28);
   }
 
+  /* Grid and flex children default to min-width:auto, so one long title
+     (or a truncated line) can push a whole card past the screen edge. */
+  .grid > *,
+  .glass-panel,
+  .app-panel {
+    min-width: 0;
+  }
+
+  h1, h2, h3, p, li, dd, dt, label, blockquote {
+    overflow-wrap: break-word;
+  }
+
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
@@ -416,7 +428,7 @@
   /* ---------- Buttons ---------- */
 
   .primary-button {
-    @apply inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium transition;
+    @apply inline-flex shrink-0 whitespace-nowrap h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium transition;
     background: var(--action);
     color: var(--action-ink);
     box-shadow: var(--shadow-action);
@@ -434,7 +446,7 @@
   }
 
   .secondary-button {
-    @apply inline-flex h-11 items-center justify-center gap-2 rounded-full border px-5 text-sm font-medium transition;
+    @apply inline-flex shrink-0 whitespace-nowrap h-11 items-center justify-center gap-2 rounded-full border px-5 text-sm font-medium transition;
     border-color: var(--line-strong);
     background: var(--card);
     color: var(--text-strong);
@@ -446,7 +458,7 @@
   }
 
   .ghost-button {
-    @apply inline-flex h-11 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium transition;
+    @apply inline-flex shrink-0 whitespace-nowrap h-11 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium transition;
     color: var(--text-body);
   }
 
@@ -609,7 +621,29 @@
   }
 
   .metric-strip {
-    @apply grid gap-4 sm:grid-cols-2 xl:grid-cols-4;
+    @apply grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4;
+  }
+
+  /* Three stat cards: two-up on phones (the odd one spans), three-up from md. */
+  .stat-trio {
+    @apply grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3;
+  }
+
+  .stat-trio > :last-child:nth-child(odd) {
+    @apply col-span-2 md:col-span-1;
+  }
+
+  @media (max-width: 639px) {
+    .metric-tile .icon-3d {
+      width: 34px;
+      height: 34px;
+      top: 0.75rem;
+      right: 0.75rem;
+    }
+
+    .metric-tile .font-display {
+      font-size: 24px;
+    }
   }
 
   .brand-mark-shell {

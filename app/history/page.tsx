@@ -164,15 +164,15 @@ export default function HistoryPage() {
   return (
     <AppShell eyebrow="Progress" title="Study history" description="Everything you have reviewed, practised, uploaded and earned, in one timeline.">
       <div className="workspace-stack">
-        <section className="grid grid-cols-3 gap-3">
+        <section className="stat-trio">
           {[
             { label: 'Cards reviewed this week', value: week.reviews.toLocaleString(), icon: 'brain' as const },
             { label: 'Recall accuracy', value: week.accuracy === null ? '--' : `${week.accuracy}%`, icon: 'target' as const },
             { label: 'XP this week', value: week.xp.toLocaleString(), icon: 'glowing-star' as const },
           ].map((s) => (
             <div key={s.label} className="relative overflow-hidden rounded-[24px] border border-[var(--line)] bg-[var(--card)] p-4 shadow-[var(--shadow-sm)]">
-              <Icon3D name={s.icon} size={36} className="absolute top-3 right-3 hidden sm:block" />
-              <p className="text-[12.5px] text-[var(--text-soft)]">{s.label}</p>
+              <Icon3D name={s.icon} size={36} className="absolute top-3 right-3" />
+              <p className="pr-10 text-[12.5px] text-[var(--text-soft)]">{s.label}</p>
               <p className="mt-4 font-display text-[26px] font-semibold text-[var(--text-strong)]">{s.value}</p>
             </div>
           ))}

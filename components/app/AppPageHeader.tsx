@@ -30,7 +30,7 @@ export default function AppPageHeader({ eyebrow, title, description, actions, wa
       </div>
       <div className="flex w-full flex-wrap items-center justify-start gap-2 sm:w-auto sm:justify-end">
         {showWalletSummary ? (
-          <Link href="/wallet" className="app-toolbar-chip hidden md:inline-flex">
+          <Link href="/wallet" className="app-toolbar-chip !hidden md:!inline-flex">
             <Icon3D name="coin" size={16} />
             {walletBalance} credits
           </Link>

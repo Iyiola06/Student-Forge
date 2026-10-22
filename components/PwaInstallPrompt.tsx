@@ -118,7 +118,7 @@ export default function PwaInstallPrompt() {
                 {/* Close Button */}
                 <button
                     onClick={handleDismiss}
-                    className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"
+                    className="absolute top-4 right-4 text-[var(--text-soft)] hover:text-[var(--text-strong)] transition-colors"
                 >
                     <span className="material-symbols-outlined text-[20px]">close</span>
                 </button>
@@ -134,11 +134,11 @@ export default function PwaInstallPrompt() {
                         />
                     </div>
 
-                    <h3 className="mb-2 text-[22px] font-black tracking-tight text-slate-900 dark:text-white">
+                    <h3 className="mb-2 text-[22px] font-display font-semibold tracking-[-0.02em] text-[var(--text-strong)]">
                         Install Sulva’s Studify
                     </h3>
 
-                    <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mb-6">
+                    <p className="text-sm text-[var(--text-soft)] font-medium mb-6">
                         Add our app to your home screen for faster access, offline mode, and a full-screen study experience.
                     </p>
 
@@ -149,7 +149,7 @@ export default function PwaInstallPrompt() {
                         </button>
                         <button
                             onClick={handleDismiss}
-                            className="w-full py-3 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
+                            className="w-full py-3 text-sm font-bold text-[var(--text-soft)] hover:text-[var(--text-strong)] transition-colors"
                         >
                             Maybe Later
                         </button>

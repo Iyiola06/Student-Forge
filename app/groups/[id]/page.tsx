@@ -150,7 +150,7 @@ export default function GroupPage({ params }: { params: Promise<{ id: string }> 
                     share(e.target.value);
                     e.target.value = '';
                   }}
-                  className="h-10 rounded-full border border-[var(--line-strong)] bg-[var(--card)] px-3 text-[13px]"
+                  className="h-10 w-full min-w-0 max-w-full truncate rounded-full border border-[var(--line-strong)] bg-[var(--card)] px-3 text-[13px] sm:w-auto sm:max-w-[280px]"
                 >
                   <option value="" disabled>
                     Share one of your decks

@@ -35,7 +35,7 @@ export default function DashboardProgressCluster({
 }: DashboardProgressClusterProps) {
   const orbitStyle = {
     '--progress': examReadinessScore,
-    '--orbit-color': '#2f7fd3',
+    '--orbit-color': 'var(--accent)',
   } as CSSProperties;
 
   const values = {
@@ -50,24 +50,24 @@ export default function DashboardProgressCluster({
       <div className="dashboard-mini-surface flex flex-col items-center text-center">
         <div className="dashboard-progress-orbit" style={orbitStyle}>
           <div className="dashboard-progress-orbit-value">
-            <p className="text-[36px] font-black leading-none tracking-[-0.06em] text-slate-950 dark:text-white">{examReadinessScore}</p>
-            <p className="mt-1 text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">readiness</p>
+            <p className="text-[36px] font-display font-semibold leading-none tracking-[-0.03em] text-[var(--text-strong)]">{examReadinessScore}</p>
+            <p className="mt-1 text-[12px] font-medium text-[var(--text-soft)]">readiness</p>
           </div>
         </div>
 
-        <p className="mt-5 text-sm font-black tracking-[-0.03em] text-slate-950 dark:text-white">Learning posture</p>
-        <p className="mt-2 text-sm leading-7 text-slate-500 dark:text-slate-400">
+        <p className="mt-5 text-sm font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">Learning posture</p>
+        <p className="mt-2 text-sm leading-7 text-[var(--text-soft)]">
           Your pace is being shaped by completion, accuracy, and how cleanly resources become study-ready.
         </p>
 
         <div className="mt-5 grid w-full gap-3">
           <div className="dashboard-mini-surface p-3">
             <p className="dashboard-mini-label">Cards mastered</p>
-            <p className="mt-2 text-xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">{cardsMastered}</p>
+            <p className="mt-2 text-xl font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">{cardsMastered}</p>
           </div>
           <div className="dashboard-mini-surface p-3">
             <p className="dashboard-mini-label">Level {'\u2022'} XP</p>
-            <p className="mt-2 text-xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">
+            <p className="mt-2 text-xl font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">
               {level} {'\u2022'} {xp}
             </p>
           </div>
@@ -82,8 +82,8 @@ export default function DashboardProgressCluster({
             return (
               <div key={metric.key}>
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-black text-slate-950 dark:text-white">{metric.label}</p>
-                  <span className="text-sm font-black text-slate-500 dark:text-slate-300">{value}%</span>
+                  <p className="text-sm font-semibold text-[var(--text-strong)]">{metric.label}</p>
+                  <span className="text-sm font-semibold text-[var(--text-soft)]">{value}%</span>
                 </div>
                 <div className="mt-2 dashboard-progress-track">
                   <div
@@ -101,9 +101,9 @@ export default function DashboardProgressCluster({
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="dashboard-mini-label">Recent attempts</p>
-              <p className="mt-2 text-sm font-black text-slate-950 dark:text-white">Last answer quality</p>
+              <p className="mt-2 text-sm font-semibold text-[var(--text-strong)]">Last answer quality</p>
             </div>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{attempts.length} captured</p>
+            <p className="text-sm text-[var(--text-soft)]">{attempts.length} captured</p>
           </div>
 
           {attempts.length ? (
@@ -115,7 +115,7 @@ export default function DashboardProgressCluster({
               ))}
             </div>
           ) : (
-            <p className="mt-4 text-sm leading-7 text-slate-500 dark:text-slate-400">
+            <p className="mt-4 text-sm leading-7 text-[var(--text-soft)]">
               Once you begin reviewing, your recent answer quality will appear here.
             </p>
           )}

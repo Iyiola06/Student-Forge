@@ -156,7 +156,7 @@ export default function ResourcesPage() {
           <div className="flex flex-wrap gap-2">
             <ResourceStatusBadge status={uploadState === 'idle' ? 'ready' : uploadState} label={uploadState === 'idle' ? 'Library ready' : undefined} />
           </div>
-          <p className="text-sm leading-7 text-slate-500 dark:text-slate-300">
+          <p className="text-sm leading-7 text-[var(--text-soft)]">
             {uploadStateCopy[uploadState] || 'The library is ready for your next source.'}
           </p>
         </div>
@@ -166,15 +166,15 @@ export default function ResourcesPage() {
         <div className="space-y-3">
           <div className="resource-detail-meta-card">
             <p className="dashboard-mini-label">AI ready</p>
-            <p className="mt-2 text-xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">{readyCount}</p>
+            <p className="mt-2 text-xl font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">{readyCount}</p>
           </div>
           <div className="resource-detail-meta-card">
             <p className="dashboard-mini-label">Processing</p>
-            <p className="mt-2 text-xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">{processingCount}</p>
+            <p className="mt-2 text-xl font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">{processingCount}</p>
           </div>
           <div className="resource-detail-meta-card">
             <p className="dashboard-mini-label">Needs review</p>
-            <p className="mt-2 text-xl font-black tracking-[-0.05em] text-slate-950 dark:text-white">{attentionCount}</p>
+            <p className="mt-2 text-xl font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">{attentionCount}</p>
           </div>
         </div>
       </AppSection>
@@ -191,7 +191,7 @@ export default function ResourcesPage() {
                 />
               ) : null}
             </div>
-            <p className="text-sm leading-7 text-slate-500 dark:text-slate-300">
+            <p className="text-sm leading-7 text-[var(--text-soft)]">
               {getResourceStatusCopy(getEffectiveResourceStatus(latestResource, jobsByResource[latestResource.id]))}
             </p>
             <Link href={`/resources/${latestResource.id}`} className="ghost-button !h-9 !px-0">
@@ -209,7 +209,7 @@ export default function ResourcesPage() {
       title="Study materials"
       description="Upload, inspect, and trust the sources that power quizzes, flashcards, summaries, and tutoring."
       actions={
-        <button type="button" onClick={() => fileInputRef.current?.click()} className="secondary-button hidden md:inline-flex">
+        <button type="button" onClick={() => fileInputRef.current?.click()} className="secondary-button !hidden md:!inline-flex">
           Browse files
         </button>
       }
@@ -231,7 +231,7 @@ export default function ResourcesPage() {
       <div className="workspace-stack">
         <ResourceDropzone onFileSelect={uploadFile} uploadState={uploadState} />
 
-        <section className="grid gap-4 md:grid-cols-3">
+        <section className="stat-trio">
           <AppStatCard label="All sources" value={resources.length} detail="Everything currently in your study library." />
           <AppStatCard label="AI ready" value={readyCount} detail="Ready to generate flashcards, quizzes, summaries, and tutoring context." />
           <AppStatCard
@@ -334,14 +334,14 @@ export default function ResourcesPage() {
                       {book.thumbnail ? (
                         <img src={book.thumbnail} alt={book.title} className="h-full w-full object-cover" />
                       ) : (
-                        <span className="material-symbols-outlined text-slate-400 dark:text-slate-500">menu_book</span>
+                        <span className="material-symbols-outlined text-[var(--text-soft)]">menu_book</span>
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <p className="truncate text-sm font-black text-slate-950 dark:text-white">{book.title}</p>
-                          <p className="mt-1 text-[13px] leading-6 text-slate-500 dark:text-slate-400">
+                          <p className="truncate text-sm font-semibold text-[var(--text-strong)]">{book.title}</p>
+                          <p className="mt-1 text-[13px] leading-6 text-[var(--text-soft)]">
                             {book.authors?.length ? book.authors.join(', ') : 'Author unavailable'}
                           </p>
                         </div>
@@ -358,7 +358,7 @@ export default function ResourcesPage() {
                           ) : null}
                         </div>
                       </div>
-                      {description ? <p className="mt-2 line-clamp-2 text-sm leading-7 text-slate-600 dark:text-slate-300">{description}</p> : null}
+                      {description ? <p className="mt-2 line-clamp-2 text-sm leading-7 text-[var(--text-body)]">{description}</p> : null}
                     </div>
                   </div>
                 );

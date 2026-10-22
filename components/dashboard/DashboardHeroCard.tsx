@@ -30,7 +30,7 @@ export default function DashboardHeroCard({
   const hasDueWork = dueTodayCount > 0;
   const orbitStyle = {
     '--progress': readiness,
-    '--orbit-color': '#2f7fd3',
+    '--orbit-color': 'var(--accent)',
   } as CSSProperties;
 
   return (
@@ -44,11 +44,11 @@ export default function DashboardHeroCard({
             <AppStatusBadge tone="neutral">{weakTopicCount} weak topics</AppStatusBadge>
           </div>
 
-          <h2 className="mt-5 text-[32px] font-black leading-[1.02] tracking-[-0.045em] text-slate-950 sm:text-[38px] dark:text-white">
+          <h2 className="mt-5 text-[32px] font-display font-semibold leading-[1.05] tracking-[-0.03em] text-[var(--text-strong)] sm:text-[38px] dark:text-white">
             {hasDueWork ? 'Continue review' : 'Start your next set'}
           </h2>
 
-          <p className="mt-3 max-w-[48ch] text-sm leading-7 text-slate-600 dark:text-slate-300">
+          <p className="mt-3 max-w-[48ch] text-sm leading-7 text-[var(--text-body)]">
             {hasDueWork
               ? `Clear today's due items first, then reinforce the weakest topics.`
               : `Generate a fresh quiz or flashcard set to keep your streak moving.`}
@@ -69,8 +69,8 @@ export default function DashboardHeroCard({
             <p className="dashboard-mini-label">Next up</p>
             {nextItem ? (
               <>
-                <p className="mt-3 truncate text-lg font-black tracking-[-0.035em] text-slate-950 dark:text-white">{nextItem.title}</p>
-                <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                <p className="mt-3 truncate text-lg font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">{nextItem.title}</p>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-soft)]">
                   {nextItem.kind} {'\u2022'} Due {new Date(nextItem.dueAt).toLocaleString()}
                 </p>
                 <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -79,8 +79,8 @@ export default function DashboardHeroCard({
               </>
             ) : (
               <>
-                <p className="mt-3 text-lg font-black tracking-[-0.035em] text-slate-950 dark:text-white">Fresh study material</p>
-                <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">Build one new set from your uploaded resources.</p>
+                <p className="mt-3 text-lg font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">Fresh study material</p>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-soft)]">Build one new set from your uploaded resources.</p>
               </>
             )}
           </div>
@@ -88,14 +88,14 @@ export default function DashboardHeroCard({
           <div className="dashboard-mini-surface flex min-w-0 items-center gap-4">
             <div className="dashboard-progress-orbit" style={orbitStyle}>
               <div className="dashboard-progress-orbit-value">
-                <p className="text-[30px] font-black leading-none tracking-[-0.05em] text-slate-950 dark:text-white">{readiness}</p>
-                <p className="mt-1 text-[11px] font-black uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">score</p>
+                <p className="text-[30px] font-display font-semibold leading-none tracking-[-0.03em] text-[var(--text-strong)]">{readiness}</p>
+                <p className="mt-1 text-[12px] font-medium text-[var(--text-soft)]">score</p>
               </div>
             </div>
             <div className="min-w-0 flex-1">
               <p className="dashboard-mini-label">Readiness</p>
-              <p className="mt-2 text-base font-black tracking-[-0.03em] text-slate-950 dark:text-white">{readiness}% ready</p>
-              <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{streakDays} day streak</p>
+              <p className="mt-2 text-base font-display font-semibold tracking-[-0.03em] text-[var(--text-strong)]">{readiness}% ready</p>
+              <p className="mt-1 text-sm leading-6 text-[var(--text-soft)]">{streakDays} day streak</p>
             </div>
           </div>
         </div>

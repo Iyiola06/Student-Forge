@@ -43,7 +43,7 @@ const MODE_PROMPTS: Record<Exclude<TutorMode, 'explain'>, string[]> = {
 const SUGGESTED_PROMPTS = [
     { icon: 'science', text: 'Explain photosynthesis in simple terms', color: 'text-green-500' },
     { icon: 'calculate', text: 'Help me solve quadratic equations', color: 'text-blue-500' },
-    { icon: 'history_edu', text: 'Summarize the causes of World War II', color: 'text-[#2f7fd3]' },
+    { icon: 'history_edu', text: 'Summarize the causes of World War II', color: 'text-[var(--accent-strong)]' },
     { icon: 'biotech', text: 'What is DNA replication?', color: 'text-purple-500' },
     { icon: 'economics', text: 'Explain supply and demand', color: 'text-cyan-500' },
     { icon: 'menu_book', text: 'Help me understand Shakespeare\'s themes', color: 'text-pink-500' },
@@ -356,7 +356,7 @@ export default function TutorChat({ initialResourceId, initialConversationId }: 
                                             code(props: any) {
                                                 const { children, className, node, ...rest } = props;
                                                 return (
-                                                    <code className="bg-slate-100 dark:bg-[#13203a] px-1.5 py-0.5 rounded text-[#2f7fd3] dark:text-green-500 text-sm" {...rest}>
+                                                    <code className="bg-slate-100 dark:bg-[#13203a] px-1.5 py-0.5 rounded text-[var(--accent-strong)] dark:text-green-500 text-sm" {...rest}>
                                                         {children}
                                                     </code>
                                                 );
@@ -366,7 +366,7 @@ export default function TutorChat({ initialResourceId, initialConversationId }: 
                                         {msg.content}
                                     </ReactMarkdown>
                                 </div>
-                                <div className={`text-[10px] mt-2 ${msg.role === 'user' ? 'text-white/60' : 'text-slate-400'}`}>
+                                <div className={`text-[10px] mt-2 ${msg.role === 'user' ? 'text-white/60' : 'text-[var(--text-soft)]'}`}>
                                     {msg.timestamp.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
                                 </div>
                             </div>
@@ -383,9 +383,9 @@ export default function TutorChat({ initialResourceId, initialConversationId }: 
                                 <span className="text-[11px] font-medium text-[var(--accent)]">Thinking...</span>
                             </div>
                             <div className="flex items-center gap-1.5">
-                                <div className="size-2 bg-[#2f7fd3] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                                <div className="size-2 bg-[#2f7fd3] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                                <div className="size-2 bg-[#2f7fd3] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                                <div className="size-2 bg-[var(--accent)] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                                <div className="size-2 bg-[var(--accent)] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                                <div className="size-2 bg-[var(--accent)] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                             </div>
                         </div>
                     </div>
@@ -419,7 +419,7 @@ export default function TutorChat({ initialResourceId, initialConversationId }: 
                         <span className="material-symbols-outlined">send</span>
                     </button>
                 </div>
-                <p className="text-[10px] text-center text-slate-400 dark:text-slate-500 mt-2 font-medium">
+                <p className="text-[10px] text-center text-[var(--text-soft)] mt-2 font-medium">
                     Press Enter to send. Shift+Enter for a new line.
                 </p>
             </div>

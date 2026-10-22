@@ -31,7 +31,7 @@ export default function AITutorPage() {
     return (
         <Suspense fallback={
             <div className="main-bg font-display min-h-screen flex items-center justify-center">
-                <div className="size-10 border-4 border-[#2f7fd3] border-t-transparent rounded-full animate-spin"></div>
+                <div className="size-10 border-4 border-[var(--accent)] border-t-transparent rounded-full animate-spin"></div>
             </div>
         }>
             <AITutorContent />

@@ -95,7 +95,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onCancel }) =>
                         onClick={onCancel}
                         className="w-14 h-14 rounded-full bg-white/5 text-white flex items-center justify-center hover:bg-white/10 transition-all active:scale-90"
                     >
-                        <span className="material-symbols-outlined font-black">close</span>
+                        <span className="material-symbols-outlined font-semibold">close</span>
                     </button>
 
                     <button
@@ -104,7 +104,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onCancel }) =>
                         className="w-20 h-20 rounded-full bg-white p-1 shadow-2xl shadow-white/20 hover:scale-110 active:scale-90 transition-all"
                     >
                         <div className="w-full h-full rounded-full border-4 border-slate-900 flex items-center justify-center">
-                            <div className="w-4 h-4 rounded-full bg-[#2f7fd3]"></div>
+                            <div className="w-4 h-4 rounded-full bg-[var(--accent)]"></div>
                         </div>
                     </button>
 
@@ -114,7 +114,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onCancel }) =>
                 <canvas ref={canvasRef} className="hidden" />
             </div>
 
-            <p className="mt-8 text-slate-400 text-sm font-bold tracking-widest uppercase">Align your handwritten notes within the frame</p>
+            <p className="mt-8 text-[var(--text-soft)] text-sm font-bold tracking-widest uppercase">Align your handwritten notes within the frame</p>
         </div>
     );
 };

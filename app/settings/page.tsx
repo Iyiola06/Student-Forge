@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import AppShell from '@/components/layout/AppShell';
+import AppStatCard from '@/components/app/AppStatCard';
 import LearningSettings from '@/components/settings/LearningSettings';
 import { useProfile } from '@/hooks/useProfile';
 import { useWallet } from '@/hooks/useWallet';
@@ -275,30 +276,19 @@ export default function SettingsPage() {
     >
       <div className="workspace-stack">
         <section className="metric-strip">
-          <div className="glass-panel app-panel-tight">
-            <p className="eyebrow">Credits</p>
-            <p className="mt-2 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">{wallet?.balance ?? profile?.credit_balance ?? 0}</p>
-            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">Current wallet balance.</p>
-          </div>
-          <div className="glass-panel app-panel-tight">
-            <p className="eyebrow">Next expiry</p>
-            <p className="mt-2 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">
-              {wallet?.nextExpiry || profile?.next_credit_expiry
+          <AppStatCard label="Credits" icon="coin" value={wallet?.balance ?? profile?.credit_balance ?? 0} detail="Current wallet balance." />
+          <AppStatCard
+            label="Next expiry"
+            icon="hourglass"
+            value={
+              wallet?.nextExpiry || profile?.next_credit_expiry
                 ? new Date((wallet?.nextExpiry || profile?.next_credit_expiry) as string).toLocaleDateString()
-                : 'None'}
-            </p>
-            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">Top-ups and grants expire by lot.</p>
-          </div>
-          <div className="glass-panel app-panel-tight">
-            <p className="eyebrow">Theme</p>
-            <p className="mt-2 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">{isDarkMode ? 'Dark' : 'Light'}</p>
-            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">Switch any time.</p>
-          </div>
-          <div className="glass-panel app-panel-tight">
-            <p className="eyebrow">Push</p>
-            <p className="mt-2 text-[25px] font-black tracking-[-0.05em] text-slate-950 dark:text-white">{pushNotifications ? 'On' : 'Off'}</p>
-            <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">Daily reminders on your device.</p>
-          </div>
+                : 'None'
+            }
+            detail="Top-ups and grants expire by lot."
+          />
+          <AppStatCard label="Theme" icon="sun-cloud" value={isDarkMode ? 'Dark' : 'Light'} detail="Switch any time." />
+          <AppStatCard label="Push" icon="bell" value={pushNotifications ? 'On' : 'Off'} detail="Daily reminders on your device." />
         </section>
 
         <section className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
@@ -308,7 +298,7 @@ export default function SettingsPage() {
 
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               <label className="block">
-                <span className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">First name</span>
+                <span className="mb-2 block text-sm font-bold text-[var(--text-body)]">First name</span>
                 <input
                   className="h-11 w-full rounded-2xl border border-black/8 bg-white/72 px-4 text-sm outline-none focus:border-[#2266ad]/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
                   value={formData.firstName}
@@ -318,7 +308,7 @@ export default function SettingsPage() {
               </label>
 
               <label className="block">
-                <span className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Last name</span>
+                <span className="mb-2 block text-sm font-bold text-[var(--text-body)]">Last name</span>
                 <input
                   className="h-11 w-full rounded-2xl border border-black/8 bg-white/72 px-4 text-sm outline-none focus:border-[#2266ad]/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
                   value={formData.lastName}
@@ -330,7 +320,7 @@ export default function SettingsPage() {
 
             <div className="mt-4 grid gap-4 md:grid-cols-[1fr_auto]">
               <label className="block">
-                <span className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Examination date</span>
+                <span className="mb-2 block text-sm font-bold text-[var(--text-body)]">Examination date</span>
                 <input
                   className="h-11 w-full rounded-2xl border border-black/8 bg-white/72 px-4 text-sm outline-none focus:border-[#2266ad]/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
                   value={formData.examDate}
@@ -346,7 +336,7 @@ export default function SettingsPage() {
             </div>
 
             <div className="mt-4">
-              <p className="mb-3 text-sm font-bold text-slate-700 dark:text-slate-300">Choose avatar</p>
+              <p className="mb-3 text-sm font-bold text-[var(--text-body)]">Choose avatar</p>
               <div className="flex flex-wrap gap-3">
                 {avatarOptions.map((url, index) => (
                   <button
@@ -362,7 +352,7 @@ export default function SettingsPage() {
                   {isUploadingAvatar ? (
                     <span className="size-5 rounded-full border-2 border-[#2266ad] border-t-transparent animate-spin" />
                   ) : (
-                    <span className="material-symbols-outlined text-slate-400 dark:text-slate-500">add_a_photo</span>
+                    <span className="material-symbols-outlined text-[var(--text-soft)]">add_a_photo</span>
                   )}
                   <input type="file" accept="image/*" onChange={handleAvatarUpload} disabled={isUploadingAvatar} className="hidden" />
                 </label>
@@ -378,13 +368,13 @@ export default function SettingsPage() {
               {bundles.map((bundle) => (
                 <div key={bundle.id} className="app-list-row items-center">
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-black text-slate-950 dark:text-white">{bundle.name}</p>
-                    <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">
+                    <p className="text-sm font-semibold text-[var(--text-strong)]">{bundle.name}</p>
+                    <p className="mt-1 text-[13px] text-[var(--text-soft)]">
                       {bundle.credits.toLocaleString()} credits • {bundle.tagline}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-black text-slate-950 dark:text-white">{formatNairaFromKobo(bundle.amountKobo)}</span>
+                    <span className="text-sm font-semibold text-[var(--text-strong)]">{formatNairaFromKobo(bundle.amountKobo)}</span>
                     <button onClick={() => handleBuyCredits(bundle.id)} disabled={purchasingBundleId === bundle.id} className="primary-button !h-9 !rounded-xl !px-3 disabled:opacity-60">
                       {purchasingBundleId === bundle.id ? 'Opening...' : 'Buy'}
                     </button>
@@ -397,16 +387,16 @@ export default function SettingsPage() {
               {(wallet?.transactions ?? []).slice(0, 4).map((tx) => (
                 <div key={tx.id} className="app-list-row">
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-black text-slate-950 dark:text-white">{tx.description || tx.source.replace(/_/g, ' ')}</p>
-                    <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">{new Date(tx.created_at).toLocaleString()}</p>
+                    <p className="text-sm font-semibold text-[var(--text-strong)]">{tx.description || tx.source.replace(/_/g, ' ')}</p>
+                    <p className="mt-1 text-[13px] text-[var(--text-soft)]">{new Date(tx.created_at).toLocaleString()}</p>
                   </div>
-                  <span className={tx.amount < 0 ? 'text-sm font-black text-amber-600 dark:text-amber-300' : 'text-sm font-black text-emerald-600 dark:text-emerald-300'}>
+                  <span className={tx.amount < 0 ? 'text-sm font-semibold text-amber-600 dark:text-amber-300' : 'text-sm font-semibold text-emerald-600 dark:text-emerald-300'}>
                     {tx.amount > 0 ? '+' : ''}
                     {tx.amount}
                   </span>
                 </div>
               ))}
-              {wallet?.transactions?.length === 0 ? <div className="app-list-row text-[13px] text-slate-500 dark:text-slate-400">Your credit ledger will appear here after signup or purchase.</div> : null}
+              {wallet?.transactions?.length === 0 ? <div className="app-list-row text-[13px] text-[var(--text-soft)]">Your credit ledger will appear here after signup or purchase.</div> : null}
             </div>
 
             <div className="mt-4">
@@ -456,8 +446,8 @@ export default function SettingsPage() {
               ].map((item) => (
                 <div key={item.title} className="app-list-row items-center justify-between gap-4">
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-black text-slate-950 dark:text-white">{item.title}</p>
-                    <p className="mt-1 text-[13px] text-slate-500 dark:text-slate-400">{item.body}</p>
+                    <p className="text-sm font-semibold text-[var(--text-strong)]">{item.title}</p>
+                    <p className="mt-1 text-[13px] text-[var(--text-soft)]">{item.body}</p>
                   </div>
                   {item.action}
                 </div>
@@ -468,7 +458,7 @@ export default function SettingsPage() {
           <section className="glass-panel app-panel">
             <p className="eyebrow">Danger zone</p>
             <h2 className="panel-title mt-2">Delete your account</h2>
-            <p className="mt-3 text-[14px] leading-6 text-slate-600 dark:text-slate-300">
+            <p className="mt-3 text-[14px] leading-6 text-[var(--text-body)]">
               This permanently deletes your profile, library data, study history, and subscriptions.
             </p>
             <div className="mt-4">
@@ -502,7 +492,7 @@ export default function SettingsPage() {
                     toast.error(`Failed to delete account: ${error.message}`);
                   }
                 }}
-                className="inline-flex h-10 items-center justify-center rounded-2xl bg-red-600 px-4 text-sm font-black text-white transition hover:bg-red-700"
+                className="inline-flex h-10 items-center justify-center rounded-2xl bg-red-600 px-4 text-sm font-semibold text-white transition hover:bg-red-700"
               >
                 Delete account
               </button>
