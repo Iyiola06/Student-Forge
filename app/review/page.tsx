@@ -262,7 +262,7 @@ export default function ReviewPage() {
       title="Daily review queue"
       description="Choose a focus block and let the next study action become the only thing on screen."
       actions={
-        <Link href="/flashcards" className="secondary-button hidden md:inline-flex">
+        <Link href="/generator?type=flashcards" className="secondary-button hidden md:inline-flex">
           Open flashcards
         </Link>
       }

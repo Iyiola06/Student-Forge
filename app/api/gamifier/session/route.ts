@@ -121,6 +121,7 @@ function createFlashRound(
             explanation: item.back_content,
             sourceLabel: deck?.title || 'Flashcard deck',
             difficulty: challengeType === 'boss' ? 'hard' : 'easy',
+            sourceItemId: item.id,
         },
     };
 }
@@ -155,6 +156,7 @@ function createMcqRound(
             answer: question.correct_answer,
             explanation: question.explanation || question.correct_answer,
             sourceLabel: quiz?.title || 'Saved quiz',
+            sourceItemId: question.id,
             difficulty: challengeType === 'boss' ? 'hard' : ((quiz?.difficulty as any) || 'medium'),
         },
     };

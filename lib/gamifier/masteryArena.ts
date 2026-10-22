@@ -15,6 +15,8 @@ export interface ChallengePayload {
     content?: string;
     sourceLabel?: string;
     difficulty?: 'easy' | 'medium' | 'hard';
+    /** Id of the flashcard item / quiz question this round came from, so results reach review. */
+    sourceItemId?: string;
 }
 
 export interface RoundResult {
@@ -86,6 +88,7 @@ export interface SessionSummary {
     accuracy: number;
     masteryDelta: number;
     weakConcepts: string[];
+    sentToReview?: number;
     topic: string;
     subject: string;
     mode: GameMode;

@@ -70,7 +70,7 @@ export const toolCards: Array<{
     tags: ['Spaced repetition', 'Daily'],
     meta: ['Memory model', '5 min/day', 'Never forget'],
     guide: { name: 'Recall Buddy', role: 'Review', icon: 'man-hand' },
-    href: '/flashcards',
+    href: '/generator?type=flashcards',
     featured: true,
   },
   {
@@ -101,7 +101,7 @@ export const toolCards: Array<{
     tags: ['Exam week', 'Hot list'],
     meta: ['High-yield', '1 page', 'Printable'],
     guide: { name: 'Examiner', role: 'Predict', icon: 'woman-scientist' },
-    href: '/exam-ready',
+    href: '/generator?type=exam_snapshot',
   },
   {
     title: 'Essay Grader',

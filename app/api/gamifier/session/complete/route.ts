@@ -8,6 +8,8 @@ import {
     slugifyTopic,
     summarizeWeakConcepts,
 } from '@/lib/gamifier/masteryArena';
+import { recordExternalAnswer } from '@/lib/review/server';
+import { recordStudyActivity } from '@/lib/progress/server';
 
 const requestSchema = z.object({
     sessionId: z.string().uuid(),
@@ -131,8 +133,44 @@ export async function POST(request: Request) {
         }),
     ]);
 
+    // One mastery system: every quest answer also updates the spaced-repetition model and
+    // topic mastery. Missed questions that are not cards yet become new review items.
+    let sentToReview = 0;
+    const newMisses: Array<{ question: string; answer: string; explanation?: string }> = [];
+    for (const round of hydrated.rounds) {
+        if (!round.result || !round.payload?.prompt) continue;
+        const outcome = await recordExternalAnswer({
+            supabase,
+            userId: user.id,
+            correct: Boolean(round.result.correct),
+            origin: 'quest',
+            sourceId: round.payload.sourceItemId ?? null,
+            question: round.payload.sourceItemId ? null : round.payload.prompt,
+            submittedAnswer: round.result.answer,
+        }).catch(() => null);
+        if (outcome) sentToReview++;
+        else if (!round.result.correct && round.payload.answer) {
+            newMisses.push({ question: round.payload.prompt, answer: round.payload.answer, explanation: round.payload.explanation });
+        }
+    }
+    if (newMisses.length) {
+        const now = new Date().toISOString();
+        await supabase.from('review_items').insert(
+            newMisses.slice(0, 20).map((miss) => ({
+                user_id: user.id,
+                item_type: 'quiz_question',
+                source_id: crypto.randomUUID(),
+                source_topic: hydrated.topic || 'General',
+                due_at: now,
+                content_payload: { question: miss.question, answer: miss.answer, explanation: miss.explanation ?? null, options: [], source_kind: 'quest_miss' },
+            }))
+        );
+    }
+    await recordStudyActivity(supabase, user.id);
+
     return NextResponse.json({
         summary: {
+            sentToReview: sentToReview + newMisses.length,
             totalXp: xp.totalXp,
             completionXp: xp.completionXp,
             streakBonusXp: xp.streakBonusXp,

@@ -50,7 +50,7 @@ export default function ReviewSessionSummary({ summary, onRestart, isRestarting 
               <Link href="/dashboard" className="secondary-button">
                 Back to dashboard
               </Link>
-              <Link href="/flashcards" className="ghost-button">
+              <Link href="/generator?type=flashcards" className="ghost-button">
                 Open flashcards
               </Link>
             </AppSection>

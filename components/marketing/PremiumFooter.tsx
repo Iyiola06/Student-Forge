@@ -5,7 +5,7 @@ import { footerLinks } from '@/components/marketing/home-content';
 
 const productLinks = [
   { label: 'Quiz Generator', href: '/generator' },
-  { label: 'Flashcards', href: '/flashcards' },
+  { label: 'Flashcards', href: '/generator?type=flashcards' },
   { label: 'AI Tutor', href: '/ai-tutor' },
   { label: 'Simplifier', href: '/simplifier' },
 ];

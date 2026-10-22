@@ -20,19 +20,19 @@ type NavItem = {
 const primaryLinks: NavItem[] = [
   { name: 'Dashboard', short: 'Home', href: '/dashboard', icon: 'sun-cloud' },
   { name: 'Library', href: '/resources', icon: 'books' },
-  { name: 'Generate', href: '/generator', icon: 'sparkles' },
+  { name: 'Studio', href: '/generator', icon: 'sparkles' },
   { name: 'Review', href: '/review', icon: 'brain' },
   { name: 'AI Tutor', short: 'Tutor', href: '/ai-tutor', icon: 'robot' },
 ];
 
 const toolLinks: NavItem[] = [
   { name: 'Simplifier', href: '/simplifier', icon: 'bulb' },
-  { name: 'Exam Ready', href: '/exam-ready', icon: 'target' },
   { name: 'Essay Grader', href: '/essay-grader', icon: 'pencil' },
   { name: 'Past Questions', href: '/past-questions', icon: 'scroll' },
-  { name: 'Flashcards', href: '/flashcards', icon: 'card-index' },
   { name: 'Quest Mode', href: '/gamifier', icon: 'joystick' },
+  { name: 'Study Groups', href: '/groups', icon: 'clapping' },
   { name: 'Leaderboard', href: '/leaderboard', icon: 'trophy' },
+  { name: 'History', href: '/history', icon: 'calendar' },
 ];
 
 const accountLinks: NavItem[] = [

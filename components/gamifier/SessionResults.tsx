@@ -78,7 +78,12 @@ export default function SessionResults({ summary, onReturn, onReplay }: SessionR
                     </div>
 
                     <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6">
-                        <h2 className="mb-5 text-2xl font-black">Weak Concepts Saved</h2>
+                        <h2 className="mb-2 text-2xl font-black">Weak Concepts Saved</h2>
+                        <p className="mb-5 text-sm text-slate-400">
+                            {summary?.sentToReview
+                                ? `${summary.sentToReview} answers updated your spaced review queue. Misses come back right before you would forget them.`
+                                : 'Answers here update your spaced review queue.'}
+                        </p>
                         {weakConcepts.length > 0 ? (
                             <div className="space-y-3">
                                 {weakConcepts.map((concept: string) => (

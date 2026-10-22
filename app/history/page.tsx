@@ -1,302 +1,252 @@
 'use client';
 
+import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
 import AppShell from '@/components/layout/AppShell';
-import { useEffect, useState } from 'react';
+import AppEmptyState from '@/components/app/AppEmptyState';
+import Icon3D, { type Icon3DName } from '@/components/ui/Icon3D';
 import { createClient } from '@/lib/supabase/client';
+import { cn } from '@/lib/utils';
 
-interface HistoryItem {
+type Kind = 'review' | 'essay' | 'tutor' | 'upload' | 'xp';
+
+type TimelineItem = {
   id: string;
-  action_type: string;
-  entity_type: string | null;
-  details: Record<string, any>;
-  created_at: string;
-}
+  kind: Kind;
+  title: string;
+  detail: string;
+  at: string;
+  badge?: string | null;
+  href?: string;
+};
 
-const ACTION_FILTERS = [
-  { label: 'All', value: 'all' },
-  { label: 'Quizzes', value: 'quiz' },
-  { label: 'Documents', value: 'document' },
-  { label: 'Uploads', value: 'upload' },
-  { label: 'Other', value: 'other' },
+const FILTERS: Array<{ id: 'all' | Kind; label: string }> = [
+  { id: 'all', label: 'All' },
+  { id: 'review', label: 'Reviews' },
+  { id: 'essay', label: 'Essays' },
+  { id: 'tutor', label: 'Tutor' },
+  { id: 'upload', label: 'Uploads' },
+  { id: 'xp', label: 'XP' },
 ];
 
-function formatItemInfo(item: HistoryItem) {
-  const action = item.action_type.toLowerCase();
-  if (action.includes('quiz')) {
-    return {
-      icon: 'quiz',
-      color: 'bg-violet-100 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400',
-      dot: 'bg-violet-500',
-      title: item.details?.title ? `Quiz: ${item.details.title}` : 'Quiz Completed',
-      subtitle: item.details?.subject || 'General',
-      badge: item.details?.score != null ? `${item.details.score}%` : null,
-      badgeColor: Number(item.details?.score) >= 70
-        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-        : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400',
-      filterKey: 'quiz',
-    };
+const ICONS: Record<Kind, Icon3DName> = {
+  review: 'brain',
+  essay: 'writing-hand',
+  tutor: 'robot',
+  upload: 'inbox',
+  xp: 'glowing-star',
+};
+
+function timeAgo(iso: string) {
+  const seconds = Math.max(1, Math.floor((Date.now() - new Date(iso).getTime()) / 1000));
+  const steps: Array<[number, string]> = [
+    [31536000, 'year'],
+    [2592000, 'month'],
+    [86400, 'day'],
+    [3600, 'hour'],
+    [60, 'minute'],
+  ];
+  for (const [size, unit] of steps) {
+    const n = Math.floor(seconds / size);
+    if (n >= 1) return `${n} ${unit}${n > 1 ? 's' : ''} ago`;
   }
-  if (action.includes('document') || action.includes('read')) {
-    return {
-      icon: 'menu_book',
-      color: 'bg-sky-100 dark:bg-sky-900/20 text-sky-600 dark:text-sky-400',
-      dot: 'bg-sky-500',
-      title: item.details?.title ? `Read: ${item.details.title}` : 'Document Read',
-      subtitle: [item.details?.subject, item.details?.time_spent_mins ? `${item.details.time_spent_mins} min` : null].filter(Boolean).join(' • ') || 'General',
-      badge: null,
-      badgeColor: '',
-      filterKey: 'document',
-    };
-  }
-  if (action.includes('upload')) {
-    return {
-      icon: 'upload_file',
-      color: 'bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400',
-      dot: 'bg-emerald-500',
-      title: item.details?.title ? `Uploaded: ${item.details.title}` : 'File Uploaded',
-      subtitle: 'Resource Library',
-      badge: null,
-      badgeColor: '',
-      filterKey: 'upload',
-    };
-  }
-  if (action.includes('flash')) {
-    return {
-      icon: 'style',
-      color: 'bg-amber-100 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400',
-      dot: 'bg-amber-500',
-      title: item.details?.title ? `Flashcards: ${item.details.title}` : 'Flashcard Study',
-      subtitle: item.details?.subject || 'General',
-      badge: item.details?.mastered != null ? `${item.details.mastered} mastered` : null,
-      badgeColor: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400',
-      filterKey: 'other',
-    };
-  }
-  return {
-    icon: 'history',
-    color: 'bg-slate-100 dark:bg-[#13203a] text-slate-600 dark:text-slate-400',
-    dot: 'bg-slate-400',
-    title: item.action_type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-    subtitle: item.entity_type || 'Activity',
-    badge: null,
-    badgeColor: '',
-    filterKey: 'other',
-  };
+  return 'Just now';
 }
 
-function formatDate(dateString: string) {
-  const d = new Date(dateString);
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  if (d.toDateString() === today.toDateString()) return 'Today';
-  if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
-  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-}
-
-function formatTime(dateString: string) {
-  return new Date(dateString).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-}
-
-// Group items by date label
-function groupByDate(items: HistoryItem[]) {
-  const groups: { label: string; items: HistoryItem[] }[] = [];
-  const seen = new Map<string, number>();
-  for (const item of items) {
-    const label = formatDate(item.created_at);
-    if (seen.has(label)) {
-      groups[seen.get(label)!].items.push(item);
-    } else {
-      seen.set(label, groups.length);
-      groups.push({ label, items: [item] });
-    }
-  }
-  return groups;
+function label(value: string) {
+  return value.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 export default function HistoryPage() {
-  const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState('all');
-  const [hasMore, setHasMore] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const PAGE_SIZE = 30;
+  const [items, setItems] = useState<TimelineItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<'all' | Kind>('all');
+  const [query, setQuery] = useState('');
+  const [week, setWeek] = useState({ reviews: 0, accuracy: null as number | null, xp: 0 });
 
   useEffect(() => {
-    async function fetchHistory() {
+    (async () => {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
-      const { data } = await supabase
-        .from('study_history')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .range(0, PAGE_SIZE - 1);
-      if (data) {
-        setHistoryItems(data as HistoryItem[]);
-        setHasMore(data.length === PAGE_SIZE);
-      }
-      setIsLoading(false);
-    }
-    fetchHistory();
+      const weekAgo = new Date(Date.now() - 7 * 86_400_000).toISOString();
+
+      // Each source is optional: tables added by newer migrations may not exist yet.
+      const safe = async <T,>(promise: PromiseLike<{ data: T[] | null }>) => {
+        try {
+          return (await promise).data ?? [];
+        } catch {
+          return [] as T[];
+        }
+      };
+
+      const [sessions, history, essays, chats, resources, attempts] = await Promise.all([
+        safe<any>(supabase.from('review_sessions').select('id,session_type,status,completed_items,total_items,correct_items,started_at').eq('user_id', user.id).order('started_at', { ascending: false }).limit(40)),
+        safe<any>(supabase.from('study_history').select('id,action_type,details,created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(60)),
+        safe<any>(supabase.from('essay_submissions').select('id,question,score,max_score,created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(30)),
+        safe<any>(supabase.from('tutor_conversations').select('id,title,mode,updated_at').eq('user_id', user.id).order('updated_at', { ascending: false }).limit(30)),
+        safe<any>(supabase.from('resources').select('id,title,processing_status,created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(30)),
+        safe<any>(supabase.from('review_attempts').select('result,created_at').eq('user_id', user.id).gte('created_at', weekAgo).limit(2000)),
+      ]);
+
+      const timeline: TimelineItem[] = [
+        ...sessions.map((s: any) => ({
+          id: `s-${s.id}`,
+          kind: 'review' as const,
+          title: `${label(s.session_type)} session`,
+          detail: `${s.completed_items}/${s.total_items} cards • ${s.correct_items ?? 0} recalled`,
+          at: s.started_at,
+          badge: s.status === 'completed' ? 'Completed' : 'Unfinished',
+          href: '/review',
+        })),
+        ...essays.map((e: any) => ({
+          id: `e-${e.id}`,
+          kind: 'essay' as const,
+          title: e.question,
+          detail: 'Graded answer',
+          at: e.created_at,
+          badge: `${Math.round(Number(e.score))}/${Math.round(Number(e.max_score))}`,
+          href: '/essay-grader',
+        })),
+        ...chats.map((c: any) => ({
+          id: `c-${c.id}`,
+          kind: 'tutor' as const,
+          title: c.title,
+          detail: `${label(c.mode)} mode`,
+          at: c.updated_at,
+          href: `/ai-tutor?conversation=${c.id}`,
+        })),
+        ...resources.map((r: any) => ({
+          id: `r-${r.id}`,
+          kind: 'upload' as const,
+          title: r.title,
+          detail: 'Added to your library',
+          at: r.created_at,
+          badge: r.processing_status,
+          href: `/resources/${r.id}`,
+        })),
+        ...history
+          .filter((h: any) => h.action_type === 'xp_awarded')
+          .map((h: any) => ({
+            id: `h-${h.id}`,
+            kind: 'xp' as const,
+            title: `+${h.details?.xp_earned ?? 0} XP`,
+            detail: label(String(h.details?.source ?? 'study')),
+            at: h.created_at,
+          })),
+      ].sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
+
+      const correct = attempts.filter((a: any) => a.result === 'correct').length;
+      setWeek({
+        reviews: attempts.length,
+        accuracy: attempts.length ? Math.round((correct / attempts.length) * 100) : null,
+        xp: history
+          .filter((h: any) => h.action_type === 'xp_awarded' && h.created_at >= weekAgo)
+          .reduce((sum: number, h: any) => sum + Number(h.details?.xp_earned ?? 0), 0),
+      });
+      setItems(timeline);
+      setLoading(false);
+    })();
   }, []);
 
-  const loadMore = async () => {
-    setIsLoadingMore(true);
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    const { data } = await supabase
-      .from('study_history')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .range(historyItems.length, historyItems.length + PAGE_SIZE - 1);
-    if (data) {
-      setHistoryItems(prev => [...prev, ...(data as HistoryItem[])]);
-      setHasMore(data.length === PAGE_SIZE);
-    }
-    setIsLoadingMore(false);
-  };
-
-  const filteredItems = historyItems.filter(item => {
-    const info = formatItemInfo(item);
-    const matchesFilter = activeFilter === 'all' || info.filterKey === activeFilter;
-    const q = searchQuery.toLowerCase().trim();
-    const matchesSearch = !q || info.title.toLowerCase().includes(q) || item.action_type.toLowerCase().includes(q);
-    return matchesFilter && matchesSearch;
-  });
-
-  const groups = groupByDate(filteredItems);
+  const visible = useMemo(
+    () =>
+      items.filter(
+        (item) =>
+          (filter === 'all' || item.kind === filter) &&
+          (!query.trim() || `${item.title} ${item.detail}`.toLowerCase().includes(query.trim().toLowerCase()))
+      ),
+    [items, filter, query]
+  );
 
   return (
-    <AppShell
-      eyebrow="Profile"
-      title="Study history"
-      description="Everything you’ve done recently, with filters for the actions you want to review."
-    >
-        <main className="flex-1 max-w-3xl w-full">
-
-          {/* Page Header */}
-          <div className="mb-6">
-            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">Study History</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Everything you've done, in one place.</p>
-          </div>
-
-          {/* Search + Filter Row */}
-          <div className="flex flex-col sm:flex-row gap-3 mb-6">
-            <div className="relative flex-1">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
-              <input
-                className="w-full h-10 pl-10 pr-4 rounded-xl bg-white dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#2f7fd3] transition"
-                placeholder="Search history..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-              />
+    <AppShell eyebrow="Progress" title="Study history" description="Everything you have reviewed, practised, uploaded and earned, in one timeline.">
+      <div className="workspace-stack">
+        <section className="grid grid-cols-3 gap-3">
+          {[
+            { label: 'Cards reviewed this week', value: week.reviews.toLocaleString(), icon: 'brain' as const },
+            { label: 'Recall accuracy', value: week.accuracy === null ? '--' : `${week.accuracy}%`, icon: 'target' as const },
+            { label: 'XP this week', value: week.xp.toLocaleString(), icon: 'glowing-star' as const },
+          ].map((s) => (
+            <div key={s.label} className="relative overflow-hidden rounded-[24px] border border-[var(--line)] bg-[var(--card)] p-4 shadow-[var(--shadow-sm)]">
+              <Icon3D name={s.icon} size={36} className="absolute top-3 right-3 hidden sm:block" />
+              <p className="text-[12.5px] text-[var(--text-soft)]">{s.label}</p>
+              <p className="mt-4 font-display text-[26px] font-semibold text-[var(--text-strong)]">{s.value}</p>
             </div>
-            {/* Filter chips */}
-            <div className="flex gap-2 overflow-x-auto pb-1 shrink-0">
-              {ACTION_FILTERS.map(f => (
-                <button
-                  key={f.value}
-                  onClick={() => setActiveFilter(f.value)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all border ${activeFilter === f.value
-                      ? 'bg-[#2f7fd3] text-white border-[#2f7fd3]'
-                      : 'bg-white dark:bg-[#0f192c] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#1d2a42] hover:border-[#2f7fd3]'
-                    }`}
-                >
+          ))}
+        </section>
+
+        <section className="glass-panel app-panel">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="app-tabs overflow-x-auto">
+              {FILTERS.map((f) => (
+                <button key={f.id} className="app-tab" data-active={filter === f.id} onClick={() => setFilter(f.id)}>
                   {f.label}
                 </button>
               ))}
             </div>
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search history..."
+              className="h-10 rounded-full border border-[var(--line-strong)] bg-[var(--card)] px-4 text-sm text-[var(--text-strong)] outline-none focus:border-[var(--accent)] md:w-64"
+            />
           </div>
 
-          {/* Timeline */}
-          {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-24 gap-4 text-slate-400">
-              <div className="size-8 border-2 border-[#2f7fd3] border-t-transparent rounded-full animate-spin" />
-              <span className="text-sm font-medium">Loading your history...</span>
-            </div>
-          ) : filteredItems.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 gap-3 text-center">
-              <div className="size-16 rounded-2xl bg-slate-100 dark:bg-[#0f192c] flex items-center justify-center">
-                <span className="material-symbols-outlined text-3xl text-slate-400">history_toggle_off</span>
+          <div className="mt-5">
+            {loading ? (
+              <div className="space-y-2">
+                {[0, 1, 2, 3].map((i) => (
+                  <div key={i} className="h-16 animate-pulse rounded-[20px] bg-[var(--card-2)]" />
+                ))}
               </div>
-              <h3 className="font-bold text-slate-900 dark:text-white text-lg">No Activity Found</h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 max-w-xs">
-                {searchQuery || activeFilter !== 'all'
-                  ? 'Try adjusting your search or filter.'
-                  : 'Your study history will appear here once you start studying.'}
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-8">
-              {groups.map(group => (
-                <div key={group.label}>
-                  {/* Date Header */}
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-xs font-extrabold uppercase tracking-widest text-[#2f7fd3]">{group.label}</span>
-                    <div className="flex-1 h-px bg-slate-200 dark:bg-[#1d2a42]" />
-                    <span className="text-xs text-slate-400">{group.items.length} {group.items.length === 1 ? 'entry' : 'entries'}</span>
-                  </div>
-
-                  {/* Items in this group */}
-                  <div className="space-y-3">
-                    {group.items.map(item => {
-                      const info = formatItemInfo(item);
-                      return (
-                        <div
-                          key={item.id}
-                          className="flex items-start gap-4 bg-white dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] rounded-2xl p-4 hover:shadow-md dark:hover:border-[#3d3d5f] transition-all group"
-                        >
-                          {/* Icon */}
-                          <div className={`shrink-0 size-10 rounded-xl flex items-center justify-center ${info.color}`}>
-                            <span className="material-symbols-outlined text-[22px]">{info.icon}</span>
-                          </div>
-
-                          {/* Content */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-2 flex-wrap">
-                              <h3 className="font-semibold text-slate-900 dark:text-white text-sm leading-snug truncate max-w-[280px] sm:max-w-full capitalize">
-                                {info.title}
-                              </h3>
-                              {info.badge && (
-                                <span className={`shrink-0 px-2 py-0.5 rounded-md text-xs font-bold ${info.badgeColor}`}>
-                                  {info.badge}
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{info.subtitle}</p>
-                          </div>
-
-                          {/* Time */}
-                          <span className="shrink-0 text-xs text-slate-400 dark:text-slate-500 mt-0.5">{formatTime(item.created_at)}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-
-              {/* Load More */}
-              {hasMore && !searchQuery && activeFilter === 'all' && (
-                <div className="text-center pt-4">
-                  <button
-                    onClick={loadMore}
-                    disabled={isLoadingMore}
-                    className="px-6 py-2.5 bg-white dark:bg-[#0f192c] border border-slate-200 dark:border-[#1d2a42] rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#13203a] transition-colors disabled:opacity-50"
-                  >
-                    {isLoadingMore
-                      ? <span className="flex items-center gap-2"><span className="size-4 border-2 border-[#2f7fd3] border-t-transparent rounded-full animate-spin inline-block" /> Loading...</span>
-                      : 'Load more'}
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-        </main>
+            ) : visible.length ? (
+              <ol className="space-y-1.5">
+                {visible.map((item) => {
+                  const body = (
+                    <>
+                      <span className="icon-tile size-11">
+                        <Icon3D name={ICONS[item.kind]} size={26} />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-[14.5px] font-medium text-[var(--text-strong)]">{item.title}</p>
+                        <p className="truncate text-[12.5px] text-[var(--text-soft)]">
+                          {item.detail} &middot; {timeAgo(item.at)}
+                        </p>
+                      </div>
+                      {item.badge ? <span className="pill-tag shrink-0 capitalize">{item.badge}</span> : null}
+                    </>
+                  );
+                  return (
+                    <li key={item.id}>
+                      {item.href ? (
+                        <Link href={item.href} className={cn('flex items-center gap-3 rounded-[20px] p-2.5 transition hover:bg-[var(--accent-softer)]')}>
+                          {body}
+                        </Link>
+                      ) : (
+                        <div className="flex items-center gap-3 rounded-[20px] p-2.5">{body}</div>
+                      )}
+                    </li>
+                  );
+                })}
+              </ol>
+            ) : (
+              <AppEmptyState
+                icon="calendar"
+                title="Nothing here yet"
+                description="Your reviews, essays, tutor chats and uploads will appear here as you study."
+                action={
+                  <Link href="/review" className="primary-button">
+                    Start a review
+                  </Link>
+                }
+              />
+            )}
+          </div>
+        </section>
+      </div>
     </AppShell>
   );
 }

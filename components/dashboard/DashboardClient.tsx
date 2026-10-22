@@ -156,11 +156,11 @@ function pickMission(args: {
 }
 
 const quickTools: Array<{ name: string; body: string; href: string; icon: Icon3DName; tone: string }> = [
-  { name: 'Quiz', body: 'Exam-style MCQs', href: '/generator', icon: 'target', tone: 'pastel-mint' },
-  { name: 'Flashcards', body: 'Spaced repetition', href: '/flashcards', icon: 'card-index', tone: 'pastel-lime' },
+  { name: 'Quiz', body: 'Exam-style MCQs', href: '/generator?type=mcq', icon: 'target', tone: 'pastel-mint' },
+  { name: 'Flashcards', body: 'Spaced repetition', href: '/generator?type=flashcards', icon: 'card-index', tone: 'pastel-lime' },
   { name: 'AI Tutor', body: 'Ask anything', href: '/ai-tutor', icon: 'robot', tone: 'pastel-sky' },
   { name: 'Simplifier', body: 'Explain it simply', href: '/simplifier', icon: 'bulb', tone: 'pastel-peach' },
-  { name: 'Exam Ready', body: 'Cheat sheet', href: '/exam-ready', icon: 'scroll', tone: 'pastel-lavender' },
+  { name: 'Exam Ready', body: 'Cheat sheet', href: '/generator?type=exam_snapshot', icon: 'scroll', tone: 'pastel-lavender' },
   { name: 'Essay Grader', body: 'Mark my answer', href: '/essay-grader', icon: 'writing-hand', tone: 'pastel-blush' },
 ];
 
