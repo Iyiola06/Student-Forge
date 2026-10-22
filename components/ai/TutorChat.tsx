@@ -179,10 +179,10 @@ export default function TutorChat({ resourceContext, resourceTitle }: TutorChatP
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            <div className="flex flex-1 flex-col space-y-6 overflow-y-auto p-4 sm:p-6">
                 {messages.length === 0 ? (
                     /* Empty State with Suggested Prompts */
-                    <div className="flex h-full flex-col items-center justify-center px-2 text-center">
+                    <div className="m-auto flex flex-col items-center justify-center px-2 py-4 text-center">
                         <Icon3D name={mode === 'quiz' ? 'target' : mode === 'socratic' ? 'thinking' : 'robot'} size={88} className="mb-4 animate-float" />
                         <h3 className="font-display text-[24px] font-semibold tracking-[-0.02em] text-[var(--text-strong)]">
                             {mode === 'quiz' ? 'Ready to be quizzed?' : mode === 'socratic' ? 'Let\u2019s think it through together' : 'What do you want to learn?'}

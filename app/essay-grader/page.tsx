@@ -67,7 +67,7 @@ export default function EssayGraderPage() {
 
     return (
         <AppShell
-            eyebrow="Labs"
+            eyebrow="Study tools"
             title="Essay grader"
             description="Get clear, rubric-style feedback on longer answers without changing your grading flow or XP logic."
         >

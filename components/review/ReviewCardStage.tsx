@@ -48,13 +48,13 @@ export default function ReviewCardStage({ item, showAnswer, isSubmitting, onReve
   const explanation = getReviewExplanation(item);
   const options = getReviewOptions(item);
   const isMcq = options.length > 1;
-  const startedAt = useRef(Date.now());
+  const startedAt = useRef(0);
   const [picked, setPicked] = useState<string | null>(null);
 
+  // The parent remounts this component per item (key={item.id}), so state starts fresh.
   useEffect(() => {
     startedAt.current = Date.now();
-    setPicked(null);
-  }, [item.id]);
+  }, []);
 
   const intervals = useMemo(
     () =>

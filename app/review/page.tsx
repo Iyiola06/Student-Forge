@@ -184,6 +184,7 @@ export default function ReviewPage() {
 
             <div className="review-focus-layout">
               <ReviewCardStage
+                key={currentItem.id}
                 item={currentItem}
                 showAnswer={showAnswer}
                 isSubmitting={isSubmitting}

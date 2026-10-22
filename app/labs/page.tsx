@@ -16,7 +16,7 @@ const tools = [
 export default function LabsPage() {
   return (
     <AppShell
-      eyebrow="Labs"
+      eyebrow="Study tools"
       title="Secondary tools"
       description="These features remain available, but the product now prioritizes the core loop: library, generate, review, and wallet."
     >

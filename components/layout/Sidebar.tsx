@@ -54,10 +54,6 @@ export default function Sidebar() {
     };
   }, [isMenuOpen]);
 
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [pathname]);
-
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -68,7 +64,7 @@ export default function Sidebar() {
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   const renderLink = (link: NavItem) => (
-    <Link key={link.href} href={link.href} className="nav-link" data-active={isActive(link.href)}>
+    <Link key={link.href} href={link.href} onClick={() => setIsMenuOpen(false)} className="nav-link" data-active={isActive(link.href)}>
       <span className="nav-link-icon">
         <Icon3D name={link.icon} size={22} />
       </span>

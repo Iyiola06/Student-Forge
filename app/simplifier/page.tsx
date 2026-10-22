@@ -178,7 +178,7 @@ export default function SimplifierPage() {
 
   return (
     <AppShell
-      eyebrow="Labs"
+      eyebrow="Study tools"
       title="Document simplifier"
       description="Translate dense material into a clearer explanation level, format, and focus without changing the underlying study logic."
     >

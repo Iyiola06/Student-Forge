@@ -38,7 +38,7 @@ function AITutorContent() {
 
     return (
         <AppShell
-            eyebrow="Labs"
+            eyebrow="Learn"
             title="AI tutor"
             description="Ask focused questions, unpack difficult topics, or study directly against one selected resource."
             contentClassName="h-full"
