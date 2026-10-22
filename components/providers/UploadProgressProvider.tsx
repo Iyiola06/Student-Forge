@@ -5,6 +5,8 @@ import { toast } from 'react-toastify';
 import { PDFDocument } from 'pdf-lib';
 import { createClient } from '@/lib/supabase/client';
 import type { ResourceProcessingStatus } from '@/types/product';
+import { extractPdfToMarkdown } from '@/lib/pdf/browser';
+import Icon3D from '@/components/ui/Icon3D';
 
 type UploadState = 'idle' | 'compressing' | 'uploading' | ResourceProcessingStatus;
 
@@ -24,6 +26,7 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
   const [progress, setProgress] = useState(0);
   const [fileName, setFileName] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [detail, setDetail] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -107,15 +110,38 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
       reader.onerror = reject;
     });
 
-  const extractTextClientSide = async (file: File): Promise<string | null> => {
+  const extractTextClientSide = async (file: File): Promise<{ text: string; method: string } | null> => {
     const type = file.type;
     const name = file.name.toLowerCase();
+
+    if (type === 'application/pdf' || name.endsWith('.pdf')) {
+      try {
+        const result = await extractPdfToMarkdown(await file.arrayBuffer(), {
+          onProgress: (p) => {
+            if (p.phase === 'reading') {
+              setDetail(`Reading page ${p.page} of ${p.totalPages}`);
+              setProgress(70 + Math.round((p.page / Math.max(1, p.totalPages)) * 10));
+            } else if (p.phase === 'ocr') {
+              setDetail(`Reading scanned pages with AI \u2022 ${p.ocrDone}/${p.ocrTotal}`);
+              setProgress(80 + Math.round((p.ocrDone / Math.max(1, p.ocrTotal)) * 15));
+            }
+          },
+        });
+        if (result.ocrFailedPages.length) {
+          toast.warn(`${result.ocrFailedPages.length} scanned page(s) could not be read: ${result.ocrFailedPages.slice(0, 8).join(', ')}`);
+        }
+        return result.markdown.trim().length >= 50 ? { text: result.markdown, method: result.method } : null;
+      } catch (pdfError) {
+        console.warn('In-browser PDF extraction failed, falling back to the server', pdfError);
+        return null;
+      }
+    }
 
     if (type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || name.endsWith('.docx')) {
       const mammoth = await import('mammoth');
       const arrayBuffer = await file.arrayBuffer();
       const result = await mammoth.extractRawText({ arrayBuffer });
-      return result.value.trim().length >= 50 ? result.value.trim() : null;
+      return result.value.trim().length >= 50 ? { text: result.value.trim(), method: 'docx' } : null;
     }
 
     if (type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation' || name.endsWith('.pptx')) {
@@ -131,11 +157,35 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
         const matches = xml.match(/<a:t>([^<]*)<\/a:t>/g);
         if (matches) text += matches.map((m: string) => m.replace(/<\/?a:t>/g, '')).join(' ') + '\n';
       }
-      return text.trim().length >= 50 ? text.trim() : null;
+      return text.trim().length >= 50 ? { text: text.trim(), method: 'pptx' } : null;
     }
 
-    if (type === 'text/plain' || type === 'application/json') {
-      return await file.text();
+    if (type.startsWith('image/')) {
+      try {
+        setDetail('Reading your photo with AI');
+        const image = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result));
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        const res = await fetch('/api/resources/ocr', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image, page: 1 }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && typeof data.markdown === 'string' && data.markdown.trim().length >= 20) {
+          return { text: data.markdown.trim(), method: 'image_ocr' };
+        }
+      } catch (imageError) {
+        console.warn('In-browser image OCR failed, falling back to the server', imageError);
+      }
+      return null;
+    }
+
+    if (type === 'text/plain' || type === 'application/json' || name.endsWith('.md')) {
+      return { text: await file.text(), method: 'plain_text' };
     }
 
     return null;
@@ -180,9 +230,12 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
       const { error: storageError } = await supabase.storage.from('resources').upload(filePath, finalFile);
       if (storageError) throw new Error(storageError.message || 'Failed to upload to storage');
 
-      setUploadState('queued');
+      setUploadState('extracting');
       setProgress(70);
-      const extractedText = await extractTextClientSide(finalFile);
+      // Extract from the original file: re-saved PDFs can lose text structure.
+      const extraction = await extractTextClientSide(file.type === 'application/pdf' ? file : finalFile);
+      const extractedText = extraction?.text ?? null;
+      setDetail(null);
       if (extractedText) {
         setUploadState('extracting');
         setProgress(85);
@@ -197,6 +250,7 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
           fileType: finalFile.type,
           fileSize: finalFile.size,
           extractedText,
+          extractionMethod: extraction?.method,
         }),
       });
 
@@ -222,6 +276,7 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
   };
 
   const dismiss = () => {
+    setDetail(null);
     setUploadState('idle');
     setFileName(null);
     setProgress(0);
@@ -247,33 +302,39 @@ export function UploadProgressProvider({ children }: { children: ReactNode }) {
     <UploadContext.Provider value={{ uploadState, progress, fileName, error, uploadFile, dismiss }}>
       {children}
       {uploadState !== 'idle' ? (
-        <div className="glass-panel fixed bottom-6 right-6 z-50 w-80 overflow-hidden">
-          <div className="p-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <p className="truncate text-sm font-black text-slate-900 dark:text-white">{fileName}</p>
-                <p className="mt-1 text-xs font-bold text-slate-500 dark:text-slate-400">{statusLabel[uploadState]}</p>
-              </div>
-              {['ready', 'failed', 'queued', 'extracting', 'retrying'].includes(uploadState) ? (
-                <button onClick={dismiss} className="text-slate-400 transition hover:text-slate-700 dark:hover:text-white">
-                  <span className="material-symbols-outlined text-[18px]">close</span>
-                </button>
-              ) : null}
+        <div className="glass-panel fixed right-3 bottom-24 left-3 z-50 overflow-hidden animate-rise sm:right-6 sm:bottom-6 sm:left-auto sm:w-[340px]">
+          <div className="flex items-start gap-3 p-4">
+            <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[var(--accent-softer)]">
+              <Icon3D
+                name={uploadState === 'failed' ? 'thinking' : uploadState === 'ready' ? 'party' : 'file-folder'}
+                size={28}
+                className={uploadState === 'ready' || uploadState === 'failed' ? '' : 'animate-float'}
+              />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-[var(--text-strong)]">{fileName}</p>
+              <p className="mt-0.5 text-xs text-[var(--text-soft)]">{detail || statusLabel[uploadState]}</p>
+              {error ? <p className="mt-1 line-clamp-2 text-xs text-[var(--danger)]">{error}</p> : null}
             </div>
+            {['ready', 'failed', 'queued', 'extracting', 'retrying'].includes(uploadState) ? (
+              <button onClick={dismiss} className="text-[var(--text-faint)] transition hover:text-[var(--text-strong)]" aria-label="Dismiss">
+                <span className="material-symbols-outlined text-[18px]">close</span>
+              </button>
+            ) : null}
           </div>
 
-          {uploadState === 'failed' ? (
-            <div className="h-1.5 w-full bg-red-500" />
-          ) : uploadState === 'ready' ? (
-            <div className="h-1.5 w-full bg-emerald-500" />
-          ) : (
-            <div className="h-1.5 w-full bg-slate-200 dark:bg-white/8">
-              <div
-                className={uploadState === 'extracting' ? 'h-full bg-[#2f7fd3] transition-all animate-pulse' : 'h-full bg-[#2f7fd3] transition-all'}
-                style={{ width: `${Math.max(progress, uploadState === 'extracting' ? 92 : 12)}%` }}
-              />
-            </div>
-          )}
+          <div className="h-1.5 w-full bg-[var(--line)]">
+            <div
+              className={
+                uploadState === 'failed'
+                  ? 'h-full w-full bg-[var(--danger)]'
+                  : uploadState === 'ready'
+                    ? 'h-full w-full bg-[var(--success)]'
+                    : 'h-full rounded-r-full bg-gradient-to-r from-[#4a9be8] to-[#8cc4f5] transition-all duration-500'
+              }
+              style={uploadState === 'failed' || uploadState === 'ready' ? undefined : { width: `${Math.max(progress, 12)}%` }}
+            />
+          </div>
         </div>
       ) : null}
     </UploadContext.Provider>

@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { chatCompletion, imagePart, isAIConfigured, pdfPart, pdfPlugins } from '@/lib/ai/openrouter';
+import { chatCompletion, imagePart, isAIConfigured } from '@/lib/ai/openrouter';
+import { extractPdfMarkdownOnServer } from '@/lib/pdf/server';
+import { OCR_PAGE_PROMPT } from '@/lib/pdf/markdown';
 import type { ResourceProcessingStatus } from '@/types/product';
 
 export function buildPreview(text: string) {
@@ -104,38 +106,13 @@ export async function processQueuedResourceJob(params: {
     let extractionMethod = 'server';
 
     if (fileType === 'application/pdf') {
-      const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
-      const arrayBuffer = await fileData.arrayBuffer();
-      let nativeText = '';
-
-      try {
-        const loadingTask = pdfjs.getDocument({ data: new Uint8Array(arrayBuffer), useSystemFonts: true });
-        const pdfDoc = await loadingTask.promise;
-        for (let i = 1; i <= Math.min(pdfDoc.numPages, 100); i++) {
-          const page = await pdfDoc.getPage(i);
-          const textContent = await page.getTextContent();
-          nativeText += textContent.items.map((item: any) => item.str).join(' ') + '\n';
-        }
-      } catch {
-        nativeText = '';
-      }
-
-      extractedText = nativeText.trim();
-      if (extractedText.length < 50) {
-        extractionMethod = 'ocr_pdf';
-        if (!isAIConfigured()) throw new Error('AI extraction not configured');
-        const { text } = await chatCompletion({
-          vision: true,
-          extra: pdfPlugins(),
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'text', text: 'Extract and transcribe all readable text from this PDF document. Preserve headings and important structure. Output only the extracted text.' },
-              pdfPart(Buffer.from(arrayBuffer).toString('base64'), fileName || 'document.pdf'),
-            ],
-          }],
-        });
-        extractedText = text.trim();
+      const result = await extractPdfMarkdownOnServer(await fileData.arrayBuffer());
+      extractedText = result.markdown;
+      extractionMethod = result.method;
+      if (extractedText.length < 50 && result.scannedPages > 0) {
+        throw new Error(
+          'This PDF is scanned and could not be read on the server. Re-upload it from the app so pages are read in your browser, or upload the pages as photos.'
+        );
       }
     } else if (fileType.startsWith('image/')) {
       extractionMethod = 'ocr_image';
@@ -146,7 +123,7 @@ export async function processQueuedResourceJob(params: {
         messages: [{
           role: 'user',
           content: [
-            { type: 'text', text: 'Transcribe all readable text from this study material image. Format it cleanly and briefly describe any diagram labels if needed.' },
+            { type: 'text', text: OCR_PAGE_PROMPT },
             imagePart(Buffer.from(arrayBuffer).toString('base64'), fileType),
           ],
         }],

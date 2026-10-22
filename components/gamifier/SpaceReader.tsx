@@ -1,5 +1,7 @@
 'use client';
 
+import { loadPdfJs } from '@/lib/pdf/browser';
+
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { awardXp } from '@/app/actions/gamifier';
@@ -59,8 +61,7 @@ export default function SpaceReader({
 
             if (isActuallyPdf) {
                 try {
-                    const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
-                    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
+                    const pdfjsLib = await loadPdfJs();
                     const loadingTask = pdfjsLib.getDocument(resource.file_url);
                     const pdf = await loadingTask.promise;
                     setPdfDoc(pdf);

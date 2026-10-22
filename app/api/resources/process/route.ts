@@ -13,7 +13,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { filePath, fileName, fileType, fileSize, extractedText, resourceId } = await request.json();
+    const { filePath, fileName, fileType, fileSize, extractedText, resourceId, extractionMethod: clientMethod } = await request.json();
+    const extractionMethod = typeof clientMethod === 'string' && /^[a-z_]{2,40}$/.test(clientMethod) ? clientMethod : 'client';
     if (!filePath) {
       return NextResponse.json({ error: 'filePath is required' }, { status: 400 });
     }
@@ -44,7 +45,7 @@ export async function POST(request: Request) {
         ...basePayload,
         content: extractedText,
         processing_status: 'ready',
-        extraction_method: 'client',
+        extraction_method: extractionMethod,
         extraction_confidence: buildConfidence(extractedText),
         extracted_preview: buildPreview(extractedText),
         processing_started_at: new Date().toISOString(),
@@ -53,10 +54,10 @@ export async function POST(request: Request) {
         processing_metadata: {
           storage_path: filePath,
           phase: 'ready',
-          extraction_method: 'client',
+          extraction_method: extractionMethod,
           character_count: extractedText.length,
           source_health: extractedText.length > 600 ? 'strong' : 'usable',
-          diagnostics_summary: `client extracted ${extractedText.length} characters`,
+          diagnostics_summary: `${extractionMethod} extracted ${extractedText.length} characters`,
         },
       };
 
@@ -76,7 +77,7 @@ export async function POST(request: Request) {
         status: 'ready',
         detail: {
           storage_path: filePath,
-          extraction_method: 'client',
+          extraction_method: extractionMethod,
           character_count: extractedText.length,
         },
       });
@@ -85,7 +86,7 @@ export async function POST(request: Request) {
         userId: user.id,
         eventName: 'upload_succeeded',
         idempotencyKey: `upload-succeeded:${data.id}`,
-        properties: { fileType, extractionMethod: 'client' },
+        properties: { fileType, extractionMethod },
       });
 
       return NextResponse.json({ success: true, status: 'ready', resourceId: data.id }, { status: 200 });

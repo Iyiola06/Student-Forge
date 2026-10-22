@@ -373,12 +373,3 @@ export function imagePart(base64OrDataUrl: string, mimeType = 'image/png'): Cont
   const url = base64OrDataUrl.startsWith('data:') ? base64OrDataUrl : `data:${mimeType};base64,${base64OrDataUrl}`;
   return { type: 'image_url', image_url: { url } };
 }
-
-export function pdfPart(base64: string, filename = 'document.pdf'): ContentPart {
-  return { type: 'file', file: { filename, file_data: `data:application/pdf;base64,${base64}` } };
-}
-
-/** OpenRouter plugin config for PDFs. mistral-ocr handles scanned pages (paid per page); cloudflare-ai is free but text-only. */
-export function pdfPlugins() {
-  return { plugins: [{ id: 'file-parser', pdf: { engine: process.env.OPENROUTER_PDF_ENGINE || 'mistral-ocr' } }] };
-}

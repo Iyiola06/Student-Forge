@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useRouter } from 'next/navigation';
 import { AppDataList, AppDataRow } from '@/components/app/AppDataList';
 import AppEmptyState from '@/components/app/AppEmptyState';
@@ -234,7 +236,14 @@ export default function ResourceDetailClient({ initialResource, initialJob }: Re
             extractedContent ? (
               <div className="resource-preview">
                 <p className="dashboard-mini-label">{ready ? 'Extracted text' : 'Available content'}</p>
-                <p className="mt-4 whitespace-pre-wrap text-sm leading-8 text-slate-700 dark:text-slate-200">{extractedContent.slice(0, 6000)}</p>
+                <div className="study-prose mt-4 max-h-[70vh] overflow-y-auto pr-2 text-[15px]">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{extractedContent.slice(0, 20000)}</ReactMarkdown>
+                </div>
+                {extractedContent.length > 20000 ? (
+                  <p className="mt-3 text-xs text-[var(--text-soft)]">
+                    Showing the first 20,000 of {extractedContent.length.toLocaleString()} characters. Everything is used for generation.
+                  </p>
+                ) : null}
               </div>
             ) : (
               <AppEmptyState

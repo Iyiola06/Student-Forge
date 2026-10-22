@@ -1,5 +1,7 @@
 ﻿'use client';
 
+import { extractPdfToMarkdown } from '@/lib/pdf/browser';
+
 import React, { useState, useRef, useEffect } from 'react';
 import { StudyMaterial } from '@/types/ai';
 
@@ -56,18 +58,8 @@ const DocumentIngestion: React.FC<DocumentIngestionProps> = ({ onProcessed }) =>
         try {
             let fullText = '';
             if (file.type === 'application/pdf') {
-                const arrayBuffer = await file.arrayBuffer();
-                const pdfjsLib = await import('pdfjs-dist');
-                pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
-
-                const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-                const pdf = await loadingTask.promise;
-                for (let i = 1; i <= pdf.numPages; i++) {
-                    const page = await pdf.getPage(i);
-                    const content = await page.getTextContent();
-                    const pageText = content.items.map((item: any) => item.str).join(' ');
-                    fullText += pageText + '\n';
-                }
+                const result = await extractPdfToMarkdown(await file.arrayBuffer());
+                fullText = result.markdown;
             } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || file.name.endsWith('.docx')) {
                 const mammoth = await import('mammoth');
                 const arrayBuffer = await file.arrayBuffer();

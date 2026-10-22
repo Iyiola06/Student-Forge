@@ -10,4 +10,7 @@ the next one is tried.
 | --- | --- | --- |
 | `OPENROUTER_API_KEY` | yes | Key from https://openrouter.ai/keys |
 | `OPENROUTER_MODELS` | no | Comma-separated model IDs to override the built-in fallback chain |
-| `OPENROUTER_PDF_ENGINE` | no | PDF engine for scanned PDFs: `mistral-ocr` (default, paid per page) or `cloudflare-ai` (free, text-based PDFs only) |
+
+Every model used is free. PDFs are converted to Markdown in the student's browser (`lib/pdf`): text pages
+are rebuilt from the PDF layout (headings, lists, paragraphs, no headers/footers) and scanned pages are
+rendered and read by the free vision models through `/api/resources/ocr`. Nothing is sent to a paid OCR service.
